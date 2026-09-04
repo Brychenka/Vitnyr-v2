@@ -41,6 +41,13 @@
   --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px));
   --maxw: 1320px;
   --measure: 62ch;
+
+  /* Collage composition rhythm — the vertical offset of each tile, named here
+     so the whole composition tunes from one place. Not per-theme. */
+  --collage-drop-a:   clamp(56px, 10vw, 132px);   /* tile 2 — top-right, below tile 1 */
+  --collage-drop-b:   clamp(20px,  4vw,  52px);   /* tile 3 — the wide mid band       */
+  --collage-overlap:  clamp(24px, 4.5vw, 64px);   /* tile 4 — rises over tile 3's corner */
+  --collage-drop-d:   clamp(28px,  5vw,  72px);   /* tile 6 — the low square           */
 }
 
 @media (prefers-color-scheme: light) {
@@ -410,10 +417,11 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   .rows > li { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: baseline; }
 }
 
-/* ---------- collage ----------
-   An asymmetric editorial grid. Six figures at three fixed crop ratios
-   (4:5 / 3:2 / 1:1) on a 12-column grid, each dropped a different distance so
-   the block reads as one composed object, not a row of equal thumbnails.
+/* ---------- collage composition ----------
+   An asymmetric editorial grid, lives inside the collage view (below). Six
+   figures at three fixed crop ratios (4:5 / 3:2 / 1:1) on a 12-column grid,
+   each dropped a different distance, with one deliberate overlap so the block
+   reads as one composed object rather than a row of equal thumbnails.
    Reference is xxix.co's overlapping gallery: hard edges, zero radius, no
    decoration, pure CSS. Structure is whitespace and the same 1px hairline the
    rest of the page uses — no third colour, no gradient, no shadow.
@@ -432,11 +440,12 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .collage__fig--45 .collage__slot { aspect-ratio: 4 / 5; }
 .collage__fig--32 .collage__slot { aspect-ratio: 3 / 2; }
 .collage__fig--11 .collage__slot { aspect-ratio: 1 / 1; }
-/* Mono here is a quoted filename — quoted material, which is what mono means
-   on this page. Placeholder-only; deleted with the boxes in Stage 3. */
+/* Sans, not mono: mono on this page is quoted linguistic material, and a
+   filename is neither. Placeholder only — deleted with the boxes in Stage 3. */
 .collage__wait {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
-  color: var(--fg2); border: 1px solid var(--rule); padding: 5px 9px;
+  font-family: var(--sans); font-size: 11px; font-weight: 500;
+  letter-spacing: .04em; color: var(--fg2);
+  border: 1px solid var(--rule); padding: 4px 9px;
   max-width: 100%; overflow-wrap: anywhere; text-align: center;
 }
 .collage figcaption {
@@ -455,9 +464,9 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 }
 
 /* the composition proper — wide enough to carry an asymmetric layout.
-   Offsets are a share of the viewport (vw), so the rhythm scales with the
-   page. No negative margins: the tiles offset, they never overlap, so nothing
-   can collide when the real images land. */
+   Offsets come from the --collage-* tokens in :root. Tile 4 rises over tile
+   3's corner with a NEGATIVE MARGIN — never a transform: layout must leave
+   the transform channel free for the reveal and any parallax (CLAUDE.md). */
 @media (min-width: 900px) {
   .collage {
     grid-template-columns: repeat(12, 1fr);
@@ -466,12 +475,102 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
     align-items: start;
   }
   .collage__fig:nth-child(1) { grid-column: 1 / 6; }
-  .collage__fig:nth-child(2) { grid-column: 8 / 13; margin-top: clamp(64px, 11vw, 150px); }
-  .collage__fig:nth-child(3) { grid-column: 6 / 13; margin-top: clamp(20px, 4vw, 52px); }
-  .collage__fig:nth-child(4) { grid-column: 2 / 7;  margin-top: clamp(40px, 7vw, 104px); }
+  .collage__fig:nth-child(2) { grid-column: 8 / 13; margin-top: var(--collage-drop-a); }
+  .collage__fig:nth-child(3) { grid-column: 6 / 13; margin-top: var(--collage-drop-b); }
+  .collage__fig:nth-child(4) {
+    grid-column: 3 / 8;
+    margin-top: calc(var(--collage-overlap) * -1);
+    position: relative; z-index: 1;
+  }
   .collage__fig:nth-child(5) { grid-column: 1 / 8; }
-  .collage__fig:nth-child(6) { grid-column: 9 / 13; margin-top: clamp(28px, 5vw, 72px); }
+  .collage__fig:nth-child(6) { grid-column: 9 / 13; margin-top: var(--collage-drop-d); }
 }
+
+/* ---------- collage view ----------
+   #collage is one section in index.html but behaves like its own page.
+   Without JS (html has no .js class) it stays a normal block at the end of
+   the document — nothing here is hidden. With JS it becomes a routed
+   full-screen view; main.js toggles html.collage-open. */
+html.js .view {
+  position: fixed; inset: 0; z-index: 60;
+  background: var(--bg);
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  /* opacity is not the transform channel; visibility flips after the fade so
+     the panel can't be tabbed into while it is on its way out. */
+  transition: opacity var(--t) var(--e), visibility 0s linear var(--t);
+}
+html.js.collage-open .view {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity var(--t) var(--e);
+}
+/* the site behind the open view does not scroll (belt-and-braces with
+   lenis.stop() in main.js, and the whole story for reduced-motion users).
+   Scoped to .js so a deep link can never lock scrolling on a page where the
+   router isn't running. */
+html.js.collage-open, html.js.collage-open body { overflow: hidden; }
+
+/* no-JS fallback: a plain closing rule for the section */
+.view { border-top: 1px solid var(--rule); }
+html.js .view { border-top: 0; }
+
+.view__bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  max-width: var(--maxw); margin-inline: auto;
+  padding: clamp(18px, 2.4vw, 30px) var(--gut);
+}
+html.js .view__bar {
+  position: sticky; top: 0;
+  max-width: none;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+}
+.view .footmark { width: 34px; height: 34px; flex: none; }
+
+.view__back {
+  -webkit-appearance: none; appearance: none;
+  background: none; border: 0; margin: 0; padding: 8px 0;
+  cursor: pointer; color: var(--fg2);
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: color var(--t) var(--e);
+}
+.view__back:hover { color: var(--fg); }
+.view__back svg { width: 22px; height: 8px; display: block; }
+
+.view__body {
+  max-width: var(--maxw); margin-inline: auto;
+  padding: clamp(44px, 7vw, 100px) var(--gut) clamp(80px, 12vh, 160px);
+}
+.view__body > .label { margin-bottom: clamp(20px, 3vw, 32px); }
+.view__body > h2 {
+  font-size: clamp(27px, 3.6vw, 48px); font-weight: 500;
+  line-height: 1.12; letter-spacing: -.02em;
+  max-width: 24ch; margin: 0 0 clamp(20px, 3vw, 32px);
+}
+html[data-lang="ru"] .view__body > h2 { letter-spacing: -.01em; }
+.view__body > h2:focus { outline: none; }
+.view__body > h2:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 6px; }
+.view__lede {
+  max-width: var(--measure); color: var(--fg2);
+  margin: 0 0 clamp(48px, 7vw, 96px);
+}
+
+/* entry link — built from the .scrollcue / .tool vocabulary: 12px sans,
+   uppercase, tracked, fg2 resting, an arrow, a hairline underline on hover.
+   Keyboard focus is the page-wide green ring via :focus-visible. */
+.enter { margin-top: clamp(36px, 5vw, 64px); }
+.enter a {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  border-bottom: 1px solid transparent;
+  transition: color var(--t) var(--e), border-color var(--t) var(--e);
+}
+.enter a:hover { color: var(--fg); border-bottom-color: var(--fg); }
+.enter svg { width: 26px; height: 8px; display: block; flex: none; }
 
 /* ---------- contact ---------- */
 .sec--contact { padding-bottom: clamp(60px, 8vh, 110px); }

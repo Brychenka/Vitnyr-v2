@@ -58,6 +58,7 @@
 
   // In-page links go through Lenis so the easing stays consistent.
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    if (a.hasAttribute('data-collage-open')) return;   // the collage router owns this one
     a.addEventListener('click', function (e) {
       var id = a.getAttribute('href');
       if (!id || id === '#') return;
@@ -73,6 +74,11 @@
       target.focus({ preventScroll: true });
     });
   });
+
+  /* The collage view is routing, not motion — it has to work under reduced
+     motion and with GSAP present but Lenis off, so it is wired before the
+     reduced-motion path returns. */
+  initCollageView();
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {
@@ -323,6 +329,102 @@
         qx(0); qy(0);   // the same tween, retargeted — not a second one fighting it
       });
     });
+  }
+
+  /* ---------- collage: a hash-routed full-screen view ----------
+     One file, but #collage behaves like its own page. location.hash is the
+     single source of truth, so the browser back and forward buttons work for
+     free: back drops the hash, hashchange fires, the view closes. Entering it
+     makes #app and the masthead inert (focus can't wander behind the view,
+     the page behind can't scroll), moves focus to the heading, and parks the
+     Lenis scroll. With this whole file absent the view is the last section of
+     the document and the "See the work" link is an ordinary anchor to it. */
+  function initCollageView() {
+    var view = document.getElementById('collage');
+    if (!view) return;
+    var title = document.getElementById('collage-title');
+    var backBtn = view.querySelector('.view__back');
+    var opener = document.querySelector('[data-collage-open]');
+    var canInert = 'inert' in HTMLElement.prototype;
+    // everything that is NOT the view — made inert while it is open so focus
+    // can't wander behind it and the skip link can't jump into inert content
+    var behind = [
+      document.getElementById('app'),
+      document.querySelector('.masthead'),
+      document.querySelector('.skip')
+    ].filter(Boolean);
+    function setBehindInert(on) { if (canInert) behind.forEach(function (el) { el.inert = on; }); }
+    var returnFocus = null;
+    var savedScroll = 0;   // where the site was when the view opened
+    var applied = false;   // have the open side-effects run? (the .collage-open
+                           // class can already be set by the <head> script on a
+                           // deep link, so the class alone isn't the test)
+
+    function bgScroll() { return lenis ? lenis.scroll : (window.scrollY || 0); }
+    function bgScrollTo(y) {
+      if (lenis) lenis.scrollTo(y, { immediate: true });
+      else window.scrollTo(0, y);
+    }
+
+    function applyOpen(cold) {
+      if (applied) return;
+      applied = true;
+      returnFocus = (document.activeElement && document.activeElement !== document.body)
+        ? document.activeElement : opener;
+      // A deep link makes the browser scroll the document toward the #collage
+      // element (last in the DOM); a cold open therefore returns to the top,
+      // a warm one returns exactly where the reader was.
+      savedScroll = cold ? 0 : bgScroll();
+      root.classList.add('collage-open');        // CSS flips the view visible synchronously
+      setBehindInert(true);
+      if (lenis) lenis.stop();
+      view.scrollTop = 0;
+      // The browser's own jump to the #collage element on a deep link can land
+      // after this call; re-assert once the document has finished loading.
+      if (cold && document.readyState !== 'complete') {
+        window.addEventListener('load', function reassert() {
+          window.removeEventListener('load', reassert);
+          if (applied) { savedScroll = 0; }
+        });
+      }
+      // Synchronous: the view is visible the moment the class lands, and rAF
+      // can be suspended in a background tab (see whenRendering above) — a
+      // deferred focus move is a focus move that might never happen.
+      if (title) title.focus({ preventScroll: true });
+    }
+
+    function applyClose() {
+      if (!applied) return;
+      applied = false;
+      root.classList.remove('collage-open');
+      setBehindInert(false);
+      if (lenis) lenis.start();
+      bgScrollTo(savedScroll);
+      if (returnFocus && returnFocus.focus) returnFocus.focus({ preventScroll: true });
+    }
+
+    function sync(cold) { (location.hash === '#collage') ? applyOpen(cold) : applyClose(); }
+
+    function leave() {
+      // Real history keeps forward working; only synthesise a state if we'd
+      // otherwise walk off the site (deep link opened in a fresh tab).
+      if (window.history.length > 1) window.history.back();
+      else { history.replaceState(null, '', location.pathname + location.search); sync(false); }
+    }
+
+    if (opener) opener.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (history.pushState) history.pushState(null, '', '#collage');
+      else location.hash = 'collage';
+      sync(false);
+    });
+    if (backBtn) backBtn.addEventListener('click', leave);
+    window.addEventListener('hashchange', function () { sync(false); });
+    document.addEventListener('keydown', function (e) {
+      if ((e.key === 'Escape' || e.key === 'Esc') && applied) { e.preventDefault(); leave(); }
+    });
+
+    sync(true);   // deep-link path; the <head> script already set .collage-open
   }
 
   /* ---------- last resort ----------
