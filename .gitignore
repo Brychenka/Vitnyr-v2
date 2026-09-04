@@ -1,1 +1,8 @@
 .DS_Store
+
+# QA suite (tests/) — local tooling only, never part of the site
+tests/.venv/
+tests/.pytest_cache/
+tests/test-results/
+__pycache__/
+*.pyc

@@ -108,7 +108,7 @@ html[data-lang="en"] [data-l="ru"],
 html[data-lang="ru"] [data-l="en"] { display: none !important; }
 
 /* ---------- shell ---------- */
-.wrapish, .hero, .sec, .foot, .masthead {
+.hero, .sec, .foot, .masthead {
   max-width: var(--maxw);
   margin-inline: auto;
   padding-inline: var(--gut);

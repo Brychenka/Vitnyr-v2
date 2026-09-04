@@ -203,16 +203,16 @@
     var nums = document.querySelectorAll('.n[data-count]');
     function run(el) {
       var end = parseFloat(el.dataset.count);
-      var pre = el.dataset.prefix || '', suf = el.dataset.suffix || '';
+      var suf = el.dataset.suffix || '';
       var obj = { v: 0 };
       gsap.to(obj, {
         v: end, duration: D.count, ease: EASE,
-        onUpdate: function () { el.textContent = pre + Math.round(obj.v) + suf; }
+        onUpdate: function () { el.textContent = Math.round(obj.v) + suf; }
       });
     }
     if (instant || !('IntersectionObserver' in window)) {
       nums.forEach(function (el) {
-        el.textContent = (el.dataset.prefix || '') + el.dataset.count + (el.dataset.suffix || '');
+        el.textContent = el.dataset.count + (el.dataset.suffix || '');
       });
       return;
     }
@@ -379,18 +379,28 @@
       setBehindInert(true);
       if (lenis) lenis.stop();
       view.scrollTop = 0;
-      // The browser's own jump to the #collage element on a deep link can land
-      // after this call; re-assert once the document has finished loading.
-      if (cold && document.readyState !== 'complete') {
-        window.addEventListener('load', function reassert() {
-          window.removeEventListener('load', reassert);
-          if (applied) { savedScroll = 0; }
-        });
-      }
       // Synchronous: the view is visible the moment the class lands, and rAF
       // can be suspended in a background tab (see whenRendering above) — a
       // deferred focus move is a focus move that might never happen.
       if (title) title.focus({ preventScroll: true });
+      /* On a deep link the browser runs its own scroll-to-fragment after this,
+         and because html.js .view is an overflow:auto scroll container it is
+         browser-focusable — so the fragment step lands focus on #collage (an
+         unlabelled wrapper) instead of the heading, and undoes the line above.
+         Re-assert the heading once the document has settled, and reset the
+         saved scroll so the way back still returns to the top. */
+      if (cold) {
+        var settle = function () {
+          if (!applied) return;
+          savedScroll = 0;
+          if (title && document.activeElement !== title) title.focus({ preventScroll: true });
+        };
+        if (document.readyState === 'complete') requestAnimationFrame(settle);
+        else window.addEventListener('load', function reassert() {
+          window.removeEventListener('load', reassert);
+          settle();
+        });
+      }
     }
 
     function applyClose() {
