@@ -410,6 +410,69 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   .rows > li { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: baseline; }
 }
 
+/* ---------- collage ----------
+   An asymmetric editorial grid. Six figures at three fixed crop ratios
+   (4:5 / 3:2 / 1:1) on a 12-column grid, each dropped a different distance so
+   the block reads as one composed object, not a row of equal thumbnails.
+   Reference is xxix.co's overlapping gallery: hard edges, zero radius, no
+   decoration, pure CSS. Structure is whitespace and the same 1px hairline the
+   rest of the page uses — no third colour, no gradient, no shadow.
+
+   Every figure hard-codes its final aspect ratio through a modifier class, so
+   the box is the right shape before any image exists and does not resize when
+   one arrives — this is what keeps the build's zero-layout-shift record.
+   Images + grayscale treatment are Stage 3; motion is Stage 4. */
+.collage { display: grid; grid-template-columns: 1fr; gap: clamp(28px, 6vw, 44px); }
+.collage__fig { margin: 0; min-width: 0; }
+.collage__slot {
+  border: 1px solid var(--rule);
+  display: grid; place-items: center;
+  padding: 16px;
+}
+.collage__fig--45 .collage__slot { aspect-ratio: 4 / 5; }
+.collage__fig--32 .collage__slot { aspect-ratio: 3 / 2; }
+.collage__fig--11 .collage__slot { aspect-ratio: 1 / 1; }
+/* Mono here is a quoted filename — quoted material, which is what mono means
+   on this page. Placeholder-only; deleted with the boxes in Stage 3. */
+.collage__wait {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+  color: var(--fg2); border: 1px solid var(--rule); padding: 5px 9px;
+  max-width: 100%; overflow-wrap: anywhere; text-align: center;
+}
+.collage figcaption {
+  margin-top: 14px;
+  font-size: 13px; color: var(--fg2); letter-spacing: .01em;
+  max-width: 42ch;
+}
+
+/* two-up once there is room, but still a plain grid — no offsets, no overlap */
+@media (min-width: 600px) {
+  .collage {
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(20px, 3vw, 40px);
+    row-gap: clamp(32px, 5vw, 52px);
+  }
+}
+
+/* the composition proper — wide enough to carry an asymmetric layout.
+   Offsets are a share of the viewport (vw), so the rhythm scales with the
+   page. No negative margins: the tiles offset, they never overlap, so nothing
+   can collide when the real images land. */
+@media (min-width: 900px) {
+  .collage {
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: clamp(18px, 2.4vw, 34px);
+    row-gap: 0;
+    align-items: start;
+  }
+  .collage__fig:nth-child(1) { grid-column: 1 / 6; }
+  .collage__fig:nth-child(2) { grid-column: 8 / 13; margin-top: clamp(64px, 11vw, 150px); }
+  .collage__fig:nth-child(3) { grid-column: 6 / 13; margin-top: clamp(20px, 4vw, 52px); }
+  .collage__fig:nth-child(4) { grid-column: 2 / 7;  margin-top: clamp(40px, 7vw, 104px); }
+  .collage__fig:nth-child(5) { grid-column: 1 / 8; }
+  .collage__fig:nth-child(6) { grid-column: 9 / 13; margin-top: clamp(28px, 5vw, 72px); }
+}
+
 /* ---------- contact ---------- */
 .sec--contact { padding-bottom: clamp(60px, 8vh, 110px); }
 .contact__big {
