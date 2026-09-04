@@ -128,6 +128,17 @@ Don't introduce a second easing curve or a second reveal timing; extend the
 existing `D` duration table in `main.js` instead if a new animation is
 needed.
 
+**Layout must not occupy the transform channel.** The reveal is
+`transform: translateY(24px)` and any parallax is a transform too, so
+anything that offsets, overlaps or nudges an element for *layout* reasons
+has to do it with grid placement, margins or `inset` — never `translate`.
+A transform carrying layout has to be composed with every animation that
+later targets the same element, and the two fight. This is not
+hypothetical: the `gsap.set('.line__inner', {y:'110%'})` bug in
+`BUILD-NOTES.md` put `NaN` in GSAP's transform cache and every later tween
+on those elements silently rendered nothing. If a composition can only be
+built with `transform`, say so and stop rather than taking the channel.
+
 Everything animation-related is additive: with JS absent, GSAP failed to
 load, or `prefers-reduced-motion: reduce`, the page must render fully
 readable with no hidden content. That's why `.reveal`'s hidden state only
@@ -203,6 +214,18 @@ the brand file, so nothing in the code will tell a new chat about them:
   over a copywriter rewrite that would have led with English alone — the
   trifecta *is* the credibility argument (chess and climbing as proof the
   method transfers), not decoration.
+- **One *file*, even where there's more than one view.** Igor asked for the
+  photo collage as a separate page (2026-09-04), which qualifies the rule
+  above rather than reversing it. The constraint that decides the shape:
+  the live artifact is a single self-contained HTML file, so a second
+  `.html` is unreachable from it and its content silently disappears from
+  the link Igor already shares. So a "page" here is a full-screen view
+  inside `index.html`, routed by URL hash, that *behaves* like one —
+  deep-linkable, own header, own way back, browser back works, theme and
+  language persist with no flash, focus moves to the destination heading on
+  navigation (not just scroll — see the skip-link bug in `BUILD-NOTES.md`),
+  and scroll resets. Apply the same reasoning to any future "separate
+  page": ask what it does to the artifact before splitting a file.
 - **Contact channels: Telegram, LinkedIn, Instagram, in that order** — Igor's
   own answer when asked. Real handles are still outstanding (see above); the
   order and the choice of exactly these three platforms is settled.

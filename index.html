@@ -22,6 +22,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&display=swap">
 <link rel="stylesheet" href="style.css">
 <script src="theme.js"></script>
+<script>
+/* Render-blocking, like theme.js: if the URL already points at the collage,
+   mark the document open BEFORE first paint so a deep link never shows the
+   main page for a frame and then jumps. All other routing is in main.js;
+   with JS off this class is never set and #collage is just the last section. */
+if (location.hash === '#collage') document.documentElement.classList.add('collage-open');
+</script>
 </head>
 <body>
 
@@ -56,6 +63,10 @@
   </nav>
 </header>
 
+<!-- #app is everything that is "the site". When the collage view is open it
+     is made inert (not focusable, not scrollable) and the view sits on top.
+     With JS off, #app is just a wrapper and does nothing. -->
+<div id="app">
 <main id="main">
 <span id="top"></span>
 
@@ -212,6 +223,17 @@
     <li class="reveal"><span class="n" data-count="2100">2100</span><span class="k" data-en="chess rating" data-ru="шахматный рейтинг">chess rating</span></li>
     <li class="reveal"><span class="n">7c</span><span class="k" data-en="redpoint, indoor" data-ru="редпоинт, зал">redpoint, indoor</span></li>
   </ul>
+
+  <!-- Entry to the collage view. A real anchor: with JS off it jumps to the
+       #collage section at the end of the document; main.js intercepts it to
+       open the routed full-screen view instead. Placed here, under the three
+       domains, because that is where the trifecta has just been argued. -->
+  <p class="enter reveal">
+    <a href="#collage" data-collage-open>
+      <span data-en="See the work" data-ru="Посмотреть, как это выглядит">See the work</span>
+      <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+    </a>
+  </p>
 </section>
 
 <!-- ================================================================
@@ -272,6 +294,70 @@
   </svg>
   <p data-en="Igor Shatsev · Vitnyr · Yerevan" data-ru="Igor Shatsev · Vitnyr · Ереван">Igor Shatsev · Vitnyr · Yerevan</p>
 </footer>
+</div><!-- /#app -->
+
+<!-- ================================================================
+     COLLAGE VIEW — one file, but behaves like its own page.
+     Routed by the #collage URL hash (main.js): deep-linkable, browser
+     back returns to the site, focus moves to the heading, the page
+     behind it goes inert and stops scrolling.
+     With JS absent it is simply the last section of the document and
+     the "See the work" link above jumps to it — nothing is hidden.
+     PLACEHOLDER: real photographs of Igor Shatsev are not shot yet. Each
+     figure hard-codes its final crop ratio and names the file it waits
+     for (reference/collage-shotlist.md); no <img> until Stage 3, and
+     nothing here may shift when the real sources land.
+     ================================================================ -->
+<section id="collage" class="view" aria-labelledby="collage-title">
+  <div class="view__bar">
+    <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
+      <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
+      <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
+    </svg>
+    <button class="view__back" type="button">
+      <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M26 4H3M7 1 3 4l4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+      <span data-en="Back" data-ru="Назад">Back</span>
+    </button>
+  </div>
+
+  <div class="view__body">
+    <p class="label"><span data-en="Photographs" data-ru="Фотографии">Photographs</span></p>
+    <h2 id="collage-title" tabindex="-1"
+        data-en="The work, photographed: a call, a chessboard, a climbing wall."
+        data-ru="Работа в кадре: созвон, шахматная доска, скалодром.">The work, photographed: a call, a chessboard, a climbing wall.</h2>
+    <div class="view__lede">
+      <p data-l="en">No stock and no staging — the brand rules both out. What goes here is how Igor Shatsev actually works: on a call, or across a table in Yerevan — and the two places the same method gets tested, against a rating and against gravity.</p>
+      <p data-l="ru">Ни стоков, ни постановки — бренд не допускает ни того, ни другого. Здесь — как Igor Shatsev работает на самом деле: на созвоне или за столом в Ереване, и два места, где тот же метод проверяют — рейтингом и гравитацией.</p>
+    </div>
+
+    <div class="collage">
+      <figure class="collage__fig collage__fig--45">
+        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">01-chess-board@2x.webp</span></div>
+        <figcaption data-en="Over the board, mid-game." data-ru="За доской, посреди партии.">Over the board, mid-game.</figcaption>
+      </figure>
+      <figure class="collage__fig collage__fig--45">
+        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">02-climb-board@2x.webp</span></div>
+        <figcaption data-en="On the system board, mid-move." data-ru="На системной доске, посреди движения.">On the system board, mid-move.</figcaption>
+      </figure>
+      <figure class="collage__fig collage__fig--32">
+        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">03-call@2x.webp</span></div>
+        <figcaption data-en="A lesson on a call." data-ru="Урок на созвоне.">A lesson on a call.</figcaption>
+      </figure>
+      <figure class="collage__fig collage__fig--11">
+        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">04-table-yerevan@2x.webp</span></div>
+        <figcaption data-en="In person, in Yerevan." data-ru="Вживую, в Ереване.">In person, in Yerevan.</figcaption>
+      </figure>
+      <figure class="collage__fig collage__fig--32">
+        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">05-yerevan-window@2x.webp</span></div>
+        <figcaption data-en="Yerevan, from the desk." data-ru="Ереван — из окна за столом.">Yerevan, from the desk.</figcaption>
+      </figure>
+      <figure class="collage__fig collage__fig--11">
+        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">06-hands@2x.webp</span></div>
+        <figcaption data-en="The same hands, up close." data-ru="Те же руки, вблизи.">The same hands, up close.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
