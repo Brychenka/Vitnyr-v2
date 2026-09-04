@@ -1,0 +1,150 @@
+# Vitnyr v2 — "One Signature Move" build
+
+Built against `onesignaturemove.pdf`. Phase mapping below, then what still
+needs you. v1 (four static pages) is untouched in `../site/`.
+
+    index.html   style.css   theme.js   main.js   assets/   favicon.ico
+
+Run it: `python3 -m http.server` in this folder, then open localhost:8000.
+
+## Guide phases
+
+| Phase | Guide asks for | Built |
+|---|---|---|
+| 0 | Static HTML/CSS/JS, GSAP + ScrollTrigger + Lenis via CDN | done, versions pinned — ScrollTrigger since dropped, see deviation 2 |
+| 1 | Real content before design | reused the voice-checked v1 copy, RU + EN |
+| 2 | Two typefaces, type scale, judged at rest | Lora display / Inter body / JetBrains Mono for labels and specimens |
+| 3 | Smooth scroll + one reveal rhythm | Lenis; 24px rise + fade, 0.9s, 0.08s stagger, once, at 20% into view |
+| 4 | Pick ONE signature move | custom cursor + magnetic targets — the guide's own recommendation for limited content |
+| 5 | Polish pass | hover / focus-visible / active on every control, scaleX underlines, one curve everywhere |
+| 6 | Respect the reader | prefers-reduced-motion path, no images to lazy-load, no layout shift |
+| 7 | Ship | not deployed — see below |
+
+`cubic-bezier(.16, 1, .3, 1)` is the only easing on the page, as `--e` in CSS
+and a matching GSAP CustomEase in JS, so the two never drift apart.
+
+## Three deliberate deviations from the guide
+
+1. **No `mix-blend-mode: difference` on the cursor.** A difference blend over
+   charcoal invents colours the brand doesn't own, and the brand forbids a third
+   colour. The cursor is a flat dot that opens into a green ring on interactive
+   elements instead.
+2. **ScrollTrigger is not loaded at all.** Reveals were always on an
+   IntersectionObserver — a scroll-position tween sits at opacity 0 if its rAF
+   loop never runs, and an observer is the right shape for "has this entered
+   view once". That left ScrollTrigger driving three counters and nothing else,
+   so the counters moved onto the same observer and the plugin came out: 40KB
+   less, one scroll mechanism instead of two. Lenis still drives the scroll.
+3. **Two accents kept off small text.** The section numbers and the eyebrow
+   separators started amber/green and were moved to neutral: amber is 3.07:1 on
+   cream and green 3.58:1 on charcoal, both below the 4.5:1 floor at 12px.
+   Accent colour lives in ink — rules, glyphs, the display numerals.
+
+## What still needs you
+
+- **Contact handles.** Telegram, LinkedIn, Instagram are `@TELEGRAM_HANDLE`-style
+  placeholders with a "fill in" chip. Replace the `href` and the visible text
+  together; delete the `.ch__todo` span.
+- **Domain + share card.** `og:url` and `og:image` are marked PLACEHOLDER in the head.
+- **A portrait, if you want one.** The build is typography-led because the brand
+  bans stock photography and no real photo was supplied.
+- **Client stories.** None invented. Nothing in the page claims anything beyond
+  8 years, 100+ clients, a 2100 chess rating (stated without FIDE, as you asked),
+  and 7c — redpoint indoor, and a 7C Kilter boulder.
+- **Positioning.** Still Framing B. The hero and the "who this is for" block are
+  marked `SWAPPABLE BLOCK`; Framing A is a copy edit, not a rebuild.
+
+## The five specialist passes
+
+**Colour.** Accent is semantic, not decorative: **amber marks the specimen** —
+the thing being examined — and **green marks the target**: an interaction, a
+progression, an outcome reached. Nothing else gets colour. Five shipping
+contrast failures were found and fixed by moving accent out of text and into
+ink. Cream was judged not too bright: the hex is right, the hairlines were
+under-weighted. At `.16` the cream rules read ~7% weaker than charcoal's `.14`;
+`.20` matches on both contrast (1.482 vs 1.466) and lightness step (ΔL* 14.36
+vs 14.45).
+
+**Logo.** The lockup is `clamp(176px, 13vw, 208px)`, and the masthead's height
+is derived from it rather than guessed. The mark's ink is only **67% of its SVG
+box** — the remaining 33% *is* the brand's required quarter-height clear space,
+so the box must never be trimmed to the ink. Conversion, if you need it:
+mark ink height = 0.18416 x lockup CSS width.
+
+**Copy.** Run through the humanizer pass: less pitch, fewer stock constructions,
+no claim the page can't stand behind. The hero headline is the one rewrite
+rejected — the trifecta stays, by your call.
+
+**Type.** Inter / Lora / JetBrains Mono confirmed as the right three, but the
+roles were tightened: the eight 12px labels moved from mono to sans (mono at
+label size was texture, not meaning), and mono now means one thing only —
+**quoted linguistic material**. `font-synthesis: none` so no weight or slope is
+ever faked. The wordmark is held at opacity 0 until `document.fonts.load` says
+Lora is real, because it is live SVG text sitting at Lora's own advances and
+would otherwise paint a redrawn wordmark in a fallback face.
+
+**Motion.** Audited and rebuilt where it was wrong:
+
+- The hero `<h1>` could stay invisible forever on a background-tab load. Every
+  timed thing now waits behind a first-frame gate, and a re-armed guard shows
+  the headline outright if it is ever still masked 2.5s after a play.
+- `playHero()` ran twice on a cold load, the second call snapping mid-flight
+  lines back. Guarded on language, and the initial language stamp is no longer
+  treated as a change.
+- Reveals were observed **per section**, so items up to 1059px below the fold
+  had already finished animating before they were scrolled to. Now observed per
+  element, ordered by screen position, with the stagger chain capped at 4 beats.
+- `has-cursor` was applied before a cursor existed, hiding the native pointer
+  with nothing in its place. It now goes on with the first real pointer move.
+- Magnetic pull was a hard snap: `.channels a` sat pinned at maximum across
+  97.3% of its width with a 24px sign flip across the centre, while
+  `.langswitch` barely moved, and a diagonal reached 17px on a 12px setting.
+  The field is now normalised to each element's own size and the **vector** is
+  scaled rather than each axis clamped, so 12px is a real ceiling. Measured
+  after: pinned across 24.9% instead of 97.3%, no sign flip, `.langswitch` moves
+  7.9px, nothing exceeds 12px, and displacement returns to 0 continuously at the
+  field edge instead of dropping off a cliff.
+- `getBoundingClientRect()` ran on every mousemove, forcing a reflow and feeding
+  the element's own displacement back into its next reading. Measured once on
+  enter, with the current translate subtracted.
+- The reset `gsap.to` fought the live `quickTo`. It is now the same tween,
+  retargeted to zero.
+- The skip link scrolled but never moved focus, which is the entire point of a
+  skip link. Fixed for every in-page link.
+- The cursor's `quickTo` double-smoothed an already-lerped value; it is a
+  `quickSetter` now. Its rAF loop parks itself when the dot has caught up
+  instead of running forever.
+- `will-change` was permanent on 12 elements, including under reduced motion.
+  Asked for on hover, and on the hero lines only while they are moving.
+- Five duration tiers, and nothing between them.
+- One genuine easing exception, marked in the stylesheet: the scroll cue's
+  `nudge` loop. `--e` is an ease-out, and an ease-out on a keyframe loop that
+  returns to its start snaps at the midpoint. A symmetric hint needs a
+  symmetric curve, so that one is `ease-in-out`.
+
+One bug surfaced that predates the audit: `gsap.set('.line__inner', {y:'110%'})`
+was hitting the hidden-language twins, and a percentage of a zero-height box
+leaves `NaN` in GSAP's transform cache — after which every later tween on those
+elements renders nothing. The Russian headline would have stayed masked after a
+language switch. Only the lines actually on screen are tweened now.
+
+## Verified
+
+- No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
+  in both; the only element outside the viewport is the parked skip link).
+- Every hex in the build is one of the ten pair values. No gradients, shadows,
+  or rounded cards (the one `border-radius` is the cursor circle).
+- Contrast in both pairs: all body text >= 5.45:1, all accent ink >= 3.07:1.
+- Fonts resolve to Lora / Inter / JetBrains Mono, Cyrillic included.
+- Cursor and magnetic effects disable themselves on coarse pointers — confirmed
+  at 375px: `has-cursor` never goes on, so the native pointer is never hidden.
+- Hero plays and completes in both languages, both themes, both widths, and
+  releases its compositor layer when it lands.
+- Counters animate from 0 through the observer with ScrollTrigger absent.
+- Reveals: nothing fires off-screen, and the stagger reads top-to-bottom.
+- Skip link moves focus to `#main`, not just the scroll position.
+- No console errors.
+
+Not verified by eye: everything below the hero. The preview pane repaints only
+on demand, so those sections were checked by measuring the DOM rather than
+looking at them. Worth a scroll-through on a real browser.

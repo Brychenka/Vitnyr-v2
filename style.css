@@ -1,0 +1,517 @@
+/* ============================================================
+   Vitnyr — v2
+   Palette, type and hard rules follow the Vitnyr brand identity:
+   two fixed pairs, never mixed, no third colour, flat colour only,
+   no gradients, no shadows, no cards. Structure is whitespace and
+   hairline rules.
+
+   Amber = the specimen (the thing under examination).
+   Green = the target (interaction, progression, achieved outcome).
+   Accent colour is ink — rules, bars, glyphs, display numerals —
+   never text below 24px, because the two accents swap contrast
+   roles between the pairs (amber fails body on cream, green fails
+   body on charcoal).
+
+   One easing curve on everything, per the build guide.
+   ============================================================ */
+
+:root {
+  --bg:     #14181A;
+  --amber:  #D99B3F;
+  --green:  #4C7A52;
+  --fg:     #F2EFE8;
+  --fg2:    #A8ABA9;
+  --rule:   rgba(242,239,232,0.14);
+
+  --ink-specimen: var(--amber);
+  --ink-target:   var(--green);
+
+  --serif: Lora, Georgia, "Times New Roman", serif;
+  --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --e: cubic-bezier(.16, 1, .3, 1);
+  --t: .6s;
+
+  --gut:  clamp(20px, 5vw, 80px);
+  /* The mark's ink is 67% of its SVG box — the other 33% IS the brand's
+     required quarter-height clear space. Size the box and you undershoot the
+     mark by a third. 176px of box = 32.4px of mark = the two-colour minimum. */
+  --lockup: clamp(176px, 13vw, 208px);
+  --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px));
+  --maxw: 1320px;
+  --measure: 62ch;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg:     #EFEBE3;
+    --amber:  #B07C24;
+    --green:  #3D6543;
+    --fg:     #1D2224;
+    --fg2:    #5A5F60;
+    --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
+  }
+}
+:root[data-theme="light"] {
+  --bg:     #EFEBE3;
+  --amber:  #B07C24;
+  --green:  #3D6543;
+  --fg:     #1D2224;
+  --fg2:    #5A5F60;
+  --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
+}
+
+/* Georgia carries no Cyrillic on most systems, so a Russian headline in the
+   fallback window would take its letters from Times and its punctuation from
+   Georgia — a mixed-face line at 124px. */
+html[data-lang="ru"] { --serif: Lora, "Times New Roman", "Noto Serif", "Liberation Serif", serif; }
+
+/* ---------- reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  font-weight: 400;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-synthesis: none;      /* nothing may be synthesised from a loaded weight */
+}
+img, svg { max-width: 100%; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: inherit; text-decoration: none; }
+
+/* Green ground under charcoal text is 3.58:1 — selected body copy has to
+   hold 4.5:1, and no accent does in both pairs. An ink inversion clears both. */
+::selection { background: var(--fg); color: var(--bg); }
+
+/* Lenis owns the scroll; without this the wheel feels doubled. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+/* ---------- language ---------- */
+html[data-lang="en"] [data-l="ru"],
+html[data-lang="ru"] [data-l="en"] { display: none !important; }
+
+/* ---------- shell ---------- */
+.wrapish, .hero, .sec, .foot, .masthead {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.skip { position: absolute; left: -9999px; }
+.skip:focus {
+  left: var(--gut); top: 12px; z-index: 60;
+  background: var(--bg); color: var(--fg);
+  padding: 10px 14px; border: 1px solid var(--fg2);
+}
+
+:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 4px; }
+
+/* ---------- masthead ---------- */
+.masthead {
+  position: fixed; inset: 0 0 auto 0;
+  z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px;
+  padding-block: clamp(18px, 2.4vw, 30px);
+  pointer-events: none;
+  /* Transparent at rest so the hero stays pure whitespace; opaque once the
+     page moves, because body copy was otherwise scrolling through the mark
+     and the brand forbids anything entering its clear space. */
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background var(--t) var(--e), border-color var(--t) var(--e);
+}
+.masthead > * { pointer-events: auto; }
+html.is-scrolled .masthead {
+  background: var(--bg);
+  border-bottom-color: var(--rule);
+}
+.lockup { display: block; width: var(--lockup); }
+.lockup svg { display: block; width: 100%; height: auto; }
+/* The wordmark is live SVG text at Lora's own hardcoded advances, so during the
+   font-swap window it would paint in the fallback face at Lora's letter
+   positions — a redrawn wordmark, which the brand forbids. Held back until Lora
+   is confirmed loaded; the mark alone is a sanctioned lockup. */
+.lockup .wm { opacity: 0; transition: opacity .3s var(--e); }
+html.lora-ready .lockup .wm { opacity: 1; }
+
+.tools { display: flex; align-items: center; gap: clamp(14px, 2vw, 26px); }
+.tool {
+  background: none; border: 0; padding: 4px 0; cursor: pointer;
+  color: var(--fg2);
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+  position: relative;
+  transition: color var(--t) var(--e);
+}
+.tool::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px; background: var(--ink-target);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.tool:hover { color: var(--fg); }
+.tool:hover::after { transform: scaleX(1); }
+
+/* ---------- in-copy emphasis ----------
+   Body copy is 17px and every paragraph is --fg2, so emphasis is a lift to
+   full-strength foreground, not a colour change: no accent is legal on text
+   this size in BOTH pairs (amber 3.07:1 on cream, green 3.58:1 on charcoal).
+   fg-against-fg2 is 2.02:1 on charcoal and 2.48:1 on cream — a real step that
+   costs nothing. Weight 500 is deliberate: <strong> defaults to 700, which
+   isn't loaded and would synthesise. One mark per section, five on the page. */
+.mark { color: var(--fg); font-weight: 500; }
+
+/* Used exactly once, on the phrase that IS the target. 1px so it doesn't read
+   as a link; non-text ink, so the 3:1 floor applies and green clears both. */
+.mark--target {
+  text-decoration: underline;
+  text-decoration-color: var(--ink-target);
+  text-decoration-thickness: 1px;
+  text-underline-offset: .3em;
+  text-decoration-skip-ink: none;
+}
+
+/* Screen-reader-only: gives the specimen rows a text equivalent so the
+   correct/incorrect distinction isn't carried by colour and a glyph alone. */
+.vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* ---------- shared type ---------- */
+.eyebrow {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  display: flex; flex-wrap: wrap; gap: .7em;
+}
+/* 12px glyphs: no accent clears 4.5:1 at this size in both pairs (green is
+   3.58:1 on charcoal), so the separators stay neutral. */
+.eyebrow .sep { color: var(--fg2); }
+
+.label {
+  display: flex; align-items: baseline; gap: 14px;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  line-height: 1.35;                 /* Russian labels wrap */
+  margin-bottom: clamp(28px, 4vw, 56px);
+}
+/* Section numbers are 12px text, so they must hold 4.5:1 in both pairs —
+   amber is 3.07:1 on cream. Weight and the full-strength foreground carry the
+   hierarchy instead. Amber stays reserved for the specimens. */
+.label .num { color: var(--fg); }
+.label .num::after {
+  content: ""; display: inline-block; vertical-align: middle;
+  width: clamp(24px, 4vw, 56px); height: 1px; background: var(--rule);
+  margin-left: 14px;
+}
+
+.sec {
+  padding-block: clamp(90px, 13vh, 190px);
+  border-top: 1px solid var(--rule);
+}
+.sec__head {
+  display: grid; gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+  margin-bottom: clamp(48px, 7vw, 96px);
+}
+.sec__head h2 { font-size: clamp(27px, 3.6vw, 48px); font-weight: 500; line-height: 1.12; letter-spacing: -.02em; }
+.sec__lede { max-width: var(--measure); color: var(--fg2); }
+.sec__lede p + p { margin-top: 1em; }
+@media (min-width: 900px) {
+  .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
+}
+
+/* ---------- hero ---------- */
+.hero {
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: clamp(28px, 5vh, 60px);
+  /* clear the fixed masthead on short viewports too */
+  padding-top: calc(var(--head) + clamp(32px, 7vh, 90px));
+  padding-bottom: clamp(40px, 8vh, 90px);
+}
+.hero__title {
+  font-size: clamp(42px, 8.6vw, 124px);
+  font-weight: 500;                  /* 600 fills Lora's serifs in at display size */
+  line-height: 1;
+  letter-spacing: -.025em;           /* -.035 collided serifs on adjacent stems */
+  margin: 0;
+}
+.hero__title em {
+  display: block;
+  font-style: italic; font-weight: 500;
+  font-size: .78em;                 /* longest line in the hero — keep it in bounds */
+  letter-spacing: -.02em;
+  color: var(--fg2);
+}
+/* The mask needs room for descenders (g, q, y) — the negative margin gives
+   the padding back so line spacing is unchanged. */
+.line { display: block; overflow: hidden; padding-bottom: .16em; margin-bottom: -.13em; }
+.line__inner { display: block; }
+/* will-change is a standing request for a compositor layer, so it is granted
+   only for the one second the lines are actually moving. main.js sets
+   .hero-done when the tween finishes (and immediately, under reduced motion). */
+html.js:not(.hero-done) .line__inner { will-change: transform; }
+
+.hero__foot {
+  display: grid; gap: clamp(28px, 4vw, 56px);
+  align-items: end;
+}
+@media (min-width: 900px) {
+  .hero__foot { grid-template-columns: minmax(0, 1fr) auto; }
+}
+.stand { max-width: var(--measure); color: var(--fg2); }
+
+.scrollcue {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  transition: color var(--t) var(--e);
+}
+.scrollcue svg { width: 12px; height: 24px; overflow: visible; }
+.scrollcue:hover { color: var(--fg); }
+/* The one exception to the single curve: --e is an ease-out, and an ease-out
+   applied to a loop that returns to its start snaps at the halfway point.
+   A symmetric hint needs a symmetric curve. */
+.scrollcue:hover svg { animation: nudge 1.1s ease-in-out infinite; }
+@keyframes nudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+/* Cyrillic tolerates less negative tracking than Latin, and Lora's ш is
+   830/1000 em, so Russian display lines run long. */
+html[data-lang="ru"] .hero__title    { letter-spacing: -.018em; }
+html[data-lang="ru"] .hero__title em { font-size: .58em; letter-spacing: -.010em; }
+html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
+html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
+html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
+
+/* ---------- mechanisms ---------- */
+.mechanisms { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.mechanisms > li {
+  padding-block: clamp(26px, 3vw, 40px);
+  border-bottom: 1px solid var(--rule);
+  display: grid; gap: 10px;
+}
+.mech__n {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; color: var(--fg2);
+}
+.mechanisms h3 { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.25; }
+.mechanisms p { color: var(--fg2); max-width: var(--measure); }
+@media (min-width: 900px) {
+  .mechanisms > li {
+    grid-template-columns: 80px minmax(0, 1fr) minmax(0, 1.35fr);
+    gap: clamp(24px, 4vw, 64px); align-items: baseline;
+  }
+}
+
+/* ---------- specimens (the showpiece) ---------- */
+.specs { display: grid; gap: clamp(40px, 5vw, 64px); }
+@media (min-width: 980px) { .specs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.spec__label {
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  letter-spacing: .01em; text-transform: none; color: var(--fg2);
+  line-height: 1.4;
+  padding-bottom: 16px; margin-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+/* The sentence itself stays neutral and holds 4.5:1. The colour lives in the
+   2px rule and the marker glyph — both non-text, both >=3:1 in each pair. */
+.line-spec {
+  font-family: var(--mono); font-size: 14px; line-height: 1.55;
+  display: flex; gap: 10px; align-items: baseline;
+  border-left: 2px solid transparent;
+  padding: 4px 0 4px 12px;
+}
+/* ✕ and ✓ exist in none of the three loaded faces — not even Lora's symbols
+   subset — so they rendered from a different system font on every platform,
+   in the accent colour, next to a 2px accent rule. Drawn instead. */
+.line-spec .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; }
+.line-spec .sig svg { display: block; width: 10px; height: 10px; }
+.wrong { border-left-color: var(--ink-specimen); }
+.right { border-left-color: var(--ink-target); }
+.wrong .sig { color: var(--ink-specimen); }
+.right .sig { color: var(--ink-target); }
+.spec__why { margin-top: 16px; font-size: 15px; color: var(--fg2); }
+/* No Inter italic is loaded, so this was a synthesised oblique. These words
+   are always English specimens quoted inside prose — which is exactly what the
+   mono now means, and it keeps them distinct from .mark emphasis. */
+.spec__why em {
+  font-family: var(--mono); font-style: normal; font-size: .92em;
+  color: var(--fg);
+}
+
+/* ---------- domains ---------- */
+.domains { border-top: 1px solid var(--rule); margin-bottom: clamp(56px, 8vw, 110px); }
+.domain {
+  padding-block: clamp(30px, 4vw, 54px);
+  border-bottom: 1px solid var(--rule);
+  display: grid; gap: 14px;
+}
+.domain__meta {
+  display: flex; justify-content: space-between; gap: 20px;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+}
+.domain__stat { color: var(--fg); }
+.domain h3 { font-size: clamp(22px, 2.6vw, 34px); line-height: 1.15; letter-spacing: -.015em; max-width: 20ch; }
+.domain p { color: var(--fg2); max-width: var(--measure); }
+@media (min-width: 900px) {
+  .domain { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); align-items: start; }
+  .domain__meta { grid-column: 1 / -1; margin-bottom: 6px; }
+}
+
+/* ---------- facts ---------- */
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 48px); }
+@media (min-width: 760px) { .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* Measured, externally verifiable outcomes — the achieved target, in green.
+   The 30px floor keeps these inside WCAG large text, where 3:1 governs.
+   Do not lower it. */
+.facts .n {
+  display: block;
+  /* Mono, because these are falsifiable readings someone else assigned — a
+     rating, a grade, a count — not brand claims. 56px not 62: JetBrains Mono's
+     cap height is .730em against Lora's .700em, so it reads 4.3% larger.
+     The 30px floor is a WCAG large-text threshold in CSS px and does NOT
+     scale with the face swap. Do not lower it. */
+  font-family: var(--mono); font-weight: 400;
+  font-size: clamp(30px, 4.6vw, 56px); line-height: 1;
+  letter-spacing: -.04em;
+  color: var(--ink-target);
+  font-variant-numeric: tabular-nums;
+}
+.facts .k {
+  display: block; margin-top: 12px;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+}
+
+/* ---------- who ---------- */
+.rows { border-top: 1px solid var(--rule); }
+.rows > li {
+  padding-block: clamp(26px, 3vw, 40px);
+  border-bottom: 1px solid var(--rule);
+  display: grid; gap: 10px;
+}
+.rows h3 { font-size: clamp(19px, 1.8vw, 24px); line-height: 1.25; }
+.rows p { color: var(--fg2); max-width: var(--measure); }
+@media (min-width: 900px) {
+  .rows > li { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: baseline; }
+}
+
+/* ---------- contact ---------- */
+.sec--contact { padding-bottom: clamp(60px, 8vh, 110px); }
+.contact__big {
+  font-size: clamp(34px, 6.4vw, 88px); font-weight: 500;
+  line-height: 1.02; letter-spacing: -.03em;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+.channels { margin-top: clamp(48px, 6vw, 80px); border-top: 1px solid var(--rule); }
+.channels li { border-bottom: 1px solid var(--rule); }
+.channels a {
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+  gap: 16px;
+  padding-block: clamp(20px, 2.6vw, 32px);
+  transition: color var(--t) var(--e);
+}
+.channels .ch__k {
+  font-family: var(--serif); font-size: clamp(22px, 3.4vw, 44px);
+  font-weight: 600; letter-spacing: -.02em;
+  position: relative; justify-self: start;
+}
+.channels .ch__k::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.08em;
+  height: 2px; background: var(--ink-target);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.channels a:hover .ch__k::after,
+.channels a:focus-visible .ch__k::after { transform: scaleX(1); }
+.channels .ch__v {
+  font-family: var(--mono); font-size: 13px; color: var(--fg2);
+  letter-spacing: .04em;
+}
+/* build placeholder — delete this span together with the fake handle */
+.ch__todo {
+  grid-column: 2; justify-self: end;
+  font-family: var(--sans); font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--fg);
+  border: 1px solid var(--rule); padding: 3px 8px;
+}
+
+/* ---------- footer ---------- */
+.foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  padding-block: clamp(28px, 4vw, 44px);
+  border-top: 1px solid var(--rule);
+}
+/* 48px box = 32.2px of actual ink, which is the 32px two-colour minimum.
+   The old 32px box was only 21px of mark — inside the band where amber and
+   green antialias into one indistinct colour. */
+.footmark { width: 48px; height: 48px; flex: none; }
+.foot p { font-family: var(--sans); font-size: 12px; letter-spacing: .06em; color: var(--fg2); }
+
+/* ============================================================
+   Signature move — custom cursor + magnetic targets (phase 4)
+   Enabled by JS only on a fine pointer with motion allowed.
+   No mix-blend-mode: on this palette a difference blend invents
+   colours the brand does not own.
+   ============================================================ */
+.cursor { display: none; }
+html.has-cursor .cursor {
+  display: block; position: fixed; top: 0; left: 0;
+  z-index: 90; pointer-events: none;
+  width: 14px; height: 14px; margin: -7px 0 0 -7px;
+  will-change: transform;
+  opacity: 0;                      /* revealed on the first real pointer move */
+}
+.cursor__dot {
+  display: block; width: 100%; height: 100%;
+  border-radius: 50%;
+  background: var(--fg);
+  border: 1.5px solid transparent;
+  transition: background var(--t) var(--e), border-color var(--t) var(--e);
+}
+html.has-cursor.cursor-active .cursor__dot {
+  background: transparent;
+  border-color: var(--ink-target);
+}
+html.has-cursor, html.has-cursor * { cursor: none !important; }
+/* Twelve permanent compositor layers for elements that move on hover only;
+   asked for on approach instead, which is early enough to be free. */
+[data-magnetic]:hover, [data-magnetic]:focus-visible { will-change: transform; }
+
+/* ---------- reveal rhythm (phase 3) ----------
+   Hidden state is applied only when JS is running, so the page is
+   fully readable if the script or the CDN never arrives. */
+/* The reveal is a CSS transition switched on by an IntersectionObserver, not a
+   scroll-position tween. It cannot get stuck if a rAF loop is suspended (a tab
+   opened in the background, a deep link landed on while hidden) — the observer
+   fires on its own and the content is never left invisible.
+   Same distance, duration, easing and 0.08s stagger everywhere. */
+html.js .reveal { opacity: 0; transform: translateY(24px); }
+html.js .reveal.is-in {
+  opacity: 1; transform: none;
+  transition: opacity .9s var(--e), transform .9s var(--e);
+  transition-delay: var(--d, 0s);
+}
+html.js .line__inner { transform: translateY(110%); }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal, html.js .line__inner { opacity: 1 !important; transform: none !important; }
+  .scrollcue:hover svg { animation: none; }
+  .cursor, .line__inner, [data-magnetic] { will-change: auto !important; }
+  * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
