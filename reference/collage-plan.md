@@ -150,7 +150,7 @@ looks wrong you already know which stage owns it.
 | 3 | Real images and delivery | markup done 2026-09-06 against **placeholder** stand-ins (see BUILD-NOTES "Collage Stage 3"); real photos + WebP + artifact republish still pending the shoot |
 | 4 | Motion, inside the existing system | done 2026-09-06 — tiles run the page reveal rhythm off the view's own scroll root (BUILD-NOTES "Collage Stage 4"); no parallax, no CSS change |
 | 5 | Signature move and polish | done 2026-09-06 — deliberately nothing added to the tiles (not interactive; magnetic/hover would advertise a behaviour that isn't there). Rationale in BUILD-NOTES "Collage Stage 5" |
-| 6 | Verify, document, merge, republish | not started |
+| 6 | Verify, document, merge, republish | verify + docs done 2026-09-06 (full suite 90 green; diff audit clean — no new hex/gradient/shadow/radius; 375 + 1280 no overflow). Merge to `main` + push pending Igor's OK. **Artifact republish deliberately held** until real photos replace the placeholders |
 
 ### Stage 3 — images and delivery
 

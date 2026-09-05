@@ -97,6 +97,15 @@ Four files, each with one job:
 - **`style.css`** — one `:root` token block (colors, fonts, easing, spacing)
   feeding every rule below it; no other file defines a color or a duration.
 
+Plus **`assets/collage/`** — the `#collage` view's photographs, two widths
+each (`<slug>.jpg` ~450w, `<slug>@2x.jpg` ~900w), grayscaled at display time
+by the per-theme `--collage-filter` token. As of 2026-09-06 these are
+**temporary non-Igor placeholders** (see `assets/collage/PLACEHOLDERS.md` and
+`BUILD-NOTES.md` → "Collage Stage 3"); the live artifact must not be
+republished until real photographs of Igor replace them. When the real shoot
+lands, the `<picture>`/WebP half of the Stage 3 spec (`collage-plan.md`) is
+done in the same pass.
+
 ### i18n: dual-language DOM, not a template system
 
 There's no i18n library. Every translatable string exists twice in the DOM,

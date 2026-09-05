@@ -423,6 +423,34 @@ No code change this stage; nothing to re-verify beyond the coarse-pointer
 floor the suite already holds (`has-cursor` never applies, native pointer
 never hidden at 375px).
 
+## Collage Stage 6 — verify + document (2026-09-06)
+
+Ran CLAUDE.md's step-3 checklist over Stages 3–5:
+
+- Playwright suite **90 passed** (4 new collage-reveal specs; 10 pre-existing
+  `.themeswitch` strict-mode failures on `main`, from the collage-view theme
+  switch, fixed in the same series).
+- Both themes: grayscale `--collage-filter` resolves in Cream and Charcoal.
+- Both languages: RU captions + ledes render; `test_i18n` parity green.
+- 375 and 1280: no horizontal overflow (`scrollWidth === clientWidth` on the
+  view and the document at both); grid collapses 3→1 column cleanly.
+- `prefers-reduced-motion`: tiles sit at rest, `armCollageReveals` early-
+  returns (`test_collage_reveals_are_inert_under_reduced_motion`).
+- No console errors. Zero CLS (ratio boxes measured identical before/after
+  decode).
+- Diff audit (`0604b8c..HEAD`, code files): no new hex, gradient, shadow, or
+  `border-radius`. `style.css` untouched since Stage 2.
+
+**Not done, on purpose:** the live "Vitnyr Signature" artifact is **not**
+republished — it stays on the pre-placeholder version until real photos of
+Igor land. Merge of `feature/photo-collage` to `main` + push is left for
+Igor's go-ahead (the branch also carries `584a167`, the `Claude outputs/`
+edit intermediates he asked to keep on a branch).
+
+**Cosmetic, placeholder-only:** a few LoremFlickr stand-ins carry a small
+baked-in `cc` badge / attribution strip in the corner. Gone when the real
+files replace them; not worth re-fetching a throwaway over.
+
 ## Collage view theme switch (2026-09-06)
 
 Igor: *"Make a collage page also have a cream/charcoal switch."* The open
