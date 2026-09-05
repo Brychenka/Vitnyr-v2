@@ -664,6 +664,10 @@ html.js .view__bar {
 }
 .view .footmark { width: 34px; height: 34px; flex: none; }
 
+/* Cream/Charcoal + Back, grouped at the right end of the bar (footmark holds
+   the left). Mirrors the masthead's tools cluster. */
+.view__tools { display: flex; align-items: center; gap: clamp(16px, 3vw, 30px); }
+
 .view__back {
   -webkit-appearance: none; appearance: none;
   background: none; border: 0; margin: 0; padding: 8px 0;

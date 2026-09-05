@@ -432,10 +432,17 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
       <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
     </svg>
-    <button class="view__back" type="button">
-      <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M26 4H3M7 1 3 4l4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-      <span data-en="Back" data-ru="Назад">Back</span>
-    </button>
+    <div class="view__tools">
+      <!-- Same theme switch as the masthead's. The open collage view sits above
+           the masthead (z-index), so this is the only Cream/Charcoal control
+           reachable while it's open. theme.js labels and wires every
+           .themeswitch, so both stay in sync. -->
+      <button class="tool themeswitch" type="button" data-magnetic>Cream</button>
+      <button class="view__back" type="button">
+        <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M26 4H3M7 1 3 4l4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        <span data-en="Back" data-ru="Назад">Back</span>
+      </button>
+    </div>
   </div>
 
   <div class="view__body">

@@ -31,15 +31,19 @@
     labelTheme();
   }
   function labelTheme() {
-    var btn = document.querySelector('.themeswitch');
-    if (!btn) return;
+    /* More than one .themeswitch: the masthead's, plus the one in the collage
+       view's bar (which sits above the masthead when that view is open). */
+    var btns = document.querySelectorAll('.themeswitch');
+    if (!btns.length) return;
     var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
     var lang = document.documentElement.getAttribute('data-lang') || 'en';
     var words = { en: { light: 'Cream', dark: 'Charcoal' },
                   ru: { light: 'Крем',  dark: 'Уголь' } };
-    btn.textContent = words[lang][next];
-    btn.setAttribute('aria-label',
-      lang === 'ru' ? 'Переключить оформление' : 'Switch to the ' + next + ' theme');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].textContent = words[lang][next];
+      btns[i].setAttribute('aria-label',
+        lang === 'ru' ? 'Переключить оформление' : 'Switch to the ' + next + ' theme');
+    }
   }
 
   var lang = new URLSearchParams(location.search).get('lang');
@@ -87,8 +91,8 @@
       save(LANG_KEY, lang);
       applyLang(lang);
     });
-    var th = document.querySelector('.themeswitch');
-    if (th) th.addEventListener('click', function () {
+    var ths = document.querySelectorAll('.themeswitch');
+    for (var i = 0; i < ths.length; i++) ths[i].addEventListener('click', function () {
       save(THEME_KEY, effectiveTheme() === 'dark' ? 'light' : 'dark');
       applyTheme();
     });
