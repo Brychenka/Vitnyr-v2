@@ -396,6 +396,33 @@ Tests: four added to `test_collage.py` — tiles visible before open + excluded
 from the page set, reveal-on-scroll inside the view, inert under reduced
 motion, settled on reopen. Full suite green.
 
+## Collage Stage 5 — signature move / polish: nothing added to the tiles
+
+Stage 5's brief was to decide *whether* the tiles join the signature move
+(custom cursor + magnetic targets), recommend before wiring, and accept "we
+added nothing" as an outcome. They get nothing, on purpose:
+
+- **The tiles aren't interactive.** They're supporting imagery in a captioned
+  `<figure>` — no link, no click target, `alt=""` with the `<figcaption>`
+  carrying the words. A hover or magnetic affordance would advertise a
+  behaviour that isn't there.
+- **`data-magnetic` on an image tile reads as a bug**, not an affordance —
+  the plan's own caution. The magnetic vector is normalised to element size
+  and capped at 12px; on a ~460px tile that is a small, unexplained drift.
+- **No focusability.** Adding `tabindex` would plant empty keyboard stops
+  with nothing to do at them.
+- **No grayscale→colour on hover.** The obvious portfolio move, but colour is
+  a governed resource here (`--collage-filter` is the deliberate constraint,
+  amber/green carry meaning) — reversing it on hover breaks that on the
+  page's largest elements.
+
+The signature move is already present in the view where it belongs: the
+custom cursor renders above it (`z-index 90` vs the view's `60`), and
+`.view__back` + the view-bar `.themeswitch` already carry `data-magnetic`.
+No code change this stage; nothing to re-verify beyond the coarse-pointer
+floor the suite already holds (`has-cursor` never applies, native pointer
+never hidden at 375px).
+
 ## Collage view theme switch (2026-09-06)
 
 Igor: *"Make a collage page also have a cream/charcoal switch."* The open
