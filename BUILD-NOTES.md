@@ -38,7 +38,8 @@ and a matching GSAP CustomEase in JS, so the two never drift apart.
 3. **Two accents kept off small text.** The section numbers and the eyebrow
    separators started amber/green and were moved to neutral: amber is 3.07:1 on
    cream and green 3.58:1 on charcoal, both below the 4.5:1 floor at 12px.
-   Accent colour lives in ink — rules, glyphs, the display numerals.
+   Accent colour lives in ink — rules, glyphs, the display numerals. (One
+   narrow, later exception: see "Accent-as-text exception" below.)
 
 ## What still needs you
 
@@ -151,6 +152,51 @@ as a check, not a rebuild:
   rating, and gravity") — six marks on the page now, still exactly one
   coloured. See the `.mark` comment in `style.css`. No other section needed a
   copy change; the original humanizer pass already holds up.
+
+## Accent-as-text exception (2026-09-05)
+
+The line above ("still exactly one coloured [mark]") no longer holds — this
+same day, later, added a second, narrower exception to deviation 3 above
+("Two accents kept off small text"). Recorded here rather than editing that
+entry, so the reasoning survives instead of just the outcome.
+
+**What changed.** Two places now put accent colour directly on text under
+24px, where it had never been used as text before:
+
+- The Method section's one target phrase (`.mark--target`) lost its
+  underline and is now green text outright.
+- Inside each Specimens wrong/right pair, the exact word responsible for
+  the error is amber, and the exact word that fixes it is green
+  (`.mark--specimen` / `.mark--target` on a bare `<span>`, no `.mark`).
+
+**Why these and nothing else.** An earlier draft the same day coloured
+several more "key" words — the hero's "grammar drills", a list/sentence
+contrast in Feedback Loops — and both were cut. Neither is a specimen under
+examination or a target reached; colouring them was decoration borrowing
+the specimen/target costume without the meaning, and it diluted the two
+places where colour is actually load-bearing. The bar that survived: colour
+only the word that *is* the specimen or *is* the target, never a word that
+merely feels important.
+
+**Contrast, done properly.** Deviation 3's numbers are correct but
+incomplete — they only checked the ink hex reused as-is, which fails 4.5:1
+in exactly one theme per colour (green 3.58:1 on charcoal, amber 3.07:1 on
+cream). The fix isn't picking a theme to leave broken: `--amber-text` /
+`--green-text` (top of `style.css`, one definition per theme) are the same
+hue tuned to clear 4.5:1 specifically in the theme where the ink hex
+doesn't — amber darkened for light, green lightened for dark — while the
+ink hex itself keeps carrying every non-text use (rules, glyphs, the
+wordmark) completely unchanged. Verified: 7.41:1 (amber/dark), 4.50:1
+(amber/light, tuned), 4.50:1 (green/dark, tuned), 5.62:1 (green/light).
+
+**Honest argument against.** The blanket rule was simpler and already
+verified once; this trades it for two more custom hex values a future
+palette change has to remember to re-tune, and for a naming split
+(`.mark--target` now means two different things depending on whether it's
+paired with `.mark`). Worth it here because the specimen/target section is
+the page's actual teaching mechanism and scans measurably faster in colour
+— but this is not a licence to colour more words elsewhere on the same
+reasoning; re-read the "why these and nothing else" note above first.
 
 ## Verified
 
