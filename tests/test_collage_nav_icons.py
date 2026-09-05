@@ -96,12 +96,14 @@ def test_icons_use_the_theme_ink_token_no_new_colour(open_site, scheme, expected
         assert colours == []
 
 
-def test_icon_svgs_render_at_the_specified_17px(open_site):
+def test_icon_svgs_render_at_the_specified_19px(open_site):
+    # Nudged 17px -> 19px for parity with the uppercase labels (see the
+    # .tool--icon svg comment in style.css; commits 48e40a0 / 597e188).
     page, _ = open_site()
     for i in range(3):
         box = _icon_buttons(page).nth(i).locator("svg").bounding_box()
-        assert box["width"] == pytest.approx(17, abs=0.5)
-        assert box["height"] == pytest.approx(17, abs=0.5)
+        assert box["width"] == pytest.approx(19, abs=0.5)
+        assert box["height"] == pytest.approx(19, abs=0.5)
 
 
 def test_icon_buttons_have_no_click_wiring_yet(open_site):
