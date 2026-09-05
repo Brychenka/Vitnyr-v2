@@ -34,13 +34,16 @@ else:
   link other people may open. Stage 6's prompt already says this — repeating
   it here because a chat skimming past Stage 6 could otherwise republish
   early "just to check."
-- **One test item the review couldn't finish.** The review that drove the
-  routed-view rebuild ran in a preview pane that cannot screenshot a
-  `position: fixed` full-screen overlay, so the view was checked by measuring
-  the DOM, not by watching it. Everything checked out except one: deep-linking
-  straight to `#collage` and then closing it may land at the bottom of the
-  page instead of the top (the code resets it; unconfirmed in a real browser).
-  Confirm or fix before it's forgotten.
+- **Update, same day:** a Playwright suite landed in `tests/` (65 tests, see
+  `tests/test_collage.py`) and fixed a real bug this note was circling — deep-
+  link focus landed on the `<section>` wrapper instead of the heading, because
+  the browser's own scroll-to-fragment step ran after `applyOpen()` and won.
+  `test_scroll_position_restored_on_return` covers the warm path (open from
+  the link, close, land where you were) and passes. What's still *not*
+  asserted anywhere: opening via a cold deep link (`#collage` in a fresh tab)
+  and then closing — does that land at the top of the page, or wherever the
+  browser's fragment jump put it? Add that one case to `test_collage.py`
+  before trusting it either way.
 
 ## References
 
