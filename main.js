@@ -536,6 +536,45 @@
       else location.hash = 'collage';
       sync(false);
     });
+
+    /* The masthead glyph icons (chess / carabiner / book) are shortcuts into
+       the view: open it if it's closed, then slide to that domain's group and
+       move focus onto its heading. Native smooth scroll on the view's own
+       overflow:auto container — Lenis is parked while the view is open — and it
+       drops to an instant jump under prefers-reduced-motion. The sticky
+       .view__bar height is subtracted so the heading clears it.
+       Done synchronously, not in a rAF: applyOpen has already flipped
+       .collage-open (visibility/opacity only, so geometry is live), and a
+       deferred frame can be suspended in a background tab — same reason
+       applyOpen focuses synchronously. */
+    var jumpers = document.querySelectorAll('[data-collage-jump]');
+    var bar = view.querySelector('.view__bar');
+    function jumpToGroup(key) {
+      var heading = document.getElementById('collage-' + key);
+      if (!heading) return;
+      var group = heading.closest('.view__group') || heading;
+      var barH = bar ? bar.getBoundingClientRect().height : 0;
+      var top = group.getBoundingClientRect().top
+              - view.getBoundingClientRect().top
+              + view.scrollTop - barH - 20;
+      if (top < 0) top = 0;
+      if (view.scrollTo) view.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+      else view.scrollTop = top;
+      heading.focus({ preventScroll: true });   // preventScroll: don't fight the scroll
+    }
+    Array.prototype.forEach.call(jumpers, function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var key = btn.getAttribute('data-collage-jump');
+        if (location.hash !== '#collage') {
+          if (history.pushState) history.pushState(null, '', '#collage');
+          else location.hash = 'collage';
+          sync(false);
+        }
+        jumpToGroup(key);
+      });
+    });
+
     if (backBtn) backBtn.addEventListener('click', leave);
     window.addEventListener('hashchange', function () { sync(false); });
     document.addEventListener('keydown', function (e) {

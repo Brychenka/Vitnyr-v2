@@ -708,6 +708,19 @@ html[data-lang="ru"] .view__body > h2 { letter-spacing: -.01em; }
   max-width: 24ch; margin: 0 0 clamp(14px, 2vw, 22px);
 }
 html[data-lang="ru"] .view__group > h3 { letter-spacing: -.008em; }
+/* h3 takes focus (tabindex -1) when a masthead glyph icon jumps to its group —
+   same pattern as #collage-title: kill the mouse outline, keep the keyboard ring. */
+.view__group > h3:focus { outline: none; }
+.view__group > h3:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 6px; }
+
+/* Each group's label carries the same glyph as its masthead nav icon, so the
+   icon you click visibly lands on the section it points to. Decorative (the
+   word is the label; the mark is aria-hidden). Sized in em off the 12px label
+   and inked in --fg2 to match the nav icons — a glyph, not text, so the
+   sub-24px accent-text rule doesn't come into it; fg2 is the restrained match. */
+.label--glyph { align-items: center; gap: .7em; }
+.label__mark { width: 1.15em; height: 1.15em; flex: none; }
+
 .view__group-lede {
   max-width: var(--measure); color: var(--fg2);
   margin: 0 0 clamp(28px, 4vw, 48px);
