@@ -558,19 +558,55 @@ html[data-lang="ru"] .view__body > h2 { letter-spacing: -.01em; }
   margin: 0 0 clamp(48px, 7vw, 96px);
 }
 
-/* entry link — built from the .scrollcue / .tool vocabulary: 12px sans,
-   uppercase, tracked, fg2 resting, an arrow, a hairline underline on hover.
-   Keyboard focus is the page-wide green ring via :focus-visible. */
-.enter { margin-top: clamp(36px, 5vw, 64px); }
-.enter a {
-  display: inline-flex; align-items: center; gap: 12px;
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
-  border-bottom: 1px solid transparent;
-  transition: color var(--t) var(--e), border-color var(--t) var(--e);
+/* entry link — the one CTA into the full photo view. Given the .channels
+   scale (Lora, 600, clamp 22-44px) rather than the .scrollcue/.tool scale,
+   because the destination is a full-screen view, not a footnote: it earns a
+   full-width row, not an inline tag. The full-width underline reuses the
+   .tool / .channels draw-in, in --ink-target (green) rather than fg — this
+   is the one link on the page whose destination is a fully achieved,
+   positive outcome (real proof), not a specimen. Keyboard focus is the
+   page-wide green ring via :focus-visible; the drawn underline is additive
+   on top of it, not a replacement. */
+.proof { margin-top: clamp(48px, 7vw, 88px); border-top: 1px solid var(--rule); }
+.proof__link {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; position: relative;
+  padding-block: clamp(22px, 3.2vw, 38px);
 }
-.enter a:hover { color: var(--fg); border-bottom-color: var(--fg); }
-.enter svg { width: 26px; height: 8px; display: block; flex: none; }
+.proof__link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px; background: var(--ink-target);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.proof__link:hover::after, .proof__link:focus-visible::after { transform: scaleX(1); }
+
+.proof__text {
+  font-family: var(--serif); font-weight: 600; letter-spacing: -.02em;
+  font-size: clamp(24px, 4vw, 44px); color: var(--fg2);
+  transition: color var(--t) var(--e);
+}
+.proof__link:hover .proof__text,
+.proof__link:focus-visible .proof__text { color: var(--fg); }
+
+/* Two stacked copies of the same arrow rather than one: on hover the front
+   one travels, the back one follows a beat later at partial opacity, which
+   reads as the arrow moving rather than just sliding — same curve and
+   duration as everywhere else (var(--e), var(--t)), only the start is
+   delayed, the same device the reveal stagger already uses. */
+.proof__arrow { position: relative; width: 40px; height: 13px; flex: none; }
+.proof__arrow svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  color: var(--fg2);
+  transition: transform var(--t) var(--e), color var(--t) var(--e), opacity var(--t) var(--e);
+}
+.proof__arrow--echo { opacity: 0; }
+.proof__link:hover .proof__arrow svg,
+.proof__link:focus-visible .proof__arrow svg { color: var(--fg); transform: translateX(10px); }
+.proof__link:hover .proof__arrow--echo,
+.proof__link:focus-visible .proof__arrow--echo {
+  opacity: .3; transform: translateX(3px); transition-delay: .07s;
+}
 
 /* ---------- contact ---------- */
 .sec--contact { padding-bottom: clamp(60px, 8vh, 110px); }

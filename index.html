@@ -227,13 +227,18 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <!-- Entry to the collage view. A real anchor: with JS off it jumps to the
        #collage section at the end of the document; main.js intercepts it to
        open the routed full-screen view instead. Placed here, under the three
-       domains, because that is where the trifecta has just been argued. -->
-  <p class="enter reveal">
-    <a href="#collage" data-collage-open>
-      <span data-en="See the work" data-ru="Посмотреть, как это выглядит">See the work</span>
-      <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+       domains, because that is where the trifecta has just been argued.
+       data-magnetic gives it the same pointer-pull + cursor treatment as
+       every other link on the page — the .signature move, not a one-off. -->
+  <div class="proof reveal">
+    <a class="proof__link" href="#collage" data-collage-open data-magnetic>
+      <span class="proof__text" data-en="See the work" data-ru="Посмотреть, как это выглядит">See the work</span>
+      <span class="proof__arrow" aria-hidden="true">
+        <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        <svg aria-hidden="true" class="proof__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+      </span>
     </a>
-  </p>
+  </div>
 </section>
 
 <!-- ================================================================
