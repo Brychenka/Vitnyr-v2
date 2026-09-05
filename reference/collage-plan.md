@@ -1,12 +1,46 @@
 # Photo collage — build plan
 
-Written 2026-09-04, before any collage code existed. Stages 0–2 are built
-(commits `3616567`, `6808dfd`, `d7cc626` on `feature/photo-collage`);
-stages 3–6 are not. Stage 3 onward is blocked until real photographs exist.
+Written 2026-09-04, before any collage code existed. Stages 0–2 are built and
+merged to `main` (`72d1da5`, 2026-09-05) — `#collage` was rebuilt as a routed
+view partway through, during the review gate below; read "Notes for the next
+chat" before touching this feature. Stages 3–6 are not started; stage 3 is
+blocked until real photographs exist.
 
 The stage prompts below are the operational part of this file. Paste one
 into a fresh chat, one stage at a time. `collage-review.md` next to this
-file is the review gate that runs before the branch merges.
+file is the review gate that ran before stages 0–2 merged.
+
+## Notes for the next chat
+
+Four things a chat starting fresh on this feature would otherwise have to
+rediscover the hard way or guess at — none of them are written down anywhere
+else:
+
+- **Moderate, not wild.** Igor's own words, choosing between options mid-build:
+  *"you dont have to go that wild. you can make it moderat."* The references
+  below (xxix.co especially) are read for technique — hard edges, pure CSS, no
+  library — not for how aggressively they overlap. The shipped composition has
+  exactly one deliberate overlap (tile 4 over tile 3); that was a deliberate
+  dial-down from a denser first draft, not a limitation of the approach. Don't
+  push it toward xxix.co's own density without asking first.
+- **Preview stand-ins are throwaway, always.** When Igor needs to judge a
+  composition before real photographs exist, grayscale placeholders (Lorem
+  Picsum was used here) are fine to pull into a *preview artifact* — never
+  into the repo, never into `assets/collage/`, never into anything that ships.
+  Delete them once he's looked.
+- **Don't republish the live "Vitnyr Signature" artifact for this feature
+  yet.** That's the public link Igor already shares. Republishing it while
+  `#collage` still holds empty placeholder boxes puts unfinished work on a
+  link other people may open. Stage 6's prompt already says this — repeating
+  it here because a chat skimming past Stage 6 could otherwise republish
+  early "just to check."
+- **One test item the review couldn't finish.** The review that drove the
+  routed-view rebuild ran in a preview pane that cannot screenshot a
+  `position: fixed` full-screen overlay, so the view was checked by measuring
+  the DOM, not by watching it. Everything checked out except one: deep-linking
+  straight to `#collage` and then closing it may land at the bottom of the
+  page instead of the top (the code resets it; unconfirmed in a real browser).
+  Confirm or fix before it's forgotten.
 
 ## References
 
