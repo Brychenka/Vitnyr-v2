@@ -8,9 +8,13 @@
    Amber = the specimen (the thing under examination).
    Green = the target (interaction, progression, achieved outcome).
    Accent colour is ink — rules, bars, glyphs, display numerals —
-   never text below 24px, because the two accents swap contrast
+   almost never text below 24px, because the two accents swap contrast
    roles between the pairs (amber fails body on cream, green fails
-   body on charcoal).
+   body on charcoal). The one exception is the exact word that IS a
+   specimen or IS a target, never a decorative "key word" — see
+   .mark--specimen / .mark--target — and even that exception colours
+   from tuned text-safe shades, not the ink hex, so both still clear
+   4.5:1 in both pairs.
 
    One easing curve on everything, per the build guide.
    ============================================================ */
@@ -30,6 +34,17 @@
 
   --ink-specimen: var(--amber);
   --ink-target:   var(--green);
+
+  /* Text-safe variants for the one exception to "accent never sits on text
+     under 24px" — see .mark--specimen / .mark--target below. Amber already
+     clears 4.5:1 as text on this bg (4.9:1, since the 2026-09-05 fix to a
+     single fixed --amber — was 7.41:1 against the old per-theme #D99B3F)
+     so it's reused as-is; green doesn't (3.58:1), so this is the same hue
+     lightened to exactly 4.5:1. Kept off --ink-target/--amber so every
+     non-text use (borders, glyphs, the wordmark) is completely unaffected.
+     Added 2026-09-05. */
+  --amber-text: var(--amber);
+  --green-text: #578C5E;
 
   --serif: Lora, Georgia, "Times New Roman", serif;
   --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -62,6 +77,8 @@
     --fg:     #1D2224;
     --fg2:    #5A5F60;
     --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
+    --amber-text: #8C631D;   /* darkened stand-in, tuned to 4.5:1 on this bg (ink amber is 3.07:1) */
+    --green-text: var(--green);   /* ink green already clears 4.5:1 as text here (5.62:1) */
   }
 }
 :root[data-theme="light"] {
@@ -70,6 +87,8 @@
   --fg:     #1D2224;
   --fg2:    #5A5F60;
   --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
+  --amber-text: #8C631D;
+  --green-text: var(--green);
 }
 
 /* Georgia carries no Cyrillic on most systems, so a Russian headline in the
@@ -203,26 +222,39 @@ html.lora-ready .lockup .wm { opacity: 1; }
 }
 
 /* ---------- in-copy emphasis ----------
-   Body copy is 17px and every paragraph is --fg2, so emphasis is a lift to
-   full-strength foreground, not a colour change: no accent is legal on text
-   this size in BOTH pairs (amber 3.07:1 on cream, green 3.58:1 on charcoal).
-   fg-against-fg2 is 2.02:1 on charcoal and 2.48:1 on cream — a real step that
-   costs nothing. Weight 500 is deliberate: <strong> defaults to 700, which
-   isn't loaded and would synthesise. One mark per section, six on the page —
-   the sixth lives in the collage view, added in the 2026-09-05 copy/colour
-   audit so that view echoes the rating/gravity motif the same way the
-   Disciplines section states it, without adding a second coloured mark. */
+   Body copy is 17px and every paragraph is --fg2, so the default lift is to
+   full-strength foreground, not colour: no single accent clears 4.5:1 as
+   text in BOTH pairs at once (amber 3.07:1 on cream, green 3.58:1 on
+   charcoal). fg-against-fg2 is 2.02:1 on charcoal and 2.48:1 on cream — a
+   real step that costs nothing. Weight 500 is deliberate: <strong> defaults
+   to 700, which isn't loaded and would synthesise. One plain mark per
+   section, six on the page — the sixth lives in the collage view, added in
+   the 2026-09-05 copy/colour audit so that view echoes the rating/gravity
+   motif the same way the Disciplines section states it, without adding a
+   second coloured mark. */
 .mark { color: var(--fg); font-weight: 500; }
 
-/* Used exactly once, on the phrase that IS the target. 1px so it doesn't read
-   as a link; non-text ink, so the 3:1 floor applies and green clears both. */
-.mark--target {
-  text-decoration: underline;
-  text-decoration-color: var(--ink-target);
-  text-decoration-thickness: 1px;
-  text-underline-offset: .3em;
-  text-decoration-skip-ink: none;
-}
+/* Colour-as-text — the one exception to the block above, and only where a
+   word IS the specimen or IS the fix, never decoration on an arbitrary "key"
+   word (2026-09-05 design pass; an earlier draft coloured the hero and a
+   mechanisms paragraph too and both were dropped as decoration wearing this
+   pair's costume). Two uses:
+     - combined with .mark (class="mark mark--target"), on the Method
+       section's one target phrase — the page's literal referent for what
+       green means. No underline: colour alone carries it.
+     - standalone, on the exact culprit/fix word inside each specimen
+       wrong/right line (.line-spec below) — there it inherits that line's
+       own mono weight instead of .mark's 500, because JetBrains Mono 500
+       isn't loaded and font-synthesis: none means asking for it would do
+       nothing.
+   Both read from --amber-text / --green-text (defined per theme, top of
+   file), tuned stand-ins wherever the ink hex would fail as text: amber is
+   reused as-is in dark (7.41:1) but darkened for light (was 3.07:1, now
+   4.5:1); green is reused as-is in light (5.62:1) but lightened for dark
+   (was 3.58:1, now 4.5:1). The ink hex itself is untouched, so every
+   non-text use — rules, glyphs, the wordmark — is unaffected. */
+.mark--specimen { color: var(--amber-text); }
+.mark--target   { color: var(--green-text); }
 
 /* Screen-reader-only: gives the specimen rows a text equivalent so the
    correct/incorrect distinction isn't carried by colour and a glyph alone. */
@@ -368,8 +400,12 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   padding-bottom: 16px; margin-bottom: 18px;
   border-bottom: 1px solid var(--rule);
 }
-/* The sentence itself stays neutral and holds 4.5:1. The colour lives in the
-   2px rule and the marker glyph — both non-text, both >=3:1 in each pair. */
+/* The border and the marker glyph carry the specimen/target signal in
+   non-text ink, both >=3:1 in each pair, same as always. The one word
+   actually responsible for the error, and the one word that fixes it, are
+   also coloured directly (.mark--specimen / .mark--target, 2026-09-05) —
+   everything else in the sentence stays neutral fg2/fg, so the sentence as
+   a whole still holds 4.5:1 throughout regardless. */
 .line-spec {
   font-family: var(--mono); font-size: 14px; line-height: 1.55;
   display: flex; gap: 10px; align-items: baseline;
