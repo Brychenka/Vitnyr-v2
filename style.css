@@ -604,14 +604,6 @@ html[data-lang="ru"] .view__body > h2 { letter-spacing: -.01em; }
   font-family: var(--mono); font-size: 13px; color: var(--fg2);
   letter-spacing: .04em;
 }
-/* build placeholder — delete this span together with the fake handle */
-.ch__todo {
-  grid-column: 2; justify-self: end;
-  font-family: var(--sans); font-size: 11px; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--fg);
-  border: 1px solid var(--rule); padding: 3px 8px;
-}
-
 /* ---------- footer ---------- */
 .foot {
   display: flex; align-items: center; justify-content: space-between;
