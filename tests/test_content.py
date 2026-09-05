@@ -70,18 +70,21 @@ def test_no_unapproved_animated_statistics(open_site):
     assert sorted(counts, key=int) == ["8", "100", "2100"]
 
 
-def test_contact_handles_are_still_flagged_placeholders(open_site):
-    """Guard rail: when the real Telegram/LinkedIn/Instagram handles land, the
-    `.ch__todo` chips and the @HANDLE text go with them — and this test should
-    be updated in the same commit."""
+def test_contact_handles_are_real(open_site):
+    """The real Telegram/LinkedIn/Instagram handles landed 2026-09 (commit
+    dd1ff9c) — updated from the old placeholder-guard test per the note in
+    tests/README.md. No more `.ch__todo` chips, and every href is a real,
+    absolute, https link rather than "#"."""
     page, _ = open_site()
-    todos = page.locator(".channels .ch__todo")
-    assert todos.count() == 3
-    assert {t.strip().lower() for t in todos.all_text_contents()} == {"fill in"}
+    assert page.locator(".channels .ch__todo").count() == 0
     hrefs = page.locator(".channels a").evaluate_all(
         "els => els.map(a => a.getAttribute('href'))"
     )
-    assert hrefs == ["#", "#", "#"]
+    assert hrefs == [
+        "https://t.me/yngvil",
+        "https://www.linkedin.com/in/vitnyrcoach/",
+        "https://www.instagram.com/brychenka/",
+    ]
 
 
 def test_contact_channel_order_is_telegram_linkedin_instagram(open_site):
