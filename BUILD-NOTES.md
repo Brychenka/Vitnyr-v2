@@ -63,22 +63,6 @@ and a matching GSAP CustomEase in JS, so the two never drift apart.
   claims. The mark's "V and Y fused" reading stays the *official* one per the
   brand file; the "three strokes = three disciplines" reading is Igor's own
   addition on top of it, not a replacement, per his 2026-09-05 direction.
-- **Collage nav icons are wired (2026-09-05).** The three `.tool--icon`
-  buttons in `nav.tools` (chess / carabiner / book) each carry
-  `data-collage-jump` (`chess` / `climb` / `en`) and, on click, open the
-  `#collage` view if it is closed and scroll its own container to that
-  domain group, landing focus on the group's `<h3>` (now `tabindex="-1"`,
-  same focus pattern as `#collage-title`). Scroll is native
-  `view.scrollTo({behavior})` — `'smooth'` normally, `'auto'` under
-  `prefers-reduced-motion` — done synchronously, not in a rAF, because a
-  deferred frame can be suspended in a background tab (same reason
-  `applyOpen` focuses synchronously). The sticky `.view__bar` height is
-  subtracted so the heading clears it. The same glyph is echoed on each
-  group's `.label` (`.label--glyph` + `.label__mark`, inked in `--fg2` to
-  match the nav icons) so the icon visibly lands where it points. See the
-  "collage nav icons" section below and
-  `reference/design_handoff_collage_nav_icons/README.md`.
-
 ## The five specialist passes
 
 **Colour.** Accent is semantic, not decorative: **amber marks the specimen** —
@@ -262,26 +246,33 @@ to that group — `behavior: 'smooth'` normally, `'auto'` under
 `prefers-reduced-motion`. The scroll runs synchronously in the click
 handler, not inside a `requestAnimationFrame`: `applyOpen` has already
 flipped `.collage-open` (visibility/opacity only, so geometry is live) and a
-deferred frame can be suspended in a background tab. Target is the group's
-top minus the sticky `.view__bar` height minus 20px, clamped at 0; focus
-then moves to the group's `<h3>`, which gained `tabindex="-1"` and the same
-`:focus` / `:focus-visible` outline pair as `#collage-title`. Each group's
-`.label` also gained the matching glyph (`.label--glyph` wrapper +
-`.label__mark`, SVG pasted verbatim from the masthead, sized `1.15em` off
-the 12px label, inked `--fg2`) so the icon you click visibly lands on its
-section. Verified: jump + focus for all three from cold and warm state,
-both themes, EN/RU (glyphs persist across the language switch), 375 / 1280,
-deep-link still lands focus on `#collage-title`, Back / Esc / browser-back
-unaffected, no horizontal overflow.
+deferred frame can be suspended in a background tab. The scroll target is the
+group's **`.label`** (not the group's edge) minus the sticky `.view__bar`
+height minus a 16px gap, clamped at 0 — the label carries the clicked glyph,
+so it's what should arrive at the top; anchoring to the group edge instead
+parks the label below its 44–88px `padding-top`, which only reads right when
+you scroll in. Focus then moves to the group's `<h3>`, which gained
+`tabindex="-1"` and the same `:focus` / `:focus-visible` outline pair as
+`#collage-title`. The click handler also `focus()`es the button before
+opening, so `applyOpen` captures it as `returnFocus` and Back returns to the
+icon in every browser (a plain mouse click doesn't focus a `<button>` in
+Safari). Each group's `.label` gained the matching glyph (`.label--glyph`
+wrapper + `.label__mark`, path data echoing the masthead but not locked to
+it — the label copy is the smaller, quieter instance — sized `1.15em` off
+the 12px label, inked `--fg2`). The buttons' `aria-label` / `title` stay
+English-only, matching the doc's other structural labels (`nav aria-label
+="Site"`, the lockup) — `theme.js` localises visible text, not `aria-label`.
+Verified: jump + focus for all three from cold and warm state, both themes,
+EN/RU (glyphs persist across the language switch), 375 / 1280, deep-link
+still lands focus on `#collage-title`, Back / Esc / browser-back unaffected,
+no horizontal overflow.
 
 `test_collage_nav_icons.py` updated in the same change: the accessible-name
 list now expects the action phrasings ("Jump to the chess photographs" …),
 and `test_icon_buttons_have_no_click_wiring_yet` is replaced by
 `test_icon_buttons_jump_to_their_collage_group` (parametrized per domain)
-plus `test_icons_do_not_open_the_view_on_load`.
-`test_icon_svgs_render_at_the_specified_17px` is a **pre-existing** failure
-(icons are 19px since 597e188) with a fix already sitting on the
-`feature/nav-icon-weight` branch — left untouched here to avoid a conflict.
+plus `test_icons_do_not_open_the_view_on_load`. (The `…_17px` size test was
+renamed to `…_19px` on `main` in a separate commit before this landed.)
 
 ## Collage → three domain groups (2026-09-05)
 

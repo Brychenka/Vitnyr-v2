@@ -538,38 +538,47 @@
     });
 
     /* The masthead glyph icons (chess / carabiner / book) are shortcuts into
-       the view: open it if it's closed, then slide to that domain's group and
-       move focus onto its heading. Native smooth scroll on the view's own
-       overflow:auto container — Lenis is parked while the view is open — and it
-       drops to an instant jump under prefers-reduced-motion. The sticky
-       .view__bar height is subtracted so the heading clears it.
+       the view: open it if it's closed, then slide that domain group's label
+       to the top and move focus onto its heading. Native smooth scroll on the
+       view's own overflow:auto container — Lenis is parked while the view is
+       open — and it drops to an instant jump under prefers-reduced-motion.
        Done synchronously, not in a rAF: applyOpen has already flipped
        .collage-open (visibility/opacity only, so geometry is live), and a
        deferred frame can be suspended in a background tab — same reason
        applyOpen focuses synchronously. */
     var jumpers = document.querySelectorAll('[data-collage-jump]');
     var bar = view.querySelector('.view__bar');
+    var JUMP_GAP = 16;   // breathing room left between the sticky bar and the landed label
     function jumpToGroup(key) {
       var heading = document.getElementById('collage-' + key);
       if (!heading) return;
-      var group = heading.closest('.view__group') || heading;
+      var group = heading.closest('.view__group');
+      /* Land the group's label under the sticky bar — it carries the glyph
+         that was clicked, so it's what should arrive at the top. Scrolling to
+         the group's own edge instead would park it below the 40–90px of
+         inter-group padding that only reads right when you scroll in. */
+      var anchor = (group && group.querySelector('.label')) || heading;
       var barH = bar ? bar.getBoundingClientRect().height : 0;
-      var top = group.getBoundingClientRect().top
+      var top = anchor.getBoundingClientRect().top
               - view.getBoundingClientRect().top
-              + view.scrollTop - barH - 20;
+              + view.scrollTop - barH - JUMP_GAP;
       if (top < 0) top = 0;
       if (view.scrollTo) view.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
       else view.scrollTop = top;
       heading.focus({ preventScroll: true });   // preventScroll: don't fight the scroll
     }
-    Array.prototype.forEach.call(jumpers, function (btn) {
+    jumpers.forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         var key = btn.getAttribute('data-collage-jump');
+        // Focus the button first so applyOpen captures it as returnFocus and
+        // Back lands here — a plain mouse click doesn't focus a <button> in
+        // every browser (Safari), which would otherwise send Back to the opener.
+        btn.focus({ preventScroll: true });
         if (location.hash !== '#collage') {
           if (history.pushState) history.pushState(null, '', '#collage');
           else location.hash = 'collage';
-          sync(false);
+          sync(false);        // masthead goes inert here; the icons are one-shot
         }
         jumpToGroup(key);
       });

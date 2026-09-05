@@ -443,7 +443,11 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p data-l="ru">Ни стоков, ни постановки — бренд не допускает ни того, ни другого. Здесь — Igor Shatsev за работой в трёх местах, где проверяется один и тот же метод: <strong class="mark">урок английского, партия на рейтинг, трасса на категорию</strong>.</p>
     </div>
 
-    <!-- ENGLISH — the offer. Chess and climbing below are proof it transfers. -->
+    <!-- ENGLISH — the offer. Chess and climbing below are proof it transfers.
+         Each group's .label leads with the glyph of its masthead nav icon
+         (data-collage-jump), so a click on that icon visibly lands here. The
+         path data echoes the masthead copy but is not locked to it pixel for
+         pixel — this is the smaller, quieter instance, not the same element. -->
     <section class="view__group" aria-labelledby="collage-en">
       <p class="label label--glyph">
         <svg class="label__mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
