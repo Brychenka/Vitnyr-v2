@@ -421,7 +421,12 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      for (reference/collage-shotlist.md); no <img> until Stage 3, and
      nothing here may shift when the real sources land.
      ================================================================ -->
-<section id="collage" class="view" aria-labelledby="collage-title">
+<!-- data-lenis-prevent: this view is its own overflow:auto scroll container,
+     but Lenis (running on the document) swallows wheel events even while
+     stopped, which left the open view unscrollable by wheel/trackpad. The
+     attribute tells Lenis to let wheel + touch through to native scrolling
+     here. Do not remove without giving the view its scroll back another way. -->
+<section id="collage" class="view" aria-labelledby="collage-title" data-lenis-prevent>
   <div class="view__bar">
     <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
       <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
