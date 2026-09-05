@@ -225,7 +225,12 @@ the brand file, so nothing in the code will tell a new chat about them:
   language persist with no flash, focus moves to the destination heading on
   navigation (not just scroll — see the skip-link bug in `BUILD-NOTES.md`),
   and scroll resets. Apply the same reasoning to any future "separate
-  page": ask what it does to the artifact before splitting a file.
+  page": ask what it does to the artifact before splitting a file. Inside
+  that view, the photos are grouped into three domain sections —
+  **English, then chess, then climbing** (2026-09-05), unnumbered so the
+  view doesn't continue the page's 01–06 count. See `BUILD-NOTES.md`'s
+  "Collage → three domain groups" entry and `reference/collage-shotlist.md`
+  (v2).
 - **Contact channels: Telegram, LinkedIn, Instagram, in that order** — Igor's
   own answer when asked. Real handles are still outstanding (see above); the
   order and the choice of exactly these three platforms is settled.

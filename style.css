@@ -62,12 +62,12 @@
   --maxw: 1320px;
   --measure: 62ch;
 
-  /* Collage composition rhythm — the vertical offset of each tile, named here
-     so the whole composition tunes from one place. Not per-theme. */
-  --collage-drop-a:   clamp(56px, 10vw, 132px);   /* tile 2 — top-right, below tile 1 */
-  --collage-drop-b:   clamp(20px,  4vw,  52px);   /* tile 3 — the wide mid band       */
-  --collage-overlap:  clamp(24px, 4.5vw, 64px);   /* tile 4 — rises over tile 3's corner */
-  --collage-drop-d:   clamp(28px,  5vw,  72px);   /* tile 6 — the low square           */
+  /* Collage grid gaps — one place to tune the spacing between tiles inside
+     each domain group. Not per-theme, and NOT offsets: the three groups are
+     plain repeating grids now (no overlap), so layout never touches the
+     transform channel Stage 4's reveal needs. */
+  --collage-gap-x:    clamp(14px, 2.2vw, 30px);
+  --collage-gap-y:    clamp(28px, 4vw, 52px);
 }
 
 @media (prefers-color-scheme: light) {
@@ -568,19 +568,20 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 }
 
 /* ---------- collage composition ----------
-   An asymmetric editorial grid, lives inside the collage view (below). Six
-   figures at three fixed crop ratios (4:5 / 3:2 / 1:1) on a 12-column grid,
-   each dropped a different distance, with one deliberate overlap so the block
-   reads as one composed object rather than a row of equal thumbnails.
-   Reference is xxix.co's overlapping gallery: hard edges, zero radius, no
-   decoration, pure CSS. Structure is whitespace and the same 1px hairline the
-   rest of the page uses — no third colour, no gradient, no shadow.
+   Lives inside the collage view (below), once per domain group (English,
+   chess, climbing). Each group is a plain repeating grid of 5–6 figures at
+   three fixed crop ratios (4:5 / 3:2 / 1:1): 1 column, then 2, then 3 as the
+   viewport widens. No offsets and no overlap — "moderate, not wild" — so
+   layout never occupies the transform channel Stage 4's reveal needs.
+   Reference is xxix.co's gallery for the hard edges, zero radius and pure
+   CSS, not for its density. Structure is whitespace and the same 1px hairline
+   the rest of the page uses — no third colour, no gradient, no shadow.
 
    Every figure hard-codes its final aspect ratio through a modifier class, so
    the box is the right shape before any image exists and does not resize when
    one arrives — this is what keeps the build's zero-layout-shift record.
    Images + grayscale treatment are Stage 3; motion is Stage 4. */
-.collage { display: grid; grid-template-columns: 1fr; gap: clamp(28px, 6vw, 44px); }
+.collage { display: grid; grid-template-columns: 1fr; gap: var(--collage-gap-y); }
 .collage__fig { margin: 0; min-width: 0; }
 .collage__slot {
   border: 1px solid var(--rule);
@@ -604,36 +605,21 @@ html.js .origin__panel-item.is-active { opacity: 1; }
   max-width: 42ch;
 }
 
-/* two-up once there is room, but still a plain grid — no offsets, no overlap */
+/* two-up once there is room; ragged bottoms are fine — align to the top of
+   each row rather than stretching a 3:2 to a 4:5's height. */
 @media (min-width: 600px) {
-  .collage {
-    grid-template-columns: 1fr 1fr;
-    column-gap: clamp(20px, 3vw, 40px);
-    row-gap: clamp(32px, 5vw, 52px);
+  .collage--group {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--collage-gap-x);
+    row-gap: var(--collage-gap-y);
+    align-items: start;
   }
 }
 
-/* the composition proper — wide enough to carry an asymmetric layout.
-   Offsets come from the --collage-* tokens in :root. Tile 4 rises over tile
-   3's corner with a NEGATIVE MARGIN — never a transform: layout must leave
-   the transform channel free for the reveal and any parallax (CLAUDE.md). */
+/* three-up on desktop — the count each domain group is sized for. Still a
+   plain grid: no spanning, no margins, no transform. */
 @media (min-width: 900px) {
-  .collage {
-    grid-template-columns: repeat(12, 1fr);
-    column-gap: clamp(18px, 2.4vw, 34px);
-    row-gap: 0;
-    align-items: start;
-  }
-  .collage__fig:nth-child(1) { grid-column: 1 / 6; }
-  .collage__fig:nth-child(2) { grid-column: 8 / 13; margin-top: var(--collage-drop-a); }
-  .collage__fig:nth-child(3) { grid-column: 6 / 13; margin-top: var(--collage-drop-b); }
-  .collage__fig:nth-child(4) {
-    grid-column: 3 / 8;
-    margin-top: calc(var(--collage-overlap) * -1);
-    position: relative; z-index: 1;
-  }
-  .collage__fig:nth-child(5) { grid-column: 1 / 8; }
-  .collage__fig:nth-child(6) { grid-column: 9 / 13; margin-top: var(--collage-drop-d); }
+  .collage--group { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* ---------- collage view ----------
@@ -706,6 +692,25 @@ html[data-lang="ru"] .view__body > h2 { letter-spacing: -.01em; }
 .view__lede {
   max-width: var(--measure); color: var(--fg2);
   margin: 0 0 clamp(48px, 7vw, 96px);
+}
+
+/* ---------- collage domain groups ----------
+   Three sections inside the collage view — English, chess, climbing — each a
+   labelled block carrying the same top-hairline rhythm a .sec has on the main
+   page. Headings are unnumbered domain words in the .label style: the collage
+   is its own view and does not continue the page's 01–06 count. */
+.view__group { border-top: 1px solid var(--rule); padding-top: clamp(44px, 6vw, 88px); }
+.view__group + .view__group { margin-top: clamp(44px, 6vw, 88px); }
+.view__group > .label { margin-bottom: clamp(18px, 2.4vw, 28px); }
+.view__group > h3 {
+  font-size: clamp(21px, 2.4vw, 30px); font-weight: 500;
+  line-height: 1.15; letter-spacing: -.015em;
+  max-width: 24ch; margin: 0 0 clamp(14px, 2vw, 22px);
+}
+html[data-lang="ru"] .view__group > h3 { letter-spacing: -.008em; }
+.view__group-lede {
+  max-width: var(--measure); color: var(--fg2);
+  margin: 0 0 clamp(28px, 4vw, 48px);
 }
 
 /* entry link — the one CTA into the full photo view. Given the .channels

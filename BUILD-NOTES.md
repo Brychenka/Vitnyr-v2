@@ -244,6 +244,45 @@ in one row below ~600px no matter how tight the gaps get, so below that width
 (same media query, `style.css`). Verified no horizontal overflow at 320 /
 375 / 600 / 601 / 1280px, both themes.
 
+## Collage → three domain groups (2026-09-05)
+
+Igor asked the collage view to stop being one mixed grid and become three
+labelled sections — **English, then chess, then climbing** (the site's order:
+English is the offer, the other two prove the method transfers). Each group
+carries ~6 placeholder figures, so the view goes from 6 reserved boxes to 18.
+
+- **Composition retired.** Stage 2's asymmetric 12-column grid with one
+  deliberate overlap is gone. Each group is now a plain repeating grid —
+  1 column, then 2 at ~600px, then 3 at ~900px — no offsets, no negative
+  margins, nothing in the transform channel. `--collage-drop-a/b/d` and
+  `--collage-overlap` deleted; `--collage-gap-x/y` added. Base
+  `.collage__fig / __slot / __wait / figcaption` and the three ratio
+  modifiers were reused unchanged.
+- **Structure.** Three `<section class="view__group">` inside `.view__body`,
+  each with an unnumbered `.label` domain word, an `<h3>` (`id` =
+  `collage-en / -chess / -climb`, `aria-labelledby` target), a one-line
+  `.view__group-lede`, and a `.collage.collage--group` grid. The router's
+  focus target (`#collage-title`, the `<h2>`) is untouched, so `main.js`
+  needed no change.
+- **No `.reveal` added.** The collage view has never used the reveal system
+  (it is display-toggled, not scrolled into); all motion stays Stage 4. This
+  keeps `test_a11y`'s "no hidden reveals" invariant clean.
+- **Copy.** The `.view__lede` was reworded from "two places" to "the three
+  places the same method gets tested: an English lesson, a rated game, a
+  graded climb" (its one `.mark`). New h3s + per-group ledes carry the
+  confirmed facts in their own words — 2100 rating without "FIDE", "7c
+  redpoint" and "7C Kilter" kept distinct. Every RU string is a model draft,
+  flagged for Igor in `collage-shotlist.md`.
+- **Shot list rewritten** to v2: `reference/collage-shotlist.md` now lists 6
+  shots per domain at a fixed 2×`4:5` / 2×`3:2` / 2×`1:1` mix, new filenames
+  (`en-* / chess-* / climb-*`), and a revised weight budget (≤90 KB per `@2x`
+  WebP, ≤1.6 MB total). `collage-plan.md` gained a Stage-2-reopened note.
+- Still no `<img>` anywhere — Stage 3 is blocked on the shoot, so the
+  "no images to lazy-load" line below stays true.
+- Tests: no changes needed. `test_collage.py` is behavioural (routing, focus,
+  inert, no-JS fallback); `test_i18n`'s parity sweep and `test_layout`'s
+  collage-overflow check cover the new nodes automatically.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

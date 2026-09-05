@@ -411,6 +411,9 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      behind it goes inert and stops scrolling.
      With JS absent it is simply the last section of the document and
      the "See the work" link above jumps to it — nothing is hidden.
+     Three domain groups — English, chess, climbing, in that order —
+     each its own labelled block. Headings are unnumbered: this view does
+     not continue the page's 01-06 count.
      PLACEHOLDER: real photographs of Igor Shatsev are not shot yet. Each
      figure hard-codes its final crop ratio and names the file it waits
      for (reference/collage-shotlist.md); no <img> until Stage 3, and
@@ -434,36 +437,117 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         data-en="The work, photographed: a call, a chessboard, a climbing wall."
         data-ru="Работа в кадре: созвон, шахматная доска, скалодром.">The work, photographed: a call, a chessboard, a climbing wall.</h2>
     <div class="view__lede">
-      <p data-l="en">No stock and no staging — the brand rules both out. What's here is Igor Shatsev at work: on a call, or across a table in Yerevan — the two places the same method gets tested, against <strong class="mark">a rating and gravity</strong>.</p>
-      <p data-l="ru">Ни стоков, ни постановки — бренд не допускает ни того, ни другого. Здесь — Igor Shatsev за работой: на созвоне или за столом в Ереване — в тех самых двух местах, где тот же метод проверяют <strong class="mark">рейтингом и гравитацией</strong>.</p>
+      <p data-l="en">No stock and no staging — the brand rules both out. What's here is Igor Shatsev at work, in the three places the same method gets tested: <strong class="mark">an English lesson, a rated game, a graded climb</strong>.</p>
+      <p data-l="ru">Ни стоков, ни постановки — бренд не допускает ни того, ни другого. Здесь — Igor Shatsev за работой в трёх местах, где проверяется один и тот же метод: <strong class="mark">урок английского, партия на рейтинг, трасса на категорию</strong>.</p>
     </div>
 
-    <div class="collage">
-      <figure class="collage__fig collage__fig--45">
-        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">01-chess-board@2x.webp</span></div>
-        <figcaption data-en="Over the board, mid-game." data-ru="За доской, посреди партии.">Over the board, mid-game.</figcaption>
-      </figure>
-      <figure class="collage__fig collage__fig--45">
-        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">02-climb-board@2x.webp</span></div>
-        <figcaption data-en="On the system board, mid-move." data-ru="На системной доске, посреди движения.">On the system board, mid-move.</figcaption>
-      </figure>
-      <figure class="collage__fig collage__fig--32">
-        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">03-call@2x.webp</span></div>
-        <figcaption data-en="A lesson on a call." data-ru="Урок на созвоне.">A lesson on a call.</figcaption>
-      </figure>
-      <figure class="collage__fig collage__fig--11">
-        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">04-table-yerevan@2x.webp</span></div>
-        <figcaption data-en="In person, in Yerevan." data-ru="Вживую, в Ереване.">In person, in Yerevan.</figcaption>
-      </figure>
-      <figure class="collage__fig collage__fig--32">
-        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">05-yerevan-window@2x.webp</span></div>
-        <figcaption data-en="Yerevan, from the desk." data-ru="Ереван — из окна за столом.">Yerevan, from the desk.</figcaption>
-      </figure>
-      <figure class="collage__fig collage__fig--11">
-        <div class="collage__slot" aria-hidden="true"><span class="collage__wait">06-hands@2x.webp</span></div>
-        <figcaption data-en="The same hands, up close." data-ru="Те же руки, вблизи.">The same hands, up close.</figcaption>
-      </figure>
-    </div>
+    <!-- ENGLISH — the offer. Chess and climbing below are proof it transfers. -->
+    <section class="view__group" aria-labelledby="collage-en">
+      <p class="label"><span data-en="English" data-ru="Английский">English</span></p>
+      <h3 id="collage-en"
+          data-en="The coaching itself — one-on-one, online or in Yerevan."
+          data-ru="Сама работа — один на один, онлайн или в Ереване.">The coaching itself — one-on-one, online or in Yerevan.</h3>
+      <p class="view__group-lede" data-l="en">There is no classroom to photograph. This is how a lesson actually runs: a call, a table, a text being pulled apart.</p>
+      <p class="view__group-lede" data-l="ru">Класса, который можно снять, нет. Вот как на самом деле идёт занятие: созвон, стол, текст, который разбирают по частям.</p>
+      <div class="collage collage--group">
+        <figure class="collage__fig collage__fig--32">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-01-call@2x.webp</span></div>
+          <figcaption data-en="A lesson on a call." data-ru="Урок на созвоне.">A lesson on a call.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--11">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-02-yerevan-table@2x.webp</span></div>
+          <figcaption data-en="In person, in Yerevan." data-ru="Вживую, в Ереване.">In person, in Yerevan.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--45">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-03-desk@2x.webp</span></div>
+          <figcaption data-en="The desk the calls run from." data-ru="Стол, за которым идут созвоны.">The desk the calls run from.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--11">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-04-correction@2x.webp</span></div>
+          <figcaption data-en="A correction, written out." data-ru="Исправление, выписанное от руки.">A correction, written out.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--32">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-05-markup@2x.webp</span></div>
+          <figcaption data-en="Marking up a text together." data-ru="Разбор текста вместе.">Marking up a text together.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--45">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-06-window@2x.webp</span></div>
+          <figcaption data-en="Yerevan, from the desk." data-ru="Ереван — из окна за столом.">Yerevan, from the desk.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- CHESS — proof domain one: a rating that doesn't negotiate. -->
+    <section class="view__group" aria-labelledby="collage-chess">
+      <p class="label"><span data-en="Chess" data-ru="Шахматы">Chess</span></p>
+      <h3 id="collage-chess"
+          data-en="Where the feedback loop is a rating that doesn't negotiate."
+          data-ru="Где обратная связь — рейтинг, который не торгуется.">Where the feedback loop is a rating that doesn't negotiate.</h3>
+      <p class="view__group-lede" data-l="en">A 2100 rating, earned move by move. The frames catch the moment before a move is committed — which is where the pressure lives.</p>
+      <p class="view__group-lede" data-l="ru">Рейтинг 2100, набранный ход за ходом. В кадре — момент перед тем, как ход сделан: там и живёт давление.</p>
+      <div class="collage collage--group">
+        <figure class="collage__fig collage__fig--45">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-01-board@2x.webp</span></div>
+          <figcaption data-en="Over the board, mid-game." data-ru="За доской, посреди партии.">Over the board, mid-game.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--11">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-02-clock@2x.webp</span></div>
+          <figcaption data-en="The clock, between moves." data-ru="Часы между ходами.">The clock, between moves.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--32">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-03-study@2x.webp</span></div>
+          <figcaption data-en="A position set up for study." data-ru="Позиция, разбираемая отдельно.">A position set up for study.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--45">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-04-reset@2x.webp</span></div>
+          <figcaption data-en="Pieces back to the starting rank." data-ru="Фигуры на исходной горизонтали.">Pieces back to the starting rank.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--11">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-05-pieces@2x.webp</span></div>
+          <figcaption data-en="Captured pieces, off to the side." data-ru="Снятые фигуры сбоку от доски.">Captured pieces, off to the side.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--32">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-06-notation@2x.webp</span></div>
+          <figcaption data-en="Notating the game as it goes." data-ru="Запись партии по ходу игры.">Notating the game as it goes.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- CLIMBING — proof domain two: the grade, kept honest by gravity. -->
+    <section class="view__group" aria-labelledby="collage-climb">
+      <p class="label"><span data-en="Climbing" data-ru="Скалолазание">Climbing</span></p>
+      <h3 id="collage-climb"
+          data-en="Where the scoreboard is the grade, and gravity keeps it honest."
+          data-ru="Где табло — это категория, а гравитация не даёт соврать.">Where the scoreboard is the grade, and gravity keeps it honest.</h3>
+      <p class="view__group-lede" data-l="en">A 7c redpoint indoors and a 7C Kilter boulder — trained on an adjustable board, not a crag, because the point is deliberate practice, not adventure.</p>
+      <p class="view__group-lede" data-l="ru">7c с пробитием на скалодроме и болдер 7C на Kilter — тренировка на регулируемой доске, а не на скале: смысл в осознанной практике, а не в приключении.</p>
+      <div class="collage collage--group">
+        <figure class="collage__fig collage__fig--45">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-01-board@2x.webp</span></div>
+          <figcaption data-en="On the system board, mid-move." data-ru="На системной доске, посреди движения.">On the system board, mid-move.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--11">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-02-chalk@2x.webp</span></div>
+          <figcaption data-en="Chalking up between attempts." data-ru="Магнезия между попытками.">Chalking up between attempts.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--32">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-03-feet@2x.webp</span></div>
+          <figcaption data-en="Feet placed before the reach." data-ru="Ноги ставятся до выхода рукой.">Feet placed before the reach.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--45">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-04-crimp@2x.webp</span></div>
+          <figcaption data-en="A hand set on a crimp." data-ru="Рука на мизере.">A hand set on a crimp.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--11">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-05-rest@2x.webp</span></div>
+          <figcaption data-en="Resting on the wall between goes." data-ru="Отдых на стене между попытками.">Resting on the wall between goes.</figcaption>
+        </figure>
+        <figure class="collage__fig collage__fig--32">
+          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-06-wide@2x.webp</span></div>
+          <figcaption data-en="The board, from the floor." data-ru="Доска — снизу, от пола.">The board, from the floor.</figcaption>
+        </figure>
+      </div>
+    </section>
   </div>
 </section>
 

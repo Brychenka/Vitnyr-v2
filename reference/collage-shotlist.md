@@ -1,9 +1,18 @@
 # Collage — shot list and asset contract
 
-For the `#collage` section on the Vitnyr site (`feature/photo-collage`).
-Written before the layout so the layout is built around real frames, not the
-other way round. Nothing here is shot yet; the section ships with reserved
-empty boxes until it is.
+For the `#collage` view on the Vitnyr site. Written before the layout so the
+layout is built around real frames, not the other way round. Nothing here is
+shot yet; the view ships with reserved empty boxes until it is.
+
+**v2 — 2026-09-05.** The original contract was a single mixed grid of six
+shots (two per crop ratio, domain-anchored slugs `01`–`06`). Igor asked for
+the collage to become **three labelled domain groups — English, then chess,
+then climbing — with a bigger set per group**. This file is rewritten to
+match; the six-shot cap and the old `NN-slug` filenames are retired. If you
+are picking up mid-shoot against the old list, the mapping is: `01-chess-board`
+→ `chess-01-board`, `02-climb-board` → `climb-01-board`, `03-call` →
+`en-01-call`, `04-table-yerevan` → `en-02-yerevan-table`, `05-yerevan-window`
+→ `en-06-window`, `06-hands` → split into `chess-05-pieces` / `climb-04-crimp`.
 
 ## The one hard rule
 
@@ -19,79 +28,59 @@ happening; the words carry the claims.
 
 ## Subject
 
-Three domains the site already runs on — English coaching, chess, climbing —
-plus Yerevan as the place. Each frame should show the activity *being done*,
-not a portrait of Igor next to a prop. The site's argument is that one method
-transfers across all three; the pictures should feel like the same person in
-the same frame of mind in three different rooms.
+The three domains the site already runs on — English coaching, chess,
+climbing. The site's argument is that one method transfers across all three;
+the pictures should feel like the same person in the same frame of mind in
+three different rooms. Each frame shows the activity *being done*, not a
+portrait of Igor next to a prop.
 
-## Shots
+Order on the page is **English → chess → climbing**: English is the offer,
+chess and climbing are the proof it transfers (this matches the hero trifecta
+and section 03).
 
-Six proposed. The three marked **[core]** are the ones to get if only three
-are ever taken — one per domain, each showing the activity rather than a pose.
+## Shots — six per group, eighteen total
 
-### 01 — Over the board  **[core]**
-- **In frame:** Igor mid-game, seated, looking down into the position. Hand on
-  a piece or on the clock. Opponent out of focus or cropped to a shoulder.
-- **Orientation:** portrait (4:5).
-- **Evidences:** chess. The site's line is *the feedback loop is a
-  scoreboard* — this is the moment before a move is committed, which is where
-  that pressure actually lives.
-- **Earns its place over:** a posed shot of Igor beside a board. A hand
-  already on a piece reads as a real game; a tidy starting position reads as a
-  photo shoot.
+Each group runs **six frames at a fixed mix of the three crop ratios: two
+`4:5`, two `3:2`, two `1:1`.** Two-of-each keeps every group reading as a
+system rather than a scrapbook, and keeps the reserved-box heights balanced
+before any image lands. A group may ship with as few as five if a sixth can't
+be shot honestly — drop one `1:1` first.
 
-### 02 — On the system board  **[core]**
-- **In frame:** Igor on a steep indoor training board (Kilter / system
-  board), caught mid-move — one hand reaching, body tensioned, feet placed.
-  Chalk visible.
-- **Orientation:** portrait (4:5).
-- **Evidences:** climbing, and specifically the *7C Kilter boulder* the site
-  cites. The board is adjustable and repeatable, which is the deliberate-
-  practice point — an outdoor crag would say "adventure," not "training."
-- **Earns its place over:** a summit or scenic outdoor shot. Pretty, off-
-  message: the site frames climbing as load management under a scoreboard
-  (the grade), not as travel.
+`NN` runs `01`–`06` in on-screen reading order (top-to-bottom, the order
+Stage 4 also staggers reveals in).
 
-### 03 — A lesson on a call  **[core]**
-- **In frame:** Igor at his desk mid-sentence on a video call — headset or
-  earbuds, hands moving, laptop open. The other person's screen is not
-  legible (blur or angle); no student's face is identifiable.
-- **Orientation:** landscape (3:2).
-- **Evidences:** the coaching itself, as it actually happens — one-on-one,
-  online. There is no classroom to photograph; this is the real delivery.
-- **Earns its place over:** a whiteboard / classroom setup. That's a teaching
-  aesthetic the practice doesn't use, and it would be staged.
+### English — `en-*`  (no classroom to photograph; this is the real delivery)
 
-### 04 — In person, Yerevan
-- **In frame:** Igor across a small café or office table from one person, both
-  leaning in, a notebook or phone between them. Read from behind or beside the
-  student so they are not identifiable.
-- **Orientation:** square (1:1).
-- **Evidences:** *online or in Yerevan* — the in-person half of the offer, and
-  a second human presence so the section isn't six frames of one man alone.
-- **Earns its place over:** another solo shot. The section needs one frame
-  with a student in it, kept anonymous.
+| # | slug | ratio | in frame |
+|---|---|---|---|
+| 01 | `en-01-call` | 3:2 | Igor at his desk mid-sentence on a video call — headset/earbuds, hands moving, laptop open. The other screen is not legible; no student's face identifiable. |
+| 02 | `en-02-yerevan-table` | 1:1 | Igor across a small café/office table from one person, both leaning in, a notebook between them. Shot from behind/beside the student so they are not identifiable. |
+| 03 | `en-03-desk` | 4:5 | The working desk itself, upright frame — laptop, notes, the tools of the lesson. Igor small in frame or just out of it. |
+| 04 | `en-04-correction` | 1:1 | Close on a sentence being corrected by hand — pen on paper or stylus on screen, the edit visible as an act, not a legible claim. |
+| 05 | `en-05-markup` | 3:2 | A text between two people being pulled apart — highlighting, margin notes. Hands and page, no faces needed. |
+| 06 | `en-06-window` | 4:5 | The view Igor works against — a specific Yerevan street, tufa stone, Ararat behind the rooflines if it's there. Grounds "Yerevan" without a postcard. |
 
-### 05 — Yerevan, from the desk
-- **In frame:** the view Igor actually works against — a window onto a
-  specific Yerevan street, tufa stone, Ararat behind the rooflines if it's
-  there. Igor small in the frame or just out of it.
-- **Orientation:** landscape (3:2).
-- **Evidences:** place, without a postcard. Grounds "Yerevan" as a real desk
-  in a real city rather than a location tag.
-- **Earns its place over:** a landmark shot (Cascade, Republic Square). Those
-  say "tourism"; a working window says "this is where the calls happen."
+### Chess — `chess-*`  (the feedback loop is a rating that doesn't negotiate)
 
-### 06 — The same hands
-- **In frame:** hands only, close. Chalked fingers on a crimp, or fingers
-  resetting chess pieces to the starting rank. Macro, shallow depth.
-- **Orientation:** square (1:1).
-- **Evidences:** connects the two proof domains through one pair of hands, and
-  gives the composition one quiet close-up for rhythm against the wider
-  frames.
-- **Earns its place over:** a fourth full-body shot. The grid needs a texture
-  tile, not more scale.
+| # | slug | ratio | in frame |
+|---|---|---|---|
+| 01 | `chess-01-board` | 4:5 | Igor mid-game, seated, looking down into the position, hand on a piece or the clock. Opponent out of focus or cropped to a shoulder. The moment before a move is committed. |
+| 02 | `chess-02-clock` | 1:1 | The clock, close, a hand near it between moves. The scoreboard as a physical object, no number doctored in. |
+| 03 | `chess-03-study` | 3:2 | A position set up away from a game for study — board, a book or screen beside it, notes. |
+| 04 | `chess-04-reset` | 4:5 | Hands resetting the pieces to the starting rank. The repeatable-practice point. |
+| 05 | `chess-05-pieces` | 1:1 | Captured pieces off to the side of the board. Texture tile; quiet. |
+| 06 | `chess-06-notation` | 3:2 | A pen and a score sheet being filled in move by move — the act of notating, not a readable result. |
+
+### Climbing — `climb-*`  (the scoreboard is the grade; gravity keeps it honest)
+
+| # | slug | ratio | in frame |
+|---|---|---|---|
+| 01 | `climb-01-board` | 4:5 | Igor on a steep indoor training board (Kilter / system board), caught mid-move — one hand reaching, body tensioned, feet placed. Chalk visible. |
+| 02 | `climb-02-chalk` | 1:1 | Chalking up between attempts — hand in the bag, close. |
+| 03 | `climb-03-feet` | 3:2 | Feet placed on holds before the reach — the deliberate part, lower body. |
+| 04 | `climb-04-crimp` | 4:5 | A hand set on a crimp, chalked fingers, close. Connects to the chess "hands" tile as one pair of hands across two domains. |
+| 05 | `climb-05-rest` | 1:1 | Resting on the wall between goes — a still moment on the board, not a summit. |
+| 06 | `climb-06-wide` | 3:2 | The training board from the floor — the whole adjustable panel, Igor small on it or off it. An adjustable board, not a crag: the point is practice, not adventure. |
 
 ## Delivery contract
 
@@ -100,64 +89,67 @@ budget it gets recompressed, not waved through.
 
 ### Crop aspect ratios — three, no more
 
-| Ratio | Used by | Reading |
+| Ratio | Per group | Reading |
 |---|---|---|
-| `4 / 5` | 01 chess, 02 climb | upright figure, the two proof domains |
-| `3 / 2` | 03 call, 05 Yerevan | wide, the context frames |
-| `1 / 1` | 04 table, 06 hands | the close / human tiles |
+| `4 / 5` | 2 | upright figure / the board |
+| `3 / 2` | 2 | wide, the context frames |
+| `1 / 1` | 2 | the close / texture tiles |
 
-Two portraits, two landscapes, two squares — a set that reads as a system,
-not a scrapbook. A figure's ratio is fixed here and hard-coded into the
-markup; it must not change when the real file lands (this is what protects
-the site's zero-layout-shift record).
+A figure's ratio is fixed here and hard-coded into the markup
+(`.collage__fig--45 / --32 / --11`); it must not change when the real file
+lands — this is what protects the site's zero-layout-shift record.
 
 ### Resolution and delivery widths
 
 - **Shoot** at 3000 px or more on the long edge, so crops to any of the three
   ratios still have latitude.
 - **Deliver** two widths per image, `1x` and `2x`. Largest a tile ever renders
-  is ~720 px CSS wide, so:
+  is ~460 px CSS wide now (three columns inside `--maxw`), so:
 
 | Ratio | `@1x` | `@2x` |
 |---|---|---|
-| `4 / 5` | 720 × 900 | 1440 × 1800 |
-| `3 / 2` | 720 × 480 | 1440 × 960 |
-| `1 / 1` | 640 × 640 | 1280 × 1280 |
+| `4 / 5` | 460 × 575 | 920 × 1150 |
+| `3 / 2` | 460 × 307 | 920 × 614 |
+| `1 / 1` | 460 × 460 | 920 × 920 |
 
 ### Format
 
 - **WebP** primary, quality ~72.
 - **JPEG** fallback (progressive), quality ~78, for `<picture>`'s `<img>`.
 - Ship the files **as shot, in colour.** The grayscale treatment is a CSS
-  `filter` custom property valued per theme (plan decision 1) — keeping the
-  file in colour means one asset serves both cream and charcoal, and the
-  decision stays reversible.
+  `filter` custom property valued per theme — keeping the file in colour means
+  one asset serves both cream and charcoal, and the decision stays reversible.
 
-### Weight budget — enforced
+### Weight budget — enforced (revised for 18 images)
 
-- **6 images maximum.**
-- **≤ 120 KB** per delivered `@2x` WebP.
-- **≤ 720 KB** total across all six `@2x` WebP (≈ 960 KB once base64-inlined
-  into the single-file artifact — well under the 16 MB cap).
-- JPEG fallbacks kept lean too (~140 KB each) but are not counted toward the
-  inline budget.
+The old budget was 6 images, ≤120 KB each, ≤720 KB total. At eighteen smaller
+tiles:
+
+- **18 images maximum** (6 per group; a group may ship 5).
+- **≤ 90 KB** per delivered `@2x` WebP.
+- **≤ 1.6 MB** total across all `@2x` WebP → ≈ 2.1 MB once base64-inlined into
+  the single-file artifact — still well under the 16 MB cap.
+- JPEG fallbacks kept lean (~110 KB each) but not counted toward the inline
+  budget.
 - Over budget → recompress. The budget does not move.
 
 ### Filenames — under `assets/collage/`
 
-`NN-slug@1x.webp`, `NN-slug@2x.webp`, `NN-slug@1x.jpg`, `NN-slug@2x.jpg`
-
-`NN` is `01`–`06` in composition reading order (top-to-bottom on screen — the
-order Stage 4 also staggers reveals in). `slug` is domain-anchored:
+`<domain>-NN-slug@1x.webp`, `@2x.webp`, `@1x.jpg`, `@2x.jpg` — `<domain>` is
+`en`, `chess` or `climb`; `NN` is `01`–`06` in on-screen reading order.
 
 ```
 assets/collage/
-  01-chess-board@1x.webp   01-chess-board@2x.webp   01-chess-board@1x.jpg   01-chess-board@2x.jpg
-  02-climb-board@1x.webp    02-climb-board@2x.webp   02-climb-board@1x.jpg   02-climb-board@2x.jpg
-  03-call@1x.webp           03-call@2x.webp          03-call@1x.jpg          03-call@2x.jpg
-  04-table-yerevan@1x.webp  04-table-yerevan@2x.webp 04-table-yerevan@1x.jpg 04-table-yerevan@2x.jpg
-  05-yerevan-window@1x.webp 05-yerevan-window@2x.webp 05-yerevan-window@1x.jpg 05-yerevan-window@2x.jpg
-  06-hands@1x.webp          06-hands@2x.webp         06-hands@1x.jpg         06-hands@2x.jpg
+  en-01-call@{1x,2x}.{webp,jpg}
+  en-02-yerevan-table@{1x,2x}.{webp,jpg}
+  en-03-desk@{1x,2x}.{webp,jpg}
+  en-04-correction@{1x,2x}.{webp,jpg}
+  en-05-markup@{1x,2x}.{webp,jpg}
+  en-06-window@{1x,2x}.{webp,jpg}
+  chess-01-board@…   chess-02-clock@…   chess-03-study@…
+  chess-04-reset@…   chess-05-pieces@…  chess-06-notation@…
+  climb-01-board@…   climb-02-chalk@…   climb-03-feet@…
+  climb-04-crimp@…   climb-05-rest@…    climb-06-wide@…
 ```
 
 ### Alt text
@@ -165,3 +157,10 @@ assets/collage/
 Real, descriptive, bilingual, added in Stage 3 via the existing
 `data-en` / `data-ru` mechanism — a translatable string, not an afterthought.
 Describes what is in the photograph; makes no claim.
+
+### Still Igor's to confirm
+
+The shot briefs above and every Russian caption in `index.html` are a
+model's first pass. Igor coaches language for a living and captions fall
+under "real material only" — he vets the RU and signs off the brief list
+before the shoot.
