@@ -61,29 +61,31 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <button class="tool langswitch" type="button" data-magnetic>RU</button>
     <!-- Collage nav icons — design handoff in reference/design_handoff_collage_nav_icons/
          (chess / screw-lock carabiner / open book). SVG paths pasted verbatim per that
-         spec. Looks only for now: no click behaviour wired up yet (no data-jump, no
-         #collage router hook, no figure ids) — that's a separate pass. -->
+         spec. Each is a shortcut into the #collage view: data-collage-jump opens the
+         view (if closed) and smooth-scrolls to that domain's group — wired in main.js
+         initCollageView(). The same glyph is echoed on that group's label so the icon
+         visibly lands where it points. -->
     <span class="tools__rule" aria-hidden="true"></span>
-    <button class="tool tool--icon" type="button" aria-label="Chess photograph" title="Chess" data-magnetic>
+    <button class="tool tool--icon" type="button" aria-label="Jump to the chess photographs" title="Chess" data-collage-jump="chess" data-magnetic>
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <rect x="5" y="5" width="6.25" height="6.25" fill="currentColor"/>
-        <rect x="12.75" y="5" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.6"/>
-        <rect x="5" y="12.75" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <rect x="12.75" y="5" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <rect x="5" y="12.75" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.8"/>
         <rect x="12.75" y="12.75" width="6.25" height="6.25" fill="currentColor"/>
       </svg>
     </button>
-    <button class="tool tool--icon" type="button" aria-label="Climbing photograph" title="Climbing" data-magnetic>
+    <button class="tool tool--icon" type="button" aria-label="Jump to the climbing photographs" title="Climbing" data-collage-jump="climb" data-magnetic>
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
-           stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"/>
         <path d="M16.9 8.4 16.42 10"/>
         <path d="M14.74 15.6 13.9 18.4"/>
         <path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"/>
       </svg>
     </button>
-    <button class="tool tool--icon" type="button" aria-label="English coaching photograph" title="English" data-magnetic>
+    <button class="tool tool--icon" type="button" aria-label="Jump to the English coaching photographs" title="English" data-collage-jump="en" data-magnetic>
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
-           stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"/>
         <path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"/>
       </svg>
@@ -443,8 +445,15 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 
     <!-- ENGLISH — the offer. Chess and climbing below are proof it transfers. -->
     <section class="view__group" aria-labelledby="collage-en">
-      <p class="label"><span data-en="English" data-ru="Английский">English</span></p>
-      <h3 id="collage-en"
+      <p class="label label--glyph">
+        <svg class="label__mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"/>
+          <path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"/>
+        </svg>
+        <span data-en="English" data-ru="Английский">English</span>
+      </p>
+      <h3 id="collage-en" tabindex="-1"
           data-en="The coaching itself — one-on-one, online or in Yerevan."
           data-ru="Сама работа — один на один, онлайн или в Ереване.">The coaching itself — one-on-one, online or in Yerevan.</h3>
       <p class="view__group-lede" data-l="en">There is no classroom to photograph. This is how a lesson actually runs: a call, a table, a text being pulled apart.</p>
@@ -479,8 +488,16 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 
     <!-- CHESS — proof domain one: a rating that doesn't negotiate. -->
     <section class="view__group" aria-labelledby="collage-chess">
-      <p class="label"><span data-en="Chess" data-ru="Шахматы">Chess</span></p>
-      <h3 id="collage-chess"
+      <p class="label label--glyph">
+        <svg class="label__mark" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="5" y="5" width="6.25" height="6.25" fill="currentColor"/>
+          <rect x="12.75" y="5" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <rect x="5" y="12.75" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <rect x="12.75" y="12.75" width="6.25" height="6.25" fill="currentColor"/>
+        </svg>
+        <span data-en="Chess" data-ru="Шахматы">Chess</span>
+      </p>
+      <h3 id="collage-chess" tabindex="-1"
           data-en="Where the feedback loop is a rating that doesn't negotiate."
           data-ru="Где обратная связь — рейтинг, который не торгуется.">Where the feedback loop is a rating that doesn't negotiate.</h3>
       <p class="view__group-lede" data-l="en">A 2100 rating, earned move by move. The frames catch the moment before a move is committed — which is where the pressure lives.</p>
@@ -515,8 +532,17 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 
     <!-- CLIMBING — proof domain two: the grade, kept honest by gravity. -->
     <section class="view__group" aria-labelledby="collage-climb">
-      <p class="label"><span data-en="Climbing" data-ru="Скалолазание">Climbing</span></p>
-      <h3 id="collage-climb"
+      <p class="label label--glyph">
+        <svg class="label__mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"/>
+          <path d="M16.9 8.4 16.42 10"/>
+          <path d="M14.74 15.6 13.9 18.4"/>
+          <path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"/>
+        </svg>
+        <span data-en="Climbing" data-ru="Скалолазание">Climbing</span>
+      </p>
+      <h3 id="collage-climb" tabindex="-1"
           data-en="Where the scoreboard is the grade, and gravity keeps it honest."
           data-ru="Где табло — это категория, а гравитация не даёт соврать.">Where the scoreboard is the grade, and gravity keeps it honest.</h3>
       <p class="view__group-lede" data-l="en">A 7c redpoint indoors and a 7C Kilter boulder — trained on an adjustable board, not a crag, because the point is deliberate practice, not adventure.</p>

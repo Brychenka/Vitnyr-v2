@@ -1,19 +1,29 @@
 """Collage nav icons — chess / screw-lock carabiner / open book buttons added
 to `nav.tools` (design handoff: `reference/design_handoff_collage_nav_icons/`).
 
-This pass shipped looks only: SVG paths pasted verbatim, `.tool` reused
-as-is, no click behaviour. Covers structure, accessible names, glyph
-fidelity, ink tokens, and the two responsive bugs the sizing pass caught —
-the wordmark shrinking below its brand-mandated floor, and the icon row
-having nowhere to go below ~600px.
+The glyphs shipped looks-only first (SVG paths pasted verbatim, `.tool`
+reused as-is); they are now wired as shortcuts into the `#collage` view —
+each carries `data-collage-jump` and, on click, opens the view and moves
+focus to its domain group's heading (`main.js` `initCollageView`). Covers
+structure, accessible names, glyph fidelity, ink tokens, the jump wiring,
+and the two responsive bugs the sizing pass caught — the wordmark shrinking
+below its brand-mandated floor, and the icon row having nowhere to go below
+~600px.
 """
 
 import pytest
 
 from conftest import NARROW, WIDE, horizontal_overflow
 
-ICON_LABELS = ["Chess photograph", "Climbing photograph", "English coaching photograph"]
+ICON_LABELS = [
+    "Jump to the chess photographs",
+    "Jump to the climbing photographs",
+    "Jump to the English coaching photographs",
+]
 ICON_TITLES = ["Chess", "Climbing", "English"]
+
+# data-collage-jump key -> the group heading id it must land focus on
+JUMP_TARGETS = [("chess", "collage-chess"), ("climb", "collage-climb"), ("en", "collage-en")]
 
 # --lockup's floor. 13vw only exceeds this above ~1354px, so both NARROW and
 # WIDE (1280) sit on the floor.
@@ -106,24 +116,40 @@ def test_icon_svgs_render_at_the_specified_19px(open_site):
         assert box["height"] == pytest.approx(19, abs=0.5)
 
 
-def test_icon_buttons_have_no_click_wiring_yet(open_site):
-    """Looks-only boundary for this pass. Update/remove this test in the same
-    change that wires the icons to the #collage router (data-jump, figure
-    ids, the click handler) — see BUILD-NOTES.md's "collage nav icons" entry,
-    same pattern as test_content.py's placeholder tests."""
+@pytest.mark.parametrize("jump_key,heading_id", JUMP_TARGETS)
+def test_icon_buttons_jump_to_their_collage_group(open_site, jump_key, heading_id):
+    """Each icon carries data-collage-jump and, on click, opens the #collage
+    view and moves focus onto that domain group's heading — clear of the
+    sticky .view__bar and near the top of the view. See BUILD-NOTES.md's
+    "collage nav icons" entry."""
     page, _ = open_site()
-    buttons = _icon_buttons(page)
-    for i in range(3):
-        assert buttons.nth(i).get_attribute("data-jump") is None
-        assert buttons.nth(i).get_attribute("onclick") is None
+    btn = page.locator(f'.tools .tool--icon[data-collage-jump="{jump_key}"]')
+    assert btn.count() == 1
 
-    figure_ids = page.evaluate(
-        "() => ['fig-chess', 'fig-climb', 'fig-english'].map(id => !!document.getElementById(id))"
+    btn.click()
+    page.wait_for_selector("html.collage-open")
+    assert "#collage" in page.url
+
+    # focus settles on the target heading (tabindex -1), not the view wrapper
+    page.wait_for_function(
+        "id => document.activeElement && document.activeElement.id === id", arg=heading_id
     )
-    assert figure_ids == [False, False, False]
 
-    buttons.nth(0).click()
-    page.wait_for_timeout(200)
+    page.wait_for_timeout(600)  # let the smooth scroll finish before measuring
+    placed = page.locator(f"#{heading_id}").evaluate(
+        """el => {
+            const r = el.getBoundingClientRect();
+            const bar = document.querySelector('#collage .view__bar').getBoundingClientRect();
+            return r.top >= bar.bottom - 2 && r.top < innerHeight * 0.75;
+        }"""
+    )
+    assert placed, f"{heading_id} not brought to the top of the view"
+
+
+def test_icons_do_not_open_the_view_on_load(open_site):
+    """The wiring is click-only: a cold load must not have the view open or
+    the hash set just because the icons exist."""
+    page, _ = open_site()
     assert "collage-open" not in page.locator("html").get_attribute("class")
     assert "#collage" not in page.url
 

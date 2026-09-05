@@ -63,13 +63,21 @@ and a matching GSAP CustomEase in JS, so the two never drift apart.
   claims. The mark's "V and Y fused" reading stays the *official* one per the
   brand file; the "three strokes = three disciplines" reading is Igor's own
   addition on top of it, not a replacement, per his 2026-09-05 direction.
-- **Collage nav icons have looks but no behaviour yet.** The three
-  `.tool--icon` buttons in `nav.tools` (chess / carabiner / book) render and
-  are responsive, but nothing happens on click: no `data-jump`, no hook into
-  the `#collage` router, no ids on the target figures. That's the design
-  handoff's own "behaviour" section — see
-  `reference/design_handoff_collage_nav_icons/README.md` — deliberately
-  deferred to a separate pass.
+- **Collage nav icons are wired (2026-09-05).** The three `.tool--icon`
+  buttons in `nav.tools` (chess / carabiner / book) each carry
+  `data-collage-jump` (`chess` / `climb` / `en`) and, on click, open the
+  `#collage` view if it is closed and scroll its own container to that
+  domain group, landing focus on the group's `<h3>` (now `tabindex="-1"`,
+  same focus pattern as `#collage-title`). Scroll is native
+  `view.scrollTo({behavior})` — `'smooth'` normally, `'auto'` under
+  `prefers-reduced-motion` — done synchronously, not in a rAF, because a
+  deferred frame can be suspended in a background tab (same reason
+  `applyOpen` focuses synchronously). The sticky `.view__bar` height is
+  subtracted so the heading clears it. The same glyph is echoed on each
+  group's `.label` (`.label--glyph` + `.label__mark`, inked in `--fg2` to
+  match the nav icons) so the icon visibly lands where it points. See the
+  "collage nav icons" section below and
+  `reference/design_handoff_collage_nav_icons/README.md`.
 
 ## The five specialist passes
 
@@ -243,6 +251,37 @@ in one row below ~600px no matter how tight the gaps get, so below that width
 `.tools` wraps onto its own right-aligned line and `--head` grows to match
 (same media query, `style.css`). Verified no horizontal overflow at 320 /
 375 / 600 / 601 / 1280px, both themes.
+
+**Behaviour half (2026-09-05).** The "behaviour" section of the handoff is
+now done — Igor: *"take the nav bar icons and attach them to the respective
+place on the collage … make transition smooth."* Each button gained
+`data-collage-jump="chess|climb|en"`; `main.js` `initCollageView()` wires
+them to open `#collage` (via the same `pushState` + `sync(false)` the
+`data-collage-open` link uses) and then `view.scrollTo({ top, behavior })`
+to that group — `behavior: 'smooth'` normally, `'auto'` under
+`prefers-reduced-motion`. The scroll runs synchronously in the click
+handler, not inside a `requestAnimationFrame`: `applyOpen` has already
+flipped `.collage-open` (visibility/opacity only, so geometry is live) and a
+deferred frame can be suspended in a background tab. Target is the group's
+top minus the sticky `.view__bar` height minus 20px, clamped at 0; focus
+then moves to the group's `<h3>`, which gained `tabindex="-1"` and the same
+`:focus` / `:focus-visible` outline pair as `#collage-title`. Each group's
+`.label` also gained the matching glyph (`.label--glyph` wrapper +
+`.label__mark`, SVG pasted verbatim from the masthead, sized `1.15em` off
+the 12px label, inked `--fg2`) so the icon you click visibly lands on its
+section. Verified: jump + focus for all three from cold and warm state,
+both themes, EN/RU (glyphs persist across the language switch), 375 / 1280,
+deep-link still lands focus on `#collage-title`, Back / Esc / browser-back
+unaffected, no horizontal overflow.
+
+`test_collage_nav_icons.py` updated in the same change: the accessible-name
+list now expects the action phrasings ("Jump to the chess photographs" …),
+and `test_icon_buttons_have_no_click_wiring_yet` is replaced by
+`test_icon_buttons_jump_to_their_collage_group` (parametrized per domain)
+plus `test_icons_do_not_open_the_view_on_load`.
+`test_icon_svgs_render_at_the_specified_17px` is a **pre-existing** failure
+(icons are 19px since 597e188) with a fix already sitting on the
+`feature/nav-icon-weight` branch — left untouched here to avoid a conflict.
 
 ## Collage → three domain groups (2026-09-05)
 
