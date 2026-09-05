@@ -77,6 +77,40 @@ def test_every_reveal_eventually_resolves_visible(open_site):
     assert stuck == 0
 
 
+def test_origin_mark_keyboard_focus_reveals_its_panel(open_site):
+    """Tab to the chess hit-region: no mouse involved, so this is the
+    keyboard-only path through the interactive mark."""
+    page, _ = open_site()
+    btn = page.locator('.origin__hit[data-discipline="chess"]')
+    btn.focus()
+    page.wait_for_timeout(700)
+    assert btn.get_attribute("aria-pressed") == "true"
+    item = page.locator('.origin__panel-item[data-discipline="chess"]')
+    assert item.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    assert item.get_attribute("aria-hidden") == "false"
+    other = page.locator('.origin__panel-item[data-discipline="english"]')
+    assert other.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.05
+    assert other.get_attribute("aria-hidden") == "true"
+
+
+def test_origin_mark_hover_switches_between_disciplines(open_site):
+    page, _ = open_site()
+    english = page.locator('.origin__hit[data-discipline="english"]')
+    english.scroll_into_view_if_needed()
+    page.wait_for_timeout(300)
+    english.hover()
+    page.wait_for_timeout(700)
+    assert page.locator('.glyph__part--left').evaluate("el => el.classList.contains('is-active')")
+
+    page.locator('.origin__hit[data-discipline="climbing"]').hover()
+    page.wait_for_timeout(700)
+    stem = page.locator('.glyph__part--stem')
+    assert stem.evaluate("el => el.classList.contains('is-active')")
+    assert not stem.evaluate("el => el.classList.contains('is-dim')")
+    left = page.locator('.glyph__part--left')
+    assert left.evaluate("el => el.classList.contains('is-dim')")
+
+
 def test_counters_count_up_to_exact_values(open_site):
     page, _ = open_site()
     page.locator(".facts").scroll_into_view_if_needed()

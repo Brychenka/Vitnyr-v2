@@ -105,4 +105,4 @@ def test_og_url_and_image_not_yet_asserted(open_site):
 def test_section_numbering_is_sequential(open_site):
     page, _ = open_site()
     nums = page.locator(".sec .label .num").all_inner_texts()
-    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05"]
+    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05", "06"]

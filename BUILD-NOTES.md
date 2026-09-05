@@ -53,6 +53,15 @@ and a matching GSAP CustomEase in JS, so the two never drift apart.
   and 7c — redpoint indoor, and a 7C Kilter boulder.
 - **Positioning.** Still Framing B. The hero and the "who this is for" block are
   marked `SWAPPABLE BLOCK`; Framing A is a copy edit, not a rebuild.
+- **The `#origin` ("Name & mark") section's etymology needs your sign-off.**
+  `reference/vitnyr-brand-identity.md` defines the mark's geometry and colours
+  but never states what "Vitnyr" means or where it comes from. The section
+  currently reads it as Old Norse `vit` (sense, understanding) + `nýr` (new) —
+  a proposed compound, not a sourced one. Confirm, correct, or replace before
+  this ships; "real material only" applies to etymology the same as to client
+  claims. The mark's "V and Y fused" reading stays the *official* one per the
+  brand file; the "three strokes = three disciplines" reading is Igor's own
+  addition on top of it, not a replacement, per his 2026-09-05 direction.
 
 ## The five specialist passes
 

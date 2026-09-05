@@ -96,6 +96,30 @@ def test_reduced_motion_shows_all_content_immediately(open_site):
     assert state == {"heroDone": True, "hiddenReveals": 0, "maskedLines": 0}, state
 
 
+def test_origin_mark_shows_all_disciplines_statically_without_js(open_site):
+    """No-JS floor: with the interaction mechanism unavailable, the three
+    discipline/stat pairs must all be visible at once, not hover-gated."""
+    page, _ = open_site(java_script_enabled=False)
+    items = page.locator(".origin__panel-item")
+    assert items.count() == 3
+    for i in range(3):
+        assert items.nth(i).evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    text = page.evaluate("() => document.querySelector('.origin__panel').innerText").lower()
+    assert "english" in text and "chess" in text and "climbing" in text
+
+
+def test_origin_mark_still_interactive_under_reduced_motion(open_site):
+    """Reduced motion removes the animation, not the interaction: focusing a
+    hit-region must still switch the active discipline."""
+    page, _ = open_site(reduced_motion=True)
+    btn = page.locator('.origin__hit[data-discipline="climbing"]')
+    btn.focus()
+    page.wait_for_timeout(100)
+    assert btn.get_attribute("aria-pressed") == "true"
+    item = page.locator('.origin__panel-item[data-discipline="climbing"]')
+    assert item.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+
+
 def test_reduced_motion_counters_show_final_value_without_animating(open_site):
     page, _ = open_site(reduced_motion=True)
     page.wait_for_timeout(200)

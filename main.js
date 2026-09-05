@@ -86,6 +86,12 @@
     gsap.set('.line__inner', { y: '0%' });
     root.classList.add('hero-done');
     countUp(true);
+    // Unlike cursor/magnetic (pure decoration, nothing lost by skipping
+    // them), the origin panel is the only way — short of no-JS — to see
+    // which stroke maps to which discipline. Reduced motion drops the
+    // animation, not the content, so this still has to wire up: initOrigin()
+    // already gates its own idle-hint animation behind `reduce` internally.
+    initOrigin();
     return;
   }
 
@@ -224,6 +230,108 @@
       });
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
     nums.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------- origin: interactive mark ----------
+     Hover, focus, or tap one of the three real <button> hit-regions to light
+     up its stroke and reveal its discipline in the panel. One setActive()
+     drives every input mode so a hybrid device (touch + mouse) never gets
+     two handlers fighting over the same element: focus covers keyboard tab
+     and touch tap (tapping a button focuses it natively); pointerenter is
+     layered on top only for fine-pointer devices, so coarse pointers never
+     get a stuck-hover state.
+     aria-hidden on the panel items is set here, at runtime, rather than
+     baked into the HTML — that's what keeps the no-JS fallback (CLAUDE.md:
+     everything animation-related is additive) genuinely additive: a no-JS
+     reader never gets these attributes at all, so all three stay visible to
+     assistive tech exactly as they do visually.
+     The idle hint below borrows these same is-active/is-dim classes rather
+     than defining its own visual language — a real engagement and the hint
+     produce identical-looking states, just triggered differently. */
+  function initOrigin() {
+    var mark = document.querySelector('.origin__mark');
+    if (!mark) return;
+    var hits = mark.querySelectorAll('.origin__hit');
+    var parts = mark.querySelectorAll('.glyph__part');
+    var panelItems = document.querySelectorAll('.origin__panel-item');
+    if (!hits.length) return;
+
+    panelItems.forEach(function (el) { el.setAttribute('aria-hidden', 'true'); });
+
+    var idleTl = null;
+    // True the instant a real engagement happens, permanently. Checked by
+    // every idle-timeline step, rather than trusting .kill() alone to be
+    // synchronous: a step already queued on GSAP's ticker for the current
+    // frame can still fire after .kill() is called mid-frame, which without
+    // this guard could paint a stale idle discipline right over a real one
+    // landing in the same frame (e.g. a hover arriving as the hint starts).
+    var engaged = false;
+
+    // The visual half of activation — glyph brightness/dim plus which panel
+    // item is opaque — shared by real engagement and the idle hint below, so
+    // the two can never drift into two different-looking "active" states.
+    // aria-hidden/aria-pressed are deliberately not touched here: the idle
+    // hint is a decorative preview, not a real selection, so it stays silent
+    // to assistive tech rather than announcing three unrequested changes.
+    function paint(name) {
+      parts.forEach(function (el) {
+        var on = el.dataset.discipline === name;
+        el.classList.toggle('is-active', on);
+        el.classList.toggle('is-dim', !on);
+      });
+      panelItems.forEach(function (el) {
+        el.classList.toggle('is-active', el.dataset.discipline === name);
+      });
+    }
+    function clearPaint() {
+      parts.forEach(function (el) { el.classList.remove('is-active', 'is-dim'); });
+      panelItems.forEach(function (el) { el.classList.remove('is-active'); });
+    }
+
+    function setActive(name) {
+      engaged = true;
+      if (idleTl) { idleTl.kill(); idleTl = null; }
+      paint(name);
+      panelItems.forEach(function (el) {
+        el.setAttribute('aria-hidden', el.dataset.discipline === name ? 'false' : 'true');
+      });
+      hits.forEach(function (el) {
+        el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
+      });
+    }
+
+    hits.forEach(function (btn) {
+      var name = btn.dataset.discipline;
+      btn.addEventListener('focus', function () { setActive(name); });
+      if (finePointer) btn.addEventListener('pointerenter', function () { setActive(name); });
+    });
+
+    // One-shot hint, not a loop: previews all three discipline/stat pairs a
+    // couple of times when the section first scrolls into view, then settles
+    // back to the neutral resting state on its own. It has to preview the
+    // panel too, not just the glyph — a shimmer with no text next to it
+    // teaches nothing about what hovering actually does. Skipped outright
+    // under reduced motion; the real interaction above still works either
+    // way, and paint()/clearPaint() carry no aria side effects, so this
+    // stays silent to assistive tech.
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        if (engaged) return;
+        var order = ['english', 'chess', 'climbing'];
+        var tl = gsap.timeline({
+          repeat: 1,
+          onComplete: function () { if (!engaged) clearPaint(); idleTl = null; }
+        });
+        order.forEach(function (name) {
+          tl.call(function () { if (!engaged) paint(name); }).to({}, { duration: 1 });
+        });
+        idleTl = tl;
+      });
+    }, { threshold: 0.4 });
+    io.observe(mark);
   }
 
   /* ---------- signature move: cursor + magnetic ---------- */
@@ -464,6 +572,7 @@
   /* ---------- go ---------- */
   buildReveals();
   countUp(false);
+  initOrigin();
   initCursor();
   initMagnetic();
 

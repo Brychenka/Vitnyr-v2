@@ -407,6 +407,81 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
 }
 
+/* ---------- origin (name & mark) ---------- */
+.origin__body {
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(20px, 3vw, 32px);
+}
+/* Every other block below a .sec__head (.mechanisms, .domains, .facts, .rows)
+   fills the section width from the same 900px breakpoint; a lone centred
+   column here would be the odd one out. */
+@media (min-width: 900px) {
+  .origin__body {
+    flex-direction: row; align-items: center; justify-content: flex-start;
+    gap: clamp(40px, 6vw, 90px);
+  }
+}
+.origin__mark {
+  position: relative;
+  width: clamp(180px, 22vw, 280px);
+  flex-shrink: 0;
+  margin: 0;
+}
+.glyph { display: block; width: 100%; height: auto; overflow: visible; }
+/* Paint-only changes (opacity, brightness) — never scale, on the two arms:
+   they're clipped halves of one shared path, and scaling a clipped element
+   scales its clip boundary with it, which would tear the seam away from the
+   unmodified mark underneath. The stem is its own path, not clip-derived, so
+   it alone can carry the scale flourish safely. */
+.glyph__part {
+  transition: opacity var(--t) var(--e), filter var(--t) var(--e);
+}
+.glyph__part--stem {
+  transform-box: fill-box; transform-origin: center;
+  transition: opacity var(--t) var(--e), filter var(--t) var(--e), transform var(--t) var(--e);
+}
+.glyph__part.is-dim { opacity: .32; }
+.glyph__part.is-active { filter: brightness(1.3); }
+.glyph__part--stem.is-active { transform: scale(1.1); }
+
+/* Invisible, generously-sized hit targets — padded well past the thin visual
+   stroke (the arms render only ~8-11px wide at this size) so the target is
+   actually tappable, not traced to the glyph's own outline. Real <button>s,
+   not divs with role="button": Tab and touch both work natively, with mouse
+   hover layered on top for fine pointers only — see initOrigin() in main.js. */
+.origin__hit {
+  position: absolute; display: block; margin: 0; padding: 0; border: 0;
+  background: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.origin__hit--left  { left: 0;    top: 0; width: 50%; height: 55%; }
+.origin__hit--right { right: 0;   top: 0; width: 50%; height: 55%; }
+.origin__hit--stem   { left: 20%; right: 20%; bottom: 0; top: 55%; }
+/* Focus is communicated by the glyph brightening and the panel revealing,
+   not a rectangle around invisible geometry — see initOrigin(). */
+.origin__hit:focus-visible { outline: none; }
+
+/* Single source of the three discipline/stat pairs. Default (no JS, or JS
+   failed): all three sit in normal flow, always visible — the no-JS floor.
+   Hidden-until-active state applies only under html.js, same principle as
+   .reveal, so nothing here is ever hover-only content. */
+.origin__panel-item {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding-block: 10px; border-top: 1px solid var(--rule);
+}
+.origin__panel-item > span:first-child {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+}
+.origin__panel-stat { font-family: var(--mono); font-size: 15px; color: var(--fg); }
+html.js .origin__panel { position: relative; min-height: 3em; width: min(100%, 360px); }
+html.js .origin__panel-item {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity var(--t) var(--e);
+}
+html.js .origin__panel-item.is-active { opacity: 1; }
+
+.origin__note { color: var(--fg2); max-width: var(--measure); margin-top: clamp(32px, 5vw, 56px); }
+
 /* ---------- who ---------- */
 .rows { border-top: 1px solid var(--rule); }
 .rows > li {
