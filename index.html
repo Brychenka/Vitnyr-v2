@@ -475,9 +475,20 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="view__group-lede" data-l="en">There is no classroom to photograph. This is how a lesson actually runs: a call, a table, a text being pulled apart.</p>
       <p class="view__group-lede" data-l="ru">Класса, который можно снять, нет. Вот как на самом деле идёт занятие: созвон, стол, текст, который разбирают по частям.</p>
       <div class="collage collage--group">
-        <figure class="collage__fig collage__fig--32">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-01-call@2x.webp</span></div>
-          <figcaption data-en="A lesson on a call." data-ru="Урок на созвоне.">A lesson on a call.</figcaption>
+        <!-- PREVIEW STAND-IN (feature/photo-collage): one real photo dropped into
+             the first slot to judge the grayscale --collage-filter against.
+             It is a 4:5 climbing portrait, so this figure is --45 for now, not
+             the shot list's --32 "call". Real slotting + the <picture>/srcset/
+             bilingual-alt treatment is Stage 3 proper. -->
+        <figure class="collage__fig collage__fig--45">
+          <div class="collage__slot">
+            <img src="assets/collage/en-01@2x.jpg"
+                 srcset="assets/collage/en-01.jpg 450w, assets/collage/en-01@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="1125" loading="lazy" decoding="async"
+                 alt="Igor Shatsev at the climbing wall, a rope coiled over one shoulder, between attempts.">
+          </div>
+          <figcaption data-en="Between climbs, at the wall." data-ru="Между попытками, у стены.">Between climbs, at the wall.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--11">
           <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-02-yerevan-table@2x.webp</span></div>

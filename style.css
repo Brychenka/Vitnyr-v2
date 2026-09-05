@@ -68,6 +68,25 @@
      transform channel Stage 4's reveal needs. */
   --collage-gap-x:    clamp(14px, 2.2vw, 30px);
   --collage-gap-y:    clamp(28px, 4vw, 52px);
+
+  /* Collage photos are dropped to grayscale so uncontrolled colour — climbing
+     holds, skin, branded clothing, a chessboard's black-and-white — never
+     competes with the two semantic accents (amber = specimen, green =
+     target). Grayscale/contrast/brightness only: no sepia() or hue-rotate(),
+     which would tint the photo toward a hue the brand reserves and make it
+     read as a specimen.
+
+     One conversion, not two: contrast(1.08) gives an editorial, full-range
+     black-and-white with a real black point — flat indoor source material
+     wants the punch, and a milky lifted shadow is the tell of a weak B&W.
+     The 1px --rule frame around each figure does the job of separating the
+     photo from the page, so the filter doesn't need a brightness lift to
+     keep the darks off the ground. The only per-theme move is a symmetric
+     +/-2% brightness (below) so the image carries equal visual weight on
+     the luminous cream ground and on charcoal. Judged against en-01 in both
+     pairs at 375 and 1280; Stage 3 re-checks once chess + climbing (very
+     different luminance profiles) are in. */
+  --collage-filter: grayscale(1) contrast(1.08) brightness(1.02);
 }
 
 @media (prefers-color-scheme: light) {
@@ -79,6 +98,7 @@
     --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
     --amber-text: #8C631D;   /* darkened stand-in, tuned to 4.5:1 on this bg (ink amber is 3.07:1) */
     --green-text: var(--green);   /* ink green already clears 4.5:1 as text here (5.62:1) */
+    --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);   /* -2% vs charcoal: equal weight on the luminous cream ground */
   }
 }
 :root[data-theme="light"] {
@@ -89,6 +109,7 @@
   --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
   --amber-text: #8C631D;
   --green-text: var(--green);
+  --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
 }
 
 /* Georgia carries no Cyrillic on most systems, so a Russian headline in the
@@ -591,6 +612,18 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 .collage__fig--45 .collage__slot { aspect-ratio: 4 / 5; }
 .collage__fig--32 .collage__slot { aspect-ratio: 3 / 2; }
 .collage__fig--11 .collage__slot { aspect-ratio: 1 / 1; }
+
+/* Real photo fills the ratio box the placeholder already reserved — the 1px
+   hairline on .collage__slot stays as the frame, the padding (there for the
+   filename chip) is dropped. object-fit locks the crop to that reserved box,
+   so nothing shifts when the image decodes — the build's zero-CLS record.
+   Grayscale treatment is the per-theme --collage-filter token above. */
+.collage__slot:has(img) { padding: 0; }
+.collage img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover;
+  filter: var(--collage-filter);
+}
 /* Sans, not mono: mono on this page is quoted linguistic material, and a
    filename is neither. Placeholder only — deleted with the boxes in Stage 3. */
 .collage__wait {
