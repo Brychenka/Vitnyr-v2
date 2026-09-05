@@ -752,11 +752,15 @@ html[data-lang="ru"] .view__group > h3 { letter-spacing: -.008em; }
 
 /* Each group's label carries the same glyph as its masthead nav icon, so the
    icon you click visibly lands on the section it points to. Decorative (the
-   word is the label; the mark is aria-hidden). Sized in em off the 12px label
-   and inked in --fg2 to match the nav icons — a glyph, not text, so the
+   word is the label; the mark is aria-hidden). Held at 20px for parity with the
+   19px masthead nav glyph it echoes — the earlier 1.15em (~14px) off the 12px
+   label rendered a near-invisible hairline once the 1.8 stroke scaled down.
+   stroke-width bumped to 2.2 here (CSS wins over the SVG attr) so the outline
+   glyphs keep their weight at 20px; no effect on the fill-based chess mark.
+   Still inked in --fg2 to match the nav icons — a glyph, not text, so the
    sub-24px accent-text rule doesn't come into it; fg2 is the restrained match. */
-.label--glyph { align-items: center; gap: .7em; }
-.label__mark { width: 1.15em; height: 1.15em; flex: none; }
+.label--glyph { align-items: center; gap: .55em; }
+.label__mark { width: 20px; height: 20px; flex: none; stroke-width: 2.2; }
 
 .view__group-lede {
   max-width: var(--measure); color: var(--fg2);
