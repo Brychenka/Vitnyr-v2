@@ -313,6 +313,32 @@ carries ~6 placeholder figures, so the view goes from 6 reserved boxes to 18.
   inert, no-JS fallback); `test_i18n`'s parity sweep and `test_layout`'s
   collage-overflow check cover the new nodes automatically.
 
+## Collage view theme switch (2026-09-06)
+
+Igor: *"Make a collage page also have a cream/charcoal switch."* The open
+collage view is `position: fixed; z-index: 60`; the masthead (which carries
+the only Cream/Charcoal control) is `z-index: 40`, so once the view was open
+the theme couldn't be changed. Fix: a second `.themeswitch` button in the
+`.view__bar`, grouped with Back inside a new `.view__tools` flex cluster
+(`gap: clamp(16px, 3vw, 30px)`) that mirrors the masthead's `.tools` row —
+footmark holds the left, tools sit at the right. Reuses the `.tool` class
+(same 12px uppercase, `--fg2`, green `::after` underline) and `data-magnetic`,
+so it's the masthead button in a second place, not a new style.
+
+`theme.js` changed from `querySelector('.themeswitch')` to `querySelectorAll`
+in both `labelTheme()` and the DOMContentLoaded click wiring, so every
+`.themeswitch` is labelled and wired and the two stay in lockstep. No new
+storage, no new state — both buttons call the same `save(THEME_KEY, …)` +
+`applyTheme()`. The RU label path (`Крем` / `Уголь`) already came from
+`labelTheme()`, so the collage button localises for free. `langswitch`
+stays masthead-only (out of scope; Igor asked for theme only).
+
+Verified: switch from inside the open view flips both button labels and the
+`data-theme` attribute, persists across navigation (localStorage), both
+languages, 375 / 1280, no console errors, bar doesn't overflow at 375px.
+Live artifact "Vitnyr Signature" rebuilt from current repo files and
+republished to the same URL.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
