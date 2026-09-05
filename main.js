@@ -267,7 +267,7 @@
     // landing in the same frame (e.g. a hover arriving as the hint starts).
     var engaged = false;
 
-    // The visual half of activation — glyph brightness/dim plus which panel
+    // The visual half of activation — glyph active/dim plus which panel
     // item is opaque — shared by real engagement and the idle hint below, so
     // the two can never drift into two different-looking "active" states.
     // aria-hidden/aria-pressed are deliberately not touched here: the idle

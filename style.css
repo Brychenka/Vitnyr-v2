@@ -496,20 +496,22 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   margin: 0;
 }
 .glyph { display: block; width: 100%; height: auto; overflow: visible; }
-/* Paint-only changes (opacity, brightness) — never scale, on the two arms:
-   they're clipped halves of one shared path, and scaling a clipped element
-   scales its clip boundary with it, which would tear the seam away from the
+/* Paint-only changes (opacity) — never scale, on the two arms: they're
+   clipped halves of one shared path, and scaling a clipped element scales
+   its clip boundary with it, which would tear the seam away from the
    unmodified mark underneath. The stem is its own path, not clip-derived, so
-   it alone can carry the scale flourish safely. */
+   it alone can carry the scale flourish safely. Active state is full
+   opacity/no filter — the same --amber/--green as the navbar wordmark, not
+   a brightened stand-in — so the mark reads as one consistent colour
+   wherever it appears (2026-09-05). */
 .glyph__part {
-  transition: opacity var(--t) var(--e), filter var(--t) var(--e);
+  transition: opacity var(--t) var(--e);
 }
 .glyph__part--stem {
   transform-box: fill-box; transform-origin: center;
-  transition: opacity var(--t) var(--e), filter var(--t) var(--e), transform var(--t) var(--e);
+  transition: opacity var(--t) var(--e), transform var(--t) var(--e);
 }
 .glyph__part.is-dim { opacity: .32; }
-.glyph__part.is-active { filter: brightness(1.3); }
 .glyph__part--stem.is-active { transform: scale(1.1); }
 
 /* Invisible, generously-sized hit targets — padded well past the thin visual
@@ -524,8 +526,9 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .origin__hit--left  { left: 0;    top: 0; width: 50%; height: 55%; }
 .origin__hit--right { right: 0;   top: 0; width: 50%; height: 55%; }
 .origin__hit--stem   { left: 20%; right: 20%; bottom: 0; top: 55%; }
-/* Focus is communicated by the glyph brightening and the panel revealing,
-   not a rectangle around invisible geometry — see initOrigin(). */
+/* Focus is communicated by the dim/active contrast on the glyph and the
+   panel revealing, not a rectangle around invisible geometry — see
+   initOrigin(). */
 .origin__hit:focus-visible { outline: none; }
 
 /* Single source of the three discipline/stat pairs. Default (no JS, or JS
