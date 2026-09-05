@@ -10,6 +10,27 @@ The stage prompts below are the operational part of this file. Paste one
 into a fresh chat, one stage at a time. `collage-review.md` next to this
 file is the review gate that ran before stages 0–2 merged.
 
+## Update — 2026-09-05: Stage 2 re-opened, three domain groups
+
+Igor asked for the collage to stop being one mixed grid and become **three
+labelled domain sections — English, then chess, then climbing** — each with a
+bigger set of photos (~6). Stage 2's single asymmetric 12-column composition
+(one deliberate overlap, six `01`–`06` figures) is **retired**; each group is
+now a plain repeating grid (1→2→3 columns), no overlap, no offsets. Two
+decisions this changed:
+
+- **The six-image cap is gone.** New target is ~18 (6 per group). Per-image
+  budget tightens to ≤90 KB `@2x` WebP, ≤1.6 MB total (~2.1 MB base64). See
+  the rewritten `collage-shotlist.md` (v2) for the new per-group shot list,
+  ratio mix and filenames (`en-*` / `chess-*` / `climb-*`).
+- **`--collage-drop-*` / `--collage-overlap` tokens removed**, replaced by
+  `--collage-gap-x` / `--collage-gap-y`.
+
+Stages 3–5 below still apply, re-scoped to eighteen tiles across three grids —
+in particular Stage 4's 4-beat stagger cap needs rethinking per group, not
+across the whole view. The collage view still uses **no `.reveal`** (it never
+did); all motion remains Stage 4.
+
 ## Notes for the next chat
 
 Four things a chat starting fresh on this feature would otherwise have to
@@ -125,7 +146,7 @@ looks wrong you already know which stage owns it.
 |---|---|---|
 | 0 | Shot list and asset contract, no code | done |
 | 1 | View skeleton, copy, entry button | done |
-| 2 | Composition (CSS only, empty boxes) | done |
+| 2 | Composition (CSS only, empty boxes) | done, then re-opened 2026-09-05 → three domain groups (see update above) |
 | 3 | Real images and delivery | blocked on the shoot |
 | 4 | Motion, inside the existing system | not started |
 | 5 | Signature move and polish | not started |
