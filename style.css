@@ -199,11 +199,12 @@ html.lora-ready .lockup .wm { opacity: 1; }
 /* ---------- collage nav icons ---------- */
 .tools__rule { width: 1px; height: 14px; background: var(--rule); }
 .tool--icon { display: inline-flex; padding: 4px; }
-.tool--icon svg { display: block; width: 17px; height: 17px; }
+.tool--icon svg { display: block; width: 19px; height: 19px; }
 /* Handoff specified 13px 10px for this, commented as a 44px target — with a
-   17px glyph that's actually 37x43, short on the horizontal axis. Squared up
-   to a uniform 13.5px so both axes hit 44 exactly. */
-@media (pointer: coarse) { .tool--icon { padding: 13.5px; } }
+   17px glyph that's actually 37x43, short on the horizontal axis. The glyph
+   was since nudged to 19px for parity with the uppercase labels; padding
+   squared up to a uniform 12.5px so both axes still hit 44 exactly. */
+@media (pointer: coarse) { .tool--icon { padding: 12.5px; } }
 
 /* Cream/RU + the three icon buttons, at coarse-pointer touch-target padding,
    don't fit next to a lockup held at its 176px floor below ~600px — the
