@@ -416,10 +416,12 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      Three domain groups — English, chess, climbing, in that order —
      each its own labelled block. Headings are unnumbered: this view does
      not continue the page's 01-06 count.
-     PLACEHOLDER: real photographs of Igor Shatsev are not shot yet. Each
-     figure hard-codes its final crop ratio and names the file it waits
-     for (reference/collage-shotlist.md); no <img> until Stage 3, and
-     nothing here may shift when the real sources land.
+     Images are Stage-3 PLACEHOLDERS: CC0 / Flickr-CC stand-ins, NOT
+     photographs of Igor Shatsev, carried so the layout and motion stages
+     have real pixels to run against. They are replaced by the real shoot
+     (reference/collage-shotlist.md, assets/collage/PLACEHOLDERS.md) before
+     the live artifact is next republished. Each figure still hard-codes its
+     crop ratio, so nothing shifts when the real sources land.
      ================================================================ -->
 <!-- data-lenis-prevent: this view is its own overflow:auto scroll container,
      but Lenis (running on the document) swallows wheel events even while
@@ -475,39 +477,58 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="view__group-lede" data-l="en">There is no classroom to photograph. This is how a lesson actually runs: a call, a table, a text being pulled apart.</p>
       <p class="view__group-lede" data-l="ru">Класса, который можно снять, нет. Вот как на самом деле идёт занятие: созвон, стол, текст, который разбирают по частям.</p>
       <div class="collage collage--group">
-        <!-- PREVIEW STAND-IN (feature/photo-collage): one real photo dropped into
-             the first slot to judge the grayscale --collage-filter against.
-             It is a 4:5 climbing portrait, so this figure is --45 for now, not
-             the shot list's --32 "call". Real slotting + the <picture>/srcset/
-             bilingual-alt treatment is Stage 3 proper. -->
-        <figure class="collage__fig collage__fig--45">
+        <figure class="collage__fig collage__fig--32">
           <div class="collage__slot">
-            <img src="assets/collage/en-01@2x.jpg"
-                 srcset="assets/collage/en-01.jpg 450w, assets/collage/en-01@2x.jpg 900w"
+            <img src="assets/collage/en-01-call@2x.jpg"
+                 srcset="assets/collage/en-01-call.jpg 450w, assets/collage/en-01-call@2x.jpg 900w"
                  sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
-                 width="900" height="1125" loading="lazy" decoding="async"
-                 alt="Igor Shatsev at the climbing wall, a rope coiled over one shoulder, between attempts.">
+                 width="900" height="600" loading="lazy" decoding="async" alt="">
           </div>
-          <figcaption data-en="Between climbs, at the wall." data-ru="Между попытками, у стены.">Between climbs, at the wall.</figcaption>
+          <figcaption data-en="Mid-sentence, on a call." data-ru="На созвоне, посреди фразы.">Mid-sentence, on a call.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--11">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-02-yerevan-table@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/en-02-yerevan-table@2x.jpg"
+                 srcset="assets/collage/en-02-yerevan-table.jpg 450w, assets/collage/en-02-yerevan-table@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="900" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="In person, in Yerevan." data-ru="Вживую, в Ереване.">In person, in Yerevan.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--45">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-03-desk@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/en-03-desk@2x.jpg"
+                 srcset="assets/collage/en-03-desk.jpg 450w, assets/collage/en-03-desk@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="1125" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="The desk the calls run from." data-ru="Стол, за которым идут созвоны.">The desk the calls run from.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--11">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-04-correction@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/en-04-correction@2x.jpg"
+                 srcset="assets/collage/en-04-correction.jpg 450w, assets/collage/en-04-correction@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="900" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="A correction, written out." data-ru="Исправление, выписанное от руки.">A correction, written out.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--32">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-05-markup@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/en-05-markup@2x.jpg"
+                 srcset="assets/collage/en-05-markup.jpg 450w, assets/collage/en-05-markup@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="600" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Marking up a text together." data-ru="Разбор текста вместе.">Marking up a text together.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--45">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">en-06-window@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/en-06-window@2x.jpg"
+                 srcset="assets/collage/en-06-window.jpg 450w, assets/collage/en-06-window@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="1125" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Yerevan, from the desk." data-ru="Ереван — из окна за столом.">Yerevan, from the desk.</figcaption>
         </figure>
       </div>
@@ -531,27 +552,57 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="view__group-lede" data-l="ru">Рейтинг 2100, набранный ход за ходом. В кадре — момент перед тем, как ход сделан: там и живёт давление.</p>
       <div class="collage collage--group">
         <figure class="collage__fig collage__fig--45">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-01-board@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/chess-01-board@2x.jpg"
+                 srcset="assets/collage/chess-01-board.jpg 450w, assets/collage/chess-01-board@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="1125" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Over the board, mid-game." data-ru="За доской, посреди партии.">Over the board, mid-game.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--11">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-02-clock@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/chess-02-clock@2x.jpg"
+                 srcset="assets/collage/chess-02-clock.jpg 450w, assets/collage/chess-02-clock@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="900" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="The clock, between moves." data-ru="Часы между ходами.">The clock, between moves.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--32">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-03-study@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/chess-03-study@2x.jpg"
+                 srcset="assets/collage/chess-03-study.jpg 450w, assets/collage/chess-03-study@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="600" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="A position set up for study." data-ru="Позиция, разбираемая отдельно.">A position set up for study.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--45">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-04-reset@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/chess-04-reset@2x.jpg"
+                 srcset="assets/collage/chess-04-reset.jpg 450w, assets/collage/chess-04-reset@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="1125" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Pieces back to the starting rank." data-ru="Фигуры на исходной горизонтали.">Pieces back to the starting rank.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--11">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-05-pieces@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/chess-05-pieces@2x.jpg"
+                 srcset="assets/collage/chess-05-pieces.jpg 450w, assets/collage/chess-05-pieces@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="900" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Captured pieces, off to the side." data-ru="Снятые фигуры сбоку от доски.">Captured pieces, off to the side.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--32">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">chess-06-notation@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/chess-06-notation@2x.jpg"
+                 srcset="assets/collage/chess-06-notation.jpg 450w, assets/collage/chess-06-notation@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="600" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Notating the game as it goes." data-ru="Запись партии по ходу игры.">Notating the game as it goes.</figcaption>
         </figure>
       </div>
@@ -576,27 +627,57 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="view__group-lede" data-l="ru">7c с пробитием на скалодроме и болдер 7C на Kilter — тренировка на регулируемой доске, а не на скале: смысл в осознанной практике, а не в приключении.</p>
       <div class="collage collage--group">
         <figure class="collage__fig collage__fig--45">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-01-board@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/climb-01-board@2x.jpg"
+                 srcset="assets/collage/climb-01-board.jpg 450w, assets/collage/climb-01-board@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="1125" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="On the system board, mid-move." data-ru="На системной доске, посреди движения.">On the system board, mid-move.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--11">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-02-chalk@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/climb-02-chalk@2x.jpg"
+                 srcset="assets/collage/climb-02-chalk.jpg 450w, assets/collage/climb-02-chalk@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="900" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Chalking up between attempts." data-ru="Магнезия между попытками.">Chalking up between attempts.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--32">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-03-feet@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/climb-03-feet@2x.jpg"
+                 srcset="assets/collage/climb-03-feet.jpg 450w, assets/collage/climb-03-feet@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="600" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Feet placed before the reach." data-ru="Ноги ставятся до выхода рукой.">Feet placed before the reach.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--45">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-04-crimp@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/climb-04-crimp@2x.jpg"
+                 srcset="assets/collage/climb-04-crimp.jpg 450w, assets/collage/climb-04-crimp@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="1125" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="A hand set on a crimp." data-ru="Рука на мизере.">A hand set on a crimp.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--11">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-05-rest@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/climb-05-rest@2x.jpg"
+                 srcset="assets/collage/climb-05-rest.jpg 450w, assets/collage/climb-05-rest@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="900" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="Resting on the wall between goes." data-ru="Отдых на стене между попытками.">Resting on the wall between goes.</figcaption>
         </figure>
         <figure class="collage__fig collage__fig--32">
-          <div class="collage__slot" aria-hidden="true"><span class="collage__wait">climb-06-wide@2x.webp</span></div>
+          <div class="collage__slot">
+            <img src="assets/collage/climb-06-wide@2x.jpg"
+                 srcset="assets/collage/climb-06-wide.jpg 450w, assets/collage/climb-06-wide@2x.jpg 900w"
+                 sizes="(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw"
+                 width="900" height="600" loading="lazy" decoding="async" alt="">
+          </div>
           <figcaption data-en="The board, from the floor." data-ru="Доска — снизу, от пола.">The board, from the floor.</figcaption>
         </figure>
       </div>

@@ -26,6 +26,15 @@ faces used as testimonial proof, no scoreboard doctored to a number, no
 climbing grade written into the frame. The photographs show the work
 happening; the words carry the claims.
 
+**Placeholder exception (2026-09-06).** Igor asked to proceed through the
+layout/motion stages before the shoot, with stock stand-ins swapped for real
+photos later. So temporary non-Igor placeholders are allowed **in the repo and
+local preview only** — never on the republished live artifact, which waits for
+real photos of Igor. Provenance and the swap contract:
+`assets/collage/PLACEHOLDERS.md`; rationale: `BUILD-NOTES.md` → "Collage
+Stage 3 — placeholder images". The rule above is what the shipped page holds
+to; this is a scaffold with an expiry, not a repeal.
+
 ## Subject
 
 The three domains the site already runs on — English coaching, chess,

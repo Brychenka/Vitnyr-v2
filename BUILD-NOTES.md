@@ -17,7 +17,7 @@ Run it: `python3 -m http.server` in this folder, then open localhost:8000.
 | 3 | Smooth scroll + one reveal rhythm | Lenis; 24px rise + fade, 0.9s, 0.08s stagger, once, at 20% into view |
 | 4 | Pick ONE signature move | custom cursor + magnetic targets — the guide's own recommendation for limited content |
 | 5 | Polish pass | hover / focus-visible / active on every control, scaleX underlines, one curve everywhere |
-| 6 | Respect the reader | prefers-reduced-motion path, no images to lazy-load, no layout shift |
+| 6 | Respect the reader | prefers-reduced-motion path, no layout shift (18 collage images added Stage 3, all `loading="lazy"` + ratio-boxed) |
 | 7 | Ship | not deployed — see below |
 
 `cubic-bezier(.16, 1, .3, 1)` is the only easing on the page, as `--e` in CSS
@@ -307,11 +307,56 @@ carries ~6 placeholder figures, so the view goes from 6 reserved boxes to 18.
   shots per domain at a fixed 2×`4:5` / 2×`3:2` / 2×`1:1` mix, new filenames
   (`en-* / chess-* / climb-*`), and a revised weight budget (≤90 KB per `@2x`
   WebP, ≤1.6 MB total). `collage-plan.md` gained a Stage-2-reopened note.
-- Still no `<img>` anywhere — Stage 3 is blocked on the shoot, so the
-  "no images to lazy-load" line below stays true.
 - Tests: no changes needed. `test_collage.py` is behavioural (routing, focus,
   inert, no-JS fallback); `test_i18n`'s parity sweep and `test_layout`'s
   collage-overflow check cover the new nodes automatically.
+
+## Collage Stage 3 — placeholder images (2026-09-06)
+
+Igor: real photos are weeks out, *"use stock photos and move on with the
+stages … we'll replace them later."* So Stage 3 shipped against **temporary
+stand-ins, not photographs of Igor** — a documented, bounded exception to the
+"real photographs of Igor Shatsev only" rule in `collage-shotlist.md` and
+`CLAUDE.md`'s real-material rule. The exception is scoped:
+
+- **Repo + local preview only.** The live "Vitnyr Signature" artifact is
+  **not** republished off this — a link other people open must not show
+  stand-in people under Igor's first-person captions. Artifact republish
+  waits for the real shoot (`collage-plan.md` Stage 6 already says so).
+- Sources: `en-02`–`en-05` from Openverse (CC0 1.0); the other 13 from
+  `loremflickr.com` (Flickr-CC proxy) after Openverse rate-limited the batch.
+  Full provenance + the swap contract in `assets/collage/PLACEHOLDERS.md`.
+- Every `<img alt>` is empty and no `<figcaption>` names the stand-in — the
+  captions describe the *intended* shot and come true when the real files land.
+
+What actually changed in the build (this part is real and stays):
+
+- 18 `.collage__wait` hairline boxes → `<img>` with `srcset` (`450w`/`900w`),
+  `sizes`, explicit `width`/`height` per ratio, `loading="lazy"`,
+  `decoding="async"`. The `<picture>`/WebP half of the Stage 3 spec is deferred
+  to the real-photo swap (no WebP encoder on the build box; JPEG-only stand-ins
+  aren't worth a `<source>` that gets rewritten anyway).
+- `en-01` stand-in retired: the figure goes back to the shot list's `--32`
+  and the slug becomes `en-01-call`, restoring English to the 2/2/2 ratio mix.
+- Ratio classes untouched, so the box is reserved before decode — **zero CLS
+  holds**: measured 238×159 / 238×238 / 238×298 boxes identical before and
+  after the images loaded.
+- Grayscale is the existing per-theme `--collage-filter` token; `.collage
+  __slot:has(img)` drops the chip padding. Both already in CSS from Stage 2 —
+  no CSS change this stage.
+- Weight: 1.52 MB across the 18 `@2x` JPEGs (budget ≤1.6 MB). Four detailed
+  `1:1`/`4:5` tiles sit at 100–137 KB, over the ≤90 KB per-image line — fine
+  for throwaways, to be met by real optimised WebP at swap time.
+- Verified: `#collage` open, all 18 resolve (200 from the static server; the
+  preview pane doesn't fire `loading="lazy"` without compositing, so they were
+  force-loaded for the check), no console errors, no horizontal overflow at
+  375 / 1280, grayscale filter live in both themes, RU captions render.
+- Tests: still behavioural, no change. `test_layout`'s collage-overflow check
+  and `test_i18n` parity cover the new `<img>` nodes.
+
+**Note for the swap:** the view's own intro still reads *"Ни стоков, ни
+постановки"* / "No stock, no staging" — true again only once the real photos
+are in. Don't republish the artifact before then.
 
 ## Collage view theme switch (2026-09-06)
 
