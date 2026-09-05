@@ -176,7 +176,10 @@ html.lora-ready .lockup .wm { opacity: 1; }
    this size in BOTH pairs (amber 3.07:1 on cream, green 3.58:1 on charcoal).
    fg-against-fg2 is 2.02:1 on charcoal and 2.48:1 on cream — a real step that
    costs nothing. Weight 500 is deliberate: <strong> defaults to 700, which
-   isn't loaded and would synthesise. One mark per section, five on the page. */
+   isn't loaded and would synthesise. One mark per section, six on the page —
+   the sixth lives in the collage view, added in the 2026-09-05 copy/colour
+   audit so that view echoes the rating/gravity motif the same way the
+   Disciplines section states it, without adding a second coloured mark. */
 .mark { color: var(--fg); font-weight: 500; }
 
 /* Used exactly once, on the phrase that IS the target. 1px so it doesn't read

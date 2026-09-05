@@ -128,6 +128,30 @@ leaves `NaN` in GSAP's transform cache — after which every later tween on thos
 elements renders nothing. The Russian headline would have stayed masked after a
 language switch. Only the lines actually on screen are tweened now.
 
+## Copy/colour re-audit (2026-09-05)
+
+The copy and colour passes above predate the collage view (built 2026-09-04/05),
+so its text had never been through either. Re-ran both against the whole page
+as a check, not a rebuild:
+
+- **Colour.** Clean. Every accent use still traces to the specimen/target rule:
+  the four `.facts .n` numerals and the wordmark are the only places colour
+  sits directly on text, and both clear the WCAG large-text 3:1 floor at their
+  30px/56px sizes. Everywhere else — the `.mark` phrases, the wrong/right rows
+  — colour stays in non-text ink (underline, border, glyph), per the 24px rule
+  already documented above. No new colour was introduced.
+- **Copy.** The collage lede (`#collage .view__lede`, EN+RU) had a run-on: "What
+  goes here is how Igor Shatsev actually works: ... — and the two places the
+  same method gets tested" mixes a manner-clause with a place-list off one
+  "and", which the rest of the page's shorter sentences don't do. Tightened to
+  "What's here is Igor Shatsev at work: ... — the two places the same method
+  gets tested" in both languages. Also added the view's first `.mark`
+  (`a rating and gravity` / `рейтингом и гравитацией`) so it echoes the same
+  motif the Disciplines section states ("two things that don't negotiate: a
+  rating, and gravity") — six marks on the page now, still exactly one
+  coloured. See the `.mark` comment in `style.css`. No other section needed a
+  copy change; the original humanizer pass already holds up.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

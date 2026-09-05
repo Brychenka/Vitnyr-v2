@@ -41,11 +41,12 @@ tests/.venv/bin/pytest tests -q --headed --slowmo 250   # watch it drive
 | `test_a11y.py` | one h1, landmarks, skip-link focus move, accessible names, reduced-motion |
 | `test_motion.py` | hero plays + lands, reveal rhythm, counters reach exact values (`-m slow`) |
 | `test_collage.py` | hash routing, deep link, browser back, inert background, focus, scroll restore |
-| `test_content.py` | name in both languages, 2100-without-FIDE, distinct 7c/7C, placeholders flagged |
+| `test_content.py` | name in both languages, 2100-without-FIDE, distinct 7c/7C, contact handles real, OG tags flagged |
 
 ## When placeholders get filled
 
-`test_content.py` deliberately fails-forward: `test_contact_handles_are_still_flagged_placeholders`
-and `test_og_url_and_image_not_yet_asserted` assert the *current* placeholder
-state. When the real handles / OG tags land, update those two tests in the
-same commit.
+`test_content.py` deliberately fails-forward on what's still outstanding.
+Contact handles landed 2026-09 (commit `dd1ff9c`); `test_contact_handles_are_real`
+was updated to match. `test_og_url_and_image_not_yet_asserted` still asserts
+the *current* placeholder state — update it in the same commit that adds
+`og:url` / `og:image`.
