@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500;600&display=swap">
+<style>
+body{margin:0;background:#eeece7;font-family:Inter,system-ui,sans-serif;}
+.dv-turn{padding:40px 44px 56px;}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px;}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none;}
+.dv-tname{font:600 14px/1.3 system-ui,sans-serif;color:#1a1a1a;}
+.dv-tsub{font:400 12.5px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.55);margin:0 0 26px;max-width:640px;}
+.dv-opts{display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start;}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:10px;scroll-margin-top:16px;width:440px;}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none;}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:600 12.5px/1.3 system-ui,sans-serif;color:#1a1a1a;}
+.dv-orationale{font:400 11.5px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.55);margin:2px 0 4px;}
+.dv-card{width:440px;background:#14181A;border:1px solid rgba(242,239,232,0.14);box-shadow:0 1px 3px rgba(0,0,0,.14);overflow:hidden;}
+.dv-next{margin:30px 0 0;font:12px/1.6 system-ui,sans-serif;color:rgba(0,0,0,.5);max-width:900px;}
+.icon-btn{background:none;border:0;padding:4px;margin:0;cursor:pointer;color:#A8ABA9;display:inline-flex;align-items:center;justify-content:center;border-bottom:1px solid transparent;transition:color .35s cubic-bezier(.16,1,.3,1),border-color .35s cubic-bezier(.16,1,.3,1);}
+.tool-btn{background:none;border:0;padding:4px 0;cursor:pointer;color:#A8ABA9;font-family:Inter,sans-serif;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;transition:color .35s cubic-bezier(.16,1,.3,1);}
+.fig-slot{border:1px solid rgba(242,239,232,0.14);display:grid;place-items:center;padding:10px;transition:border-color .4s ease,box-shadow .4s ease;}
+.fig-wait{font-family:Inter,sans-serif;font-size:9px;font-weight:500;letter-spacing:.04em;color:#A8ABA9;border:1px solid rgba(242,239,232,0.14);padding:3px 7px;max-width:100%;overflow-wrap:anywhere;text-align:center;}
+.fig-cap{margin-top:8px;font-size:10.5px;color:#A8ABA9;letter-spacing:.01em;}
+.swatch{width:120px;background:#14181A;border:1px solid rgba(242,239,232,0.14);display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 10px 16px;}
+.swatch svg{color:#A8ABA9;}
+.swatch-label{font-size:10.5px;color:#A8ABA9;text-align:center;line-height:1.3;}
+.dv-subhd{font:600 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55);text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px;}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t4">
+  <div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Final set — chess / carabiner / book</span></div>
+  <p class="dv-tsub">The kept three: checkerboard corner, <a class="dv-oid" href="#3e">3e</a>'s screw-lock carabiner, <a class="dv-oid" href="#2f">2f</a>'s open book. One ink (<code>#A8ABA9</code>), 1.6 hairline, cream on hover with a green underline. Click any icon to scroll the panel below it.</p>
+
+  <div class="dv-opts">
+    <div class="dv-opt" id="4a">
+      <div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>In the header nav</div>
+      <div class="dv-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid rgba(242,239,232,0.14);">
+          <div style="font-family:Lora,Georgia,serif;font-weight:600;font-size:14px;letter-spacing:.14em;"><span style="color:#D99B3F">V</span><span style="color:#F2EFE8">ITN</span><span style="color:#4C7A52">Y</span><span style="color:#F2EFE8">R</span></div>
+          <nav style="display:flex;align-items:center;gap:16px;">
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">Cream</button>
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">RU</button>
+            <span style="width:1px;height:14px;background:rgba(242,239,232,0.14);"></span>
+            <button class="icon-btn" type="button" aria-label="Jump to chess photograph" title="Chess" onClick="{{ jumpD1 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" fill="currentColor"></rect><rect x="13" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"></rect><rect x="1" y="13" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"></rect><rect x="13" y="13" width="10" height="10" fill="currentColor"></rect></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Jump to climbing photograph" title="Climbing" onClick="{{ jumpD2 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"></path><path d="M16.9 8.4 16.42 10"></path><path d="M14.74 15.6 13.9 18.4"></path><path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"></path></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Jump to English coaching photograph" title="English" onClick="{{ jumpD3 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"></path><path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"></path></svg>
+            </button>
+          </nav>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:12px;padding:16px 22px 0;">
+          <span style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#F2EFE8;">Photographs</span>
+          <span style="flex:1;height:1px;background:rgba(242,239,232,0.14);"></span>
+        </div>
+        <div ref="{{ dScrollRef }}" style="height:360px;overflow-y:auto;padding:20px 22px 28px;display:flex;flex-direction:column;gap:22px;">
+          <div><div ref="{{ dFig1Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">01-chess-board@2x.webp</span></div><div class="fig-cap">Over the board, mid-game.</div></div>
+          <div><div ref="{{ dFig2Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">02-climb-board@2x.webp</span></div><div class="fig-cap">On the system board, mid-move.</div></div>
+          <div><div ref="{{ dFig3Ref }}" class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">03-call@2x.webp</span></div><div class="fig-cap">A lesson on a call.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">04-table-yerevan@2x.webp</span></div><div class="fig-cap">In person, in Yerevan.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">05-yerevan-window@2x.webp</span></div><div class="fig-cap">Yerevan, from the desk.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">06-hands@2x.webp</span></div><div class="fig-cap">The same hands, up close.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="4b" style="width:auto;">
+      <div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>The three glyphs</div>
+      <p class="dv-orationale">Same three at 30px, for handoff.</p>
+      <div style="display:flex;gap:0;">
+        <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" fill="currentColor"></rect><rect x="13" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"></rect><rect x="1" y="13" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"></rect><rect x="13" y="13" width="10" height="10" fill="currentColor"></rect></svg><div class="swatch-label">Chess</div></div>
+        <div class="swatch" style="border-left:0;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"></path><path d="M16.9 8.4 16.42 10"></path><path d="M14.74 15.6 13.9 18.4"></path><path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"></path></svg><div class="swatch-label">Climbing</div></div>
+        <div class="swatch" style="border-left:0;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"></path><path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"></path></svg><div class="swatch-label">English</div></div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "wire this into the real index.html" · "make the carabiner a touch smaller than the other two" · "swap the book for a mountain instead"</p>
+</section>
+
+<section class="dv-turn" id="t3">
+  <div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">More climbing icon options — mountain vs. carabiner</span></div>
+  <p class="dv-tsub">Same ink as the kept glyphs. Three mountain treatments at the usual 1.6 stroke, plus two carabiners redrawn to the offset-D shape you sent — 3d at a heavier 2.2 stroke, 3e at the 1.6 hairline. Tell me the id, e.g. "3b".</p>
+
+  <p class="dv-subhd">Mountain</p>
+  <div class="dv-opts">
+    <div class="dv-opt" id="3a" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19 L11 5.5 19 19 Z"></path></svg><div class="swatch-label">Single peak</div></div>
+    </div>
+    <div class="dv-opt" id="3b" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 19 8 10 11 13.5 16 5.5 22 19 Z"></path><path d="M16 5.5 11.63 12.5 13.4 10.9 15.2 12.7 17.1 10.6 19.11 12.5Z" fill="currentColor" stroke="none"></path><path d="M8 10 6.07 12.9 7.1 11.9 8.2 13.1 9.3 11.8 10.49 12.9Z" fill="currentColor" stroke="none"></path></svg><div class="swatch-label">Two-peak range, snowcaps</div></div>
+    </div>
+    <div class="dv-opt" id="3c" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 12 5.4 20 19Z"></path><line x1="12" y1="5.4" x2="12" y2="2.2"></line><path d="M12 2.4 16 3.8 12 5.2Z" fill="currentColor" stroke="none"></path></svg><div class="swatch-label">Peak with summit flag</div></div>
+    </div>
+  </div>
+
+  <p class="dv-subhd" style="margin-top:28px;">Carabiner</p>
+  <div class="dv-opts">
+    <div class="dv-opt" id="3d" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#3d">3d</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"></path><path d="M16.9 8.4 16.42 10"></path><path d="M14.74 15.6 13.9 18.4"></path><path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-width="1.6" stroke-linejoin="miter"></path></svg><div class="swatch-label">Screw-lock, solid weight</div></div>
+    </div>
+    <div class="dv-opt" id="3e" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#3e">3e</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"></path><path d="M16.9 8.4 16.42 10"></path><path d="M14.74 15.6 13.9 18.4"></path><path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"></path></svg><div class="swatch-label">Screw-lock, hairline barrel — chosen</div></div>
+    </div>
+  </div>
+  <p class="dv-next">Try next: "swap the live climbing icon to 3b" · "3a but with a rope line at the base" · "make 3e the one in 1a"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Icon variants — pick one climbing, one book</span></div>
+  <p class="dv-tsub">Five clip/quickdraw treatments and five book treatments, same stroke weight and ink (<code>#A8ABA9</code>, fg on hover) as the kept chess glyph in <a class="dv-oid" href="#1a">1a</a>. Tell me the id you want, e.g. "2b and 2i".</p>
+
+  <p class="dv-subhd">Climbing</p>
+  <div class="dv-opts">
+    <div class="dv-opt" id="2a" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.2" rx="5" ry="4.2"></ellipse><line x1="9" y1="9" x2="9" y2="14.6"></line><line x1="15" y1="9" x2="15" y2="14.6"></line><ellipse cx="12" cy="18.8" rx="6" ry="4.6"></ellipse></svg><div class="swatch-label">Twin-oval quickdraw</div></div>
+    </div>
+    <div class="dv-opt" id="2b" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="1.5" width="10" height="7" rx="3.2"></rect><line x1="12" y1="8.5" x2="12" y2="15"></line><rect x="5" y="15" width="14" height="7.5" rx="3.5"></rect></svg><div class="swatch-label">Twin D-ring quickdraw</div></div>
+    </div>
+    <div class="dv-opt" id="2c" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="6" ry="8.5"></ellipse><line x1="12" y1="3.7" x2="12" y2="20.3"></line></svg><div class="swatch-label">Single carabiner, gate line</div></div>
+    </div>
+    <div class="dv-opt" id="2d" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2d">2d</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(30 12 12)"><ellipse cx="12" cy="5.2" rx="5" ry="4.2"></ellipse><line x1="9" y1="9" x2="9" y2="14.6"></line><line x1="15" y1="9" x2="15" y2="14.6"></line><ellipse cx="12" cy="18.8" rx="6" ry="4.6"></ellipse></g></svg><div class="swatch-label">Quickdraw, angled</div></div>
+    </div>
+    <div class="dv-opt" id="2e" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2e">2e</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="3.6" r="2.2"></circle><ellipse cx="12" cy="14" rx="5.5" ry="7.5"></ellipse><line x1="12" y1="6.7" x2="12" y2="21"></line></svg><div class="swatch-label">Carabiner + bolt hanger</div></div>
+    </div>
+  </div>
+
+  <p class="dv-subhd" style="margin-top:28px;">English — book</p>
+  <div class="dv-opts">
+    <div class="dv-opt" id="2f" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2f">2f</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"></path><path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"></path></svg><div class="swatch-label">Open book, curved</div></div>
+    </div>
+    <div class="dv-opt" id="2g" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2g">2g</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.4"></rect><line x1="12" y1="3" x2="12" y2="21"></line><path d="M15.5 3v6l-1.8-1.5-1.7 1.5V3"></path></svg><div class="swatch-label">Closed book, corner ribbon</div></div>
+    </div>
+    <div class="dv-opt" id="2h" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2h">2h</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="15" width="16" height="4" rx="0.8"></rect><rect x="5" y="10.3" width="16" height="4" rx="0.8" transform="rotate(-6 13 12.3)"></rect></svg><div class="swatch-label">Two books, stacked</div></div>
+    </div>
+    <div class="dv-opt" id="2i" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2i">2i</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6 4 5v14l7-1z"></path><path d="M13 6l7-1v14l-7-1z"></path></svg><div class="swatch-label">Open book, flat/geometric</div></div>
+    </div>
+    <div class="dv-opt" id="2j" style="width:120px;">
+      <div class="dv-olabel"><a class="dv-oid" href="#2j">2j</a></div>
+      <div class="swatch"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="15" rx="1.2"></rect><line x1="12" y1="3" x2="12" y2="18"></line><path d="M9.5 3v18l1-1.4 1 1.4V3"></path></svg><div class="swatch-label">Closed book, long ribbon</div></div>
+    </div>
+  </div>
+  <p class="dv-next">Try next: "2c and 2g into 1a" · "make the quickdraws thinner-stroke" · "a sixth book option with a bookmark tassel"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Collage nav icons — chess / climbing / English</span></div>
+  <p class="dv-tsub">Three icon treatments for the header <code>.tools</code> nav, each on Vitnyr's own tokens (charcoal/cream pair, amber=specimen, green=target, hairline rule, no gradients/shadows/radius except the cursor dot). Click an icon in any card — it scrolls that card's collage panel to the matching photograph and flashes the hairline green, the same "target" ink the site already uses for hover/focus.</p>
+
+  <div class="dv-opts">
+
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Line pictograms</div>
+      <p class="dv-orationale">Literal reduced glyphs — checkerboard corner, an ascending route line, a mixed serif/sans "Aa". Most immediately legible; closest to a conventional icon nav.</p>
+      <div class="dv-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid rgba(242,239,232,0.14);">
+          <div style="font-family:Lora,Georgia,serif;font-weight:600;font-size:14px;letter-spacing:.14em;"><span style="color:#D99B3F">V</span><span style="color:#F2EFE8">ITN</span><span style="color:#4C7A52">Y</span><span style="color:#F2EFE8">R</span></div>
+          <nav style="display:flex;align-items:center;gap:16px;">
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">Cream</button>
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">RU</button>
+            <span style="width:1px;height:14px;background:rgba(242,239,232,0.14);"></span>
+            <button class="icon-btn" type="button" aria-label="Jump to chess photograph" title="Chess" onClick="{{ jumpA1 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24"><rect x="1" y="1" width="10" height="10" fill="currentColor"></rect><rect x="13" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"></rect><rect x="1" y="13" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.6"></rect><rect x="13" y="13" width="10" height="10" fill="currentColor"></rect></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Jump to climbing photograph" title="Climbing" onClick="{{ jumpA2 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"></path><path d="M16.9 8.4 16.42 10"></path><path d="M14.74 15.6 13.9 18.4"></path><path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"></path></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Jump to English coaching photograph" title="English" onClick="{{ jumpA3 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"></path><path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"></path></svg>
+            </button>
+          </nav>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:12px;padding:16px 22px 0;">
+          <span style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#F2EFE8;">Photographs</span>
+          <span style="flex:1;height:1px;background:rgba(242,239,232,0.14);"></span>
+        </div>
+        <div ref="{{ aScrollRef }}" style="height:360px;overflow-y:auto;padding:20px 22px 28px;display:flex;flex-direction:column;gap:22px;">
+          <div><div ref="{{ aFig1Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">01-chess-board@2x.webp</span></div><div class="fig-cap">Over the board, mid-game.</div></div>
+          <div><div ref="{{ aFig2Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">02-climb-board@2x.webp</span></div><div class="fig-cap">On the system board, mid-move.</div></div>
+          <div><div ref="{{ aFig3Ref }}" class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">03-call@2x.webp</span></div><div class="fig-cap">A lesson on a call.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">04-table-yerevan@2x.webp</span></div><div class="fig-cap">In person, in Yerevan.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">05-yerevan-window@2x.webp</span></div><div class="fig-cap">Yerevan, from the desk.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">06-hands@2x.webp</span></div><div class="fig-cap">The same hands, up close.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Abstract brand marks</div>
+      <p class="dv-orationale">Straight-stroke glyphs built the way the fused V/Y mark is built — a knight-move L into a filled landing square, a rising line into a bracketed corner, two angled quote-ticks (mono already means "quoted language" on this site). Reads as house code, not stock iconography.</p>
+      <div class="dv-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid rgba(242,239,232,0.14);">
+          <div style="font-family:Lora,Georgia,serif;font-weight:600;font-size:14px;letter-spacing:.14em;"><span style="color:#D99B3F">V</span><span style="color:#F2EFE8">ITN</span><span style="color:#4C7A52">Y</span><span style="color:#F2EFE8">R</span></div>
+          <nav style="display:flex;align-items:center;gap:16px;">
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">Cream</button>
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">RU</button>
+            <span style="width:1px;height:14px;background:rgba(242,239,232,0.14);"></span>
+            <button class="icon-btn" type="button" aria-label="Jump to chess photograph" title="Chess" onClick="{{ jumpB1 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 20 L5 8 L17 8"></path><rect x="15" y="4" width="6" height="6" fill="currentColor" stroke="none"></rect></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Jump to climbing photograph" title="Climbing" onClick="{{ jumpB2 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 20 L20 4"></path><path d="M14 4 L20 4 L20 10"></path></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Jump to English coaching photograph" title="English" onClick="{{ jumpB3 }}" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M4 6 L9 6 L7 13 L4 13 Z"></path><path d="M12 6 L17 6 L15 13 L12 13 Z"></path></svg>
+            </button>
+          </nav>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:12px;padding:16px 22px 0;">
+          <span style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#F2EFE8;">Photographs</span>
+          <span style="flex:1;height:1px;background:rgba(242,239,232,0.14);"></span>
+        </div>
+        <div ref="{{ bScrollRef }}" style="height:360px;overflow-y:auto;padding:20px 22px 28px;display:flex;flex-direction:column;gap:22px;">
+          <div><div ref="{{ bFig1Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">01-chess-board@2x.webp</span></div><div class="fig-cap">Over the board, mid-game.</div></div>
+          <div><div ref="{{ bFig2Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">02-climb-board@2x.webp</span></div><div class="fig-cap">On the system board, mid-move.</div></div>
+          <div><div ref="{{ bFig3Ref }}" class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">03-call@2x.webp</span></div><div class="fig-cap">A lesson on a call.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">04-table-yerevan@2x.webp</span></div><div class="fig-cap">In person, in Yerevan.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">05-yerevan-window@2x.webp</span></div><div class="fig-cap">Yerevan, from the desk.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">06-hands@2x.webp</span></div><div class="fig-cap">The same hands, up close.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Numbered label tabs — no pictograms</div>
+      <p class="dv-orationale">No icon at all: three tabs built from the site's own <code>.label</code>/number vocabulary (Lora numeral + tracked sans word), the way the page already indexes its sections. Most conservative — matches a brand that treats iconography as decoration it doesn't otherwise use.</p>
+      <div class="dv-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-bottom:1px solid rgba(242,239,232,0.14);">
+          <div style="font-family:Lora,Georgia,serif;font-weight:600;font-size:14px;letter-spacing:.14em;"><span style="color:#D99B3F">V</span><span style="color:#F2EFE8">ITN</span><span style="color:#4C7A52">Y</span><span style="color:#F2EFE8">R</span></div>
+          <nav style="display:flex;align-items:center;gap:16px;">
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">Cream</button>
+            <button class="tool-btn" type="button" style-hover="color:#F2EFE8">RU</button>
+            <span style="width:1px;height:14px;background:rgba(242,239,232,0.14);"></span>
+            <button type="button" aria-label="Jump to chess photograph" onClick="{{ jumpC1 }}" style="background:none;border:0;border-bottom:1px solid transparent;padding:2px 0;cursor:pointer;display:flex;align-items:baseline;gap:5px;color:#A8ABA9;transition:color .35s cubic-bezier(.16,1,.3,1),border-color .35s cubic-bezier(.16,1,.3,1);" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <span style="font-family:Lora,serif;font-weight:600;font-size:12px;color:#F2EFE8;">01</span><span style="font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Chess</span>
+            </button>
+            <button type="button" aria-label="Jump to climbing photograph" onClick="{{ jumpC2 }}" style="background:none;border:0;border-bottom:1px solid transparent;padding:2px 0;cursor:pointer;display:flex;align-items:baseline;gap:5px;color:#A8ABA9;transition:color .35s cubic-bezier(.16,1,.3,1),border-color .35s cubic-bezier(.16,1,.3,1);" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <span style="font-family:Lora,serif;font-weight:600;font-size:12px;color:#F2EFE8;">02</span><span style="font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Climb</span>
+            </button>
+            <button type="button" aria-label="Jump to English coaching photograph" onClick="{{ jumpC3 }}" style="background:none;border:0;border-bottom:1px solid transparent;padding:2px 0;cursor:pointer;display:flex;align-items:baseline;gap:5px;color:#A8ABA9;transition:color .35s cubic-bezier(.16,1,.3,1),border-color .35s cubic-bezier(.16,1,.3,1);" style-hover="color:#F2EFE8;border-color:#4C7A52">
+              <span style="font-family:Lora,serif;font-weight:600;font-size:12px;color:#F2EFE8;">03</span><span style="font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;">English</span>
+            </button>
+          </nav>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:12px;padding:16px 22px 0;">
+          <span style="font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#F2EFE8;">Photographs</span>
+          <span style="flex:1;height:1px;background:rgba(242,239,232,0.14);"></span>
+        </div>
+        <div ref="{{ cScrollRef }}" style="height:360px;overflow-y:auto;padding:20px 22px 28px;display:flex;flex-direction:column;gap:22px;">
+          <div><div ref="{{ cFig1Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">01-chess-board@2x.webp</span></div><div class="fig-cap">Over the board, mid-game.</div></div>
+          <div><div ref="{{ cFig2Ref }}" class="fig-slot" style="aspect-ratio:4/5;"><span class="fig-wait">02-climb-board@2x.webp</span></div><div class="fig-cap">On the system board, mid-move.</div></div>
+          <div><div ref="{{ cFig3Ref }}" class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">03-call@2x.webp</span></div><div class="fig-cap">A lesson on a call.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">04-table-yerevan@2x.webp</span></div><div class="fig-cap">In person, in Yerevan.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:3/2;"><span class="fig-wait">05-yerevan-window@2x.webp</span></div><div class="fig-cap">Yerevan, from the desk.</div></div>
+          <div><div class="fig-slot" style="aspect-ratio:1/1;"><span class="fig-wait">06-hands@2x.webp</span></div><div class="fig-cap">The same hands, up close.</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "combine <a class="dv-oid" href="#1a">1a</a>'s chess/climb glyphs with <a class="dv-oid" href="#1c">1c</a>'s English tab" · "put the nav inside the collage view's own bar instead of the header" · "wire this into the real index.html"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  aScrollRef = React.createRef(); aFig1Ref = React.createRef(); aFig2Ref = React.createRef(); aFig3Ref = React.createRef();
+  bScrollRef = React.createRef(); bFig1Ref = React.createRef(); bFig2Ref = React.createRef(); bFig3Ref = React.createRef();
+  cScrollRef = React.createRef(); cFig1Ref = React.createRef(); cFig2Ref = React.createRef(); cFig3Ref = React.createRef();
+  dScrollRef = React.createRef(); dFig1Ref = React.createRef(); dFig2Ref = React.createRef(); dFig3Ref = React.createRef();
+
+  jump(scrollRef, figRef) {
+    const c = scrollRef.current, f = figRef.current;
+    if (!c || !f) return;
+    c.scrollTo({ top: Math.max(0, f.offsetTop - 14), behavior: 'smooth' });
+    f.style.borderColor = '#4C7A52';
+    f.style.boxShadow = 'inset 0 0 0 1px #4C7A52';
+    if (f._resetTimer) clearTimeout(f._resetTimer);
+    f._resetTimer = setTimeout(() => {
+      f.style.borderColor = 'rgba(242,239,232,0.14)';
+      f.style.boxShadow = 'none';
+    }, 1300);
+  }
+
+  renderVals() {
+    return {
+      aScrollRef: this.aScrollRef, aFig1Ref: this.aFig1Ref, aFig2Ref: this.aFig2Ref, aFig3Ref: this.aFig3Ref,
+      bScrollRef: this.bScrollRef, bFig1Ref: this.bFig1Ref, bFig2Ref: this.bFig2Ref, bFig3Ref: this.bFig3Ref,
+      cScrollRef: this.cScrollRef, cFig1Ref: this.cFig1Ref, cFig2Ref: this.cFig2Ref, cFig3Ref: this.cFig3Ref,
+      dScrollRef: this.dScrollRef, dFig1Ref: this.dFig1Ref, dFig2Ref: this.dFig2Ref, dFig3Ref: this.dFig3Ref,
+      jumpD1: () => this.jump(this.dScrollRef, this.dFig1Ref),
+      jumpD2: () => this.jump(this.dScrollRef, this.dFig2Ref),
+      jumpD3: () => this.jump(this.dScrollRef, this.dFig3Ref),
+      jumpA1: () => this.jump(this.aScrollRef, this.aFig1Ref),
+      jumpA2: () => this.jump(this.aScrollRef, this.aFig2Ref),
+      jumpA3: () => this.jump(this.aScrollRef, this.aFig3Ref),
+      jumpB1: () => this.jump(this.bScrollRef, this.bFig1Ref),
+      jumpB2: () => this.jump(this.bScrollRef, this.bFig2Ref),
+      jumpB3: () => this.jump(this.bScrollRef, this.bFig3Ref),
+      jumpC1: () => this.jump(this.cScrollRef, this.cFig1Ref),
+      jumpC2: () => this.jump(this.cScrollRef, this.cFig2Ref),
+      jumpC3: () => this.jump(this.cScrollRef, this.cFig3Ref),
+    };
+  }
+}
+</script>
+</body>
+</html>

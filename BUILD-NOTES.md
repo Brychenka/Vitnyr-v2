@@ -62,6 +62,13 @@ and a matching GSAP CustomEase in JS, so the two never drift apart.
   claims. The mark's "V and Y fused" reading stays the *official* one per the
   brand file; the "three strokes = three disciplines" reading is Igor's own
   addition on top of it, not a replacement, per his 2026-09-05 direction.
+- **Collage nav icons have looks but no behaviour yet.** The three
+  `.tool--icon` buttons in `nav.tools` (chess / carabiner / book) render and
+  are responsive, but nothing happens on click: no `data-jump`, no hook into
+  the `#collage` router, no ids on the target figures. That's the design
+  handoff's own "behaviour" section — see
+  `reference/design_handoff_collage_nav_icons/README.md` — deliberately
+  deferred to a separate pass.
 
 ## The five specialist passes
 
@@ -160,6 +167,27 @@ as a check, not a rebuild:
   rating, and gravity") — six marks on the page now, still exactly one
   coloured. See the `.mark` comment in `style.css`. No other section needed a
   copy change; the original humanizer pass already holds up.
+
+## Collage nav icons (2026-09-05)
+
+Design handoff (chess checkerboard-corner / screw-lock carabiner / open book,
+final set chosen in that file's turn 4) copied into
+`reference/design_handoff_collage_nav_icons/` — it lived only in `~/Downloads`
+as a loose zip first, same failure mode `reference/`'s other two files were
+copied in to avoid. Implemented the "looks" half only, per Igor's request:
+SVG paths pasted verbatim into `nav.tools`, `.tool` class and its existing
+underline/hover reused as specified, no new colour values.
+
+Testing this at 375px surfaced a real bug, not a hypothetical one: flexbox
+was shrinking the wordmark `.lockup` below its brand-mandated 176px floor to
+make room for the new icons, rather than letting `.tools` overflow. Fixed
+with `flex: none` on `.lockup` (`style.css`) — the mark holds its width now,
+`.tools` gives way instead. Once protected, Cream/RU plus three icons at the
+handoff's own coarse-pointer touch-target padding (44px targets) don't fit
+in one row below ~600px no matter how tight the gaps get, so below that width
+`.tools` wraps onto its own right-aligned line and `--head` grows to match
+(same media query, `style.css`). Verified no horizontal overflow at 320 /
+375 / 600 / 601 / 1280px, both themes.
 
 ## Verified
 

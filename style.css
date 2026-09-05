@@ -146,7 +146,11 @@ html.is-scrolled .masthead {
   background: var(--bg);
   border-bottom-color: var(--rule);
 }
-.lockup { display: block; width: var(--lockup); }
+/* flex-shrink:0 — without it, a full .tools row (once the collage icons are
+   added) forces flexbox to shrink the mark itself below --lockup's 176px
+   floor rather than let .tools overflow, quietly eating the brand's
+   mandated clear space. The mark must hold its width; .tools gives way. */
+.lockup { display: block; width: var(--lockup); flex: none; }
 .lockup svg { display: block; width: 100%; height: auto; }
 /* The wordmark is live SVG text at Lora's own hardcoded advances, so during the
    font-swap window it would paint in the fallback face at Lora's letter
@@ -172,6 +176,31 @@ html.lora-ready .lockup .wm { opacity: 1; }
 }
 .tool:hover { color: var(--fg); }
 .tool:hover::after { transform: scaleX(1); }
+
+/* ---------- collage nav icons ---------- */
+.tools__rule { width: 1px; height: 14px; background: var(--rule); }
+.tool--icon { display: inline-flex; padding: 4px; }
+.tool--icon svg { display: block; width: 17px; height: 17px; }
+/* Handoff specified 13px 10px for this, commented as a 44px target — with a
+   17px glyph that's actually 37x43, short on the horizontal axis. Squared up
+   to a uniform 13.5px so both axes hit 44 exactly. */
+@media (pointer: coarse) { .tool--icon { padding: 13.5px; } }
+
+/* Cream/RU + the three icon buttons, at coarse-pointer touch-target padding,
+   don't fit next to a lockup held at its 176px floor below ~600px — the
+   header would either clip .tools (overflow-x:hidden hides it silently) or
+   shrink the mark (see .lockup above). Below that width .tools (the whole
+   nav — Cream, RU, divider, all three icons, as one flex item) drops to its
+   own line under the lockup instead of splitting internally; --head grows to
+   match so the hero's top padding still clears the taller, two-line header.
+   The +54px is sized for the real case here (phones = coarse pointers =
+   44px targets + 10px row-gap); a mouse-narrowed desktop window lands a
+   touch more generous, not tight, which is the safe side to be on. */
+@media (max-width: 600px) {
+  .masthead { flex-wrap: wrap; row-gap: 10px; }
+  .tools { flex-basis: 100%; justify-content: flex-end; }
+  :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 54px); }
+}
 
 /* ---------- in-copy emphasis ----------
    Body copy is 17px and every paragraph is --fg2, so emphasis is a lift to

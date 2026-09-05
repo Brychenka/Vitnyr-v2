@@ -84,7 +84,8 @@ def open_site(site_url, browser):
                 query='',                     # e.g. '?lang=ru'
                 hash='',                      # e.g. '#collage'
                 reduced_motion=False,
-                viewport=WIDE)
+                viewport=WIDE,
+                has_touch=False)          # True => (pointer: coarse) matches
 
     Returns (page, context). localStorage is seeded via an init script so the
     values are present on the very first execution of theme.js.
@@ -100,12 +101,14 @@ def open_site(site_url, browser):
         reduced_motion=False,
         viewport=None,
         java_script_enabled=True,
+        has_touch=False,
     ):
         context = browser.new_context(
             viewport=viewport or WIDE,
             color_scheme=color_scheme,
             reduced_motion="reduce" if reduced_motion else "no-preference",
             java_script_enabled=java_script_enabled,
+            has_touch=has_touch,
         )
         contexts.append(context)
 

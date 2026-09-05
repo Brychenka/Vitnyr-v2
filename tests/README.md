@@ -39,6 +39,7 @@ tests/.venv/bin/pytest tests -q --headed --slowmo 250   # watch it drive
 | `test_theme.py` | system pref vs explicit choice, persistence, button label, `theme-color` |
 | `test_layout.py` | no horizontal overflow (2 widths × 2 langs × 2 pairs), fixed masthead, skip link |
 | `test_a11y.py` | one h1, landmarks, skip-link focus move, accessible names, reduced-motion |
+| `test_collage_nav_icons.py` | chess/carabiner/book icons: structure, glyph fidelity, ink tokens, lockup's 176px floor, the 600px wrap, 44px touch targets, no click wiring yet |
 | `test_motion.py` | hero plays + lands, reveal rhythm, counters reach exact values (`-m slow`) |
 | `test_collage.py` | hash routing, deep link, browser back, inert background, focus, scroll restore |
 | `test_content.py` | name in both languages, 2100-without-FIDE, distinct 7c/7C, contact handles real, OG tags flagged |
