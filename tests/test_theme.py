@@ -16,24 +16,24 @@ def test_dark_system_pref_uses_charcoal_with_no_attribute(open_site):
     # no stored choice -> no data-theme attribute, effective theme is charcoal
     assert page.locator("html").get_attribute("data-theme") is None
     assert meta_theme_color(page).upper() == CHARCOAL
-    assert page.locator(".themeswitch").text_content().strip() == "Cream"
+    assert page.locator(".masthead .themeswitch").text_content().strip() == "Cream"
 
 
 def test_light_system_pref_uses_cream_with_no_attribute(open_site):
     page, _ = open_site(color_scheme="light")
     assert page.locator("html").get_attribute("data-theme") is None
     assert meta_theme_color(page).upper() == CREAM
-    assert page.locator(".themeswitch").text_content().strip() == "Charcoal"
+    assert page.locator(".masthead .themeswitch").text_content().strip() == "Charcoal"
 
 
 def test_toggle_from_dark_sets_light(open_site):
     page, _ = open_site(color_scheme="dark")
-    page.locator(".themeswitch").click()
+    page.locator(".masthead .themeswitch").click()
 
     assert page.locator("html").get_attribute("data-theme") == "light"
     assert page.evaluate("localStorage.getItem('vitnyr-theme')") == "light"
     assert meta_theme_color(page).upper() == CREAM
-    assert page.locator(".themeswitch").text_content().strip() == "Charcoal"
+    assert page.locator(".masthead .themeswitch").text_content().strip() == "Charcoal"
 
 
 def test_explicit_choice_overrides_system_pref(open_site):
@@ -45,7 +45,7 @@ def test_explicit_choice_overrides_system_pref(open_site):
 
 def test_theme_persists_across_reload(open_site):
     page, _ = open_site(color_scheme="dark")
-    page.locator(".themeswitch").click()
+    page.locator(".masthead .themeswitch").click()
     page.reload(wait_until="load")
     assert page.locator("html").get_attribute("data-theme") == "light"
 
@@ -53,7 +53,7 @@ def test_theme_persists_across_reload(open_site):
 def test_background_actually_changes_between_pairs(open_site):
     page, _ = open_site(color_scheme="dark")
     dark_bg = page.evaluate("getComputedStyle(document.body).backgroundColor")
-    page.locator(".themeswitch").click()
+    page.locator(".masthead .themeswitch").click()
     light_bg = page.evaluate("getComputedStyle(document.body).backgroundColor")
     assert dark_bg != light_bg
     assert dark_bg == "rgb(20, 24, 26)"      # #14181A
@@ -63,6 +63,6 @@ def test_background_actually_changes_between_pairs(open_site):
 def test_theme_button_label_is_localised(open_site):
     page, _ = open_site(color_scheme="dark")
     page.locator(".langswitch").click()  # -> RU
-    assert page.locator(".themeswitch").text_content().strip() == "Крем"
-    page.locator(".themeswitch").click()  # -> light
-    assert page.locator(".themeswitch").text_content().strip() == "Уголь"
+    assert page.locator(".masthead .themeswitch").text_content().strip() == "Крем"
+    page.locator(".masthead .themeswitch").click()  # -> light
+    assert page.locator(".masthead .themeswitch").text_content().strip() == "Уголь"

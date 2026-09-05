@@ -91,8 +91,10 @@ def test_scroll_position_restored_on_return(open_site):
 
 def test_theme_and_language_persist_through_the_view(open_site):
     page, _ = open_site(color_scheme="dark")
-    page.locator(".themeswitch").click()  # -> light
-    page.locator(".langswitch").click()   # -> ru
+    # .themeswitch now exists twice (masthead + collage view bar); the collage
+    # copy is unreachable until the view opens, so drive the masthead one.
+    page.locator(".masthead .themeswitch").click()  # -> light
+    page.locator(".masthead .langswitch").click()   # -> ru
     page.locator("[data-collage-open]").click()
     page.wait_for_timeout(200)
 

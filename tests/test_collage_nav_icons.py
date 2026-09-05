@@ -180,7 +180,7 @@ def test_tools_row_wraps_below_600px_single_row_above(open_site, width, wrapped)
     assert is_wrapped == wrapped, f"{width}px: expected wrapped={wrapped}, got {is_wrapped}"
 
     # Cream/RU and the icons stay together on whichever line .tools lands on.
-    theme_top = page.locator(".themeswitch").bounding_box()["y"]
+    theme_top = page.locator(".masthead .themeswitch").bounding_box()["y"]
     icon_top = _icon_buttons(page).first.bounding_box()["y"]
     assert icon_top == pytest.approx(theme_top, abs=3)
 
