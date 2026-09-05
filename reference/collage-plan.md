@@ -148,7 +148,7 @@ looks wrong you already know which stage owns it.
 | 1 | View skeleton, copy, entry button | done |
 | 2 | Composition (CSS only, empty boxes) | done, then re-opened 2026-09-05 → three domain groups (see update above) |
 | 3 | Real images and delivery | markup done 2026-09-06 against **placeholder** stand-ins (see BUILD-NOTES "Collage Stage 3"); real photos + WebP + artifact republish still pending the shoot |
-| 4 | Motion, inside the existing system | not started |
+| 4 | Motion, inside the existing system | done 2026-09-06 — tiles run the page reveal rhythm off the view's own scroll root (BUILD-NOTES "Collage Stage 4"); no parallax, no CSS change |
 | 5 | Signature move and polish | not started |
 | 6 | Verify, document, merge, republish | not started |
 

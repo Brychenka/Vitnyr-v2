@@ -125,3 +125,61 @@ def test_collage_has_own_header_and_back_affordance(open_site):
     bar = page.locator("#collage .view__bar")
     assert bar.locator(".view__back").is_visible()
     assert bar.locator("svg[aria-label='Vitnyr']").count() == 1
+
+
+# --- Stage 4: the tiles run the page's reveal rhythm, off the view's own root ---
+
+def test_collage_tiles_are_plain_visible_before_the_view_opens(open_site):
+    """Tiles ship .reveal.is-in. With the view closed they are ordinary
+    visible content — never counted among 'stuck' reveals, and readable with
+    JS off or under reduced motion."""
+    page, _ = open_site()
+    page.wait_for_timeout(300)
+    assert page.evaluate(
+        "() => [...document.querySelectorAll('#collage .reveal')]"
+        ".every(t => parseFloat(getComputedStyle(t).opacity) > 0.95)"
+    )
+    # and they are excluded from the page observer's set
+    assert page.evaluate(
+        "() => [...document.querySelectorAll('#app .reveal')]"
+        ".every(el => !el.closest('#collage'))"
+    )
+
+
+def test_collage_tiles_reveal_on_scroll_inside_the_view(open_site):
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(400)
+
+    last_tile = page.locator("#collage .view__group").last.locator(".reveal").last
+    # below the first screenful of the view -> stripped back to hidden
+    assert last_tile.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.1
+
+    last_tile.scroll_into_view_if_needed()
+    page.wait_for_timeout(1500)
+    assert last_tile.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    assert "is-in" in (last_tile.get_attribute("class") or "")
+
+
+def test_collage_reveals_are_inert_under_reduced_motion(open_site):
+    page, _ = open_site(reduced_motion=True)
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(400)
+    assert page.evaluate(
+        "() => [...document.querySelectorAll('#collage .reveal')]"
+        ".every(t => parseFloat(getComputedStyle(t).opacity) > 0.95)"
+    )
+
+
+def test_collage_reopen_lands_on_a_settled_view(open_site):
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(300)
+    page.locator("#collage .view__back").click()
+    page.wait_for_timeout(400)
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(300)
+    assert page.evaluate(
+        "() => [...document.querySelectorAll('#collage .reveal')]"
+        ".every(t => parseFloat(getComputedStyle(t).opacity) > 0.95)"
+    )

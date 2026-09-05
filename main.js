@@ -172,32 +172,70 @@
      something the reader can see, and observing whole sections meant items a
      thousand pixels below the fold had already finished animating by the time
      they were scrolled to. */
+  var REVEAL_CAP = 4;   // past four beats a stagger stops reading as rhythm and
+                        // starts reading as lag, so the chain restarts its count
+
+  // The one place a batch of .reveal targets turns into a staggered entrance.
+  // Shared so the collage view's own observer (armCollageReveals) runs the
+  // exact same rhythm as the page's, off a different scroll root.
+  function fireReveals(entries, io) {
+    var shown = [];
+    entries.forEach(function (e) { if (e.isIntersecting) shown.push(e); });
+    if (!shown.length) return;
+    // Ordered by where they sit, not by DOM order or callback order, so a
+    // stagger always runs top-to-bottom on screen.
+    shown.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+    shown.forEach(function (entry, i) {
+      var el = entry.target;
+      el.style.setProperty('--d', ((i % (REVEAL_CAP + 1)) * STAGGER).toFixed(2) + 's');
+      el.classList.add('is-in');
+      io.unobserve(el);
+    });
+  }
+
   function buildReveals() {
-    var items = document.querySelectorAll('.reveal');
+    // The collage tiles are .reveal too, but they live in a display-toggled
+    // fixed view that is never scrolled *into* — the page observer's viewport
+    // root would fire them all at load while the view is hidden. They start
+    // .is-in in the markup and are handed to their own observer on first open
+    // (armCollageReveals). Everything else is the page's to reveal.
+    var items = [];
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      if (!el.closest('#collage')) items.push(el);
+    });
     if (!('IntersectionObserver' in window)) {
       items.forEach(function (el) { el.classList.add('is-in'); });
       return;
     }
-    var CAP = 4;   // past four beats a stagger stops reading as rhythm and
-                   // starts reading as lag, so the chain restarts its count
-    var io = new IntersectionObserver(function (entries) {
-      var shown = [];
-      entries.forEach(function (e) { if (e.isIntersecting) shown.push(e); });
-      if (!shown.length) return;
-      // Ordered by where they sit, not by DOM order or callback order, so a
-      // stagger always runs top-to-bottom on screen.
-      shown.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
-      shown.forEach(function (entry, i) {
-        var el = entry.target;
-        el.style.setProperty('--d', ((i % (CAP + 1)) * STAGGER).toFixed(2) + 's');
-        el.classList.add('is-in');
-        io.unobserve(el);
-      });
-    }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
+    var io = new IntersectionObserver(function (entries) { fireReveals(entries, io); },
+      { rootMargin: '0px 0px -20% 0px', threshold: 0 });
     // Twins in the language that isn't showing are display:none, so the
     // observer never reports them and they don't eat stagger beats. They stay
     // observed, and fire correctly if the reader switches language.
     items.forEach(function (el) { io.observe(el); });
+  }
+
+  /* The collage view's tiles run the page's reveal rhythm off the view's own
+     overflow:auto root. Wired on first open, not at load: the view is
+     position:fixed + visibility:hidden until then, so a viewport-rooted
+     observer would report every tile as "in view" and burn the whole
+     entrance while nobody is looking. Tiles ship .is-in (visible with JS
+     absent, under reduced motion, and while the view is closed); this strips
+     it back off so the observer can stagger them in. Fires once. */
+  var collageRevealsArmed = false;
+  function armCollageReveals(view) {
+    if (collageRevealsArmed) return;
+    collageRevealsArmed = true;
+    var tiles = view.querySelectorAll('.reveal');
+    if (reduce || !('IntersectionObserver' in window)) return;   // leave them .is-in
+    tiles.forEach(function (el) {
+      el.classList.remove('is-in');
+      el.style.removeProperty('--d');
+    });
+    var io = new IntersectionObserver(function (entries) { fireReveals(entries, io); },
+      { root: view, rootMargin: '0px 0px -10% 0px', threshold: 0 });
+    tiles.forEach(function (el) { io.observe(el); });
+    armFailsafe();   // belt-and-braces: force-show any tile the observer misses
   }
 
   /* ---------- measured numbers count to their value ----------
@@ -487,6 +525,7 @@
       setBehindInert(true);
       if (lenis) lenis.stop();
       view.scrollTop = 0;
+      armCollageReveals(view);   // first open: hand the tiles to their own observer
       // Synchronous: the view is visible the moment the class lands, and rAF
       // can be suspended in a background tab (see whenRendering above) — a
       // deferred focus move is a focus move that might never happen.
@@ -519,6 +558,10 @@
       if (lenis) lenis.start();
       bgScrollTo(savedScroll);
       if (returnFocus && returnFocus.focus) returnFocus.focus({ preventScroll: true });
+      // Reopen lands on a settled view, not a half-run stagger: put every tile
+      // back to .is-in. Any the observer hasn't fired yet stay observed and
+      // will still catch up on scroll.
+      view.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
     }
 
     function sync(cold) { (location.hash === '#collage') ? applyOpen(cold) : applyClose(); }

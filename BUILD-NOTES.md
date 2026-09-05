@@ -358,6 +358,44 @@ What actually changed in the build (this part is real and stays):
 постановки"* / "No stock, no staging" — true again only once the real photos
 are in. Don't republish the artifact before then.
 
+## Collage Stage 4 — motion (2026-09-06)
+
+The 18 tiles now run the page's one reveal rhythm — 24px rise + fade, 0.9s,
+the `brand` curve, 0.08s stagger, capped at 4 beats, fired once — off the
+**collage view's own `overflow:auto` root**, not the document viewport.
+
+Why a second observer instead of just adding `.reveal`: `#collage` is
+`position: fixed; visibility: hidden` until it opens, so the page's
+viewport-rooted observer would report all 18 as "in view" at load and burn
+the whole entrance while nobody is looking (this is the exact reason Stage 2
+recorded *not* adding `.reveal`). So:
+
+- `buildReveals()` now excludes `#collage` (`!el.closest('#collage')`), and
+  the batch→stagger step is factored into a shared `fireReveals()` so both
+  observers run the identical rhythm.
+- `armCollageReveals(view)` — called once from `applyOpen()` on first open —
+  strips the shipped `.is-in`, then observes the tiles with an observer whose
+  `root` is the view (`rootMargin: '0px 0px -10% 0px'`). It also calls
+  `armFailsafe()` so a missed tile is still force-shown.
+- Tiles **ship `class="… reveal is-in"`** in the markup: visible with JS
+  absent, under `prefers-reduced-motion` (the existing `@media reduce`
+  neutraliser already covers `.reveal`), and while the view is closed — so
+  they never count as a "stuck" reveal in `test_a11y` / `test_motion`.
+  `armCollageReveals` early-returns under reduced motion, leaving `.is-in` on.
+- `applyClose()` puts `.is-in` back on every tile, so a reopen lands on a
+  settled view rather than a half-run stagger; tiles the observer hasn't
+  reached yet stay observed and still catch up on scroll.
+
+No parallax (Stage 4's optional half): nothing here needs it, and it would be
+the first thing on the page to put layout in the transform channel of a
+grid. No CSS change — `.collage__fig` takes the existing `.reveal` rules as
+is; `transform: translateY(24px)` on a grid item is paint-only, so **zero CLS
+still holds**. GSAP/ScrollTrigger untouched (ScrollTrigger stays out).
+
+Tests: four added to `test_collage.py` — tiles visible before open + excluded
+from the page set, reveal-on-scroll inside the view, inert under reduced
+motion, settled on reopen. Full suite green.
+
 ## Collage view theme switch (2026-09-06)
 
 Igor: *"Make a collage page also have a cream/charcoal switch."* The open
