@@ -196,6 +196,33 @@ def test_contact_row_carries_the_proof_style_arrow_at_its_right_edge(open_site):
 # only on hover — the most recessive large element guarding the one visible
 # door into the collage view. ---
 
+# --- P8 (Stage 6, 2026-09-06): "Message me." used to be plain text — the
+# page's one actual conversion goal (the free intro call) had no control
+# anywhere on it. Now a real, localized Telegram deep link. ---
+
+def test_contact_heading_is_a_real_telegram_link(open_site):
+    page, _ = open_site(viewport=WIDE)
+    cta = page.locator(".contact__big .contact__cta")
+    assert cta.get_attribute("href").startswith("https://t.me/yngvil?text=")
+    assert cta.get_attribute("target") == "_blank"
+    assert cta.get_attribute("rel") == "noopener"
+
+
+def test_contact_cta_prefill_text_is_localized(open_site):
+    page, _ = open_site(viewport=WIDE)
+    cta = page.locator(".contact__big .contact__cta")
+    en_href = cta.get_attribute("href")
+    assert "book%20the%20free%20intro%20call" in en_href
+
+    page.locator(".masthead .langswitch").click()
+    ru_href = cta.get_attribute("href")
+    assert ru_href != en_href
+    assert ru_href.startswith("https://t.me/yngvil?text=")
+    # decodes to Cyrillic, not a re-encoded copy of the English string
+    decoded = page.evaluate("href => decodeURIComponent(href.split('?text=')[1])", ru_href)
+    assert "бесплатный" in decoded
+
+
 def test_see_the_work_reads_at_full_foreground_and_underlined_at_rest(open_site):
     page, _ = open_site(color_scheme="dark", viewport=WIDE)
     link = page.locator(".proof__link")

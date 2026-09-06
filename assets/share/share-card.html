@@ -1,0 +1,86 @@
+<!doctype html>
+<!--
+  P1 (Stage 6, 2026-09-06): source for the 1200×630 Open Graph / Twitter
+  share-card image (og-share.png in this same folder). Not part of the
+  site — rendered once in a real browser at exactly 1200×630 and exported
+  as a flat raster, because social crawlers (Telegram especially — the
+  site's first contact channel, and the one that renders link previews
+  most aggressively) need a static image, not live SVG/CSS.
+
+  Every color, the mark's path data and the wordmark's per-letter glyph
+  colors are copied verbatim from index.html / style.css (the fixed
+  --bg/--amber/--green/--fg charcoal-pair tokens, and the .lockup SVG) —
+  this must never drift into its own palette. Regenerate by opening this
+  file at a 1200×630 viewport and re-exporting, whenever the wordmark,
+  the facts, or the charcoal-pair tokens change.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<title>Vitnyr share card source</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px; height: 630px; overflow: hidden;
+    background: #14181A; /* --bg, charcoal pair */
+  }
+  .card {
+    width: 1200px; height: 630px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 76px 84px;
+  }
+  .lockup { display: flex; align-items: center; gap: 22px; }
+  .lockup svg.mark { width: 46px; height: 46px; flex: none; }
+  .lockup .wm {
+    font-family: Lora, Georgia, serif; font-size: 34px; font-weight: 600;
+    letter-spacing: 0.22em;
+  }
+  .lockup .wm b { font-weight: 600; }
+  .headline {
+    font-family: Lora, Georgia, serif; font-weight: 500;
+    font-size: 56px; line-height: 1.14; letter-spacing: -0.01em;
+    color: #F2EFE8; /* --fg */
+    max-width: 920px;
+    text-wrap: balance;
+  }
+  .foot {
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-top: 1px solid rgba(242,239,232,0.235); /* --rule, charcoal pair */
+    padding-top: 28px;
+  }
+  .foot .who {
+    font-family: Lora, Georgia, serif; font-weight: 600; font-size: 22px;
+    color: #F2EFE8;
+  }
+  .foot .facts {
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 17px;
+    letter-spacing: 0.02em; color: #A8ABA9; /* --fg2 */
+  }
+  .foot .facts b { color: #F2EFE8; font-weight: 500; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="lockup">
+      <!-- identical d= to .lockup/.footmark in index.html — do not redraw -->
+      <svg class="mark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
+        <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="#4C7A52"/>
+        <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="#B07C24"/>
+      </svg>
+      <span class="wm">
+        <b style="color:#B07C24">V</b><span style="color:#F2EFE8">ITN</span><b style="color:#4C7A52">Y</b><span style="color:#F2EFE8">R</span>
+      </span>
+    </div>
+
+    <p class="headline">For people who know English<br>far better than they speak it.</p>
+
+    <div class="foot">
+      <span class="who">Igor Shatsev</span>
+      <span class="facts"><b>8</b> yrs coaching &nbsp;·&nbsp; <b>100+</b> one-on-one clients &nbsp;·&nbsp; Yerevan</span>
+    </div>
+  </div>
+</body>
+</html>

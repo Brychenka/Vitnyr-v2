@@ -10,7 +10,56 @@
 <meta property="og:title" content="Igor Shatsev — Vitnyr">
 <meta property="og:description" content="For people who know English far better than they speak it. 100+ one-on-one clients over 8 years, Yerevan.">
 <meta property="og:type" content="website">
-<!-- PLACEHOLDER: set og:url and og:image once the domain exists and a share card is exported. -->
+<!--
+  P1 (Stage 6, 2026-09-06): og:image now points at a real, exported share
+  card (assets/share/, source + provenance in that folder). og:url and
+  og:image still can't be made *correct* without a real domain, so both
+  use https://vitnyr.example/ — the IANA-reserved placeholder TLD (RFC
+  2606), not a guessed real-looking one — as a single find-and-replace
+  point. PLACEHOLDER stands until the domain exists; canonical and the
+  hreflang alternates below share the same placeholder for the same
+  reason. Twitter/X needs twitter:card declared separately from the og:
+  tags to render a large-image preview.
+-->
+<meta property="og:url" content="https://vitnyr.example/">
+<meta property="og:image" content="https://vitnyr.example/assets/share/og-share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Vitnyr — Igor Shatsev, English coach in Yerevan">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://vitnyr.example/assets/share/og-share.png">
+
+<link rel="canonical" href="https://vitnyr.example/">
+<!-- P3/P2 (Stage 6, 2026-09-06): hreflang alternates point at the ?lang=
+     URLs theme.js already reads on load and now writes back via
+     history.replaceState on a language switch (see theme.js). -->
+<link rel="alternate" hreflang="en" href="https://vitnyr.example/?lang=en">
+<link rel="alternate" hreflang="ru" href="https://vitnyr.example/?lang=ru">
+<link rel="alternate" hreflang="x-default" href="https://vitnyr.example/">
+
+<!-- P3 (Stage 6, 2026-09-06): Person over LocalBusiness — no storefront,
+     just a named coach; sameAs is the three settled contact channels only,
+     in the settled order. Every field here is one of the site's own
+     confirmed facts (CLAUDE.md) — nothing added for search's sake alone. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Igor Shatsev",
+  "alternateName": "Vitnyr",
+  "jobTitle": "English coach",
+  "description": "English coach in Yerevan for people who know English far better than they speak it. 100+ one-on-one clients over 8 years.",
+  "url": "https://vitnyr.example/",
+  "image": "https://vitnyr.example/assets/share/og-share.png",
+  "address": { "@type": "PostalAddress", "addressLocality": "Yerevan", "addressCountry": "AM" },
+  "knowsLanguage": ["en", "ru"],
+  "sameAs": [
+    "https://t.me/yngvil",
+    "https://www.linkedin.com/in/vitnyrcoach/",
+    "https://www.instagram.com/brychenka/"
+  ]
+}
+</script>
 
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" href="assets/vitnyr-icon-favicon.svg" type="image/svg+xml">
@@ -270,7 +319,11 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <li class="reveal"><span class="n" data-count="8">8</span><span class="k" data-en="years coaching" data-ru="лет практики">years coaching</span></li>
     <li class="reveal"><span class="n" data-count="100" data-suffix="+">100+</span><span class="k" data-en="one-on-one clients" data-ru="учеников индивидуально">one-on-one clients</span></li>
     <li class="reveal"><span class="n" data-count="2100">2100</span><span class="k" data-en="chess rating" data-ru="шахматный рейтинг">chess rating</span></li>
-    <li class="reveal"><span class="n">7c</span><span class="k" data-en="redpoint, indoor" data-ru="редпоинт, зал">redpoint, indoor</span></li>
+    <!-- P4/P7 (Stage 6, 2026-09-06): this used to say only "redpoint, indoor"
+         — the harder of the two climbing numbers (the 7C Kilter boulder)
+         was dropped from the row most likely to actually be read, while the
+         domain card and the origin mark's panel both carry both grades. -->
+    <li class="reveal"><span class="n">7c</span><span class="k" data-en="redpoint, indoor · 7C Kilter" data-ru="редпоинт, зал · 7C Kilter">redpoint, indoor · 7C Kilter</span></li>
   </ul>
 
   <!-- Entry to the collage view. A real anchor: with JS off it jumps to the
@@ -296,10 +349,12 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      top of it (three strokes -> three disciplines) rather than replacing it,
      per the "don't need the fused-letters logic explained" rule: the mark
      itself is untouched, only this text explains it.
-     NOTE: the vit + nyr etymology below is a proposed Old Norse reading
-     (vit = sense/understanding, nyr = new), not yet confirmed against a
-     source Igor has approved. Flagged for his sign-off before this ships —
-     see conversation/BUILD-NOTES.md. -->
+     P6 (Stage 6, 2026-09-06): the vit + nýr etymology below was flagged as
+     unconfirmed and held for Igor's sign-off. Checked against the
+     Cleasby-Vigfusson Old Norse dictionary: vit = "consciousness, sense" /
+     "wit, understanding, reason"; nýr = "new, fresh, recent" — both match
+     the copy as written. Confirmed; this note can go once it's read once
+     more by whoever ships next. -->
 <section class="sec" id="origin">
   <p class="label reveal"><span class="num">04</span><span data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span></p>
   <div class="sec__head">
@@ -407,9 +462,29 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 
 <section class="sec sec--contact" id="contact">
   <p class="label reveal"><span class="num">06</span><span data-en="How to start" data-ru="Как начать">How to start</span></p>
+  <!-- P8 (Stage 6, 2026-09-06): this used to be plain text — the page's one
+       actual conversion goal (the free intro call) had no control on it
+       anywhere, on a page whose settled channels are otherwise all social
+       apps. Now a real Telegram deep link, pre-filled with a message about
+       the free call so the reader arrives already saying what they came to
+       say; text mirrors data-href-en/ru so it reads in the right language,
+       via theme.js's applyLang(). Same travelling-arrow affordance as
+       .proof__link/.channels, so "this leads somewhere" reads the same way
+       a third time on the page. -->
   <h2 class="contact__big reveal">
-    <span data-l="en">Message me.</span>
-    <span data-l="ru">Напишите мне.</span>
+    <a class="contact__cta" data-magnetic target="_blank" rel="noopener"
+       href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20intro%20call."
+       data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20intro%20call."
+       data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D1%8B%D0%B9%20%D1%81%D0%BE%D0%B7%D0%B2%D0%BE%D0%BD.">
+      <span class="contact__cta-text">
+        <span data-l="en">Message me.</span>
+        <span data-l="ru">Напишите мне.</span>
+      </span>
+      <span class="contact__cta-arrow" aria-hidden="true">
+        <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        <svg aria-hidden="true" class="contact__cta-arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+      </span>
+    </a>
   </h2>
   <div class="sec__lede">
     <p class="reveal" data-l="en">Tell me what you need English for and where it breaks now. We start with a call: <strong class="mark">it's free, and you owe me nothing after it</strong>. One-on-one only, online or in Yerevan.</p>
@@ -550,8 +625,13 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         </svg>
         <span data-en="English" data-ru="Английский">English</span>
       </p>
+      <!-- P4/P7 (Stage 6, 2026-09-06): data-en used a colon here while the
+           markup's own text (the pre-JS paint) and the RU version both use
+           an em dash — applyLang() overwrote the colon in on every visit
+           that ever had JS, so the two paints silently disagreed. Matched
+           to the em dash both other copies already use. -->
       <h2 id="collage-en" tabindex="-1"
-          data-en="The coaching itself: one-on-one, online or in Yerevan."
+          data-en="The coaching itself — one-on-one, online or in Yerevan."
           data-ru="Сама работа — один на один, онлайн или в Ереване.">The coaching itself — one-on-one, online or in Yerevan.</h2>
       <p class="view__group-lede" data-l="en">There's no classroom to photograph. This is how a lesson runs: a call, a table, a text being pulled apart.</p>
       <p class="view__group-lede" data-l="ru">Класса, который можно снять, нет. Вот как на самом деле идёт занятие: созвон, стол, текст, который разбирают по частям.</p>

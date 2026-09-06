@@ -56,7 +56,7 @@ def test_the_three_measured_facts_are_exactly_these(open_site):
         {"n": "8", "k": "years coaching"},
         {"n": "100+", "k": "one-on-one clients"},
         {"n": "2100", "k": "chess rating"},
-        {"n": "7c", "k": "redpoint, indoor"},
+        {"n": "7c", "k": "redpoint, indoor · 7C Kilter"},
     ]
 
 
@@ -93,13 +93,57 @@ def test_contact_channel_order_is_telegram_linkedin_instagram(open_site):
     assert [o.strip() for o in order] == ["Telegram", "LinkedIn", "Instagram"]
 
 
-def test_og_url_and_image_not_yet_asserted(open_site):
-    """CLAUDE.md lists og:url / og:image as real placeholders. If they get
-    added, flip this test to assert their content."""
+def test_og_url_and_image_use_the_placeholder_domain(open_site):
+    """P1 (Stage 6): og:url / og:image landed as a real share card + a
+    documented https://vitnyr.example/ placeholder domain (RFC 2606) rather
+    than a guessed real-looking one — a real domain still doesn't exist."""
     page, _ = open_site()
-    assert page.locator('meta[property="og:url"]').count() == 0
-    assert page.locator('meta[property="og:image"]').count() == 0
+    assert page.locator('meta[property="og:url"]').get_attribute("content") == "https://vitnyr.example/"
+    assert (
+        page.locator('meta[property="og:image"]').get_attribute("content")
+        == "https://vitnyr.example/assets/share/og-share.png"
+    )
     assert page.locator('meta[property="og:title"]').count() == 1
+
+
+def test_canonical_and_hreflang_share_the_same_placeholder_domain(open_site):
+    page, _ = open_site()
+    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/"
+    alternates = {
+        el.get_attribute("hreflang"): el.get_attribute("href")
+        for el in page.locator('link[rel="alternate"][hreflang]').all()
+    }
+    assert alternates == {
+        "en": "https://vitnyr.example/?lang=en",
+        "ru": "https://vitnyr.example/?lang=ru",
+        "x-default": "https://vitnyr.example/",
+    }
+
+
+def test_share_card_asset_is_actually_served(open_site, site_url):
+    """The og:image / twitter:image meta values are necessarily absolute
+    placeholder-domain URLs (no real domain exists yet), but the asset
+    itself has to exist at that same path once the domain is swapped in —
+    checked here against the real path, relative to site root."""
+    page, _ = open_site()
+    resp = page.request.get(f"{site_url}/assets/share/og-share.png")
+    assert resp.ok
+    assert resp.headers.get("content-type", "").startswith("image/")
+
+
+def test_person_json_ld_carries_only_confirmed_facts(open_site):
+    page, _ = open_site()
+    data = page.evaluate(
+        """() => JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent)"""
+    )
+    assert data["@type"] == "Person"
+    assert data["name"] == "Igor Shatsev"
+    assert data["sameAs"] == [
+        "https://t.me/yngvil",
+        "https://www.linkedin.com/in/vitnyrcoach/",
+        "https://www.instagram.com/brychenka/",
+    ]
+    assert "FIDE" not in str(data)
 
 
 def test_section_numbering_is_sequential(open_site):

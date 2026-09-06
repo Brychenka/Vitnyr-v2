@@ -826,6 +826,91 @@ suite: **129 passed** (111 + 18 new).
 **Not republished:** same hold as Stages 2–4 — the placeholder-photo freeze
 from Collage Stage 3 still stands, and this remains a draft.
 
+## Awwwards-jury review, Stage 6 — ship readiness (2026-09-06)
+
+Six items that only matter once a domain exists, plus three loose copy ends:
+P1, P2, P3, P4/P7, P6, P8, branch `feature/ship-readiness`. Two of these
+(P6, P8) were real decisions, not implementation calls, and were put to
+Igor before any code changed rather than assumed from the work-order text
+alone.
+
+- **P1 — the share card was still the documented placeholder,** so every
+  link shared a blank grey box, on Telegram (the first contact channel,
+  and the one that renders previews most aggressively) above all. Built
+  the actual 1200×630 asset — `assets/share/share-card.html` is the source
+  (every color, the mark's path data and the wordmark's per-letter colors
+  copied verbatim from `index.html`/`style.css`, never its own palette),
+  rendered once via the test venv's own Playwright at exactly 1200×630
+  device pixels and exported to `assets/share/og-share.png` (48KB). `og:url`
+  / `og:image` (plus width/height/alt, and `twitter:card`) now point at
+  `https://vitnyr.example/` — the IANA-reserved placeholder TLD (RFC 2606),
+  not a guessed real-looking domain — as the one thing left to swap once a
+  real domain exists.
+- **P2 — the language lived only in `localStorage`.** `theme.js` read
+  `?lang=` on load and never wrote it back, so a reader who switched to
+  Russian and sent the URL handed everyone else an English page. Added
+  `syncLangUrl()`, called only from the switch handler (not from the
+  initial `applyLang()` call, so an ordinary first visit never rewrites a
+  clean address bar on its own) — wrapped in `try/catch` like every other
+  storage/history call here, because the live artifact runs this page
+  inside a cross-origin iframe where `history.replaceState` can throw.
+- **P3 — no canonical, no `hreflang`, no `robots.txt`/`sitemap.xml`, no
+  structured data**, for a bilingual single page selling a named person's
+  services in a named city — the cheapest search work available, and none
+  of it existed. Added a `Person` JSON-LD block (`sameAs` is exactly the
+  three settled channels, in the settled order; every field is one of the
+  site's own confirmed facts, nothing invented for search's sake), a
+  canonical link, `en`/`ru`/`x-default` `hreflang` alternates pointing at
+  the `?lang=` URLs P2 now actually writes, and `robots.txt` + `sitemap.xml`
+  at the site root. All four share the one `vitnyr.example` placeholder, so
+  the eventual domain purchase is a single find-and-replace.
+- **P8 — a positioning call, put to Igor rather than assumed:** the free
+  intro call is the page's actual conversion goal, but nothing on the page
+  read as "press this." Decision: add a real door now, as a Telegram deep
+  link (Igor's choice over Calendly or a placeholder href), reusing the
+  existing `@yngvil` handle. "Message me." — the page's single biggest
+  line of text — is now `<a class="contact__cta">`, pre-filled with a
+  message about the free call and localized via a new
+  `data-href-en`/`data-href-ru` pair (the same generic-attribute-copy idea
+  `applyLang()` already used for text, extended to `href`). Styled with the
+  same drawn-underline / travelling-arrow language as `.proof__link` and
+  `.channels a`, scaled up, rather than introducing a filled-button style
+  the rest of the page doesn't use anywhere.
+- **P6 — the etymology sign-off, resolved rather than deferred again.**
+  The `vit` + `nýr` Old Norse reading had an HTML comment above `#origin`
+  flagging it as unconfirmed. Checked both roots against the
+  Cleasby–Vigfusson Old Norse dictionary before touching anything: `vit` =
+  "consciousness, sense" / "wit, understanding, reason"; `nýr` = "new,
+  fresh, recent" — both match the copy as written. Confirmed; the
+  flag comment is gone, replaced with a note of what was checked and
+  against what.
+- **P4/P7 — two copy ends that disagreed with themselves.** The four-across
+  facts row said only "redpoint, indoor" for the climbing fact, dropping
+  the harder 7C Kilter number from the row most likely to actually be
+  read, while the domain card and the origin mark's panel both carry both
+  grades — `.k`'s label now reads "redpoint, indoor · 7C Kilter" to match.
+  And the collage's English group heading carried a colon in `data-en` but
+  an em dash in the markup's own text and in the Russian version — every
+  visit that ever ran `applyLang()` silently overwrote the em dash with a
+  colon. Matched to the em dash both other copies already used.
+
+Regression-proved the two behavioural changes (P2's URL mirroring, P8's
+localized CTA link) the same way as prior stages: `git stash` the source
+files, confirm all five new tests fail against pre-fix `main`, pop, confirm
+all five pass. The rest (P1/P3/P4/P7/P6) are static content and metadata
+checked directly against the new tests with no separate proof needed. Nine
+new test functions: three in `test_i18n.py` (URL mirroring), two in
+`test_layout.py` (the CTA link), three in `test_content.py` (canonical/
+hreflang, the JSON-LD block, the share-card asset actually resolving — plus
+one existing test updated for `og:url`/`og:image` and one for the facts
+row), one in `test_smoke.py` (`robots.txt`/`sitemap.xml`). Full suite:
+**138 passed** (129 + 9 new).
+
+**Not republished:** same hold as Stages 2–5 — the placeholder-photo freeze
+from Collage Stage 3 still stands, and this remains a draft. This closes
+the work order's six planned stages; the one item left on the sheet
+(the photo shoot itself) is parked on the shoot, not on any of this work.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
