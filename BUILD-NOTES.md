@@ -1755,6 +1755,57 @@ there.
 
 **Live artifact not republished** — same collage hold as C14.
 
+## P17 — masthead tools grouped: toggles | collage-nav (2026-09-07)
+
+Branch `feature/nav-photo-cluster`. Files: `index.html`, `style.css`, this
+note. Igor, looking at the header: *"the words photo and 3 icons next to it
+are not exactly connected… theme language are separate buttons and photo
+should stand separately with icons to show that they are together."* Right
+read — `.tools` was one flex row at a single `clamp(14–26px)` gap, so the
+theme switch, the language switch, the "Photos" caption and the three
+collage-jump icons all sat the same distance apart. Nothing said the caption
++ icons are one group, or that they differ in kind from the two toggles (jump
+into `#collage` vs. mutate the page you're on).
+
+- **Two clusters, divider at the seam.** `.tools` now holds
+  `.tools__group--util` (theme + language) then `.tools__rule` then
+  `.tools__group--nav` (caption + icons). The rule moved *out* from between
+  the caption and its own icons — where it had been splitting the group it
+  should bind — to the real boundary between the two kinds of control.
+- **Proximity does the grouping.** Within-cluster gap `10px`; between-cluster
+  gap `clamp(18px, 2.6vw, 30px)`, ~2–3× looser by width. No box, no fill, no
+  bracket — just the ratio.
+- **A hairline binds the caption to its glyphs.** `.tools__group--nav::after`,
+  a resting 1px rule the full width of the cluster in `--rule`, lifting to
+  `--ink-target` on `:hover` / `:focus-within`. Same 1px-hairline vocabulary
+  as `.tool::after`, and deliberately the same ink as it — C15 sent the
+  *cursor dot* amber on cream but left `.tool::after` green, so the cluster
+  hairline matches the sibling rule, not the dot. Pseudo-element only, so no
+  layout rides the transform channel (the `.line__inner` lesson). Checked in
+  both pairs: rest = each theme's `--rule`, active = each theme's target ink.
+- **Order is util-first, on purpose.** Nav-first (icons nearest the wordmark)
+  was tried and reverted: S16/`switch-no-shift` left `.themeswitch`
+  width-unpinned, and its "Charcoal"/"Уголь" ~30px swing only cancels for
+  controls *downstream* of it in the right-anchored row. Nav-first put the
+  icons upstream — they rode the full 30px on every language toggle, the jump
+  switch-no-shift had just killed for RU/EN. Util-first keeps them downstream;
+  measured drift back to 0, both directions. The `.tools__label::before`
+  width-pin from that stage now sits inside `.tools__group--nav` and still
+  holds the caption at a constant 57px.
+- **Wrap.** `.tools` gained `flex-wrap: wrap` so the two clusters drop as
+  whole units in the ~600–900px band instead of the row clipping; re-joined
+  to one line under 600px (`flex-wrap: nowrap` in that query), where the
+  header already goes two-row and `--head` already budgets for it.
+
+Verified in-browser: structure/order, gap ratio, hairline in both themes,
+language-toggle drift = 0 on the icons and on RU/EN both directions, label
+pinned 57px EN/RU, no console errors, no horizontal overflow at 1280 or 375,
+mobile one-line header below the lockup with 44px icon targets, and
+`data-collage-jump` still routes into `#collage`.
+
+**Live artifact not republished** — same collage-placeholder hold. Folds into
+the inline rebuild when that lifts.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
