@@ -236,7 +236,14 @@ html.is-scrolled .masthead {
 .lockup .wm { opacity: 0; transition: opacity .3s var(--e); }
 html.lora-ready .lockup .wm { opacity: 1; }
 
-.tools { display: flex; align-items: center; gap: clamp(14px, 2vw, 26px); }
+/* gap here is the BETWEEN-cluster gap; the WITHIN-cluster gap lives on
+   .tools__group and is deliberately ~2.5x tighter, so proximity alone reads
+   nav (Photos + the collage jumps) and toggles (theme, language) as two
+   things. wrap lets the two groups drop as whole units in the 600-900 band
+   rather than clip; below 600 they re-join on one line (see media query). */
+.tools { display: flex; align-items: center; flex-wrap: wrap; gap: clamp(18px, 2.6vw, 30px); }
+.tools__group { display: flex; align-items: center; flex-wrap: nowrap; gap: 10px; }
+.tools__group--util { gap: clamp(12px, 1.6vw, 18px); }
 .tool {
   background: none; border: 0; padding: 4px 0; cursor: pointer;
   color: var(--fg2);
@@ -326,6 +333,22 @@ html.past-origin .progress__fill--target { opacity: 1; }
 .tools__rule { width: 1px; height: 14px; background: var(--rule); flex-shrink: 0; }
 .tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
 .tool--icon svg { display: block; width: 19px; height: 19px; }
+/* P17 (2026-09-07): the row is two clusters now — the theme/language toggles
+   first, then .tools__rule, then .tools__group--nav (Photos caption + the
+   three collage jumps); order and rationale in index.html. A uniform gap had
+   made all six controls read as one strip; the tight within-cluster gap does
+   the grouping. This hairline binds the caption to its glyphs: 1px under the
+   whole nav cluster in --rule, lifting to target ink while anything inside is
+   hovered or focused. Same vocabulary as .tool::after; pseudo-element only,
+   so no layout rides the transform channel. */
+.tools__group--nav { position: relative; }
+.tools__group--nav::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px; background: var(--rule);
+  transition: background var(--t) var(--e);
+}
+.tools__group--nav:hover::after,
+.tools__group--nav:focus-within::after { background: var(--ink-target); }
 /* .themeswitch/.langswitch measured 76x23 / 19x23 at rest — both fail WCAG
    2.2's 24px touch-target minimum on height, the language switch on both
    axes (two letters, no room to grow but sideways), while the three glyph
@@ -342,19 +365,20 @@ html.past-origin .progress__fill--target { opacity: 1; }
    squared up to a uniform 12.5px so both axes still hit 44 exactly. */
 @media (pointer: coarse) { .tool--icon { padding: 12.5px; } }
 
-/* Cream/RU + the three icon buttons, at coarse-pointer touch-target padding,
-   don't fit next to a lockup held at its 176px floor below ~600px — the
-   header would either clip .tools (overflow-x:hidden hides it silently) or
-   shrink the mark (see .lockup above). Below that width .tools (the whole
-   nav — Cream, RU, divider, all three icons, as one flex item) drops to its
-   own line under the lockup instead of splitting internally; --head grows to
-   match so the hero's top padding still clears the taller, two-line header.
-   The +54px is sized for the real case here (phones = coarse pointers =
-   44px targets + 10px row-gap); a mouse-narrowed desktop window lands a
-   touch more generous, not tight, which is the safe side to be on. */
+/* Photos + the three icon buttons + Cream/RU, at coarse-pointer touch-target
+   padding, don't fit next to a lockup held at its 176px floor below ~600px —
+   the header would either clip .tools (overflow-x:hidden hides it silently)
+   or shrink the mark (see .lockup above). Below that width .tools (the whole
+   nav — Photos caption, three icons, divider, Cream, RU, its two clusters
+   re-joined on one line via flex-wrap:nowrap) drops to its own line under the
+   lockup instead of splitting internally; --head grows to match so the hero's
+   top padding still clears the taller, two-line header. The +54px is sized
+   for the real case here (phones = coarse pointers = 44px targets + 10px
+   row-gap); a mouse-narrowed desktop window lands a touch more generous, not
+   tight, which is the safe side to be on. */
 @media (max-width: 600px) {
   .masthead { flex-wrap: wrap; row-gap: 10px; }
-  .tools { flex-basis: 100%; justify-content: flex-end; }
+  .tools { flex-basis: 100%; justify-content: flex-end; flex-wrap: nowrap; }
   :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 54px); }
 }
 
