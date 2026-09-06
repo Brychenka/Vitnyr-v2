@@ -482,6 +482,10 @@
     // way, and paint()/clearPaint() carry no aria side effects, so this
     // stays silent to assistive tech.
     if (reduce || !('IntersectionObserver' in window)) return;
+    // S7 move 03: the mark draws its three strokes on the reveal (~0.9s of
+    // CSS, keyed off .is-in). Hold the idle preview until that has finished
+    // so the draw and the hint never drive the same strokes in one frame.
+    var DRAW_HOLD = 1.0;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
@@ -489,6 +493,7 @@
         if (engaged) return;
         var order = ['english', 'chess', 'climbing'];
         var tl = gsap.timeline({
+          delay: DRAW_HOLD,
           repeat: 1,
           onComplete: function () { if (!engaged) clearPaint(); idleTl = null; }
         });
@@ -710,11 +715,35 @@
 
     function sync(cold) { (location.hash === '#collage') ? applyOpen(cold) : applyClose(); }
 
+    /* S7 move 04 — animate the route with a View Transition, on the CLOSE
+       direction only. location.hash stays the single source of truth; this
+       just wraps the same sync() the router already calls so leaving the
+       view cross-fades back to the page. Deliberately not the open paths:
+       applyOpen (and the masthead jump) focus a heading synchronously and
+       the collage tests assert that with no wait, but startViewTransition
+       defers its update callback ~1 frame — which would strand that focus,
+       a bug this view has shipped once already. Closing returns focus to
+       the opener button and every close test settles first, so it is safe
+       to hand over. No API, reduced motion, or a hidden tab (where the
+       deferred callback might never run) all fall through to the direct
+       call, unchanged. */
+    function routeAfterHashChange() {
+      var vt = (location.hash !== '#collage')
+        && typeof document.startViewTransition === 'function'
+        && !reduce
+        && document.visibilityState === 'visible';
+      if (vt) document.startViewTransition(function () { sync(false); });
+      else sync(false);
+    }
+
     function leave() {
       // Real history keeps forward working; only synthesise a state if we'd
       // otherwise walk off the site (deep link opened in a fresh tab).
       if (window.history.length > 1) window.history.back();
-      else { history.replaceState(null, '', location.pathname + location.search); sync(false); }
+      else {
+        history.replaceState(null, '', location.pathname + location.search);
+        routeAfterHashChange();
+      }
     }
 
     if (opener) opener.addEventListener('click', function (e) {
@@ -772,7 +801,7 @@
     });
 
     if (backBtn) backBtn.addEventListener('click', leave);
-    window.addEventListener('hashchange', function () { sync(false); });
+    window.addEventListener('hashchange', function () { routeAfterHashChange(); });
     document.addEventListener('keydown', function (e) {
       if ((e.key === 'Escape' || e.key === 'Esc') && applied) { e.preventDefault(); leave(); }
     });

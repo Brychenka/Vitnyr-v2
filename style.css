@@ -775,6 +775,27 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .glyph__part--right.is-dim { fill: var(--amber-dim); }
 .glyph__part--stem.is-dim { fill: var(--green-dim); }
 
+/* S7 move 03 — the mark assembles from its three strokes on first reveal.
+   Section 04's copy says "two for the V, one for the stem"; drawn in that
+   order by growing each clip rect from zero: left arm top->vertex, right arm
+   vertex->tip, then the stem down from the vertex. Presentation only — the
+   shared path geometry (#glyphV, the stem d=) is never touched, and the
+   rects keep their full-size attributes, so no-JS keeps the finished mark.
+   One-shot: it runs off the same .is-in the reveal observer sets, offset by
+   the figure's own --d so it starts with the reveal fade, not before it.
+   Under reduced motion the reset below plus the global .01ms rule land it
+   complete on the first frame. The idle hint in initOrigin() is held back
+   until this finishes so the two never drive the same strokes at once. */
+html.js .origin__mark #glyphClipLeft  rect { height: 0; }
+html.js .origin__mark #glyphClipRight rect { y: 100px; height: 0; }
+html.js .origin__mark #glyphClipStem  rect { height: 0; }
+html.js .origin__mark.is-in #glyphClipLeft  rect { animation: glyph-draw-down .45s var(--e) var(--d, 0s) forwards; }
+html.js .origin__mark.is-in #glyphClipRight rect { animation: glyph-draw-up   .45s var(--e) calc(var(--d, 0s) + .22s) forwards; }
+html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .45s var(--e) calc(var(--d, 0s) + .44s) forwards; }
+@keyframes glyph-draw-down { from { height: 0; }               to { height: 100px; } }
+@keyframes glyph-draw-up   { from { y: 100px; height: 0; }     to { y: 0px; height: 100px; } }
+@keyframes glyph-draw-stem { from { height: 0; }               to { height: 44px; } }
+
 /* Invisible, generously-sized hit targets — padded well past the thin visual
    stroke (the arms render only ~8-11px wide at this size) so the target is
    actually tappable, not traced to the glyph's own outline. Real <button>s,
@@ -1273,5 +1294,11 @@ html.js .line__inner { transform: translateY(110%); }
   html.js .reveal, html.js .line__inner { opacity: 1 !important; transform: none !important; }
   .scrollcue:hover svg { animation: none; }
   .cursor, .line__inner, [data-magnetic] { will-change: auto !important; }
+  /* the mark is simply present and complete — no stroke draw (S7 move 03).
+     Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
+     which would clip the stroke away rather than show it whole. */
+  html.js .origin__mark #glyphClipLeft rect,
+  html.js .origin__mark #glyphClipRight rect { y: 0 !important; height: 100px !important; animation: none !important; }
+  html.js .origin__mark #glyphClipStem rect { height: 44px !important; animation: none !important; }
   * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }

@@ -428,7 +428,10 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        verified exact symmetry axis — so the two arms can be dimmed/brightened
        independently without ever touching the brand geometry. Hover, focus or
        tap a stroke to see which discipline it stands for; see initOrigin()
-       in main.js. The three buttons are real <button> elements (not divs
+       in main.js. On first reveal the three strokes draw themselves in — two
+       for the V, then the stem — by growing the clip rects above; the mark's
+       own path data is never animated or redrawn (S7 move 03, style.css).
+       The three buttons are real <button> elements (not divs
        with role=button) so keyboard Tab and touch tap both work natively —
        mouse hover is layered on top only for fine-pointer devices. The panel
        below is the single source of the three discipline/stat pairs: with
@@ -439,12 +442,16 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
         <defs>
           <path id="glyphV" d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z"/>
+          <!-- The two half-clips also carry the S7 reveal draw: style.css grows
+               each rect from zero once, on the mark's .is-in, so the arms and
+               stem assemble in that order. The geometry above is untouched. -->
           <clipPath id="glyphClipLeft" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="50" height="100"/></clipPath>
           <clipPath id="glyphClipRight" clipPathUnits="userSpaceOnUse"><rect x="50" y="0" width="50" height="100"/></clipPath>
+          <clipPath id="glyphClipStem" clipPathUnits="userSpaceOnUse"><rect x="38" y="42" width="24" height="44"/></clipPath>
         </defs>
         <use class="glyph__part glyph__part--left" data-discipline="english" href="#glyphV" clip-path="url(#glyphClipLeft)" fill="var(--amber)"/>
         <use class="glyph__part glyph__part--right" data-discipline="chess" href="#glyphV" clip-path="url(#glyphClipRight)" fill="var(--amber)"/>
-        <path class="glyph__part glyph__part--stem" data-discipline="climbing" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
+        <path class="glyph__part glyph__part--stem" data-discipline="climbing" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" clip-path="url(#glyphClipStem)" fill="var(--green)"/>
       </svg>
       <button class="origin__hit origin__hit--left" type="button" data-discipline="english" aria-pressed="false">
         <span class="vh" data-en="English" data-ru="Английский">English</span>

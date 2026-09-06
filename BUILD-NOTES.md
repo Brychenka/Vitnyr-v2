@@ -1489,6 +1489,93 @@ numbers alone. Mid-cascade and settled screenshots in this chat.
 
 Full suite: **164 passed** (was 163; −1 test removed, +2 added).
 
+## Spark Order, Stage 7 — the mark and the door (2026-09-06)
+
+Branch `feature/mark-and-door`. Moves 03 and 04 — the wordmark draws its
+three strokes on first reveal, and leaving the collage view cross-fades.
+
+**Move 03 — the mark assembles from three strokes.** Section 04's copy says
+*"It's still three strokes: two for the V, one for the stem."* On the mark's
+`.is-in` (the same reveal observer everything else uses) each stroke now
+draws in, in that order: left arm top→vertex, right arm vertex→tip, then the
+stem down from the vertex.
+
+- **Geometry untouched.** `#glyphV` and the stem `d=` are never animated or
+  redrawn (CLAUDE.md forbids it, and the path is shared verbatim with
+  `.lockup` / `.footmark`). The draw grows each part's **clip rect**:
+  `#glyphClipLeft` / `#glyphClipRight` (already there for the half-clip) get
+  their `height` — and the right one its `y` — animated from zero; a new
+  `#glyphClipStem` clips the stem the same way. Pure CSS, keyframed on the
+  one `--e` curve, `.45s` per stroke, `.22s` apart, each offset by the
+  figure's own `var(--d)` so it starts with the reveal fade rather than
+  ahead of it. The brand ease is very front-loaded, so it reads as a brisk
+  assemble (~0.6s visually) inside the 0.9s fade.
+- **Additive.** No `html.js` (no JS / GSAP failed) → the base collapse rule
+  never applies and the rects sit at their full-size attributes → finished
+  mark. Reduced motion → an explicit-px reset in the existing
+  `@media (prefers-reduced-motion: reduce)` block (a clip rect's
+  `height: auto` computes to **0** here, which would clip the stroke away —
+  so the reset is `100px` / `44px`, not `auto`), plus the block's global
+  `.01ms` rule. `test_origin_mark_is_complete_under_reduced_motion` guards it.
+- **Sequenced against the idle hint.** `initOrigin()`'s idle preview
+  (`threshold: 0.4`, previews all three disciplines) now starts on a 1.0s
+  `delay` so the draw finishes before the hint drives the same strokes.
+  `is-active` / `is-dim` are fill changes, orthogonal to the clip geometry,
+  and `test_origin_mark_holds_still_for_the_hover_states` confirms a focus
+  after the draw doesn't disturb the rects.
+
+**Move 04 — View Transition on the collage route, close direction only.**
+`location.hash` stays the single source of truth. `routeAfterHashChange()`
+wraps the same `sync()` the router already calls in
+`document.startViewTransition()` — but only when the hash resolves to a
+**close**, and only when the API exists, motion is allowed, and the tab is
+visible; otherwise it's the direct call, unchanged.
+
+- **Why close only.** `startViewTransition` defers its update callback ~1
+  frame (measured). `applyOpen` and the masthead jump focus a heading
+  synchronously and `test_opener_routes_into_the_view` /
+  `test_deep_link_opens_the_view_directly` assert that with no wait — a
+  deferred focus there would strand it (this view shipped that bug once).
+  So the open paths (opener click, glyph jumps, deep-link init) stay direct;
+  closing returns focus to the opener button and every close test settles
+  first, so it takes the transition. The optional glyph→label morph
+  (`view-transition-name`) is on the jump path, which stays synchronous, so
+  it's not taken.
+- **Reduced motion** skips `startViewTransition` via the explicit `!reduce`
+  gate rather than relying on the API's own PRM handling.
+- Back, forward, Escape, the bar's back button, deep links and all three
+  glyph jumps behave exactly as before; every test in `test_collage.py`
+  passes **unchanged**.
+
+**Tests.** +5 (164 → 169).
+- `test_motion.py`: `test_origin_mark_draws_its_three_strokes_once` (real
+  draw — a partial state is seen; arms fill before the stem; one-shot, still
+  full ~1s later) and `test_origin_mark_holds_still_for_the_hover_states`.
+  Both read the clip rects via `getBBox().height` (`getComputedStyle` reports
+  `auto` for a zero/`auto` CSS height).
+- `test_a11y.py`: `test_origin_mark_is_complete_under_reduced_motion`.
+- `test_collage.py`: `test_view_transition_does_not_delay_focus` (open focus
+  is synchronous, not behind the transition callback; close still restores
+  focus to the opener) and `test_view_transition_falls_back_cleanly_under_reduced_motion`
+  (`startViewTransition` is never called under reduced motion). Both are
+  guards on the direct/fallback path and pass either way, like the S4/S6
+  degradation guards.
+
+Regression-proved per protocol: `git stash push -- index.html style.css
+main.js`; the three origin-mark cases fail against reverted source
+(`#glyphClipStem` absent); popped, all green.
+
+Verified headless (Trap 2): 375 and 1280, both themes, both languages — the
+three strokes draw in order (left arm before the stem in every config), a
+partial state is caught mid-draw, the mark holds full afterward, no
+horizontal overflow, no console or page errors. Reduced motion: the mark is
+whole from the first frame, no draw. No-JS: whole. Collage close cross-fades
+via `startViewTransition`; open, deep-link and glyph-jump stay synchronous
+with focus intact; reduced motion takes neither transition. Mid-draw,
+settled and reduced-motion screenshots in this chat.
+
+Full suite: **169 passed** (was 164, +5 new cases). No existing test edited.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
