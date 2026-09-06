@@ -708,6 +708,124 @@ mislabelling had actually left it unfixed. Full suite: **111 passed**
 freeze from Collage Stage 3 is unrelated to this stage's changes but still
 stands, and this remains a draft.
 
+## Awwwards-jury review, Stage 5 — composition & rhythm (2026-09-06)
+
+Nine places where a grid meets uneven content and loses, or a rule and a
+weight don't say what they mean: C8, C9, C12, P9, P10, P12, P13, P14, P15,
+branch `feature/composition-pass`. Re-read the actual work-order text for
+every item before touching code, not just the paraphrase from earlier in
+this project — the C11 mislabelling in Stage 4 was exactly the failure mode
+of trusting a reconstruction over the source.
+
+- **C8 — nothing to do.** The one-ratio-per-group decision (Collage Stage 1)
+  already gives `.collage--group` a plain repeating grid that aligns evenly
+  at one/two/three-up with six identical crops per group. Kept on the sheet
+  as a pointer, not a task.
+- **C9 — the contact handle was the smallest, furthest thing in its own
+  row.** "Telegram" sat at 44px Lora against the left margin; "@yngvil" sat
+  13px mono up to ~950px away at the right — three rows that read as a
+  table missing its middle column, with the one piece a reader actually
+  needs both the faintest and the most distant. Rebuilt `.channels a` from
+  a two-column grid to a flex row: the handle (`.ch__v`, bumped to
+  `clamp(14px, 1.5vw, 17px)`) now sits directly behind the platform name in
+  one `.ch__text` unit, and the right edge it gave up carries `.ch__arrow`
+  — the same two-copy travelling-arrow device `.proof__arrow` already uses,
+  reused rather than reinvented. New tests check the gap between name and
+  handle, and that the arrow sits at the row's right edge.
+- **C12 — two rule widths with no stated relationship.** `.sec`'s own
+  top border spans its full 1320px box; `.mechanisms`/`.specs`/`.domains`/
+  `.rows`/`.channels`/`.proof` sit inside that box's own `--gut` padding, so
+  their dividers drew `--gut` narrower on each side — not a deliberate
+  second tier, just where `.sec`'s padding happened to land. Bled all six
+  back out with `margin-inline: calc(var(--gut) * -1)` and re-added the
+  same amount as `padding-inline`, so the text inside still lines up with
+  the `.sec__head` heading above it, but every horizontal rule on the page
+  is now exactly one width. New tests check the six containers are flush
+  with their own section's box, and that the content inset didn't move.
+- **P14 — the mechanisms grid gave every row the same fixed heading
+  column** (`minmax(0, 1fr)`, sized against the row's *paragraph*, not its
+  own heading), so "Load management" got the same ~470px as the longest
+  heading on the page and sat in a pool of empty track before its
+  paragraph started. `min(max-content, 260px)` looked like the fix but
+  Chromium rejects `max-content` inside a `min()`/`max()` math function in
+  track-sizing position — the whole declaration drops silently and the
+  column falls back to one implicit full-width track. Caught by the
+  regression test itself (it failed with the "fixed" CSS in place, not
+  just against pre-fix `main`). `fit-content(260px)` is the actual
+  built-in for this — sizes to the row's own content, capped so a long
+  heading wraps instead of pushing the paragraph column aside. New test
+  checks the three rows now get three different column widths, each within
+  a small gap of its own paragraph.
+- **P13 — the mobile header was quietly spending ~32% of a 390×844
+  viewport before the first line of real copy.** The header itself (mark's
+  clear-space floor + a genuine two-line, 44px-touch-target row) already
+  can't give anything back. What could: `.hero`'s own
+  `justify-content: center` was splitting the *remaining* vertical slack
+  top-and-bottom on a short viewport, so the header's own height got
+  doubled before real content appeared. A `max-width: 600px` override
+  anchors `.hero` to `flex-start` and trims its own breathing room from
+  `clamp(32px, 7vh, 90px)` to `clamp(20px, 3vh, 40px)` — first line moved
+  from y≈305–326px up to y≈226px in testing, with the desktop rule
+  untouched (placed *after* the base `.hero` rule on purpose: same
+  specificity, so source order is what makes the override win — it was
+  written before the base rule at first and silently lost every time).
+- **P12 — the hairline measured ~1.47:1 (charcoal) / ~1.48:1 (cream)
+  against `--bg`.** "Structure is whitespace and hairline rules" only
+  holds if the hairline survives a real screen; the old alpha only did on
+  a good display in a dark room. `--rule`'s alpha moved from `.14`/`.20` to
+  `.235`/`.33` (tuned separately per pair — they don't share one alpha
+  that lands the same ratio on both bases), landing both at ~2:1. Not
+  verified on Igor's own laptop, per the sheet's own instruction to do so
+  before committing to a number — flagged for him. New helper in
+  `conftest.py` (`rule_contrast`) flattens `--rule` over `--bg` from actual
+  computed styles (normalised through a probe element's `color`, since the
+  two tokens are authored in different formats — hex vs `rgba()` — across
+  the stylesheet) and checks both pairs land in 1.85–2.3:1.
+- **P10 — the three masthead photo-jump icons had no *visible* label.**
+  `aria-label` and a `title` tooltip, neither of which a touch reader ever
+  sees, pointing at a view the reader hasn't been told exists yet.
+  Considered gating the icons behind scroll position (hidden until the
+  reader passes "See the work") and rejected it — that would be a second
+  reveal mechanism the existing `.reveal`/`IntersectionObserver` system
+  doesn't need a competitor for. One shared `.tools__label` caption
+  ("Photos"/"Фото") instead, in the exact type `.tools` already uses.
+  Adding it to the row broke two *existing* tests (`.tools` overflowed its
+  335px mobile budget by a few px, and flexbox proportionally shrank every
+  child — including the 44px icons Stage 3 had just fixed — down to
+  ~36–43px). Fixed with `flex-shrink: 0` on `.tool`, `.tool--icon` and
+  `.tools__rule`: a touch target is a floor, not something flexbox gets to
+  negotiate down when a new sibling arrives.
+- **P9 — "See the work" rested at `--fg2` with its underline drawn in only
+  on hover** — the most recessive large element on the page guarding the
+  one visible door into the collage view. `.proof__text` now sits at full
+  `--fg`, and `.proof__link::after` starts at `scaleX(1)` in a quiet
+  `--rule`-coloured hairline, brightening to `--ink-target` green on
+  hover/focus — findable at rest, with hover still adding emphasis rather
+  than being the only thing that reveals the link exists.
+- **P15 — the footer was the mark and one 12px line**, a dead stop after
+  ~7,500px of scroll with no way back up. Added `.foot__top`, an `<a
+  href="#top">` that reuses `.tool` wholesale (no new control style) routed
+  through the same in-page Lenis link wiring every other `#`-href on the
+  page already uses, plus a year appended to the existing identity line
+  (`· © 2026`). Left the three contact channels unrepeated on purpose —
+  they're in the section directly above with nothing between, so
+  duplicating them here would be the redundant kind of ending, not the
+  conclusive kind.
+
+Thirteen new test functions (eighteen collected cases — one is parametrized
+across the six C12 containers) were confirmed failing against pre-fix
+`main` before landing each fix. Two caught real mistakes mid-stage rather
+than just proving the fix afterward: P14's first CSS draft (`min(max-content,
+260px)`) failed its own new test, which is what surfaced that Chromium
+silently drops that declaration in track-sizing position; and P10's new
+`.tools__label` broke two *existing* tests by pushing the icon row's
+content past its available width, which is what caught flexbox
+proportionally shrinking the 44px touch targets Stage 3 had fixed. Full
+suite: **129 passed** (111 + 18 new).
+
+**Not republished:** same hold as Stages 2–4 — the placeholder-photo freeze
+from Collage Stage 3 still stands, and this remains a draft.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

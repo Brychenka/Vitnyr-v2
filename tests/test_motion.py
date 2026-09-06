@@ -207,3 +207,16 @@ def test_counter_starts_below_its_target(open_site):
         "() => parseInt(document.querySelector('.facts .n[data-count=\"2100\"]').textContent, 10)"
     )
     assert 0 <= mid < 2100
+
+
+def test_back_to_top_returns_from_the_footer_to_hero(open_site):
+    """P15: the footer used to be a dead end after 7,500px of scroll — no
+    way back up. Goes through the same in-page Lenis link wiring every
+    other #-href on the page already uses, not a new mechanism."""
+    page, _ = open_site()
+    page.locator("#top").scroll_into_view_if_needed()  # no-op, just settles the page first
+    page.locator(".foot__top").scroll_into_view_if_needed()
+    page.wait_for_timeout(200)
+    assert page.evaluate("window.scrollY") > 4000
+    page.locator(".foot__top").click()
+    page.wait_for_function("window.scrollY < 50", timeout=3000)

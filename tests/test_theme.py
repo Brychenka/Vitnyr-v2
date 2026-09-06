@@ -3,6 +3,8 @@ persistence, the button label, and the theme-color meta."""
 
 import pytest
 
+from conftest import rule_contrast
+
 CREAM = "#EFEBE3"
 CHARCOAL = "#14181A"
 
@@ -66,3 +68,19 @@ def test_theme_button_label_is_localised(open_site):
     assert page.locator(".masthead .themeswitch").text_content().strip() == "Крем"
     page.locator(".masthead .themeswitch").click()  # -> light
     assert page.locator(".masthead .themeswitch").text_content().strip() == "Уголь"
+
+
+# --- P12: the hairline used to measure ~1.47:1 (charcoal) / ~1.48:1 (cream)
+# against --bg — present on a good display in a dark room, gone on a dim
+# laptop or in daylight. Both pairs are tuned to land near 2:1 instead. ---
+
+def test_hairline_clears_roughly_2to1_on_charcoal(open_site):
+    page, _ = open_site(color_scheme="dark")
+    ratio = rule_contrast(page)
+    assert 1.85 <= ratio <= 2.3, f"--rule vs --bg on charcoal: {ratio:.2f}:1"
+
+
+def test_hairline_clears_roughly_2to1_on_cream(open_site):
+    page, _ = open_site(color_scheme="light")
+    ratio = rule_contrast(page)
+    assert 1.85 <= ratio <= 2.3, f"--rule vs --bg on cream: {ratio:.2f}:1"

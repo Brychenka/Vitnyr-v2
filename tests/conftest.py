@@ -172,3 +172,54 @@ def horizontal_overflow(page) -> bool:
             return de.scrollWidth > de.clientWidth + 1;
         }"""
     )
+
+
+def _srgb_to_linear(c: float) -> float:
+    return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+
+def _relative_luminance(rgb: tuple[float, float, float]) -> float:
+    r, g, b = (_srgb_to_linear(c / 255) for c in rgb)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast_ratio(rgb_a: tuple[float, float, float], rgb_b: tuple[float, float, float]) -> float:
+    """WCAG contrast ratio between two *already-flattened* (alpha-free) sRGB
+    triples — the standard (L1+0.05)/(L2+0.05) with the lighter one first."""
+    la, lb = _relative_luminance(rgb_a), _relative_luminance(rgb_b)
+    lighter, darker = (la, lb) if la >= lb else (lb, la)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def rule_contrast(page) -> float:
+    """P12: --rule is a translucent overlay, not a flat colour, so its
+    effective contrast against --bg depends on what it's composited over.
+    Flattens both from actual computed styles (not hand-typed hex, which
+    drifts from the stylesheet) and returns the WCAG ratio. --bg/--rule are
+    authored in different formats (hex, rgba()) across the stylesheet, so
+    each is normalised through a probe element's computed style rather than
+    regexed by hand — the browser resolves either format to "rgb(a)(...)"."""
+    bg, rule = page.evaluate(
+        """() => {
+            const cs = getComputedStyle(document.documentElement);
+            const probe = document.createElement('div');
+            probe.style.display = 'none';
+            document.body.appendChild(probe);
+            const toRgba = (token) => {
+                probe.style.color = 'initial';
+                probe.style.color = token;
+                const computed = getComputedStyle(probe).color;  // "rgb(r,g,b)" or "rgba(r,g,b,a)"
+                const m = computed.match(/[\\d.]+/g).map(Number);
+                return { r: m[0], g: m[1], b: m[2], a: m.length > 3 ? m[3] : 1 };
+            };
+            const result = [toRgba(cs.getPropertyValue('--bg')), toRgba(cs.getPropertyValue('--rule'))];
+            probe.remove();
+            return result;
+        }"""
+    )
+    flattened = (
+        bg["r"] + rule["a"] * (rule["r"] - bg["r"]),
+        bg["g"] + rule["a"] * (rule["g"] - bg["g"]),
+        bg["b"] + rule["a"] * (rule["b"] - bg["b"]),
+    )
+    return contrast_ratio(flattened, (bg["r"], bg["g"], bg["b"]))

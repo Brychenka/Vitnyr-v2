@@ -101,3 +101,106 @@ def test_wrong_and_right_lines_have_a_visible_gap(open_site):
     right_box = right.bounding_box()
     gap = right_box["y"] - (wrong_box["y"] + wrong_box["height"])
     assert gap > 4, f"only {gap}px between the two rules"
+
+
+# --- C12: .sec's own top rule spans its full 1320px box; the row dividers
+# inside a section (.mechanisms/.specs/.domains/.rows/.channels/.proof) used
+# to sit --gut narrower on each side, purely as a side effect of .sec's own
+# padding — two rule widths with no stated relationship. Bled back out so
+# every hairline on the page is exactly one width. ---
+
+@pytest.mark.parametrize("container", [
+    "#method .mechanisms", "#specimen .specs", "#disciplines .domains",
+    "#who .rows", "#contact .channels", "#disciplines .proof",
+])
+def test_row_dividers_are_flush_with_their_sections_own_rule(open_site, container):
+    page, _ = open_site(viewport=WIDE)
+    sec_box = page.locator(container.split(" ")[0]).bounding_box()
+    inner_box = page.locator(container).bounding_box()
+    assert abs(inner_box["x"] - sec_box["x"]) < 1, (container, inner_box, sec_box)
+    assert abs(inner_box["width"] - sec_box["width"]) < 1, (container, inner_box, sec_box)
+
+
+def test_row_dividers_content_keeps_its_original_inset(open_site):
+    """The bleed is on the row/border box only — text inside still lines up
+    with the sec__head heading above it, not with the section's raw edge."""
+    page, _ = open_site(viewport=WIDE)
+    heading_x = page.locator("#method .sec__head h2:visible").bounding_box()["x"]
+    first_row_x = page.locator("#method .mechanisms > li").first.bounding_box()["x"]
+    assert abs(heading_x - first_row_x) < 1
+
+
+# --- P14: each .mechanisms > li is its own grid, so the old fixed middle
+# track sized itself against the *paragraph* column, not its own heading —
+# "Load management" got the same ~470px as the page's longest heading. ---
+
+def test_mechanisms_heading_column_sizes_to_its_own_heading(open_site):
+    page, _ = open_site(viewport=WIDE)
+    rows = page.locator("#method .mechanisms > li")
+    widths = []
+    for i in range(rows.count()):
+        h3 = rows.nth(i).locator("h3")
+        p = rows.nth(i).locator("p:visible")
+        h3_box = h3.bounding_box()
+        p_box = p.bounding_box()
+        widths.append(h3_box["width"])
+        # paragraph starts shortly after the heading column, not ~470px later
+        gap = p_box["x"] - (h3_box["x"] + h3_box["width"])
+        assert 0 <= gap < 100, f"row {i}: {gap}px between heading and paragraph"
+    # not every row given the same fixed width any more
+    assert len(set(round(w) for w in widths)) > 1, widths
+    # and none of them balloon past the declared cap
+    assert all(w <= 260 for w in widths), widths
+
+
+# --- P13: at a short mobile viewport the header's own two-line height plus
+# .hero's centring used to push the actual headline down by more than the
+# header itself — reclaim that by anchoring hero content near the top. ---
+
+def test_mobile_hero_copy_starts_well_above_a_third_of_the_viewport(open_site):
+    page, _ = open_site(viewport={"width": 390, "height": 844})
+    line = page.locator(".hero__title .line:visible").first
+    top = line.bounding_box()["y"]
+    assert top < 260, f"first line of copy starts at y={top} of an 844px viewport"
+
+
+def test_desktop_hero_still_centres(open_site):
+    """The P13 fix is scoped to the mobile breakpoint — desktop keeps its
+    vertically centred hero."""
+    page, _ = open_site(viewport=WIDE)
+    justify = page.locator(".hero").evaluate("el => getComputedStyle(el).justifyContent")
+    assert justify == "center"
+
+
+# --- C9: the handle used to sit in its own grid column pinned to the far
+# right at 13px mono, up to 950px from the platform name it belongs to. ---
+
+def test_contact_handle_sits_close_behind_its_platform_name(open_site):
+    page, _ = open_site(viewport=WIDE)
+    first = page.locator("#contact .channels li").first
+    k_box = first.locator(".ch__k").bounding_box()
+    v_box = first.locator(".ch__v").bounding_box()
+    gap = v_box["x"] - (k_box["x"] + k_box["width"])
+    assert 0 <= gap < 40, f"{gap}px between the platform name and its handle"
+
+
+def test_contact_row_carries_the_proof_style_arrow_at_its_right_edge(open_site):
+    page, _ = open_site(viewport=WIDE)
+    row = page.locator("#contact .channels a").first
+    row_box = row.bounding_box()
+    arrow_box = row.locator(".ch__arrow").bounding_box()
+    assert arrow_box["x"] + arrow_box["width"] > row_box["x"] + row_box["width"] - 5
+
+
+# --- P9: "See the work" used to rest at --fg2 with its underline drawn in
+# only on hover — the most recessive large element guarding the one visible
+# door into the collage view. ---
+
+def test_see_the_work_reads_at_full_foreground_and_underlined_at_rest(open_site):
+    page, _ = open_site(color_scheme="dark", viewport=WIDE)
+    link = page.locator(".proof__link")
+    text_color = link.locator(".proof__text").evaluate("el => getComputedStyle(el).color")
+    body_fg = page.evaluate("getComputedStyle(document.body).color")
+    assert text_color == body_fg == "rgb(242, 239, 232)"  # --fg on charcoal, not --fg2
+    after_transform = link.evaluate("el => getComputedStyle(el, '::after').transform")
+    assert after_transform in ("matrix(1, 0, 0, 1, 0, 0)", "none")
