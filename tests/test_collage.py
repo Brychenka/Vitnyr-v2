@@ -183,3 +183,42 @@ def test_collage_reopen_lands_on_a_settled_view(open_site):
         "() => [...document.querySelectorAll('#collage .reveal')]"
         ".every(t => parseFloat(getComputedStyle(t).opacity) > 0.95)"
     )
+
+
+# --- B4: the 18 figures are fetched only once the view actually opens ---
+# The view sits opacity:0/visibility:hidden, not display:none, so the
+# browser's native loading="lazy" (distance-from-viewport) fetched every one
+# of them on ordinary page load — 1,231 KB no visit ever displayed. They now
+# ship as data-src/data-srcset, inert to the browser's loader, and main.js
+# promotes them to real attributes on first open.
+
+def _fetched_collage_jpegs(page):
+    return page.evaluate(
+        "() => performance.getEntriesByType('resource')"
+        ".filter(r => r.name.includes('/assets/collage/') && r.name.endsWith('.jpg')).length"
+    )
+
+
+def test_collage_images_are_not_fetched_before_the_view_opens(open_site):
+    page, _ = open_site()
+    page.wait_for_timeout(300)
+    assert _fetched_collage_jpegs(page) == 0
+    assert page.evaluate(
+        "() => document.querySelectorAll('#collage img[data-src]').length"
+    ) == 18
+
+
+def test_collage_images_promote_and_fetch_on_first_open(open_site):
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(600)
+    assert page.evaluate(
+        "() => document.querySelectorAll('#collage img[data-src]').length"
+    ) == 0
+    assert _fetched_collage_jpegs(page) == 18
+
+
+def test_collage_images_have_noscript_fallback_in_markup(open_site):
+    page, _ = open_site()
+    html = page.content()
+    assert html.count('<noscript><img src="assets/collage/') == 18

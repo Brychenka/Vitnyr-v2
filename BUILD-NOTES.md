@@ -477,6 +477,67 @@ languages, 375 / 1280, no console errors, bar doesn't overflow at 375px.
 Live artifact "Vitnyr Signature" rebuilt from current repo files and
 republished to the same URL.
 
+## Awwwards-jury review, Stage 2 — reveal + payload fixes (2026-09-06)
+
+A jury-style pass over the finished build ("Vitnyr Jury Sheet", 33 findings)
+was turned into a staged plan ("Vitnyr Work Order"), both published as
+artifacts outside this repo. Stage 1 (pull the placeholder photos, restore
+the shot list's own documented empty-box state) is **deliberately skipped for
+now** — the work is a draft nobody has asked to publish yet, so there is no
+artifact hold to lift. Stage 2 is the two blockers that don't touch the
+collage photos at all:
+
+**B3 — the scroll cue was invisible until you'd already started scrolling.**
+`.hero` is `min-height: 100svh`, so `.hero__foot` (the `.stand` paragraph and
+`.scrollcue` link) sits near the bottom of the viewport at rest. `buildReveals()`
+ran every `.reveal` off one `IntersectionObserver` with `rootMargin: '0px 0px
+-20% 0px'` — correct for content below the fold the reader hasn't reached,
+but it cuts a dead zone across the bottom 20% of the viewport, and the hero
+foot sat inside it. Proved at 800/900/1080px viewport heights before touching
+code: `.scrollcue` measured `opacity: 0` at rest at all three. Fix: the hero's
+`.reveal` elements (`el.closest('.hero')`) are handed to a second observer
+with `rootMargin: '0px'` — the true viewport — while everything else keeps
+the `-20%` margin. `main.js`'s `fireReveals()` is unchanged and shared by
+both observers, so the stagger rhythm is identical either way.
+
+**B4 — the 18 collage figures downloaded on every visit, never displayed.**
+The `#collage` view is `opacity: 0; visibility: hidden`, not `display: none`
+(needed so the fade-in transition has something to animate), and the
+browser's native `loading="lazy"` schedules by distance from the viewport —
+a `position: fixed; inset: 0` panel over the same viewport reads as "close
+enough," so all 18 images fetched on ordinary page load regardless of the
+`lazy` hint. Measured: 1,231 KB of images on a visit that never opens the
+collage. Fix: the figures ship as `data-src`/`data-srcset` (inert to the
+browser's own loader) with a `<noscript>` sibling carrying the real
+attributes for the no-JS path; `main.js`'s `applyOpen()` now calls
+`promoteCollageImages(view)` on first open, copying `data-src`/`data-srcset`
+onto `src`/`srcset` so the fetch only happens once someone actually looks.
+Built now rather than deferred to the real-photo swap — the same bug returns
+the moment the placeholders are replaced with heavier real photographs, and
+the `<img>` markup shape (data-src, noscript twin) doesn't change either way.
+
+Both bugs were reproduced as failing tests against pre-fix `main` before the
+fix landed (`git stash` the two source files, run the new specs, confirm red,
+restore, confirm green) rather than asserted from reading the code:
+- `test_motion.py::test_hero_foot_is_visible_at_rest_without_scrolling` (800 /
+  900 / 1080) — failed at 800 and 900 pre-fix (`.scrollcue` opacity 0), passed
+  at all three post-fix.
+- `test_collage.py::test_collage_images_are_not_fetched_before_the_view_opens`,
+  `test_collage_images_promote_and_fetch_on_first_open`,
+  `test_collage_images_have_noscript_fallback_in_markup` — 15 of 18 images
+  fetched on load pre-fix (LoremFlickr URLs vary, so the exact count isn't
+  stable — the `0` assertion is what matters), 0 noscript fallbacks in the
+  markup; 0 on load / 18 on open / 18 fallbacks post-fix.
+
+Full suite: **96 passed** (90 + 6 new). No `<picture>`/WebP/AVIF work here —
+that's still the real-photo swap's job (`collage-shotlist.md`), and nothing
+in this stage's markup shape needs to change when it happens.
+
+**Not done:** the live "Vitnyr Signature" artifact is not republished — the
+placeholder-photo hold from Collage Stage 3 stands regardless of Stage 2's
+own changes, and this stage's work is a draft, not something Igor has asked
+to ship yet.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
