@@ -1,6 +1,7 @@
-"""The motion system, with animation allowed: the hero plays and lands, the
-reveal rhythm fires once per element as it enters view, and the measured
-numbers count up to exactly their stated value."""
+"""The motion system, with animation allowed: the hero plays and lands, and the
+reveal rhythm fires once per element as it enters view. The measured numbers do
+not animate — Spark Order move 17 removed the count-up; test_numbers_do_not_animate
+holds that line."""
 
 import pytest
 
@@ -184,29 +185,19 @@ def test_glyph_parts_carry_a_bg_coloured_keyline(open_site):
     assert stroke == "rgb(20, 24, 26)"  # --bg on charcoal
 
 
-def test_counters_count_up_to_exact_values(open_site):
+def test_numbers_do_not_animate(open_site):
+    """Spark Order move 17: the facts row no longer runs its numbers up. Caught
+    right after it scrolls into view and again ~600ms later — the window the old
+    1.6s count-up lived in — every value is already final and unchanged.
+    Replaces test_counters_count_up_to_exact_values and test_counter_starts_below_its_target."""
     page, _ = open_site()
     page.locator(".facts").scroll_into_view_if_needed()
-    page.wait_for_function(
-        """() => {
-            const t = [...document.querySelectorAll('.facts .n')].map(n => n.textContent.trim());
-            return t.join('|') === '8|100+|2100|7c';
-        }""",
-        timeout=6000,
-    )
-
-
-def test_counter_starts_below_its_target(open_site):
-    """The count actually animates: caught partway, the value is less than
-    the final one."""
-    page, _ = open_site()
-    page.locator(".facts").scroll_into_view_if_needed()
-    # sample quickly, before 1.6s of counting completes
-    page.wait_for_timeout(120)
-    mid = page.evaluate(
-        "() => parseInt(document.querySelector('.facts .n[data-count=\"2100\"]').textContent, 10)"
-    )
-    assert 0 <= mid < 2100
+    read = "() => [...document.querySelectorAll('.facts .n')].map(n => n.textContent.trim())"
+    first = page.evaluate(read)
+    page.wait_for_timeout(600)
+    second = page.evaluate(read)
+    assert first == ["8", "100+", "2100", "7c"]
+    assert second == first
 
 
 def test_back_to_top_returns_from_the_footer_to_hero(open_site):

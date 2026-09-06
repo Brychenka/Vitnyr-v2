@@ -60,14 +60,17 @@ def test_the_three_measured_facts_are_exactly_these(open_site):
     ]
 
 
-def test_no_unapproved_animated_statistics(open_site):
-    """Every counting number is one of the three approved values. A new
-    data-count would be a fabricated statistic slipping in."""
+def test_no_unapproved_statistics_in_the_facts_row(open_site):
+    """The facts row carries exactly the four confirmed figures and no more.
+    Ported from test_no_unapproved_animated_statistics when Spark Order move 17
+    removed the count-up: there is no [data-count] any longer, but the guard on
+    "real material only" survives the change. A fifth number added to the row —
+    a fabricated statistic slipping in — must fail this."""
     page, _ = open_site()
-    counts = page.evaluate(
-        "() => [...document.querySelectorAll('[data-count]')].map(el => el.dataset.count)"
+    numbers = page.evaluate(
+        "() => [...document.querySelectorAll('.facts .n')].map(el => el.textContent.trim())"
     )
-    assert sorted(counts, key=int) == ["8", "100", "2100"]
+    assert numbers == ["8", "100+", "2100", "7c"]
 
 
 def test_contact_handles_are_real(open_site):

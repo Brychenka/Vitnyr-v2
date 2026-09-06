@@ -975,6 +975,77 @@ result. S9A's move 09 shrinks to anchors and share entries only. S9A's
 move 10 has its material. S9C narrows to a single specimen. S1–S5 and S7
 were never gated on any of this and remain free to start.
 
+## Spark Order, Stage 1 — subtraction (2026-09-06)
+
+Branch `feature/stop-the-counters`. Moves 17 and 16 — the first is a net
+deletion, the second is a line in this file. Picked first in the order
+because it removes a rhythm every later stage would otherwise have had to
+compose against, and it proves the pipeline end to end with almost nothing
+that can break.
+
+- **Move 17 — the count-up is gone.** The facts row's four numbers (8 years,
+  100+ clients, a 2100 chess rating, a 7c grade) used to run up from zero on
+  an IntersectionObserver, sharing one 1.6s tween. They are four readings off
+  four unrelated instruments and a shared count animation made them read as
+  one instrument — so the animation went, not the numbers. Deleted `countUp()`
+  from `main.js` whole, both call sites (`countUp(true)` in the reduced-motion
+  early return, `countUp(false)` in the go block), and `count: 1.6` from the
+  `D` duration table. The comment above `D` enumerated five durations by name
+  and now describes four. In `index.html` the three `.facts .n` spans that
+  carried `data-count` / `data-suffix` lost those attributes; their text
+  already read `8`, `100+`, `2100` and is untouched. The fourth fact (`7c`)
+  never had a counter. All four `.facts li` keep `.reveal`, so the row still
+  arrives on the ordinary rhythm with everything else.
+  - **Did not** take the optional `--d` stagger offset on `.k`. The stage is
+    meant to be a clean subtraction; adding a CSS beat back in the same pass
+    works against that, and the labels landing with their numerals is fine.
+- **Move 16 — no interaction sound, ever.** Recording the decision so a
+  future chat does not add a tasteful hover tick and call it an improvement:
+  audio on this site means "this is Igor speaking" and nothing else. No hover
+  ticks, no ambient bed, no UI sounds, no click feedback — not now and not
+  later. The only sound the site will ever carry is Igor's recorded voice on
+  a specimen line (Spark Order S9C), and that is the whole of it.
+
+**Tests.** The count-up had three tests across two files; each was ported,
+not dropped, because a counter test that now passes vacuously is worse than
+none:
+
+- `test_content.py::test_no_unapproved_animated_statistics` →
+  **`test_no_unapproved_statistics_in_the_facts_row`**. Its job was to stop a
+  fabricated statistic being added to the row, and that job outlives the
+  count-up. Rewritten to read the text of every `.facts .n` and assert
+  exactly `["8", "100+", "2100", "7c"]`; a fifth number added to the row
+  fails it.
+- `test_motion.py::test_counters_count_up_to_exact_values` and
+  `test_counter_starts_below_its_target` → one new
+  **`test_numbers_do_not_animate`**: scroll the facts row into view, sample
+  `.facts .n` immediately and again 600ms later (the window the old tween
+  lived in), assert both reads are the final four values and identical. The
+  second old test asserted the value was *below* target mid-count — the exact
+  opposite of the new behaviour — and referenced a `[data-count]` selector
+  that no longer resolves, so it went.
+- `test_a11y.py::test_reduced_motion_counters_show_final_value_without_animating`
+  → **`test_reduced_motion_facts_row_shows_every_value`**: same assertion,
+  renamed and re-commented so it reads as a guard on the reduced-motion
+  early-return path rather than implying a counter still exists.
+- `tests/README.md`'s one-line summary of `test_motion.py` updated.
+
+Regression-proved `test_numbers_do_not_animate` per the standing protocol:
+`git stash push -- main.js index.html`, ran the new test against pre-change
+source — it failed with the numbers caught mid-count (`['7', '92+', '1924',
+'7c']`) — popped, ran again, passed.
+
+`grep -rn "data-count\|countUp\|D.count" index.html main.js` returns nothing.
+Full suite: **137 passed** (was 138). The count drops by one on purpose:
+three counter tests were replaced by two — `test_counters_count_up_to_exact_values`
+and `test_counter_starts_below_its_target` both folded into the single
+`test_numbers_do_not_animate`, since with no animation there is no separate
+"starts below target" state to assert. The other two counter tests were
+ported 1:1. No test was deleted without its guard being carried forward.
+
+**Not republished:** the Collage Stage 3 placeholder-photo hold still stands
+and this remains a draft. Landing on `main` only.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
