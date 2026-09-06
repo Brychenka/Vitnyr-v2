@@ -42,22 +42,48 @@ def test_climbing_grades_are_kept_distinct(open_site):
     text = page.evaluate("() => document.body.textContent").lower()
     assert "7c redpoint" in text
     assert "7c kilter" in text
+    # Spark Order S2 / move 18: in the facts row the two readings are two
+    # separate elements now, not one run-on text node joined by a middle dot —
+    # so a non-climber can see they are two different achievements.
+    readings = page.evaluate(
+        "() => [...document.querySelectorAll('.fact--grade .fact__reading')]"
+        ".map(el => el.textContent.trim())"
+    )
+    assert readings == ["redpoint, indoor", "7C Kilter"]
 
 
 def test_the_three_measured_facts_are_exactly_these(open_site):
     page, _ = open_site()
+    # S2 / move 18 split the climbing fact into two stacked .fact__reading
+    # elements; every asserted string is still present verbatim, including the
+    # meaningful 7c / 7C case difference.
     facts = page.evaluate(
         """() => [...document.querySelectorAll('.facts li')].map(li => ({
             n: li.querySelector('.n').textContent.trim(),
-            k: li.querySelector('.k').textContent.trim(),
+            unit: li.classList.contains('fact--grade')
+                ? [...li.querySelectorAll('.fact__reading')].map(r => r.textContent.trim())
+                : li.querySelector('.k').textContent.trim(),
         }))"""
     )
     assert facts == [
-        {"n": "8", "k": "years coaching"},
-        {"n": "100+", "k": "one-on-one clients"},
-        {"n": "2100", "k": "chess rating"},
-        {"n": "7c", "k": "redpoint, indoor · 7C Kilter"},
+        {"n": "8", "unit": "years coaching"},
+        {"n": "100+", "unit": "one-on-one clients"},
+        {"n": "2100", "unit": "chess rating"},
+        {"n": "7c", "unit": ["redpoint, indoor", "7C Kilter"]},
     ]
+
+
+def test_facts_row_names_each_unit_type(open_site):
+    """Spark Order S2 / move 18: the four facts are readings off four unrelated
+    instruments and the row now says so structurally — each li carries a
+    modifier naming its unit type, which the typographic treatment hangs on. A
+    later change that flattens them back to one identical style fails here."""
+    page, _ = open_site()
+    kinds = page.evaluate(
+        """() => [...document.querySelectorAll('.facts li')].map(li =>
+            [...li.classList].find(c => c.startsWith('fact--')) || null)"""
+    )
+    assert kinds == ["fact--count", "fact--count", "fact--scale", "fact--grade"]
 
 
 def test_no_unapproved_statistics_in_the_facts_row(open_site):

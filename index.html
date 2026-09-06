@@ -315,15 +315,30 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </article>
   </div>
 
+  <!-- Spark Order S2 / move 18: years, a client count, an Elo position and two
+       climbing grades are four readings off four unrelated instruments, so the
+       row shows the mismatch rather than flattening it into one identical
+       treatment. .fact--count is a tally (its unit label set in mono, reading
+       as an annotation not a caption); .fact--scale is a position on a
+       continuum (tabular figures + a hairline gauge tick); .fact--grade is two
+       readings stacked under one numeral instead of a run-on string joined by
+       a middle dot. Not one approved string changes here — and the 7c / 7C
+       case difference is meaningful and must not be normalised. -->
   <ul class="facts">
-    <li class="reveal"><span class="n">8</span><span class="k" data-en="years coaching" data-ru="лет практики">years coaching</span></li>
-    <li class="reveal"><span class="n">100+</span><span class="k" data-en="one-on-one clients" data-ru="учеников индивидуально">one-on-one clients</span></li>
-    <li class="reveal"><span class="n">2100</span><span class="k" data-en="chess rating" data-ru="шахматный рейтинг">chess rating</span></li>
-    <!-- P4/P7 (Stage 6, 2026-09-06): this used to say only "redpoint, indoor"
-         — the harder of the two climbing numbers (the 7C Kilter boulder)
-         was dropped from the row most likely to actually be read, while the
-         domain card and the origin mark's panel both carry both grades. -->
-    <li class="reveal"><span class="n">7c</span><span class="k" data-en="redpoint, indoor · 7C Kilter" data-ru="редпоинт, зал · 7C Kilter">redpoint, indoor · 7C Kilter</span></li>
+    <li class="reveal fact fact--count"><span class="n">8</span><span class="k" data-en="years coaching" data-ru="лет практики">years coaching</span></li>
+    <li class="reveal fact fact--count"><span class="n">100+</span><span class="k" data-en="one-on-one clients" data-ru="учеников индивидуально">one-on-one clients</span></li>
+    <li class="reveal fact fact--scale"><span class="n">2100</span><span class="k" data-en="chess rating" data-ru="шахматный рейтинг">chess rating</span></li>
+    <!-- P4/P7 (Stage 6, 2026-09-06): the row used to say only "redpoint, indoor",
+         dropping the harder 7C Kilter boulder that the domain card and the
+         origin mark's panel both carry. S2 keeps both grades but splits the
+         old "redpoint, indoor · 7C Kilter" into two labelled readings. -->
+    <li class="reveal fact fact--grade">
+      <span class="n">7c</span>
+      <span class="k">
+        <span class="fact__reading" data-en="redpoint, indoor" data-ru="редпоинт, зал">redpoint, indoor</span>
+        <span class="fact__reading">7C Kilter</span>
+      </span>
+    </li>
   </ul>
 
   <!-- Entry to the collage view. A real anchor: with JS off it jumps to the

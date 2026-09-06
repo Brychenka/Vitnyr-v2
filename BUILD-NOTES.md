@@ -1046,6 +1046,74 @@ ported 1:1. No test was deleted without its guard being carried forward.
 **Not republished:** the Collage Stage 3 placeholder-photo hold still stands
 and this remains a draft. Landing on `main` only.
 
+## Spark Order, Stage 2 — reading the numbers (2026-09-06)
+
+Branch `feature/facts-units`. Move 18 only. The facts row's four figures —
+`8` years, `100+` clients, a `2100` chess position, `7c` — sat in one
+identical treatment as if they were four readings of the same instrument.
+They are readings off four unrelated instruments, and the mismatch is the
+argument (three incommensurable domains, one method), so it is now visible
+rather than flattened. **Typographic treatment only** — no colour beyond the
+ink tokens already in use, no new component, and not one approved fact string
+changed.
+
+- **Each `.facts li` gains a unit-type modifier.** `fact--count` (`8`, `100+`),
+  `fact--scale` (`2100`), `fact--grade` (`7c`), on a `fact` base class. New
+  `test_facts_row_names_each_unit_type` asserts the four in order, so a later
+  change that flattens them back to one style fails.
+- **count — the label drops the caption voice.** `.fact--count .k` is set in
+  `--mono`, `text-transform: none`, 13px, so `8 · years coaching` reads as a
+  number and its unit rather than a number and a heading. The strings
+  (`years coaching`, `one-on-one clients`) are untouched — only their type
+  changed. This was Igor's call on move 18's "unit as a mono suffix": restyle
+  the label, do not split or reorder the approved string.
+- **scale — a position on a continuum.** `.fact--scale .n` restates
+  `font-variant-numeric: tabular-nums` (already the row default) as intent and
+  gets a short 1px tick beneath the numeral — a gauge mark, drawn in `--rule`,
+  the sanctioned hairline ink, so it stays a rule and not a third colour.
+- **grade — two readings, not one.** `7c redpoint, indoor · 7C Kilter` read as
+  a single fact to anyone who does not climb — two scales joined by a middle
+  dot. It is now two stacked, separately-labelled `.fact__reading` elements
+  under the one `7c` numeral. Both strings survive verbatim, **including the
+  `7c` / `7C` case difference**, which is a real grade distinction and is not
+  normalised. In `index.html` the old combined `.k` (which carried
+  `data-en`/`data-ru`) becomes a wrapper holding one translated
+  `.fact__reading` (`redpoint, indoor` / `редпоинт, зал`) and one static one
+  (`7C Kilter`); `theme.js`'s `applyLang()` walks `[data-en][data-ru]` nodes,
+  so moving the attributes onto the child just works.
+
+**Tests.** Two existing, one new:
+
+- `test_content.py::test_the_three_measured_facts_are_exactly_these` — updated
+  for the split: the grade row's unit is now read as a list of `.fact__reading`
+  texts. Every asserted string is preserved (`8`, `years coaching`, `100+`,
+  `one-on-one clients`, `2100`, `chess rating`, `7c`, `redpoint, indoor`,
+  `7C Kilter`).
+- `test_content.py::test_climbing_grades_are_kept_distinct` — extended per the
+  order: still asserts both grades appear in body text (via the domain card),
+  now also asserts the facts row holds them in **separate elements**
+  (`['redpoint, indoor', '7C Kilter']`), not one text node.
+- `test_content.py::test_facts_row_names_each_unit_type` — **new.** The
+  unit-type modifiers are present and in order.
+
+`test_no_unapproved_statistics_in_the_facts_row` (the "real material only"
+guard) still reads `.facts .n` as `["8", "100+", "2100", "7c"]` and still
+fails if a fifth number is added — untouched. `test_a11y.py`'s and
+`test_motion.py`'s facts-row checks read `.facts .n` too and are unaffected.
+
+Regression-proved per the standing protocol: `git stash push -- index.html
+style.css`, ran the two changed tests plus the new one against reverted
+source — all three failed (`.fact__reading` absent, unit still the run-on
+string, no `fact--` modifiers) — popped, ran again, all passed.
+
+Verified headless (Trap 2: the preview pane reported `clientWidth: 0`, so a
+real Playwright pass through `tests/.venv/bin/python` did the looking): facts
+row at 375 and 1280, EN and RU, both themes — no horizontal overflow
+(`scrollWidth - clientWidth == 0` in every case), no console or page errors,
+numerals top-aligned across the row, the `2100` tick visible on both grounds.
+Full suite: **138 passed** (was 137) — the one added test is
+`test_facts_row_names_each_unit_type`; the two edited tests kept their count.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
