@@ -166,6 +166,58 @@ def test_rapid_repeated_clicks_never_strand_the_app_faded(open_site):
     assert page.locator("html").get_attribute("data-lang") == "ru"  # en->ru->en->ru
 
 
+@pytest.mark.parametrize("scheme", ["dark", "light"])
+@pytest.mark.parametrize("vp_name", ["wide", "narrow"])
+def test_language_switch_button_does_not_move_when_toggled(open_site, vp_name, scheme):
+    """The label swap (RU/EN, Photos/Фото, Cream/Charcoal <-> Крем/Уголь)
+    resizes .tools, and .tools is right-anchored (space-between on .masthead),
+    so a content-sized RU/EN button rides the reflow and visibly jumps. The
+    langswitch and the Photos caption reserve a fixed box (a zero-height
+    ::before holding the widest string), which pins RU/EN — and everything
+    downstream of it, the collage nav icons included — in place across a
+    toggle, both directions. .themeswitch is deliberately left free."""
+    from conftest import NARROW, WIDE
+
+    page, _ = open_site(
+        color_scheme=scheme, reduced_motion=True,
+        viewport=WIDE if vp_name == "wide" else NARROW,
+    )
+    page.wait_for_timeout(200)
+
+    def left_edges():
+        return page.evaluate(
+            """() => {
+                const x = s => Math.round(
+                    document.querySelector(s).getBoundingClientRect().left * 100) / 100;
+                return {
+                    lang: x('.masthead .langswitch'),
+                    icon: x('.masthead .tool--icon'),
+                };
+            }"""
+        )
+
+    sw = page.locator(".masthead .langswitch")
+    before = left_edges()
+    assert sw.inner_text().strip() == "RU"
+
+    sw.click()                       # -> Russian
+    page.wait_for_timeout(200)
+    assert sw.inner_text().strip() == "EN"
+    mid = left_edges()
+
+    sw.click()                       # -> back to English
+    page.wait_for_timeout(200)
+    after = left_edges()
+
+    for key in ("lang", "icon"):
+        assert abs(mid[key] - before[key]) < 1.0, (
+            f"{key} moved {mid[key] - before[key]:+.2f}px on EN->RU ({vp_name}/{scheme})"
+        )
+        assert abs(after[key] - before[key]) < 1.0, (
+            f"{key} did not return on RU->EN ({vp_name}/{scheme})"
+        )
+
+
 def test_language_swap_is_instant_under_reduced_motion(open_site):
     """The hook is installed past main.js's reduced-motion return, so a
     reduced-motion reader gets theme.js's plain synchronous swap."""
