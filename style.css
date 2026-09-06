@@ -574,7 +574,7 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   .spec { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: start; }
 }
 
-.spec__lines { min-width: 0; }
+.spec__lines { min-width: 0; position: relative; }   /* positioning context for .spec__perform (S6) */
 .spec__label {
   font-family: var(--sans); font-size: 13px; font-weight: 500;
   letter-spacing: .01em; text-transform: none; color: var(--fg2);
@@ -621,6 +621,33 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   font-family: var(--mono); font-style: normal; font-size: .92em;
   color: var(--fg);
 }
+/* Spark Order S6 / move 06: <del>/<ins> now carry the wrong/right diff
+   semantically. The ink stays the only sighted signal (--amber-text /
+   --green-text, the 2026-09-05 contrast-tuned exception for these two
+   tokens), so the browser's default strike/underline is suppressed — a
+   no-JS or reduced-motion reader gets exactly today's appearance. */
+.line-spec del, .line-spec ins { text-decoration: none; }
+
+/* move 01: the performance layer. initCorrections() builds one
+   .spec__perform per data-op="delete" specimen, aria-hidden, absolutely
+   overlaid on the static pair — which drops to opacity 0 for the ~1s the
+   beat runs, then returns. Never display:none: assistive tech keeps the
+   real paragraphs, and every existing layout test still measures a real
+   box. Deliberately shares no class with .line-spec / .wrong / .right /
+   .vh so the static DOM stays the sole match for their selectors. Mirrors
+   .line-spec + .wrong for the frames the reader actually sees. */
+.spec__perform {
+  position: absolute; left: 0; right: 0;
+  margin: 0; box-sizing: border-box; pointer-events: none;
+  font-family: var(--mono); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55;
+  display: flex; gap: 12px; align-items: baseline;
+  border-left: 2px solid var(--ink-specimen);
+  padding: 5px 0 5px 14px;
+}
+.spec__perform .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; color: var(--ink-specimen); }
+.spec__perform .sig svg { display: block; width: .68em; height: .68em; }
+.spec__perform del { text-decoration: none; color: var(--amber-text); display: inline-block; }
+.spec__perform .spec__tail { display: inline-block; }
 
 /* ---------- domains ---------- */
 .domains { border-top: 1px solid var(--rule); margin-bottom: clamp(56px, 8vw, 110px); }

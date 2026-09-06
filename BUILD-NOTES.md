@@ -1345,6 +1345,84 @@ in either language with the `-14px` rule visible, no console or page errors.
 
 Full suite: **157 passed** (was 151, +6 new cases). No existing test edited.
 
+## Spark Order, Stage 6 — the correction (2026-09-06)
+
+Branch `feature/perform-the-correction`. Moves 06 + 01 — the centrepiece:
+the page's one *performed* edit. A specimen sentence corrects itself in front
+of the reader; the deleted word lifts out and the surviving text reflows
+closed over the gap. Joined because both moves rebuild `.spec`'s markup.
+
+- **Move 06 — proofreader's notation.** The ✕/✓ glyph pair in `.line-spec .sig`
+  is replaced by real marks drawn in the same 1.6-stroke `currentColor` style:
+  the **dele loop** on a deletion, the **caret** on the insertion, the
+  **transpose hook** on specimen three (the register example, which is *not* a
+  grammar error — a ✕ overstated it). Ink stays ink: amber on the deletion,
+  green on the insertion, both as strokes.
+- **Semantic diff.** The faulty token is now `<del class="mark--specimen">`
+  and the corrected token `<ins class="mark--target">`, replacing the
+  colour-only `<span>`s. Real HTML meaning, and machine-readable anchors for
+  the performance. `.line-spec del, .line-spec ins { text-decoration: none }`
+  keeps the sighted appearance identical to before (the ink is the signal).
+- **Move 01 — the FLIP.** `initCorrections()` (past the reduced-motion return)
+  runs only for `data-op="delete"` specimens. On the page's existing reveal
+  observer — same `rootMargin: '0px 0px -20% 0px'`, no ScrollTrigger — it
+  builds one `aria-hidden="true"` `.spec__perform` clone of the wrong line,
+  drops the static pair to `opacity: 0` (**never** `display:none` — assistive
+  tech and every layout test keep the real paragraphs and their boxes), and
+  overlays the clone absolutely. The beat: the `<del>` lifts and fades
+  (`yPercent`, `D.correct * 0.42`), then a FLIP — measure the surviving
+  `.spec__tail`'s left edge, set `display:none` on the `<del>`, measure again,
+  `gsap.set({x: before - after})` then tween `x: 0` on the brand ease at a new
+  named `D.correct` (0.8), `clearProps: 'transform'` on complete. The clone
+  fades (`D.micro`) and the untouched static pair comes back. Fires once per
+  specimen.
+- **The S0 bend, and why it's allowed.** The FLIP puts layout in the transform
+  channel — the one thing `CLAUDE.md` forbids — but only on a throwaway node
+  that clears every transform and is removed on completion. Nothing static is
+  ever transformed. `test_correction_leaves_no_residual_transform` is the
+  guard and must never be deleted.
+- **Restructure ships static.** Specimen three (`data-op="restructure"`,
+  "Send me the report today, please." → "Could you send me the report
+  today?") is a word reorder, not a deletion; a convincing FLIP for it was
+  out of reach, so it renders as the static `<del>`/`<ins>` pair with the
+  transpose hook. Two performed corrections beat three where one is awkward
+  (spec, move 01).
+- **Language switch.** The specimen sentences carry no `data-l` twin — they
+  are English error examples, identical in both languages — so there is
+  nothing to rebuild (Trap 3 is moot: no zero-height twin to measure). The
+  `vitnyr:langchange` handler only has to not strand a beat behind `#app`'s
+  S4 crossfade: it kills any running timeline, removes the clone, and hands
+  the static pair back. A specimen not yet scrolled to stays armed.
+- **Degrades to today's page.** No JS, no GSAP, or reduced motion: the
+  static `<del>`/`<ins>` pair with the new marks, nothing hidden, no clone
+  built. `build()` is wrapped in try/catch — a throw leaves the static pair
+  visible, never an empty box.
+
+**Tests.** Six new cases: four in `test_a11y.py`
+(`test_specimen_static_pair_survives_without_js`,
+`test_specimen_static_pair_survives_reduced_motion`,
+`test_correction_performance_is_hidden_from_assistive_tech`,
+`test_specimen_marks_are_proofreading_notation`), two in `test_motion.py`
+(`test_correction_leaves_no_residual_transform`,
+`test_correction_replays_after_language_switch`). Regression-proved per the
+standing protocol: `git stash push -- index.html main.js style.css`; the four
+behaviour tests failed against reverted source, the two degradation guards
+passed either way; popped, all six green. The existing specimen layout tests
+(`test_specimen_pair_sits_beside_its_explanation_at_desktop_width`,
+`test_wrong_and_right_lines_have_a_visible_gap`, …) were re-examined and pass
+**untouched**: they measure boxes, and `opacity: 0` leaves the box — the
+performance layer shares no class with `.line-spec` / `.wrong` / `.right` /
+`.vh`, so the static DOM stays the sole match for their selectors.
+
+Verified headless (Trap 2): 375 and 1280, both themes, both languages, motion
+and reduced — the clone appears `aria-hidden`, the word lifts, the tail FLIPs
+and clears, the static pair returns at `opacity 1`, no residual transform, no
+`NaN` geometry, no horizontal overflow, no console or page errors. Screenshots
+of the mid-beat, the settled pair and the reduced-motion reference in the
+Stage 6 chat.
+
+Full suite: **163 passed** (was 157, +6 new cases). No existing test edited.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

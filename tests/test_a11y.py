@@ -239,3 +239,75 @@ def test_cursor_none_and_the_dot_stay_scoped_to_hot_targets(open_site):
     page.mouse.move(400, 760)
     page.wait_for_timeout(400)
     assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.05
+
+
+# --- Spark Order S6 (moves 06 + 01): the specimen correction is performed on
+# a throwaway aria-hidden clone; the static <del>/<ins> pair stays the source
+# of truth for no-JS, reduced-motion and screen-reader readers, and the
+# ✕/✓ glyphs are now real proofreading marks. ---
+
+def _spec_pair_readable(page):
+    for cls in (".wrong", ".right"):
+        loc = page.locator(f"#specimen .line-spec{cls}")
+        assert loc.count() == 3
+        for i in range(3):
+            assert loc.nth(i).is_visible()
+            assert loc.nth(i).inner_text().strip()
+
+
+def test_specimen_static_pair_survives_without_js(open_site):
+    page, _ = open_site(java_script_enabled=False)
+    _spec_pair_readable(page)
+    # and no performance layer was built
+    assert page.locator(".spec__perform").count() == 0
+    assert page.locator("#specimen .line-spec del").count() == 3
+
+
+def test_specimen_static_pair_survives_reduced_motion(open_site):
+    page, _ = open_site(reduced_motion=True)
+    page.wait_for_timeout(300)
+    page.locator("#specimen").scroll_into_view_if_needed()
+    page.wait_for_timeout(400)
+    _spec_pair_readable(page)
+    assert page.locator(".spec__perform").count() == 0
+    # nothing was left dimmed
+    op = page.eval_on_selector_all(
+        "#specimen .line-spec", "els => els.map(e => getComputedStyle(e).opacity)")
+    assert all(float(x) > 0.98 for x in op), op
+
+
+def test_correction_performance_is_hidden_from_assistive_tech(open_site):
+    page, _ = open_site()
+    page.wait_for_timeout(200)
+    page.locator("#specimen").scroll_into_view_if_needed()
+    # catch a perf element while the beat is running
+    seen_hidden = False
+    for _ in range(60):
+        perf = page.locator(".spec__perform")
+        if perf.count():
+            assert perf.first.get_attribute("aria-hidden") == "true"
+            seen_hidden = True
+            break
+        page.wait_for_timeout(25)
+    assert seen_hidden, "the performance element never appeared"
+    # the real paragraphs are untouched: no aria-hidden, real text, and the
+    # corrected sentence is findable by an assistive-tech reader
+    for cls in (".wrong", ".right"):
+        for i in range(3):
+            assert page.locator(f"#specimen .line-spec{cls}").nth(i).get_attribute("aria-hidden") is None
+    assert page.get_by_text("I feel good today.").count() >= 1
+    page.wait_for_timeout(2600)
+    assert page.locator(".spec__perform").count() == 0   # torn down when it settles
+
+
+def test_specimen_marks_are_proofreading_notation(open_site):
+    """move 06: the ✕/✓ pair (path 'M1 1 L9 9 ...') is replaced by a dele
+    loop / caret / transpose hook. The register specimen restructures, so its
+    mark differs from the two deletion specimens'."""
+    page, _ = open_site()
+    ds = page.eval_on_selector_all(
+        "#specimen .line-spec .sig svg path", "els => els.map(e => e.getAttribute('d'))")
+    assert len(ds) == 6
+    assert not any("M1 1 L9 9" in d for d in ds), "old ✕ glyph still present"
+    # specimen 3 (restructure) uses a different mark than specimens 1-2 (delete)
+    assert ds[0] != ds[4] and ds[1] != ds[5]

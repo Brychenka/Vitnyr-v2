@@ -365,3 +365,60 @@ def test_back_to_top_returns_from_the_footer_to_hero(open_site):
     assert page.evaluate("window.scrollY") > 4000
     page.locator(".foot__top").click()
     page.wait_for_function("window.scrollY < 50", timeout=3000)
+
+
+# --- Spark Order S6 / moves 06 + 01: the correction is FLIP over an
+# aria-hidden clone. It is the S0 "bend" — a transform carrying layout — and
+# is only allowed because it is transient: every transform is cleared and the
+# frame is handed back to the untouched static pair. ---
+
+def test_correction_leaves_no_residual_transform(open_site):
+    """Guards the S0 bend. After the beat settles, no specimen node holds a
+    transform — none or the identity matrix only. Must never be deleted."""
+    page, _ = open_site()
+    page.wait_for_timeout(200)
+    page.locator("#specimen").scroll_into_view_if_needed()
+    page.wait_for_timeout(3000)   # beat + settle
+
+    assert page.locator(".spec__perform").count() == 0
+    bad = page.eval_on_selector_all(
+        "#specimen .spec[data-op='delete'] *",
+        """els => els
+            .map(e => getComputedStyle(e).transform)
+            .filter(t => t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)')""")
+    assert bad == [], bad
+    op = page.eval_on_selector_all(
+        "#specimen .spec[data-op='delete'] .line-spec",
+        "els => els.map(e => getComputedStyle(e).opacity)")
+    assert all(float(x) > 0.98 for x in op), op
+
+
+def test_correction_replays_after_language_switch(open_site):
+    """Switch language at the top of the page (beat not yet triggered), then
+    scroll down: the still-armed observer fires, the sentence performs, and
+    nothing holds NaN-derived geometry."""
+    page, _ = open_site()
+    page.wait_for_function(
+        "document.documentElement.classList.contains('hero-done')", timeout=6000)
+    page.locator(".masthead .langswitch").click()
+    page.wait_for_timeout(300)
+
+    page.locator("#specimen").scroll_into_view_if_needed()
+    seen = False
+    for _ in range(60):
+        if page.locator(".spec__perform").count():
+            seen = True
+            break
+        page.wait_for_timeout(25)
+    assert seen, "the beat did not run after a language switch"
+
+    page.wait_for_timeout(3000)
+    assert page.locator(".spec__perform").count() == 0
+    nan = page.eval_on_selector_all(
+        "#specimen *",
+        "els => els.filter(e => /nan/i.test(getComputedStyle(e).transform)).length")
+    assert nan == 0
+    op = page.eval_on_selector_all(
+        "#specimen .spec[data-op='delete'] .line-spec",
+        "els => els.map(e => getComputedStyle(e).opacity)")
+    assert all(float(x) > 0.98 for x in op), op

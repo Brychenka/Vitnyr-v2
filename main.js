@@ -23,14 +23,15 @@
   var EASE = 'power4.out';
   if (window.CustomEase) { CustomEase.create('brand', '.16, 1, .3, 1'); EASE = 'brand'; }
 
-  /* Four durations, and nothing between them. Every timing on the page comes
+  /* Five durations, and nothing between them. Every timing on the page comes
      from this table so the whole thing reads as one instrument.
-       micro  — a thing appearing or disappearing outright
-       state  — a hover, a magnet, a theme settling (this is --t in the sheet)
-       follow — the pointer catching up: a lag, not a duration
-       hero   — the single longest move on the page, used once
+       micro   — a thing appearing or disappearing outright
+       state   — a hover, a magnet, a theme settling (this is --t in the sheet)
+       follow  — the pointer catching up: a lag, not a duration
+       correct — the specimen reflowing closed over a deleted word (S6)
+       hero    — the single longest move on the page, used once
      The reveal's own 0.9s lives in the stylesheet, where the transition is. */
-  var D = { micro: 0.3, state: 0.6, follow: 0.45, hero: 1.05 };
+  var D = { micro: 0.3, state: 0.6, follow: 0.45, correct: 0.8, hero: 1.05 };
   var STAGGER = 0.08;
 
   /* ---------- first-frame gate ----------
@@ -806,6 +807,116 @@
     document.addEventListener('vitnyr:langchange', updateCta);
   }
 
+  /* ---------- the correction (Spark Order S6 / moves 06 + 01) ----------
+     The page's one performed edit: a specimen sentence is corrected in front
+     of the reader — the deleted word lifts out and the surviving text reflows
+     closed over the gap. This is the S0 "bend" (a transform carrying layout),
+     and it is only allowed because it is transient: it runs on a throwaway
+     aria-hidden clone, clears its own transforms on completion, and hands the
+     frame back to the untouched static pair. With no JS, no GSAP or reduced
+     motion this never runs and the static <del>/<ins> pair is the whole of it.
+     Only data-op="delete" specimens perform; the register restructure ships
+     static (two convincing deletions beat three where one is awkward).
+     The specimen sentences carry no data-l twin — they are English error
+     examples, identical in both languages — so a language switch has nothing
+     to rebuild here; it only has to not leave a beat mid-flight behind #app's
+     S4 crossfade, so the langchange handler kills any running timeline and
+     snaps to the settled end. */
+  function initCorrections() {
+    var specs = document.querySelectorAll('#specimen .spec[data-op="delete"]');
+    if (!specs.length || !('IntersectionObserver' in window)) return;
+    var state = [];   // per spec: { done, perf, tl }
+    specs.forEach(function () { state.push({ done: false, perf: null, tl: null }); });
+
+    // Rebuild the frames the reader sees from the static .wrong line: its
+    // marker glyph and its sentence, with everything after the <del> wrapped
+    // so the reflow has one element to FLIP. The static pair is never touched
+    // beyond an opacity toggle it always gets back.
+    function build(spec) {
+      var lines = spec.querySelector('.spec__lines');
+      var wrong = spec.querySelector('.line-spec.wrong');
+      var right = spec.querySelector('.line-spec.right');
+      if (!lines || !wrong || !right) return null;
+      var src = wrong.children[wrong.children.length - 1];   // the sentence <span>
+      var sentence = src ? src.cloneNode(true) : null;
+      var del = sentence && sentence.querySelector('del, .mark--specimen');
+      if (!del) return null;
+      var tail = document.createElement('span');
+      tail.className = 'spec__tail';
+      while (del.nextSibling) tail.appendChild(del.nextSibling);
+      sentence.appendChild(tail);
+
+      var perf = document.createElement('p');
+      perf.className = 'spec__perform';
+      perf.setAttribute('aria-hidden', 'true');
+      var sig = wrong.querySelector('.sig');
+      if (sig) perf.appendChild(sig.cloneNode(true));
+      perf.appendChild(sentence);
+
+      wrong.style.opacity = '0';
+      right.style.opacity = '0';
+      lines.insertBefore(perf, wrong);
+      return { perf: perf, del: del, tail: tail, wrong: wrong, right: right };
+    }
+
+    function revealStatic(built) {
+      if (!built) return;
+      built.wrong.style.opacity = '';
+      built.right.style.opacity = '';
+    }
+
+    function play(i) {
+      var s = state[i];
+      if (s.done || s.perf) return;
+      var built;
+      try { built = build(specs[i]); }
+      catch (err) { s.done = true; return; }
+      if (!built) { s.done = true; return; }   // degrade to the static pair
+      s.perf = built.perf;
+
+      var tl = gsap.timeline({ onComplete: function () {
+        if (s.perf) s.perf.remove();
+        s.perf = null; s.tl = null; s.done = true;
+      } });
+      s.tl = tl;
+
+      tl.to(built.del, { opacity: 0, yPercent: -35, duration: D.correct * 0.42, ease: EASE });
+      tl.add(function () {
+        // FLIP: the surviving text's position before the deletion, then after,
+        // then tween the delta to zero. yPercent/opacity on <del> haven't moved
+        // it horizontally, so this reads the real pre-reflow left edge.
+        var before = built.tail.getBoundingClientRect().left;
+        built.del.style.display = 'none';
+        var after = built.tail.getBoundingClientRect().left;
+        var dx = before - after;
+        gsap.set(built.tail, { x: Math.abs(dx) < 1 ? 0 : dx });
+      });
+      tl.to(built.tail, { x: 0, duration: D.correct, ease: EASE, clearProps: 'transform' });
+      tl.to(built.perf, { opacity: 0, duration: D.micro, ease: EASE }, '+=0.1');
+      tl.add(function () { revealStatic(built); });   // hand the frame back once the performance has faded
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        var i = Array.prototype.indexOf.call(specs, e.target);
+        if (i > -1) play(i);
+      });
+    }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });   // the reveal rhythm's own line
+    specs.forEach(function (s) { io.observe(s); });
+
+    document.addEventListener('vitnyr:langchange', function () {
+      state.forEach(function (s, i) {
+        if (!s.tl && !s.perf) return;   // never started — leave it armed for its scroll
+        if (s.tl) s.tl.kill();
+        if (s.perf) s.perf.remove();
+        specs[i].querySelectorAll('.line-spec').forEach(function (el) { el.style.opacity = ''; });
+        s.perf = null; s.tl = null; s.done = true;   // settled: the static pair is the corrected form
+      });
+    });
+  }
+
   /* ---------- last resort ----------
      Anything on screen that is still hidden gets shown outright. A missed
      reveal must never cost someone the content. Read pass first, then write,
@@ -835,6 +946,7 @@
   initOrigin();
   initCursor();
   initMagnetic();
+  initCorrections();   // past the reduced-motion return: the static pair is that reader's version
 
   whenRendering(function () {
     /* Hold the hero until the display face is real, so the lines don't rise in
