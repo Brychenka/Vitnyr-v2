@@ -207,12 +207,27 @@
       items.forEach(function (el) { el.classList.add('is-in'); });
       return;
     }
+    // The hero is on screen at load, not something the reader scrolls down
+    // to — the -20% margin below is for content that isn't there yet. Left
+    // on the hero, that margin instead cuts a dead zone across the bottom
+    // fifth of the viewport, and .scrollcue lives in exactly that band: the
+    // one element whose job is to invite scrolling sat un-rendered until the
+    // reader had already started (measured stuck at 800/900/1080 viewport
+    // heights). The hero gets its own observer against the true viewport;
+    // -20% stays correct for everything below it.
+    var hero = [], rest = [];
+    items.forEach(function (el) { (el.closest('.hero') ? hero : rest).push(el); });
+
     var io = new IntersectionObserver(function (entries) { fireReveals(entries, io); },
       { rootMargin: '0px 0px -20% 0px', threshold: 0 });
     // Twins in the language that isn't showing are display:none, so the
     // observer never reports them and they don't eat stagger beats. They stay
     // observed, and fire correctly if the reader switches language.
-    items.forEach(function (el) { io.observe(el); });
+    rest.forEach(function (el) { io.observe(el); });
+
+    var heroIo = new IntersectionObserver(function (entries) { fireReveals(entries, heroIo); },
+      { rootMargin: '0px', threshold: 0 });
+    hero.forEach(function (el) { heroIo.observe(el); });
   }
 
   /* The collage view's tiles run the page's reveal rhythm off the view's own
@@ -222,6 +237,28 @@
      entrance while nobody is looking. Tiles ship .is-in (visible with JS
      absent, under reduced motion, and while the view is closed); this strips
      it back off so the observer can stagger them in. Fires once. */
+  /* The 18 collage figures shipped src/srcset directly, so every one of them
+     downloaded on ordinary page load even though the view sits hidden
+     (opacity:0, not display:none — the browser's native loading="lazy" goes
+     by viewport distance, and a position:fixed panel over the same viewport
+     reads as close enough to fetch anyway; measured at 1,231 KB of images no
+     visit ever displays). They ship as data-src/data-srcset instead — inert
+     to the browser's own loader — and are only promoted to real attributes
+     here, on first open. A <noscript> copy alongside each keeps the no-JS
+     page whole. Fires once; reopening finds the real attributes already in
+     place. */
+  var collageImagesPromoted = false;
+  function promoteCollageImages(view) {
+    if (collageImagesPromoted) return;
+    collageImagesPromoted = true;
+    view.querySelectorAll('img[data-src]').forEach(function (img) {
+      if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+      img.removeAttribute('data-srcset');
+    });
+  }
+
   var collageRevealsArmed = false;
   function armCollageReveals(view) {
     if (collageRevealsArmed) return;
@@ -525,6 +562,7 @@
       setBehindInert(true);
       if (lenis) lenis.stop();
       view.scrollTop = 0;
+      promoteCollageImages(view);   // first open: let the 18 figures actually fetch
       armCollageReveals(view);   // first open: hand the tiles to their own observer
       // Synchronous: the view is visible the moment the class lands, and rAF
       // can be suspended in a background tab (see whenRendering above) — a

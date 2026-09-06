@@ -45,6 +45,23 @@ def test_hero_replays_and_settles_after_language_switch(open_site):
     assert page.locator('.hero__title span[data-l="ru"]').is_visible()
 
 
+@pytest.mark.parametrize("height", [800, 900, 1080])
+def test_hero_foot_is_visible_at_rest_without_scrolling(open_site, height):
+    """.hero is min-height:100svh, so .hero__foot (.stand + .scrollcue) sits
+    near the very bottom of the viewport at load — inside the -20% band the
+    page observer holds back for content the reader hasn't scrolled to yet.
+    .scrollcue's only job is to invite that scroll, so it above all must not
+    require scrolling to appear. Regression for buildReveals() giving the
+    hero its own rootMargin:0px observer instead of sharing the -20% one."""
+    page, _ = open_site(viewport={"width": 1280, "height": height})
+    page.wait_for_timeout(400)
+    for selector in (".scrollcue", ".stand:visible"):
+        el = page.locator(selector)
+        opacity = el.evaluate("el => parseFloat(getComputedStyle(el).opacity)")
+        assert opacity > 0.95, f"{selector} at {height}px: opacity {opacity}"
+        assert "is-in" in (el.get_attribute("class") or "")
+
+
 def test_reveals_start_hidden_then_show_on_scroll(open_site):
     page, _ = open_site()
     # a reveal well below the fold is still hidden right after load
