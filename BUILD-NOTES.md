@@ -1610,6 +1610,69 @@ The Spark Order tracking artifact marks S8 subsumed; the Crit Sheet's move 07
 is closed the same way. If the hero is ever revisited, it starts from a fresh
 brief, not this one.
 
+## Spark Order, Stage 9A — specimen permalinks (move 09) (2026-09-06)
+
+Branch `feature/specimen-series`. Files: `index.html`, `style.css`,
+`main.js`, `tests/test_content.py`, `tests/test_a11y.py`. Suite 169 → 174
+(five new cases; one existing a11y test had its `.vh` selector tightened,
+no assertion changed).
+
+Move 09's brief was two lines: *give each specimen an anchor id and a share
+entry point; assert no count.*
+
+**Addressable.** The three `<article class="spec">` now carry stable,
+language-neutral ids — `specimen-reflexive`, `specimen-copula`,
+`specimen-register`. Each specimen's label became a permalink to its own id:
+a quiet mono `#` (theme ink `--fg2`, never accent), the label text, and a
+`.vh` suffix — *", link to this specimen" / ", ссылка на этот разбор"* — so
+the link's accessible name says why a section label is a link. The label
+underlines only on hover/focus; the shared `:focus-visible` rule is the ring.
+
+**Share entry point.** `initSpecimenPermalinks()` (wired before the
+reduced-motion return — navigation, not motion) intercepts the click:
+`history.pushState` writes the permalink to the address bar (so it can be
+copied and shared, and Back still works), the target scrolls in on the one
+shared easing, focus lands *inside* the specimen, and `navigator.clipboard`
+gets the full URL. On a successful copy a `role="status"` line shows *"Link
+copied" / "Ссылка скопирована"* for 1.8s — its two languages are DOM
+`data-l` spans, no strings in `main.js`. Everything degrades: with the file
+absent the label is still `<a href="#specimen-…">`, the browser jumps, and
+the status line stays `hidden`. The confirmation's visible-state CSS is
+scoped `:not([hidden])` so a bare `display` can't out-specify the UA
+`[hidden]` rule and leak the text on load (caught in regression-proving).
+
+**`pushState` not `location.hash`** on purpose: a raw hash assignment fires
+`hashchange`, and the collage router's `routeAfterHashChange()` would then
+wrap a no-op `sync()` in `startViewTransition` for a hash that has nothing
+to do with the collage. That handler also gained an `applied &&` guard — the
+close transition only makes sense when the view is actually open — so Back
+out of a specimen permalink (which *does* fire `hashchange`) and the
+existing `#top` / `#method` anchors no longer trigger an invisible
+page-wide cross-fade either. The S7 collage View-Transition tests pass
+unchanged.
+
+**Assert no count.** `test_no_invented_count_beside_the_finite_list_claim`
+reads the whole specimen section's prose — heading, lede, every label, every
+"why", both languages — and fails on any digit. S0 decided *"Your errors are
+a finite list"* is the entire claim and no figure gets invented to sit
+beside it; section 02 is the one place on the page built to tempt a
+fabricated statistic. This is a standing guard (it passes against reverted
+source too), same category as the S4/S6/S7 degradation guards.
+
+Regression-proved per protocol: `git stash push -- index.html style.css
+main.js`; the four behavioural cases fail against reverted source
+(`.spec__permalink` absent), the no-count guard passes; popped, all five
+green. Verified headless (Trap 2) across 16 configs — both themes, both
+languages, 375 and 1280, motion and reduced — plus no-JS: the address bar
+updates, focus lands in the specimen, no View Transition fires for a
+specimen hash, no horizontal overflow (RU confirmation wraps as a unit,
+never mid-phrase), clean console. Light/EN and dark/RU screenshots in this
+chat.
+
+Full suite: **174 passed** (was 169, +5). One existing test's selector
+tightened (`.vh` → `.line-spec .vh`, its own earlier scope), no assertion
+touched.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

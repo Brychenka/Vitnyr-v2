@@ -191,3 +191,67 @@ def test_section_numbering_is_sequential(open_site):
     page, _ = open_site()
     nums = page.locator(".sec .label .num").all_inner_texts()
     assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05", "06"]
+
+
+# --- Spark Order S9A / move 09: each specimen is addressable, and the claim it
+# sits under ("Your errors are a finite list") never gets a fabricated number
+# put beside it. S0 decided that line is the whole claim; no figure is invented. ---
+
+SPECIMEN_IDS = ["specimen-reflexive", "specimen-copula", "specimen-register"]
+
+
+def test_no_invented_count_beside_the_finite_list_claim(open_site):
+    """"Real material only": section 02 is the one place on the page built to
+    tempt a fabricated statistic ("the average learner has N errors"). Its
+    prose — the heading, the lede, every specimen label and every "why" —
+    carries no digit, in either language. Adding one fails here."""
+    for lang in ("en", "ru"):
+        page, _ = open_site(lang=lang)
+        prose = page.evaluate(
+            """() => {
+                const sec = document.getElementById('specimen');
+                const sel = '.sec__head h2, .sec__lede [data-l],'
+                          + ' .spec__label, .spec__why';
+                return [...sec.querySelectorAll(sel)]
+                    .map(el => el.textContent).join('  ');
+            }"""
+        )
+        low = prose.lower()
+        assert "finite list" in low and "конечный список" in low, (
+            "reading the wrong block — the finite-list claim is not in it"
+        )
+        assert not re.search(r"\d", prose), f"a digit crept into the specimen prose: {prose!r}"
+
+
+def test_each_specimen_is_addressable_by_its_own_permalink(open_site):
+    """Every <article class="spec"> carries a stable, language-neutral id and a
+    label that links to exactly that id — so a reader can send one specific
+    error, not the whole section."""
+    page, _ = open_site()
+    pairs = page.evaluate(
+        """() => [...document.querySelectorAll('.specs .spec')].map(a => ({
+            id: a.id,
+            href: a.querySelector('.spec__permalink') &&
+                  a.querySelector('.spec__permalink').getAttribute('href'),
+        }))"""
+    )
+    assert [p["id"] for p in pairs] == SPECIMEN_IDS
+    assert [p["href"] for p in pairs] == ["#" + i for i in SPECIMEN_IDS]
+
+
+def test_specimen_permalink_updates_the_url_and_moves_focus(open_site):
+    """Clicking a specimen's label writes that permalink to the address bar
+    (so it can be copied and shared) and moves focus into the specimen, not
+    just the scroll position. Back then clears it."""
+    page, _ = open_site()
+    page.locator("#specimen-copula .spec__permalink").click()
+    page.wait_for_timeout(150)
+    assert page.evaluate("location.hash") == "#specimen-copula"
+    assert page.evaluate(
+        "() => document.activeElement.closest('.spec') && document.activeElement.closest('.spec').id"
+    ) == "specimen-copula"
+    page.go_back()
+    page.wait_for_timeout(150)
+    assert page.evaluate("location.hash") == ""
+    assert page.evaluate("() => !document.body.classList.contains('collage-open') "
+                         "&& !document.documentElement.classList.contains('collage-open')")
