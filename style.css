@@ -243,6 +243,39 @@ html.lora-ready .lockup .wm { opacity: 1; }
 .tool:hover { color: var(--fg); }
 .tool:hover::after { transform: scaleX(1); }
 
+/* ---------- progress hairline (Spark Order S3 / move 20) ----------
+   A 1px rule on the masthead's bottom edge. left/right:0 pins it to the
+   masthead's own box, so it is exactly as wide as the masthead border-bottom
+   it sits on — one hairline width, not two (C12). --progress (0–1) is set
+   from the one scroll handler in main.js; both fills scale off it. Two
+   stacked fills, not one bar whose colour is tweened: the specimen ink sits
+   underneath and the target ink fades in over it as .past-origin lands, so
+   the change is a crossfade in time, not an amber→green interpolation across
+   hues (a third colour by the back door — banned). transform on the fills is
+   animation using the channel legitimately; the container carries no layout. */
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.progress__fill {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left center;
+}
+.progress__fill--specimen { background: var(--ink-specimen); }
+.progress__fill--target {
+  background: var(--ink-target);
+  opacity: 0;
+  transition: opacity var(--t) var(--e);
+}
+html.past-origin .progress__fill--target { opacity: 1; }
+
 /* ---------- collage nav icons ---------- */
 /* P10: a caption for the three icons that follow, in the exact type the
    rest of .tools already uses — not a new label style, and not interactive
@@ -372,6 +405,36 @@ html.lora-ready .lockup .wm { opacity: 1; }
 @media (min-width: 900px) {
   .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
+
+/* ---------- the breath (Spark Order S3 / move 08) ----------
+   One sentence between #specimen and #disciplines, alone with vertical air.
+   Same shell box as .hero/.sec (max-width, centred, --gut padding-inline) and
+   the same hairline divider, so it sits in the page's rhythm without being a
+   numbered section. Sized by content + padding: the block's height is the
+   sentence plus ~18vh of air top and bottom, capped in px so it never turns
+   into a viewport-height slab on a short laptop (100vh is banned here for
+   exactly that reason — test_breath_block_is_not_viewport_height). The line
+   is larger than the 17px body copy and smaller than the hero title at every
+   width. */
+.breath {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+  padding-block: clamp(100px, 18vh, 210px);
+  border-top: 1px solid var(--rule);
+}
+.breath__line {
+  max-width: 24ch;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(28px, 5.2vw, 60px);
+  line-height: 1.18;
+  letter-spacing: -.02em;
+  color: var(--fg);
+  text-wrap: balance;
+}
+html[data-lang="ru"] .breath__line { max-width: 26ch; letter-spacing: -.012em; }
 
 /* C12 (2026-09-06): .sec's own top rule spans its full 1320px box, but
    .mechanisms/.specs/.domains/.rows/.channels/.proof sit inside that box's

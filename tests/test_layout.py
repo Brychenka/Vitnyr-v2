@@ -231,3 +231,26 @@ def test_see_the_work_reads_at_full_foreground_and_underlined_at_rest(open_site)
     assert text_color == body_fg == "rgb(242, 239, 232)"  # --fg on charcoal, not --fg2
     after_transform = link.evaluate("el => getComputedStyle(el, '::after').transform")
     assert after_transform in ("matrix(1, 0, 0, 1, 0, 0)", "none")
+
+
+# --- Spark Order S3 / move 08: the "breath" block between #specimen and
+# #disciplines is sized by content + padding, never 100vh — a viewport-height
+# slab pushes the rest of the page out of frame on a short laptop. ---
+
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_breath_block_is_not_viewport_height(open_site, lang):
+    page, _ = open_site(lang=lang, viewport={"width": 375, "height": 780})
+    page.wait_for_timeout(300)
+    h = page.locator(".breath").evaluate("el => el.getBoundingClientRect().height")
+    assert 120 < h < 780, f"{lang}: breath block is {h}px in a 780px viewport"
+
+
+def test_breath_block_takes_no_section_number(open_site):
+    """It is not a section: no .label, no 01–06 numeral, and the numbering
+    test still counts exactly six."""
+    page, _ = open_site()
+    assert page.locator(".breath").count() == 1
+    assert page.locator(".breath .label").count() == 0
+    assert page.locator(".breath .num").count() == 0
+    nums = page.locator(".sec .label .num").all_inner_texts()
+    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05", "06"]

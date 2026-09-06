@@ -200,6 +200,92 @@ def test_numbers_do_not_animate(open_site):
     assert second == first
 
 
+def _progress_scale_x(page):
+    return page.evaluate(
+        """() => {
+            const el = document.querySelector('.progress__fill--specimen');
+            const t = getComputedStyle(el).transform;
+            if (!t || t === 'none') return 1;   // no matrix => identity => full width
+            return parseFloat(t.slice(t.indexOf('(') + 1).split(',')[0]);
+        }"""
+    )
+
+
+def _resolve_var(page, name):
+    return page.evaluate(
+        """name => {
+            const d = document.createElement('span');
+            d.style.color = `var(${name})`;
+            document.body.appendChild(d);
+            const c = getComputedStyle(d).color;
+            d.remove();
+            return c;
+        }""",
+        name,
+    )
+
+
+def test_progress_rule_tracks_scroll(open_site):
+    """Spark Order S3 / move 20: a 1px rule on the masthead's bottom edge
+    scales with scroll depth. Sampled at the top, middle and end of the
+    document — strictly increasing, ~0 at the top and ~full width at the end."""
+    page, _ = open_site()
+    page.wait_for_timeout(300)
+
+    page.evaluate("window.scrollTo(0, 0)")
+    page.wait_for_timeout(250)
+    top = _progress_scale_x(page)
+
+    page.evaluate(
+        "window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * 0.5)"
+    )
+    page.wait_for_timeout(450)
+    mid = _progress_scale_x(page)
+
+    page.evaluate("window.scrollTo(0, document.documentElement.scrollHeight)")
+    page.wait_for_timeout(650)
+    end = _progress_scale_x(page)
+
+    assert top < 0.05, f"top scaleX {top}"
+    assert top < mid < end, (top, mid, end)
+    assert end > 0.95, f"end scaleX {end}"
+
+
+@pytest.mark.parametrize("scheme", ["dark", "light"])
+def test_progress_rule_switches_ink_at_origin(open_site, scheme):
+    """S3 / move 20: above #origin the rule carries specimen ink; from #origin
+    down, target ink. The switch is an opacity crossfade between two fills that
+    each keep their own token — never an amber->green interpolation (a third
+    colour by the back door). Verified in both pairs."""
+    page, _ = open_site(color_scheme=scheme)
+    page.wait_for_timeout(300)
+
+    specimen = page.locator(".progress__fill--specimen")
+    target = page.locator(".progress__fill--target")
+    assert specimen.evaluate("el => getComputedStyle(el).backgroundColor") == _resolve_var(
+        page, "--ink-specimen"
+    )
+    assert target.evaluate("el => getComputedStyle(el).backgroundColor") == _resolve_var(
+        page, "--ink-target"
+    )
+
+    # at the top of the page the target ink has not crossfaded in yet
+    page.evaluate("window.scrollTo(0, 0)")
+    page.wait_for_timeout(750)
+    assert float(target.evaluate("el => getComputedStyle(el).opacity")) < 0.05
+    assert "past-origin" not in (page.locator("html").get_attribute("class") or "")
+
+    # scrolled to #origin: .past-origin is set and the target ink is now shown
+    origin_y = page.evaluate(
+        "document.getElementById('origin').getBoundingClientRect().top"
+        " + (window.__lenis ? window.__lenis.scroll : window.scrollY)"
+    )
+    page.evaluate(f"window.scrollTo(0, {origin_y} + 8)")
+    page.wait_for_timeout(900)
+    assert "past-origin" in (page.locator("html").get_attribute("class") or "")
+    assert float(target.evaluate("el => getComputedStyle(el).opacity")) > 0.95
+
+
 def test_back_to_top_returns_from_the_footer_to_hero(open_site):
     """P15: the footer used to be a dead end after 7,500px of scroll — no
     way back up. Goes through the same in-page Lenis link wiring every
