@@ -57,6 +57,14 @@
     d.setAttribute('lang', l);
     var nodes = document.querySelectorAll('[data-en][data-ru]');
     for (var i = 0; i < nodes.length; i++) nodes[i].textContent = nodes[i].dataset[l];
+    /* P8 (Stage 6, 2026-09-06): same generic-attribute-copy idea as the loop
+       above, for a link whose destination text differs per language (the
+       Telegram deep link pre-fills a message, so it reads as the right
+       language before the reader even sends it) rather than its label. */
+    var hrefNodes = document.querySelectorAll('[data-href-en][data-href-ru]');
+    for (var h = 0; h < hrefNodes.length; h++) {
+      hrefNodes[h].setAttribute('href', hrefNodes[h].dataset['href' + (l === 'ru' ? 'Ru' : 'En')]);
+    }
     /* More than one .langswitch: the masthead's, plus the one in the collage
        view's bar (which sits above the masthead when that view is open) —
        same reason labelTheme() below loops over every .themeswitch. */
@@ -68,6 +76,23 @@
     labelTheme();
     // the hero lines differ per language, so their masks need re-measuring
     document.dispatchEvent(new CustomEvent('vitnyr:langchange', { detail: l }));
+  }
+
+  /* P2 (Stage 6, 2026-09-06): language lived only in localStorage — the URL
+     a Russian reader copies and sends opens in English for everyone else,
+     since ?lang= was read on load but never written back. Called only from
+     the switch handler below, not from the initial applyLang() call, so a
+     plain visit never rewrites the address bar on its own; a link someone
+     actually shares after switching does. Wrapped like every other
+     history/URL call here: the live artifact runs this page inside a
+     cross-origin iframe, where replaceState can throw. Also what gives
+     hreflang (index.html) something real to point at. */
+  function syncLangUrl(l) {
+    try {
+      var url = new URL(location.href);
+      url.searchParams.set('lang', l);
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    } catch (e) {}
   }
 
   document.documentElement.setAttribute('data-lang', lang);
@@ -93,6 +118,7 @@
       lang = document.documentElement.getAttribute('data-lang') === 'ru' ? 'en' : 'ru';
       save(LANG_KEY, lang);
       applyLang(lang);
+      syncLangUrl(lang);
     });
     var ths = document.querySelectorAll('.themeswitch');
     for (var i = 0; i < ths.length; i++) ths[i].addEventListener('click', function () {

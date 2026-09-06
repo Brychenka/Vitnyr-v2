@@ -70,6 +70,39 @@ def test_every_data_attr_node_has_both_languages(open_site):
     assert missing == [], missing
 
 
+# --- P2 (Stage 6, 2026-09-06): the URL used to only ever be read on load,
+# never written back — a reader who switched to Russian and copied the URL
+# handed everyone else an English page. ---
+
+def test_switch_mirrors_the_choice_into_the_url(open_site):
+    page, _ = open_site()
+    assert "lang=" not in page.url
+    page.locator(".masthead .langswitch").click()
+    assert page.url.endswith("?lang=ru") or "lang=ru" in page.url
+
+    page.locator(".masthead .langswitch").click()
+    assert "lang=en" in page.url
+
+
+def test_url_mirroring_does_not_reload_or_lose_hash(open_site):
+    page, _ = open_site(hash="#collage")
+    page.wait_for_timeout(200)
+    page.locator(".view__tools .langswitch").click()
+    assert page.url.endswith("#collage") or "#collage" in page.url
+    assert "lang=ru" in page.url
+    # still the same document — a real navigation would have reset scroll
+    # restoration / re-run theme.js's DOMContentLoaded seeding
+    assert page.locator("html").get_attribute("data-lang") == "ru"
+
+
+def test_plain_load_does_not_rewrite_a_clean_url(open_site):
+    """Only a switch mirrors the URL — a first, ordinary visit (browser-
+    language or stored-preference detection) must not silently append
+    ?lang= to every reader's address bar."""
+    page, _ = open_site(lang="ru")
+    assert "lang=" not in page.url
+
+
 def test_no_untranslated_placeholder_text_leaks(open_site):
     """After a switch, no element should still be showing its English default
     because a data-ru value was blank."""

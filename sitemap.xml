@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- P3 (Stage 6, 2026-09-06): one page, so one <url> — the two languages
+     are alternates of it, not separate pages, matching how theme.js and
+     index.html's hreflang tags already treat them. https://vitnyr.example/
+     is the same RFC 2606 placeholder used across index.html/robots.txt;
+     swap it for the real domain in all three places together. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://vitnyr.example/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyr.example/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyr.example/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyr.example/"/>
+  </url>
+</urlset>

@@ -956,6 +956,34 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   line-height: 1.02; letter-spacing: -.03em;
   margin-bottom: clamp(24px, 3vw, 40px);
 }
+/* P8 (Stage 6, 2026-09-06): the page's biggest line of text used to be
+   plain — no control anywhere for the one thing the page is actually
+   asking for. Same drawn-in-underline / travelling-arrow language as
+   .proof__link and .channels a, scaled up to this heading's size instead
+   of introducing a filled-button style the rest of the page doesn't use. */
+.contact__cta {
+  display: inline-flex; align-items: center; gap: clamp(20px, 3.5vw, 40px);
+  color: var(--fg); position: relative;
+}
+.contact__cta::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.06em;
+  height: 1px; background: var(--rule);
+  transition: background var(--t) var(--e);
+}
+.contact__cta:hover::after, .contact__cta:focus-visible::after { background: var(--ink-target); }
+.contact__cta-arrow { position: relative; width: clamp(48px, 7vw, 84px); aspect-ratio: 26 / 8; flex: none; }
+.contact__cta-arrow svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  color: var(--fg2);
+  transition: transform var(--t) var(--e), color var(--t) var(--e), opacity var(--t) var(--e);
+}
+.contact__cta-arrow--echo { opacity: 0; }
+.contact__cta:hover .contact__cta-arrow svg,
+.contact__cta:focus-visible .contact__cta-arrow svg { color: var(--fg); transform: translateX(14px); }
+.contact__cta:hover .contact__cta-arrow--echo,
+.contact__cta:focus-visible .contact__cta-arrow--echo {
+  opacity: .3; transform: translateX(5px); transition-delay: .07s;
+}
 /* C9 (2026-09-06): the handle used to live in its own grid column pinned to
    the far right — "Telegram" at 44px Lora beside "@yngvil" at 13px mono,
    up to 950px apart on a wide screen. Three of those in a row read as a

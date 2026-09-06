@@ -43,6 +43,19 @@ def test_core_assets_referenced_exist(open_site):
         assert resp.ok, f"{path} -> {resp.status}"
 
 
+def test_robots_and_sitemap_are_served(open_site, site_url):
+    """P3 (Stage 6): the cheapest search-basics files — actually reachable
+    at site root, not just referenced."""
+    page, _ = open_site()
+    robots = page.request.get(f"{site_url}/robots.txt")
+    assert robots.ok
+    assert "Sitemap:" in robots.text()
+
+    sitemap = page.request.get(f"{site_url}/sitemap.xml")
+    assert sitemap.ok
+    assert "<urlset" in sitemap.text()
+
+
 def test_third_party_libraries_are_present(open_site):
     """GSAP + CustomEase + Lenis load from CDN; the motion layer is a no-op
     without them but they should be arriving in a normal run."""
