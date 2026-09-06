@@ -619,6 +619,80 @@ confirmed failing against pre-fix `main` before the fix landed, not just
 asserted from reading the code. Full suite: **101 passed** (96 at the end of
 Stage 2 + 5 new).
 
+## Awwwards-jury review, Stage 4 — commit to the three ideas (2026-09-06)
+
+The one stage that changes the ceiling rather than the floor: C10, C11, C5,
+C6, C13, branch `feature/signature-moments`. Two decisions were put to Igor
+before building — the specimen redesign's size (there wasn't really a
+choice on the table, more a go/no-go on the largest single visual change in
+the plan) and the cursor fix's shape (two real alternatives) — both
+confirmed before writing any code.
+
+- **C10 — the specimens, the page's own "showpiece," ran at 14px mono in a
+  cramped third of a 1320px page.** Rebuilt `.specs` as full-width rows —
+  same shape as `.rows` in section 05 (hairline stack, one column of
+  content beside another rather than stacked) — with the wrong/right
+  sentence pair in its own `.spec__lines` wrapper at `clamp(17px, 1.7vw,
+  20px)` and the explanation beside it instead of below. The ✕/✓ glyph
+  moved to `em` sizing so it scales with the pair instead of sitting
+  fixed-small next to now-larger text. New tests hold the pair to ≥17px and
+  check the two columns actually sit side by side at ≥900px, stacked at
+  375px.
+- **C11 — the amber V and green stem meet at a shared vertex and, filled
+  edge to edge, read as one two-tone shape at exactly the seam the page's
+  own copy calls three separate strokes.** A thin `--bg`-coloured
+  `stroke: 1.25px` on every `.glyph__part`, painted last in DOM order (the
+  stem sits after both arms), cuts a clean edge without moving a single
+  path coordinate — the "never redraw this mark" rule holds, since it's the
+  interactive `.origin__mark` instance carrying the class, not the
+  wordmark. New test checks the computed `stroke` resolves to `--bg`.
+- **C5 — two defects in the same mechanism.** Dimming was `opacity: .32`,
+  which blends with whatever renders behind a shape — including the *other*
+  glyph part it overlaps at that same vertex, which was half of C11's
+  muddying. Replaced with explicit solid `--amber-dim`/`--green-dim`
+  tokens per theme (full opacity, a real colour that can't bleed into a
+  neighbour), landing close to the old opacity look by design. Separately,
+  the stem carried a `scale(1.1)` on activation that the two arms
+  structurally can't get (they're clipped halves of one shared path;
+  scaling would tear the clip from the mark underneath) — dropped instead
+  of extended, so colour is the one feedback channel all three hit regions
+  share. New tests check the dimmed fill is solid (`opacity: 1`, an exact
+  token colour) and that the stem's `transform` no longer changes on
+  activation.
+- **C6 — the mark's resting state was neutral, not a choice.** `clearPaint()`
+  stripped every class, so before any hover/focus (and permanently, under
+  reduced motion, where the idle hint never runs) the glyph sat at equal
+  weight and the stat panel was blank. English is the offer; chess and
+  climbing are proof it transfers, not equal-weight alternatives.
+  `clearPaint()` now calls `paint('english')`, and is itself called once at
+  `initOrigin()` init so the default is established from the first frame,
+  not just after the idle hint's own cycle ends. New test checks the state
+  immediately at load, before any scroll or interaction, so it can't pass by
+  coincidence with the hint's own preview (which also opens on English, but
+  only once the mark is scrolled into view).
+- **C13 — `cursor: none` applied to every element, so hovering plain body
+  copy showed no cursor at all: no native I-beam, no signal that text is
+  selectable.** Two options were put to Igor: scope the suppression to
+  interactive surfaces, or keep it universal and give the dot a text state.
+  Chose the former (recommended): `cursor: none` now applies only to
+  `html.has-cursor a, button, [data-magnetic]` — the same `HOT` selector
+  `initMagnetic()`/`initCursor()` already used for the ring effect — so the
+  native cursor, I-beam included, returns everywhere else. The dot's own
+  visibility moved from a JS-tweened opacity gated on any mouse movement to
+  a CSS rule gated on `cursor-active` (`html.has-cursor.cursor-active
+  .cursor { opacity: 1 }`), so it now only ever appears near a real control
+  instead of trailing the pointer for the whole session. Two new tests:
+  plain text keeps a real cursor, and the dot's opacity follows hot/not-hot
+  hover state precisely.
+
+All nine new tests with real logic behind them were confirmed failing
+against pre-fix `main` before landing the fix. Full suite: **110 passed**
+(101 + 9 new).
+
+**Not republished:** same hold as Stages 2 and 3 — the placeholder-photo
+freeze from Collage Stage 3 is unrelated to this stage's changes but still
+stands, and this remains a draft.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

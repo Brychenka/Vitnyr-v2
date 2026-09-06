@@ -185,30 +185,36 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 
   <div class="specs">
     <article class="spec reveal">
-      <p class="spec__label" data-en="Reflexive carried across" data-ru="Возвратность, перенесённая из русского">Reflexive carried across</p>
-      <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>I feel <span class="mark--specimen">myself</span> good today.</span></p>
-      <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I feel good today.</span></p>
+      <div class="spec__lines">
+        <p class="spec__label" data-en="Reflexive carried across" data-ru="Возвратность, перенесённая из русского">Reflexive carried across</p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>I feel <span class="mark--specimen">myself</span> good today.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I feel good today.</span></p>
+      </div>
       <p class="spec__why" data-l="en">Russian «чувствовать себя» is reflexive, so the <em>myself</em> comes along for the ride. English doesn't take it, and <em>feel myself</em> now means something else entirely, which is why the room reacts the way it does.</p>
       <p class="spec__why" data-l="ru">В русском «чувствовать себя» возвратный, и <em>myself</em> едет следом. Английскому он не нужен, а <em>feel myself</em> сегодня значит совсем другое — отсюда и лица собеседников.</p>
     </article>
 
     <article class="spec reveal">
-      <p class="spec__label" data-en="Adjective where English has a verb" data-ru="Прилагательное там, где в английском глагол">Adjective where English has a verb</p>
-      <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>I <span class="mark--specimen">am</span> agree with your point.</span></p>
-      <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I <span class="mark--target">agree</span> with your point.</span></p>
+      <div class="spec__lines">
+        <p class="spec__label" data-en="Adjective where English has a verb" data-ru="Прилагательное там, где в английском глагол">Adjective where English has a verb</p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>I <span class="mark--specimen">am</span> agree with your point.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I <span class="mark--target">agree</span> with your point.</span></p>
+      </div>
       <p class="spec__why" data-l="en">«Согласен» is an adjective, so Russian has to prop it up with a copula. <em>Agree</em> is a verb and already has everything it needs. The error survives for years because it never blocks understanding: nobody corrects it, and nothing else removes it.</p>
       <p class="spec__why" data-l="ru">«Согласен» — прилагательное, его надо подпирать связкой. <em>Agree</em> — глагол, ему связка не нужна. Ошибка живёт годами именно потому, что не мешает понять: её никто не поправляет, а сама она не уходит.</p>
     </article>
 
     <article class="spec reveal">
-      <p class="spec__label" data-en="Register, not grammar" data-ru="Регистр, а не грамматика">Register, not grammar</p>
-      <!-- This specimen's "wrong" line is grammatically fine — the fault is
+      <div class="spec__lines">
+        <p class="spec__label" data-en="Register, not grammar" data-ru="Регистр, а не грамматика">Register, not grammar</p>
+        <!-- This specimen's "wrong" line is grammatically fine — the fault is
            register, not correctness, so labelling it "Incorrect" (the other
            two specimens' real grammar errors) overstates the claim. Own
            hidden labels for this one; the sighted signature (✕ / ✓ glyph,
            amber/green ink) is unchanged. -->
-      <p class="line-spec wrong"><span class="vh" data-en="Reads as: " data-ru="Звучит как: ">Reads as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>Send me the report today, <span class="mark--specimen">please</span>.</span></p>
-      <p class="line-spec right"><span class="vh" data-en="Better as: " data-ru="Естественнее: ">Better as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="mark--target">Could you</span> send me the report today?</span></p>
+        <p class="line-spec wrong"><span class="vh" data-en="Reads as: " data-ru="Звучит как: ">Reads as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>Send me the report today, <span class="mark--specimen">please</span>.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Better as: " data-ru="Естественнее: ">Better as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="mark--target">Could you</span> send me the report today?</span></p>
+      </div>
       <p class="spec__why" data-l="en">The first sentence is grammatically perfect and lands as an order. A Russian imperative plus «пожалуйста» is neutrally polite; the English imperative isn't, and <em>please</em> doesn't rescue it. Errors of this class never show up in a test score, and they're the ones doing damage at work.</p>
       <p class="spec__why" data-l="ru">Первая фраза грамматически безупречна — и звучит как распоряжение. Русский императив с «пожалуйста» нейтрально вежлив, английский — нет, и <em>please</em> его не спасает. Такие ошибки не видны ни в одном тесте, и именно они портят вам жизнь на работе.</p>
     </article>

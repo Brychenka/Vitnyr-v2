@@ -128,6 +128,61 @@ def test_origin_mark_hover_switches_between_disciplines(open_site):
     assert left.evaluate("el => el.classList.contains('is-dim')")
 
 
+def test_origin_mark_rests_on_english_before_any_interaction(open_site):
+    """C6: rest state is English lit, not neutral — English is the offer,
+    chess and climbing are proof it transfers, not equal-weight
+    alternatives. Checked immediately at load, with no scroll or hover, so
+    this can't pass by coincidence with the idle hint's own preview cycle
+    (which also starts with English, but only once the mark scrolls into
+    view — this is the state before that's even possible)."""
+    page, _ = open_site()
+    page.wait_for_timeout(100)
+    assert page.locator('.glyph__part--left').evaluate("el => el.classList.contains('is-active')")
+    assert page.locator('.glyph__part--right').evaluate("el => el.classList.contains('is-dim')")
+    assert page.locator('.glyph__part--stem').evaluate("el => el.classList.contains('is-dim')")
+
+
+def test_glyph_dim_state_is_a_solid_fill_not_partial_opacity(open_site):
+    """C5: dimming used to be opacity: .32, which blends with whatever
+    renders behind the shape — including the *other* glyph part it overlaps
+    at the mark's shared vertex, muddying exactly the seam C11 keeps clean.
+    Explicit solid fill tokens per theme instead: full opacity, a real
+    colour that can't bleed into a neighbour."""
+    page, _ = open_site(color_scheme="dark")
+    page.locator("#origin").scroll_into_view_if_needed()
+    page.locator('.origin__hit[data-discipline="climbing"]').hover()
+    page.wait_for_timeout(700)
+    left = page.locator(".glyph__part--left")
+    assert left.evaluate("el => getComputedStyle(el).opacity") == "1"
+    assert left.evaluate("el => getComputedStyle(el).fill") == "rgb(74, 59, 33)"  # --amber-dim
+
+
+def test_stem_no_longer_gets_an_extra_scale_on_activation(open_site):
+    """C5: the stem used to scale(1.1) on activation — an intensity of
+    feedback the two arms structurally can't match (they're clipped halves
+    of one shared path; scaling would tear the clip from the mark
+    underneath). Dropped rather than added to the arms, so colour is the one
+    channel all three hit regions carry identically."""
+    page, _ = open_site()
+    page.locator("#origin").scroll_into_view_if_needed()
+    page.locator('.origin__hit[data-discipline="climbing"]').hover()
+    page.wait_for_timeout(700)
+    transform = page.locator(".glyph__part--stem").evaluate(
+        "el => getComputedStyle(el).transform"
+    )
+    assert transform in ("none", "matrix(1, 0, 0, 1, 0, 0)")
+
+
+def test_glyph_parts_carry_a_bg_coloured_keyline(open_site):
+    """C11: the amber V and the green stem meet at a shared vertex, and two
+    overlapping fills read as one two-tone shape at exactly the seam the
+    page's own copy calls three separate strokes. A thin --bg stroke, not a
+    change to any path coordinate, keeps the seam clean."""
+    page, _ = open_site(color_scheme="dark")
+    stroke = page.locator(".glyph__part--stem").evaluate("el => getComputedStyle(el).stroke")
+    assert stroke == "rgb(20, 24, 26)"  # --bg on charcoal
+
+
 def test_counters_count_up_to_exact_values(open_site):
     page, _ = open_site()
     page.locator(".facts").scroll_into_view_if_needed()

@@ -192,3 +192,46 @@ def test_origin_mark_shows_a_focus_ring_on_the_visible_figure(open_site):
         "el => getComputedStyle(el).outlineStyle"
     )
     assert hit_outline == "none"
+
+
+# --- C13: cursor:none used to apply to every element, so hovering plain body
+# copy showed no native cursor at all — no I-beam, no signal that text is
+# selectable, just a static dot. Scoped to the same hot-target selector the
+# dot's own ring effect already used (a, button, [data-magnetic]). ---
+
+def test_native_cursor_returns_over_plain_text(open_site):
+    page, _ = open_site()
+    page.mouse.move(400, 760)   # inside .stand, well clear of any control
+    page.wait_for_timeout(150)
+    assert page.evaluate("document.documentElement.classList.contains('has-cursor')")
+    assert page.locator(".stand:visible").evaluate(
+        "el => getComputedStyle(el).cursor"
+    ) != "none"
+
+
+def test_cursor_none_and_the_dot_stay_scoped_to_hot_targets(open_site):
+    """cursor:none is a static style on hot elements — computed style
+    reports "none" for a link regardless of where the pointer actually is,
+    the same way it would for a plain cursor:pointer. What's genuinely
+    gated on real hover is the dot's own visibility, driven by the same
+    mouseover/mouseout pair that toggles cursor-active."""
+    page, _ = open_site()
+    dot = page.locator(".cursor")
+    link = page.locator('a[href="#method"]')  # the scrollcue: a + [data-magnetic]
+
+    # has-cursor only arms on the first real mousemove (initCursor()); before
+    # that the whole scoped rule is inert and the link shows its own default.
+    page.mouse.move(400, 760)
+    page.wait_for_timeout(150)
+    assert page.evaluate("document.documentElement.classList.contains('has-cursor')")
+    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.05
+    assert link.evaluate("el => getComputedStyle(el).cursor") == "none"
+
+    box = link.bounding_box()
+    page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(400)
+    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+
+    page.mouse.move(400, 760)
+    page.wait_for_timeout(400)
+    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.05

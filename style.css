@@ -46,6 +46,18 @@
   --amber-text: var(--amber);
   --green-text: #578C5E;
 
+  /* C5 (2026-09-06): the origin mark's "dimmed" stroke was opacity: .32, not
+     a colour — which blends with whatever renders behind it. Mostly that's
+     just --bg, but the amber and green shapes overlap at the mark's shared
+     vertex, so a dimmed stroke sitting under the active one alpha-blended
+     with it too, muddying exactly the seam C11 is trying to keep clean.
+     Explicit solid tokens instead: chosen to land close to the old opacity
+     look on this bg (same ~32%-toward---bg blend, computed then hand-set),
+     so the interaction reads the same, but as a real colour that can't bleed
+     into a neighbouring shape. */
+  --amber-dim: #4A3B21;
+  --green-dim: #293D28;
+
   --serif: Lora, Georgia, "Times New Roman", serif;
   --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -98,6 +110,8 @@
     --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
     --amber-text: #8C631D;   /* darkened stand-in, tuned to 4.5:1 on this bg (ink amber is 3.07:1) */
     --green-text: var(--green);   /* ink green already clears 4.5:1 as text here (5.62:1) */
+    --amber-dim: #D9C6A3;
+    --green-dim: #B8C2B2;
     --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);   /* -2% vs charcoal: equal weight on the luminous cream ground */
   }
 }
@@ -109,6 +123,8 @@
   --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
   --amber-text: #8C631D;
   --green-text: var(--green);
+  --amber-dim: #D9C6A3;
+  --green-dim: #B8C2B2;
   --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
 }
 
@@ -421,10 +437,24 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   }
 }
 
-/* ---------- specimens (the showpiece) ---------- */
-.specs { display: grid; gap: clamp(40px, 5vw, 64px); }
-@media (min-width: 980px) { .specs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* ---------- specimens (the showpiece) ----------
+   C10 (2026-09-06): three cramped, narrow columns for the one part of the
+   page that's supposed to be the showpiece — the wrong/right sentence pair
+   sat at 14px mono, a third of a 1320px page wide. Rebuilt as full-width
+   rows, same shape as .rows in section 05: a hairline stack, the specimen
+   itself (label + pair) in one column, the explanation beside it rather
+   than stacked below, so the sentence pair can actually run at size. */
+.specs { border-top: 1px solid var(--rule); }
+.spec {
+  padding-block: clamp(32px, 4.5vw, 60px);
+  border-bottom: 1px solid var(--rule);
+  display: grid; gap: clamp(18px, 2.4vw, 28px);
+}
+@media (min-width: 900px) {
+  .spec { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: start; }
+}
 
+.spec__lines { min-width: 0; }
 .spec__label {
   font-family: var(--sans); font-size: 13px; font-weight: 500;
   letter-spacing: .01em; text-transform: none; color: var(--fg2);
@@ -439,21 +469,23 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    everything else in the sentence stays neutral fg2/fg, so the sentence as
    a whole still holds 4.5:1 throughout regardless. */
 .line-spec {
-  font-family: var(--mono); font-size: 14px; line-height: 1.55;
-  display: flex; gap: 10px; align-items: baseline;
+  font-family: var(--mono); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55;
+  display: flex; gap: 12px; align-items: baseline;
   border-left: 2px solid transparent;
-  padding: 4px 0 4px 12px;
+  padding: 5px 0 5px 14px;
 }
 /* ✕ and ✓ exist in none of the three loaded faces — not even Lora's symbols
    subset — so they rendered from a different system font on every platform,
-   in the accent colour, next to a 2px accent rule. Drawn instead. */
+   in the accent colour, next to a 2px accent rule. Drawn instead. Sized in
+   em so the glyph keeps pace with .line-spec's own larger, fluid type size
+   instead of sitting fixed-small next to it. */
 .line-spec .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; }
-.line-spec .sig svg { display: block; width: 10px; height: 10px; }
+.line-spec .sig svg { display: block; width: .68em; height: .68em; }
 .wrong { border-left-color: var(--ink-specimen); }
 .right { border-left-color: var(--ink-target); }
 .wrong .sig { color: var(--ink-specimen); }
 .right .sig { color: var(--ink-target); }
-.spec__why { margin-top: 16px; font-size: 15px; color: var(--fg2); }
+.spec__why { font-size: 15px; color: var(--fg2); max-width: var(--measure); }
 /* No Inter italic is loaded, so this was a synthesised oblique. These words
    are always English specimens quoted inside prose — which is exactly what the
    mono now means, and it keeps them distinct from .mark emphasis. */
@@ -528,23 +560,34 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   margin: 0;
 }
 .glyph { display: block; width: 100%; height: auto; overflow: visible; }
-/* Paint-only changes (opacity) — never scale, on the two arms: they're
-   clipped halves of one shared path, and scaling a clipped element scales
-   its clip boundary with it, which would tear the seam away from the
-   unmodified mark underneath. The stem is its own path, not clip-derived, so
-   it alone can carry the scale flourish safely. Active state is full
-   opacity/no filter — the same --amber/--green as the navbar wordmark, not
-   a brightened stand-in — so the mark reads as one consistent colour
-   wherever it appears (2026-09-05). */
+/* Never scale the two arms: they're clipped halves of one shared path, and
+   scaling a clipped element scales its clip boundary with it, which would
+   tear the seam away from the unmodified mark underneath. The stem used to
+   carry a scale flourish the arms structurally can't (C5, 2026-09-06) — an
+   asymmetry where one of three "equal" hit regions gave a visibly different,
+   more pronounced reply than the other two. Dropped rather than added to the
+   arms: colour is the one feedback channel all three can carry identically.
+   Active state is full-strength --amber/--green — the same values as the
+   navbar wordmark, not a brightened stand-in — so the mark reads as one
+   consistent colour wherever it appears (2026-09-05). */
 .glyph__part {
-  transition: opacity var(--t) var(--e);
+  transition: fill var(--t) var(--e);
 }
-.glyph__part--stem {
-  transform-box: fill-box; transform-origin: center;
-  transition: opacity var(--t) var(--e), transform var(--t) var(--e);
-}
-.glyph__part.is-dim { opacity: .32; }
-.glyph__part--stem.is-active { transform: scale(1.1); }
+/* C11 (2026-09-06): the amber V and the green stem meet at a shared vertex,
+   and two overlapping fills read as one two-tone shape at exactly the seam
+   where the copy beside it insists these are three separate strokes. A thin
+   --bg-coloured keyline, painted last (the stem sits after the arms in
+   paint order), cuts a clean edge between them without moving a single path
+   coordinate — the mark itself is still never redrawn. */
+.glyph__part { stroke: var(--bg); stroke-width: 1.25px; }
+/* C5: dimming used to be opacity: .32, which blends with whatever renders
+   behind a shape — including the *other* glyph part it overlaps at that same
+   vertex, which was half of the muddying C11 fixes. Explicit solid fill
+   tokens per theme instead: chosen to land close to the old opacity look on
+   each bg, but as colours that can't bleed into a neighbour. */
+.glyph__part--left.is-dim,
+.glyph__part--right.is-dim { fill: var(--amber-dim); }
+.glyph__part--stem.is-dim { fill: var(--green-dim); }
 
 /* Invisible, generously-sized hit targets — padded well past the thin visual
    stroke (the arms render only ~8-11px wide at this size) so the target is
@@ -896,7 +939,20 @@ html.has-cursor .cursor {
   z-index: 90; pointer-events: none;
   width: 14px; height: 14px; margin: -7px 0 0 -7px;
   will-change: transform;
-  opacity: 0;                      /* revealed on the first real pointer move */
+  opacity: 0;                      /* revealed only over a hot target, below */
+  transition: opacity var(--t) var(--e);
+}
+/* C13 (2026-09-06): cursor: none used to apply to every element, so hovering
+   plain body copy left no cursor at all — no native I-beam, nothing marking
+   text as selectable, just a plain dot with no state change over content
+   that isn't clickable. The dot's whole job was always the magnetic-hover
+   signature move on real controls (initMagnetic()'s own HOT selector,
+   mirrored here); scoped to exactly that, the native cursor comes back
+   everywhere else, dot visibility now follows the same hot/not-hot state as
+   the ring below rather than staying on for the whole session. */
+html.has-cursor.cursor-active .cursor { opacity: 1; }
+html.has-cursor a, html.has-cursor button, html.has-cursor [data-magnetic] {
+  cursor: none !important;
 }
 .cursor__dot {
   display: block; width: 100%; height: 100%;
@@ -909,7 +965,6 @@ html.has-cursor.cursor-active .cursor__dot {
   background: transparent;
   border-color: var(--ink-target);
 }
-html.has-cursor, html.has-cursor * { cursor: none !important; }
 /* Twelve permanent compositor layers for elements that move on hover only;
    asked for on approach instead, which is early enough to be free. */
 [data-magnetic]:hover, [data-magnetic]:focus-visible { will-change: transform; }
