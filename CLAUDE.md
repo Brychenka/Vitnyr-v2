@@ -90,10 +90,12 @@ Four files, each with one job:
   is used.
 - **`main.js`** — everything else: Lenis smooth scroll wired into GSAP's
   ticker, the IntersectionObserver-driven reveal animation, the hero's
-  line-mask entrance, animated counters, and the "signature move" (custom
-  cursor + magnetic hover targets). Wrapped in one IIFE, no exports, no
-  modules. GSAP + CustomEase + Lenis are loaded from CDN `<script>` tags in
-  `index.html`, in that order, before `main.js`.
+  line-mask entrance, animated counters, and the pointer dot — one dot that
+  rides the pointer everywhere and eases its fill to the accent ink over a
+  control (colour only; the 3× balloon and the magnetic pull on `data-magnetic`
+  targets were both retired at C14, see `BUILD-NOTES.md`). Wrapped in one IIFE,
+  no exports, no modules. GSAP + CustomEase + Lenis are loaded from CDN
+  `<script>` tags in `index.html`, in that order, before `main.js`.
 - **`style.css`** — one `:root` token block (colors, fonts, easing, spacing)
   feeding every rule below it; no other file defines a color or a duration.
 

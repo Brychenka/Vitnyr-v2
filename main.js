@@ -2,10 +2,11 @@
    Vitnyr — v2 motion
    One easing curve everywhere: cubic-bezier(.16, 1, .3, 1).
    One reveal rhythm: fade + 24px rise, 0.9s, 0.08s stagger, once.
-   Pointer feedback: a custom cursor + magnetic targets (guide phase 4).
-   Not "the signature move" any more — from the Spark Order's S6 correction
-   on, that performed edit is the page's one move; the cursor is just the
-   pointer answering back.
+   Pointer feedback: one dot that rides the pointer everywhere and answers a
+   control by easing its fill to the page's accent ink — colour, not size, and
+   no magnetic pull (both retired at C14). Not "the signature move" — from the
+   Spark Order's S6 correction on, that performed edit is the page's one move;
+   the cursor is just the pointer answering back.
    Everything degrades: no JS, no GSAP, reduced motion, touch, or a
    tab opened in the background all end with the same readable page.
    ============================================================ */
@@ -508,7 +509,19 @@
     io.observe(mark);
   }
 
-  /* ---------- pointer: cursor + magnetic ---------- */
+  /* ---------- pointer: the dot ----------
+     C14 (2026-09-07): a single dot rides the pointer everywhere on a
+     fine-pointer device — it IS the cursor now (cursor:none is page-wide in
+     the sheet under .has-cursor), not a flourish that only turns up over
+     links. It never changes size. The one signal it gives is colour: its
+     fill eases from --fg to --ink-target green over a control, or to
+     --ink-specimen amber over a control inside #specimen — the same
+     token-to-token crossfade the progress hairline uses, declared in the
+     stylesheet off the same --ink-* tokens (no hex here). Retired with the
+     old behaviour: the 3x balloon and the magnetic pull that dragged links
+     toward the pointer (initMagnetic, gone). Everything still degrades — no
+     JS, no GSAP, reduced motion or touch all keep the native cursor and no
+     dot. */
   function initCursor() {
     if (!finePointer) return;
     var el = document.querySelector('.cursor');
@@ -516,7 +529,6 @@
 
     var setX = gsap.quickSetter(el, 'x', 'px');
     var setY = gsap.quickSetter(el, 'y', 'px');
-    var sc = gsap.quickTo(el, 'scale', { duration: D.follow, ease: EASE });
     var mx = 0, my = 0, cx = 0, cy = 0;
     var shown = false, running = false;
 
@@ -540,92 +552,52 @@
     window.addEventListener('mousemove', function (e) {
       mx = e.clientX; my = e.clientY;
       if (!shown) {
-        // has-cursor only hides the native pointer over hot targets now
-        // (C13 — see the CSS), so this no longer has to race a replacement
-        // onto the screen; it just arms the class the hot-target rules and
-        // cursor-active's opacity toggle are both keyed off.
+        // First real move: arm .has-cursor, which both suppresses the native
+        // pointer page-wide and fades the dot in (opacity lives in the sheet).
         shown = true;
         cx = mx; cy = my;
         gsap.set(el, { x: mx, y: my });
         root.classList.add('has-cursor');
       }
+      root.classList.remove('cursor-out');   // back inside the window
       kick();
     }, { passive: true });
 
-    // The dot's own visibility is CSS now (html.has-cursor.cursor-active
-    // .cursor { opacity: 1 }) rather than a tween kicked off here — it
-    // only ever needs to be on while the pointer is over one of these, so
-    // there is no separate "hide it when the mouse leaves the window" case
-    // to handle either: leaving a hot target through the viewport edge
-    // fires this same mouseout first.
+    /* The dot is the pointer now, so it has to answer the pointer leaving the
+       window — otherwise it strands at the last edge it saw. mouseleave on the
+       root fires as the pointer crosses out; mouseenter and the next mousemove
+       both clear it. Opacity is the sheet's (html.has-cursor.cursor-out). */
+    root.addEventListener('mouseleave', function () { root.classList.add('cursor-out'); });
+    root.addEventListener('mouseenter', function () { root.classList.remove('cursor-out'); });
+
+    /* The one signal is colour: .cursor-active plus the two ink variants.
+       No size change here — the sheet owns every visual, this only says which
+       state the dot is in. Move 02 (Spark Order S4): over a control inside
+       #specimen the dot takes specimen amber (the error under examination),
+       over the contact CTA it takes target green (the outcome); off the
+       stylesheet's --ink-* tokens, no hex here. */
     var HOT = 'a, button, [data-magnetic]';
     document.addEventListener('mouseover', function (e) {
       var hot = e.target.closest && e.target.closest(HOT);
       if (!hot) return;
-      root.classList.add('cursor-active'); sc(3);
-      /* Move 02 (Spark Order S4): over a control inside #specimen the dot
-         takes the specimen ink, over the contact CTA it takes the target
-         ink — the page's own two accents, so the pointer previews "this is
-         the error" / "this is the outcome". The colours are declared in the
-         stylesheet off --ink-specimen / --ink-target; no hex here. The dot
-         is a shape, so the sub-24px accent-on-text contrast rule does not
-         apply. */
+      root.classList.add('cursor-active');
       el.classList.toggle('is-specimen', !!hot.closest('#specimen'));
       el.classList.toggle('is-target', !!hot.closest('.contact__cta'));
     });
     document.addEventListener('mouseout', function (e) {
       if (e.target.closest && e.target.closest(HOT)) {
-        root.classList.remove('cursor-active'); sc(1);
+        root.classList.remove('cursor-active');
         el.classList.remove('is-specimen', 'is-target');
       }
     });
   }
 
-  function initMagnetic() {
-    if (!finePointer) return;
-    var RADIUS = 60, PULL = 12;
-    document.querySelectorAll('[data-magnetic]').forEach(function (el) {
-      var qx = gsap.quickTo(el, 'x', { duration: D.state, ease: EASE });
-      var qy = gsap.quickTo(el, 'y', { duration: D.state, ease: EASE });
-      var box = null;
-
-      /* Measured once on enter, with the element's own translate subtracted,
-         so the reading can't feed the displacement back into itself — and no
-         layout is forced on every mousemove. */
-      function capture() {
-        var r = el.getBoundingClientRect();
-        var tx = Number(gsap.getProperty(el, 'x')) || 0;
-        var ty = Number(gsap.getProperty(el, 'y')) || 0;
-        box = {
-          cx: r.left + r.width / 2 - tx,
-          cy: r.top + r.height / 2 - ty,
-          rx: r.width / 2 + RADIUS,
-          ry: r.height / 2 + RADIUS
-        };
-      }
-
-      el.addEventListener('mouseenter', capture);
-      el.addEventListener('mousemove', function (e) {
-        if (!box) capture();
-        /* Normalised per axis against the element's own half-size, so a full
-           width link answers the pointer the same way a 40px button does
-           instead of pinning at full pull across almost all of itself. */
-        var nx = (e.clientX - box.cx) / box.rx;
-        var ny = (e.clientY - box.cy) / box.ry;
-        var d = Math.hypot(nx, ny);
-        /* The vector is scaled, not each axis clamped, so PULL is a real
-           ceiling on the distance moved — a diagonal can't reach PULL√2.
-           Peaks at PULL halfway out and returns to zero at the edge, which
-           keeps it continuous where the field ends. */
-        var k = 4 * Math.max(0, 1 - d) * PULL;
-        qx(nx * k); qy(ny * k);
-      });
-      el.addEventListener('mouseleave', function () {
-        box = null;
-        qx(0); qy(0);   // the same tween, retargeted — not a second one fighting it
-      });
-    });
-  }
+  /* initMagnetic() retired at C14 (2026-09-07). It pulled every [data-magnetic]
+     element toward the pointer on hover — the fidgety half of "the way the
+     cursor gets over letters" Igor called out. The attribute stays in the
+     markup as the interactive-hint hook the dot's HOT selector still reads;
+     only the movement is gone. If it ever comes back it belongs on non-text
+     controls only (the icon buttons, the switches), never on running copy. */
 
   /* ---------- specimen permalinks (Spark Order S9A / move 09) ----------
      Each <article class="spec"> carries a stable id, and its label is an
@@ -1067,7 +1039,6 @@
   countUp(false);
   initOrigin();
   initCursor();
-  initMagnetic();
   initCorrections();   // past the reduced-motion return: the static pair is that reader's version
 
   whenRendering(function () {

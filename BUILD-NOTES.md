@@ -27,8 +27,9 @@ and a matching GSAP CustomEase in JS, so the two never drift apart.
 
 1. **No `mix-blend-mode: difference` on the cursor.** A difference blend over
    charcoal invents colours the brand doesn't own, and the brand forbids a third
-   colour. The cursor is a flat dot that opens into a green ring on interactive
-   elements instead.
+   colour. The cursor is a flat dot that eases its fill to the accent ink over
+   interactive elements instead (green, or amber inside `#specimen`) — colour
+   only, no size change (reworked at C14; was a green ring).
 2. **ScrollTrigger is not loaded at all.** Reveals were always on an
    IntersectionObserver — a scroll-position tween sits at opacity 0 if its rAF
    loop never runs, and an observer is the right shape for "has this entered
@@ -1673,6 +1674,57 @@ Full suite: **174 passed** (was 169, +5). One existing test's selector
 tightened (`.vh` → `.line-spec .vh`, its own earlier scope), no assertion
 touched.
 
+## C14 — the dot is the pointer; magnetic pull retired (2026-09-07)
+
+Branch `feature/cursor-colour-signal`. Files: `main.js`, `style.css`,
+`index.html` (one comment), `tests/test_a11y.py`, plus this note and
+`CLAUDE.md`. Igor: *"i don't like the way cursor gets when u move it to
+letters."* Over a link the old behaviour did three things at once on top of
+the words — killed the native cursor, ballooned the dot 3×, and (on every
+`data-magnetic` element, which is most links) dragged the text itself up to
+12px toward the pointer. He chose: **the dot everywhere, one size, colour as
+the only signal.**
+
+- **Present always.** `.cursor` is `opacity: 1` under `html.has-cursor` (armed
+  on the first `mousemove`), not gated on `cursor-active` any more. It fades
+  out only while the pointer is off the window — `main.js` sets `.cursor-out`
+  on `mouseleave` of the root, clears it on `mouseenter` and the next
+  `mousemove`.
+- **`cursor: none` is page-wide now** (`html.has-cursor, html.has-cursor *`),
+  reversing C13's scoping — the dot *is* the pointer, so there is no native
+  cursor to fall back to over body copy. Cost, accepted: no I-beam over text.
+  Text stays selectable; only the visual cue is gone. A dot text-state was
+  offered as a later refinement if it's missed.
+- **Colour is the whole effect.** No `scale` tween — the `gsap.quickTo` for it
+  is deleted. Over a `HOT` target (`a, button, [data-magnetic]`) the dot's
+  fill crossfades `--fg` → `--ink-target` green over `--t` on the brand curve;
+  over a control inside `#specimen` it goes `--ink-specimen` amber; over the
+  contact CTA, target green. Same `.is-specimen` / `.is-target` classes and
+  the same S4/move-02 meaning, just no ring/transparent-bg styling wrapped
+  around it. `.cursor__dot` lost its `border` (the ring lived there); it is a
+  solid 14px fill at rest and active.
+- **`initMagnetic()` is gone** — function and call both removed, along with the
+  `[data-magnetic]:hover { will-change: transform }` rule and the attribute
+  from the reduced-motion `will-change` reset. The `data-magnetic` attributes
+  stay in the markup as the interactive-hint hook the dot's `HOT` selector
+  reads; only the movement is retired. If a pull ever returns it belongs on
+  the icon buttons / switches, never on running copy.
+
+Tests: the two C13 a11y cases encoded the old rule and were rewritten to the
+new spec — `test_dot_is_the_pointer_page_wide` (dot visible over plain text,
+native cursor suppressed page-wide) and
+`test_dot_stays_one_size_and_only_recolours_over_hot_targets` (rendered size
+unchanged over a link; `cursor-active` toggles; fill settles to `--ink-target`).
+The two `test_motion.py` specimen/target ink cases pass unchanged (treatment
+keeps `.cursor__dot`'s background as the assertion target).
+
+Deviation 1 in this file ("flat dot that opens into a green ring") updated to
+"eases its fill to the accent ink."
+
+**Live artifact not republished** — still on hold behind the collage
+placeholder photos (`assets/collage/PLACEHOLDERS.md`). This change folds into
+the inline rebuild whenever that hold lifts.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
@@ -1681,8 +1733,9 @@ touched.
   or rounded cards (the one `border-radius` is the cursor circle).
 - Contrast in both pairs: all body text >= 5.45:1, all accent ink >= 3.07:1.
 - Fonts resolve to Lora / Inter / JetBrains Mono, Cyrillic included.
-- Cursor and magnetic effects disable themselves on coarse pointers — confirmed
-  at 375px: `has-cursor` never goes on, so the native pointer is never hidden.
+- The dot disables itself on coarse pointers — confirmed at 375px: `has-cursor`
+  never goes on, so the native pointer is never hidden (magnetic pull retired
+  entirely at C14).
 - Hero plays and completes in both languages, both themes, both widths, and
   releases its compositor layer when it lands.
 - Counters animate from 0 through the observer with ScrollTrigger absent —

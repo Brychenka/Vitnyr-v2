@@ -1241,7 +1241,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    way back up. No rules of its own needed. */
 
 /* ============================================================
-   Signature move — custom cursor + magnetic targets (phase 4)
+   Pointer — one dot that rides the pointer (phase 4, reworked C14)
    Enabled by JS only on a fine pointer with motion allowed.
    No mix-blend-mode: on this palette a difference blend invents
    colours the brand does not own.
@@ -1252,49 +1252,35 @@ html.has-cursor .cursor {
   z-index: 90; pointer-events: none;
   width: 14px; height: 14px; margin: -7px 0 0 -7px;
   will-change: transform;
-  opacity: 0;                      /* revealed only over a hot target, below */
+  opacity: 1;                      /* the dot is the pointer — present always */
   transition: opacity var(--t) var(--e);
 }
-/* C13 (2026-09-06): cursor: none used to apply to every element, so hovering
-   plain body copy left no cursor at all — no native I-beam, nothing marking
-   text as selectable, just a plain dot with no state change over content
-   that isn't clickable. The dot's whole job was always the magnetic-hover
-   signature move on real controls (initMagnetic()'s own HOT selector,
-   mirrored here); scoped to exactly that, the native cursor comes back
-   everywhere else, dot visibility now follows the same hot/not-hot state as
-   the ring below rather than staying on for the whole session. */
-html.has-cursor.cursor-active .cursor { opacity: 1; }
-html.has-cursor a, html.has-cursor button, html.has-cursor [data-magnetic] {
-  cursor: none !important;
-}
+/* C14 (2026-09-07): the dot is the pointer now, everywhere on a fine pointer,
+   not a flourish that only turned up over links (and ballooned 3x when it
+   did). So cursor:none is page-wide — hovering body copy shows the dot, not a
+   native I-beam. Text stays selectable; only the visual cue changes. The dot
+   fades out while the pointer is off the window (.cursor-out, set on
+   mouseleave in main.js). C13's scoped rule is gone with the magnetic pull it
+   mirrored. */
+html.has-cursor, html.has-cursor * { cursor: none !important; }
+html.has-cursor.cursor-out .cursor { opacity: 0; }
 .cursor__dot {
   display: block; width: 100%; height: 100%;
   border-radius: 50%;
   background: var(--fg);
-  border: 1.5px solid transparent;
-  transition: background var(--t) var(--e), border-color var(--t) var(--e);
+  transition: background var(--t) var(--e);
 }
-html.has-cursor.cursor-active .cursor__dot {
-  background: transparent;
-  border-color: var(--ink-target);
-}
-/* Move 02 (Spark Order S4): the dot learns the page's two accents. Over a
-   hot target inside #specimen it fills specimen amber (the error under
-   examination); over the contact CTA it fills target green (the outcome).
-   main.js sets .is-specimen / .is-target on .cursor; colour stays in the
-   sheet, off the same --ink-* tokens every other accent uses. Higher
-   specificity than the plain hot-target rule above, so it wins while active. */
-html.has-cursor.cursor-active .cursor.is-specimen .cursor__dot {
-  background: var(--ink-specimen);
-  border-color: var(--ink-specimen);
-}
-html.has-cursor.cursor-active .cursor.is-target .cursor__dot {
-  background: var(--ink-target);
-  border-color: var(--ink-target);
-}
-/* Twelve permanent compositor layers for elements that move on hover only;
-   asked for on approach instead, which is early enough to be free. */
-[data-magnetic]:hover, [data-magnetic]:focus-visible { will-change: transform; }
+/* The one signal: the fill crossfades from --fg to an accent over a control —
+   same size at rest and active, colour only. Move 02 (Spark Order S4): the
+   two accents mean something — specimen amber over a control inside #specimen
+   (the error under examination), target green over the contact CTA and every
+   other control (the outcome). main.js sets .is-specimen / .is-target on
+   .cursor; colour stays in the sheet, off the same --ink-* tokens every other
+   accent uses, and it is a token-to-token swap — never an amber<->green
+   interpolation. */
+html.has-cursor.cursor-active .cursor__dot { background: var(--ink-target); }
+html.has-cursor.cursor-active .cursor.is-specimen .cursor__dot { background: var(--ink-specimen); }
+html.has-cursor.cursor-active .cursor.is-target .cursor__dot { background: var(--ink-target); }
 
 /* ---------- reveal rhythm (phase 3) ----------
    Hidden state is applied only when JS is running, so the page is
@@ -1315,7 +1301,7 @@ html.js .line__inner { transform: translateY(110%); }
 @media (prefers-reduced-motion: reduce) {
   html.js .reveal, html.js .line__inner { opacity: 1 !important; transform: none !important; }
   .scrollcue:hover svg { animation: none; }
-  .cursor, .line__inner, [data-magnetic] { will-change: auto !important; }
+  .cursor, .line__inner { will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
      which would clip the stroke away rather than show it whole. */

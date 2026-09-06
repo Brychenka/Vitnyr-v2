@@ -216,47 +216,64 @@ def test_origin_mark_shows_a_focus_ring_on_the_visible_figure(open_site):
     assert hit_outline == "none"
 
 
-# --- C13: cursor:none used to apply to every element, so hovering plain body
-# copy showed no native cursor at all — no I-beam, no signal that text is
-# selectable, just a static dot. Scoped to the same hot-target selector the
-# dot's own ring effect already used (a, button, [data-magnetic]). ---
+# --- C14 (2026-09-07): the dot is the pointer now — present everywhere on a
+# fine pointer, not just over hot targets, and it never balloons. So
+# cursor:none is page-wide and hovering plain body copy shows the dot, not a
+# native I-beam. Its one signal is colour: the fill eases to an accent over a
+# control (mouseover/mouseout toggle .cursor-active), same size either way. ---
 
-def test_native_cursor_returns_over_plain_text(open_site):
+def test_dot_is_the_pointer_page_wide(open_site):
     page, _ = open_site()
+    page.mouse.move(400, 300)
     page.mouse.move(400, 760)   # inside .stand, well clear of any control
-    page.wait_for_timeout(150)
+    page.wait_for_timeout(200)
     assert page.evaluate("document.documentElement.classList.contains('has-cursor')")
+    # native cursor is suppressed page-wide, not just on links
     assert page.locator(".stand:visible").evaluate(
         "el => getComputedStyle(el).cursor"
-    ) != "none"
+    ) == "none"
+    # and the dot itself is visible over plain text, no longer gated to links
+    assert page.locator(".cursor").evaluate(
+        "el => parseFloat(getComputedStyle(el).opacity)"
+    ) > 0.95
 
 
-def test_cursor_none_and_the_dot_stay_scoped_to_hot_targets(open_site):
-    """cursor:none is a static style on hot elements — computed style
-    reports "none" for a link regardless of where the pointer actually is,
-    the same way it would for a plain cursor:pointer. What's genuinely
-    gated on real hover is the dot's own visibility, driven by the same
-    mouseover/mouseout pair that toggles cursor-active."""
+def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
+    """The dot never changes size. Its one state change is colour: .cursor-active
+    is added over a link/button (fill -> --ink-target) and removed off it, while
+    the dot stays visible either way."""
     page, _ = open_site()
     dot = page.locator(".cursor")
-    link = page.locator('a[href="#method"]')  # the scrollcue: a + [data-magnetic]
+    dot_dot = page.locator(".cursor__dot")
+    link = page.locator('a[href="#method"]')  # the scrollcue
 
-    # has-cursor only arms on the first real mousemove (initCursor()); before
-    # that the whole scoped rule is inert and the link shows its own default.
-    page.mouse.move(400, 760)
-    page.wait_for_timeout(150)
+    page.mouse.move(400, 300)
+    page.mouse.move(400, 760)   # plain text
+    page.wait_for_timeout(200)
     assert page.evaluate("document.documentElement.classList.contains('has-cursor')")
-    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.05
-    assert link.evaluate("el => getComputedStyle(el).cursor") == "none"
+    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    assert "cursor-active" not in (page.locator("html").get_attribute("class") or "")
+    rest_box = dot.bounding_box()
 
     box = link.bounding_box()
     page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
-    page.wait_for_timeout(400)
-    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    page.wait_for_timeout(300)
+    assert "cursor-active" in (page.locator("html").get_attribute("class") or "")
+    # no balloon — the dot's rendered size does not change over a hot target
+    hot_box = dot.bounding_box()
+    assert abs(hot_box["width"] - rest_box["width"]) < 0.5
+    assert abs(hot_box["height"] - rest_box["height"]) < 0.5
+    # colour is the whole effect; let .cursor__dot's background settle over --t
+    page.wait_for_timeout(700)
+    assert (
+        dot_dot.evaluate("el => getComputedStyle(el).backgroundColor")
+        == "rgb(76, 122, 82)"  # --ink-target on charcoal (open_site default)
+    )
 
     page.mouse.move(400, 760)
     page.wait_for_timeout(400)
-    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.05
+    assert "cursor-active" not in (page.locator("html").get_attribute("class") or "")
+    assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 
 
 # --- Spark Order S6 (moves 06 + 01): the specimen correction is performed on
