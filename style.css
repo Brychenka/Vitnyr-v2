@@ -1185,6 +1185,20 @@ html.has-cursor.cursor-active .cursor__dot {
   background: transparent;
   border-color: var(--ink-target);
 }
+/* Move 02 (Spark Order S4): the dot learns the page's two accents. Over a
+   hot target inside #specimen it fills specimen amber (the error under
+   examination); over the contact CTA it fills target green (the outcome).
+   main.js sets .is-specimen / .is-target on .cursor; colour stays in the
+   sheet, off the same --ink-* tokens every other accent uses. Higher
+   specificity than the plain hot-target rule above, so it wins while active. */
+html.has-cursor.cursor-active .cursor.is-specimen .cursor__dot {
+  background: var(--ink-specimen);
+  border-color: var(--ink-specimen);
+}
+html.has-cursor.cursor-active .cursor.is-target .cursor__dot {
+  background: var(--ink-target);
+  border-color: var(--ink-target);
+}
 /* Twelve permanent compositor layers for elements that move on hover only;
    asked for on approach instead, which is early enough to be free. */
 [data-magnetic]:hover, [data-magnetic]:focus-visible { will-change: transform; }

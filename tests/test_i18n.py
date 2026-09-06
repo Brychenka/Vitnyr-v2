@@ -1,6 +1,8 @@
 """Dual-language DOM: the switch, persistence, the URL override, and the two
 translation mechanisms (data-en/data-ru attributes and data-l blocks)."""
 
+import re
+
 import pytest
 
 
@@ -118,3 +120,78 @@ def test_no_untranslated_placeholder_text_leaks(open_site):
         }"""
     )
     assert blank == [], f"data-ru empty for: {blank}"
+
+
+# --- Spark Order S4 / move 05: the language swap now reads as a transition.
+# theme.js still owns the swap and still runs it synchronously (every test
+# above depends on that); main.js layers a crossfade of #app over the top
+# through the window.__vitnyrLangFade hook, present only under GSAP + motion. ---
+
+def test_language_swap_fades_app_but_not_the_masthead(open_site):
+    page, _ = open_site()
+    assert page.evaluate("typeof window.__vitnyrLangFade") == "function"
+
+    page.locator(".masthead .langswitch").click()
+    # fromTo() sets #app to opacity 0 on the same tick as the click, then
+    # tweens it back — so a read taken right after the click catches the dip.
+    assert page.locator("#app").evaluate(
+        "el => parseFloat(getComputedStyle(el).opacity)"
+    ) < 0.9
+    # the control the reader just pressed must stay solid to answer them
+    assert page.locator(".masthead").evaluate(
+        "el => parseFloat(getComputedStyle(el).opacity)"
+    ) == 1
+    # the swap itself still happened synchronously
+    assert page.locator("html").get_attribute("data-lang") == "ru"
+
+    page.wait_for_timeout(900)
+    assert page.locator("#app").evaluate(
+        "el => parseFloat(getComputedStyle(el).opacity)"
+    ) > 0.98
+
+
+def test_rapid_repeated_clicks_never_strand_the_app_faded(open_site):
+    """The callback runs on every call and the one opacity tween is
+    retargeted, not stacked — three fast clicks end fully visible on the
+    third language state, not dark on the first."""
+    page, _ = open_site()
+    sw = page.locator(".masthead .langswitch")
+    sw.click()
+    sw.click()
+    sw.click()
+    page.wait_for_timeout(1200)
+    assert page.locator("#app").evaluate(
+        "el => parseFloat(getComputedStyle(el).opacity)"
+    ) > 0.98
+    assert page.locator("html").get_attribute("data-lang") == "ru"  # en->ru->en->ru
+
+
+def test_language_swap_is_instant_under_reduced_motion(open_site):
+    """The hook is installed past main.js's reduced-motion return, so a
+    reduced-motion reader gets theme.js's plain synchronous swap."""
+    page, _ = open_site(reduced_motion=True)
+    assert page.evaluate("typeof window.__vitnyrLangFade") == "undefined"
+    page.locator(".masthead .langswitch").click()
+    assert page.locator("html").get_attribute("data-lang") == "ru"
+    assert page.locator("#app").evaluate(
+        "el => parseFloat(getComputedStyle(el).opacity)"
+    ) == 1
+
+
+def test_language_swap_degrades_to_instant_without_gsap(open_site):
+    """With GSAP blocked, main.js early-returns and never installs the hook;
+    theme.js falls back to calling the swap directly — the switch still works
+    instantly and correctly, which is the required degradation."""
+    page, context = open_site()
+    context.route(re.compile(r"(gsap|lenis|customease)", re.I),
+                  lambda route: route.abort())
+    page.reload(wait_until="load")
+    assert page.evaluate("typeof window.__vitnyrLangFade") == "undefined"
+    assert not page.evaluate("document.documentElement.classList.contains('js')")
+
+    page.locator(".masthead .langswitch").click()
+    # no wait: nothing is hooked, so the swap is synchronous exactly as before
+    assert page.locator("html").get_attribute("data-lang") == "ru"
+    assert page.locator("#app").evaluate(
+        "el => parseFloat(getComputedStyle(el).opacity)"
+    ) == 1

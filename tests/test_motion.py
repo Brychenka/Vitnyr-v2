@@ -286,6 +286,74 @@ def test_progress_rule_switches_ink_at_origin(open_site, scheme):
     assert float(target.evaluate("el => getComputedStyle(el).opacity")) > 0.95
 
 
+# --- Spark Order S4 / move 02: the custom dot borrows the page's two
+# accents — specimen amber over a control inside #specimen, target green
+# over the contact CTA. Colour lives in the stylesheet off --ink-*; main.js
+# only toggles .is-specimen / .is-target on .cursor. ---
+
+def test_cursor_takes_target_ink_over_the_contact_cta(open_site):
+    page, _ = open_site()
+    cursor = page.locator(".cursor")
+    dot = page.locator(".cursor__dot")
+
+    page.locator(".contact__cta").hover()
+    page.wait_for_timeout(200)
+    assert "is-target" in (cursor.get_attribute("class") or "")
+    # .cursor__dot transitions its background over --t, so let it settle
+    page.wait_for_timeout(700)
+    assert dot.evaluate("el => getComputedStyle(el).backgroundColor") == _resolve_var(
+        page, "--ink-target"
+    )
+
+    # leaving the target clears the accent again
+    page.mouse.move(5, 5)
+    page.wait_for_timeout(200)
+    cls = cursor.get_attribute("class") or ""
+    assert "is-target" not in cls and "is-specimen" not in cls
+
+
+def test_cursor_takes_specimen_ink_over_a_control_inside_specimen(open_site):
+    """#specimen has no interactive control yet (S6 adds them), so the branch
+    is exercised against an injected hot target — the delegated handler keys
+    off `closest('#specimen')`, which is what matters here."""
+    page, _ = open_site()
+    page.evaluate(
+        """() => {
+            const b = document.createElement('button');
+            b.id = 'spec-probe';
+            b.setAttribute('data-magnetic', '');
+            b.textContent = 'probe';
+            b.style.cssText = 'display:block;width:120px;height:44px;margin:20px 0';
+            document.querySelector('#specimen .specs').prepend(b);
+        }"""
+    )
+    probe = page.locator("#spec-probe")
+    probe.scroll_into_view_if_needed()
+    probe.hover()
+    page.wait_for_timeout(200)
+
+    cursor = page.locator(".cursor")
+    assert "is-specimen" in (cursor.get_attribute("class") or "")
+    page.wait_for_timeout(700)   # let .cursor__dot's background transition finish
+    assert page.locator(".cursor__dot").evaluate(
+        "el => getComputedStyle(el).backgroundColor"
+    ) == _resolve_var(page, "--ink-specimen")
+
+
+def test_cursor_absent_on_touch_devices(open_site):
+    """initCursor() returns early without a fine pointer, so the dot is never
+    shown and the native pointer is never hidden."""
+    page, _ = open_site(has_touch=True)
+    assert page.evaluate("matchMedia('(pointer: coarse)').matches")
+    page.mouse.move(200, 300)
+    page.mouse.move(400, 400)
+    page.wait_for_timeout(200)
+    assert not page.evaluate(
+        "document.documentElement.classList.contains('has-cursor')"
+    )
+    assert page.locator(".cursor").evaluate("el => getComputedStyle(el).display") == "none"
+
+
 def test_back_to_top_returns_from_the_footer_to_hero(open_site):
     """P15: the footer used to be a dead end after 7,500px of scroll — no
     way back up. Goes through the same in-page Lenis link wiring every
