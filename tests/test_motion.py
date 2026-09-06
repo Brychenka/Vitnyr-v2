@@ -145,9 +145,9 @@ def test_origin_mark_rests_on_english_before_any_interaction(open_site):
 def test_glyph_dim_state_is_a_solid_fill_not_partial_opacity(open_site):
     """C5: dimming used to be opacity: .32, which blends with whatever
     renders behind the shape — including the *other* glyph part it overlaps
-    at the mark's shared vertex, muddying exactly the seam C11 keeps clean.
-    Explicit solid fill tokens per theme instead: full opacity, a real
-    colour that can't bleed into a neighbour."""
+    at the mark's shared vertex, muddying exactly the seam the keyline below
+    keeps clean. Explicit solid fill tokens per theme instead: full opacity,
+    a real colour that can't bleed into a neighbour."""
     page, _ = open_site(color_scheme="dark")
     page.locator("#origin").scroll_into_view_if_needed()
     page.locator('.origin__hit[data-discipline="climbing"]').hover()
@@ -174,10 +174,11 @@ def test_stem_no_longer_gets_an_extra_scale_on_activation(open_site):
 
 
 def test_glyph_parts_carry_a_bg_coloured_keyline(open_site):
-    """C11: the amber V and the green stem meet at a shared vertex, and two
-    overlapping fills read as one two-tone shape at exactly the seam the
-    page's own copy calls three separate strokes. A thin --bg stroke, not a
-    change to any path coordinate, keeps the seam clean."""
+    """Alongside C5, not a separate finding: the amber V and the green stem
+    meet at a shared vertex, and two overlapping fills read as one two-tone
+    shape at exactly the seam the page's own copy calls three separate
+    strokes. A thin --bg stroke, not a change to any path coordinate, keeps
+    the seam clean."""
     page, _ = open_site(color_scheme="dark")
     stroke = page.locator(".glyph__part--stem").evaluate("el => getComputedStyle(el).stroke")
     assert stroke == "rgb(20, 24, 26)"  # --bg on charcoal

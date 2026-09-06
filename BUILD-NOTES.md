@@ -638,27 +638,40 @@ confirmed before writing any code.
   fixed-small next to now-larger text. New tests hold the pair to ≥17px and
   check the two columns actually sit side by side at ≥900px, stacked at
   375px.
-- **C11 — the amber V and green stem meet at a shared vertex and, filled
-  edge to edge, read as one two-tone shape at exactly the seam the page's
-  own copy calls three separate strokes.** A thin `--bg`-coloured
-  `stroke: 1.25px` on every `.glyph__part`, painted last in DOM order (the
-  stem sits after both arms), cuts a clean edge without moving a single
-  path coordinate — the "never redraw this mark" rule holds, since it's the
-  interactive `.origin__mark` instance carrying the class, not the
-  wordmark. New test checks the computed `stroke` resolves to `--bg`.
-- **C5 — two defects in the same mechanism.** Dimming was `opacity: .32`,
-  which blends with whatever renders behind a shape — including the *other*
-  glyph part it overlaps at that same vertex, which was half of C11's
-  muddying. Replaced with explicit solid `--amber-dim`/`--green-dim`
-  tokens per theme (full opacity, a real colour that can't bleed into a
-  neighbour), landing close to the old opacity look by design. Separately,
-  the stem carried a `scale(1.1)` on activation that the two arms
-  structurally can't get (they're clipped halves of one shared path;
-  scaling would tear the clip from the mark underneath) — dropped instead
-  of extended, so colour is the one feedback channel all three hit regions
-  share. New tests check the dimmed fill is solid (`opacity: 1`, an exact
-  token colour) and that the stem's `transform` no longer changes on
-  activation.
+- **C11 — the specimen's wrong/right lines had no gap between them.**
+  `.wrong` and `.right` are adjacent `.line-spec` boxes with padding but no
+  margin, so a 2px amber rule ran straight into a 2px green one with zero
+  space between — one stroke changing colour halfway down, right where the
+  error/fix distinction is the entire point of the device. Fixed with
+  `.line-spec + .line-spec { margin-top: 12px }` — margin between the two
+  boxes, not padding inside either. New test measures the gap.
+
+  **Correction, caught before shipping this note:** the first pass of this
+  stage misread C11 as being about the origin mark instead — its amber V and
+  green stem *do* meet at a shared vertex and read as one two-tone shape
+  where overlapping fills touch, but that's a different defect this sheet
+  never separately numbered. The keyline described below was built and
+  tested under the wrong label; it stays, because it's real and the tests
+  for it are real, but it's C5's fix extended, not C11. This entry and the
+  code comments were relabelled once the mistake surfaced.
+- **C5 — two defects in the same mechanism, plus one extra fix alongside
+  them.** Dimming was `opacity: .32`, which blends with whatever renders
+  behind a shape — including the *other* glyph part it overlaps at the
+  mark's shared vertex. Replaced with explicit solid
+  `--amber-dim`/`--green-dim` tokens per theme (full opacity, a real colour
+  that can't bleed into a neighbour), landing close to the old opacity look
+  by design. Separately, the stem carried a `scale(1.1)` on activation that
+  the two arms structurally can't get (they're clipped halves of one shared
+  path; scaling would tear the clip from the mark underneath) — dropped
+  instead of extended, so colour is the one feedback channel all three hit
+  regions share. Alongside both: a thin `--bg`-coloured `stroke: 1.25px` on
+  every `.glyph__part`, painted last in DOM order (the stem sits after both
+  arms), cuts a clean edge at that same overlapping vertex without moving a
+  single path coordinate — the "never redraw this mark" rule holds, since
+  it's the interactive `.origin__mark` instance carrying the class, not the
+  wordmark. New tests check the dimmed fill is solid (`opacity: 1`, an exact
+  token colour), that the stem's `transform` no longer changes on
+  activation, and that the keyline's `stroke` resolves to `--bg`.
 - **C6 — the mark's resting state was neutral, not a choice.** `clearPaint()`
   stripped every class, so before any hover/focus (and permanently, under
   reduced motion, where the idle hint never runs) the glyph sat at equal
@@ -685,9 +698,11 @@ confirmed before writing any code.
   plain text keeps a real cursor, and the dot's opacity follows hot/not-hot
   hover state precisely.
 
-All nine new tests with real logic behind them were confirmed failing
-against pre-fix `main` before landing the fix. Full suite: **110 passed**
-(101 + 9 new).
+All ten new tests with real logic behind them were confirmed failing against
+pre-fix `main` before landing the fix — including the real C11 gap, re-run
+against the version of `main` this stage had already merged, to confirm the
+mislabelling had actually left it unfixed. Full suite: **111 passed**
+(101 + 10 new).
 
 **Not republished:** same hold as Stages 2 and 3 — the placeholder-photo
 freeze from Collage Stage 3 is unrelated to this stage's changes but still

@@ -86,3 +86,18 @@ def test_specimen_sentence_pair_reads_at_showpiece_size(open_site):
         "el => parseFloat(getComputedStyle(el).fontSize)"
     )
     assert size >= 17, f"still {size}px — the cramped three-column size was 14px"
+
+
+def test_wrong_and_right_lines_have_a_visible_gap(open_site):
+    """C11: .wrong's border sat flush against .right's — two adjacent boxes
+    with no margin between them, so a 2px amber rule ran straight into a 2px
+    green one and read as one stroke changing colour halfway down, right
+    where the wrong/right distinction is the entire point of the device."""
+    lines = "#specimen .spec__lines"
+    page, _ = open_site(viewport=WIDE)
+    wrong = page.locator(f"{lines} >> .wrong").first
+    right = page.locator(f"{lines} >> .right").first
+    wrong_box = wrong.bounding_box()
+    right_box = right.bounding_box()
+    gap = right_box["y"] - (wrong_box["y"] + wrong_box["height"])
+    assert gap > 4, f"only {gap}px between the two rules"
