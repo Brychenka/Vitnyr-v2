@@ -911,6 +911,70 @@ from Collage Stage 3 still stands, and this remains a draft. This closes
 the work order's six planned stages; the one item left on the sheet
 (the photo shoot itself) is parked on the shoot, not on any of this work.
 
+## Spark Order, Stage 0 — decisions (2026-09-06)
+
+Seven questions put to Igor before any of the Spark Order's code stages
+start, so a later chat never has to guess and never re-litigates these.
+The order itself lives at
+`https://claude.ai/code/artifact/240b79ff-9a8f-4098-8667-825ac1355fe5`
+("Vitnyr Spark Order"); its reasoning is in the companion Crit Sheet at
+`https://claude.ai/code/artifact/d4ce3a94-907e-40e4-b16a-473a50e65dfa`.
+
+**Decided (Igor, 6 Sep):**
+
+1. **Move 01 — the transform bend: approved, with a guard.** The performed
+   correction may use a transient FLIP, which borrows the transform channel
+   for the length of one tween. It is only acceptable because it clears
+   itself: S6 must ship `test_correction_leaves_no_residual_transform`,
+   asserting no animated node holds a non-identity transform once the tween
+   settles. That test is the condition of the bend and must never be
+   deleted. The standing rule in CLAUDE.md is otherwise unchanged: layout
+   still never rides the transform channel.
+
+2. **Move 07 — the hero: deferred, not cancelled.** S8 does not start until
+   S6 has landed and been looked at. The reasoning is that the performed
+   correction may already give the page the spark the hero rework was meant
+   to supply — and `playHero()` is the most fragile code in the repo, so it
+   should only be touched if something is still missing afterwards. Revisit
+   after S6; do not treat the deferral as a no.
+
+3. **Move 11 — Russian register: yes, but Igor writes it.** The RU specimens
+   may diverge in voice from the EN ones (blunter, funnier about
+   «чувствовать себя»), without diverging in substance. A chat marks the
+   three or four places where the copy could loosen and states what each
+   needs to do; **Igor supplies the actual wording.** Do not draft Russian
+   voice on his behalf — the loanword-keeping register already on the page
+   is his, and it should stay his.
+
+4. **Move 15 — voice: yes, starting with one specimen.** Igor records the
+   register specimen only to begin with: "Send me the report today, please."
+   against "Could you send me the report today?" — two takes, ~15 seconds.
+   That is the specimen that genuinely cannot be read, only heard, so it
+   carries the most proof for the least effort. If it lands, the other two
+   specimens follow. **His real voice, never TTS, never a stand-in** — if
+   the recording doesn't happen, S9C is struck rather than synthesised.
+
+5. **Move 09 — specimen count: finite, no figure.** Each specimen gets its
+   own anchor and share entry point, but the page does not claim a number.
+   The existing copy already says truthfully that the list is finite ("Your
+   errors are a finite list"); that stands, and no count is asserted that
+   Igor would have to stand behind. This is the "real material only" rule
+   applied to a number that would have been easy to invent.
+
+6. **Move 10 — the free call: 30 minutes.** Now a real, publishable fact
+   rather than a gap.
+
+7. **Move 10 — what the reader leaves with: at least one named error.**
+   Igor hears them speak and names something specific they do wrong, in the
+   call. This is the method performed on the reader rather than described
+   to them, which is why it belongs on the page: it makes section 06 the
+   payoff of section 02 instead of an unrelated ask.
+
+**Consequences for the order:** S6 is unblocked. S8 is parked behind S6's
+result. S9A's move 09 shrinks to anchors and share entries only. S9A's
+move 10 has its material. S9C narrows to a single specimen. S1–S5 and S7
+were never gated on any of this and remain free to start.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
