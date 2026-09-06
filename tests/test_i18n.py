@@ -195,3 +195,25 @@ def test_language_swap_degrades_to_instant_without_gsap(open_site):
     assert page.locator("#app").evaluate(
         "el => parseFloat(getComputedStyle(el).opacity)"
     ) == 1
+
+
+# --- Spark Order S5 / move 19: a selected who-row and the language switch
+# compose through one updateCta() that reads both — a switch recomposes the
+# clause in the new language, never a re-encoded English string. ---
+
+def test_row_selection_and_language_compose(open_site):
+    page, _ = open_site()
+    row = page.locator(".rows > li").nth(1)
+    row.locator(".row__pick").click()
+
+    page.locator(".masthead .langswitch").click()
+    page.wait_for_timeout(200)
+
+    href = page.locator(".contact__cta").get_attribute("href")
+    text = page.evaluate("h => decodeURIComponent((h.split('?text=')[1]) || '')", href)
+    ru_clause = row.get_attribute("data-prefill-ru")
+    assert ru_clause and ru_clause in text
+    assert "созвон" in text            # the RU base message
+    assert "intro call" not in text    # not a re-encoded English one
+    # the selection itself survived the switch
+    assert row.locator(".row__pick").get_attribute("aria-pressed") == "true"

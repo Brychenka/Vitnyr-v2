@@ -1279,6 +1279,72 @@ Full suite: **151 passed** (was 144, +7 new cases). No existing test edited
 for behaviour; the two specimen/target cursor cases gained a 700ms settle wait
 because `.cursor__dot`'s `background` is a `--t` transition.
 
+## Spark Order, Stage 5 — answer the question (2026-09-06)
+
+Branch `feature/answer-the-question`. Move 19 — section 05 asked "which of
+these is you?" and gave no way to say. The four self-recognition rows and the
+section 06 Telegram deep link were two halves of one feature; this joins them.
+
+- **Each `.rows > li` is selectable** via an invisible overlay `<button
+  class="row__pick">` that `initWhoRows()` builds at runtime — so a no-JS
+  reader still sees four plain rows and the CTA keeps its static `href`
+  (`test_who_rows_are_plain_and_cta_static_without_js`). The button follows the
+  origin mark's hit-region precedent exactly: a real `<button>` (native
+  keyboard + touch), named by a visually-hidden `<span class="vh">` that
+  carries the heading's own `data-en`/`data-ru` so `applyLang()` localises it
+  for free. Not `aria-labelledby` — the existing
+  `test_every_link_and_button_has_an_accessible_name` reads `textContent` /
+  `aria-label` only, and the `.vh` span is the house answer anyway.
+- **Single-choice, toggleable.** Clicking the picked row clears it. State is
+  `aria-pressed` on the button plus `.is-picked` on the `li`; the visual mark
+  is the page's hairline vocabulary — a 2px `--ink-target` rule down the row's
+  leading edge, drawn as a detached `::before` at `left: -14px` (in the
+  gutter, `opacity` crossfaded over `--t`) so selecting a row never nudges its
+  grid. No fill, no card. `test_picking_a_second_row_replaces_the_first`.
+- **One writer for the href.** `updateCta()` reads the current language *and*
+  the current selection every call — from the row handler and from a
+  `vitnyr:langchange` listener — so the two compose and the href is never
+  built in two places. No selection: it hands the CTA back to `applyLang()`'s
+  plain per-language default. A selection:
+  `BASE + encodeURIComponent(decodedBase(l) + " — " + clause)`, where `BASE`
+  and `decodedBase` are both derived from the CTA's own `data-href-en`/`-ru`
+  (one source for the handle and the base message). Reuses Stage 6's
+  `data-href-*` mechanism, now per-answer as well as per-language.
+- **Copy.** Each row gets `data-prefill-en` / `data-prefill-ru` in
+  `index.html` — a short first-person clause restating that row's own approved
+  heading. A model's first pass, flagged in an HTML comment for Igor to
+  confirm, the same way `reference/collage-shotlist.md` and the §05 `h2` (C4)
+  flag their draft copy. No approved string changed; FIDE still appears
+  nowhere; `test_contact_heading_is_a_real_telegram_link` and
+  `test_contact_cta_prefill_text_is_localized` pass untouched.
+- Wired before `main.js`'s reduced-motion return (it is interaction, not
+  decoration) — verified selectable under `prefers-reduced-motion`.
+
+**Tests.** Six new cases: five in `test_layout.py`
+(`test_selecting_a_row_rewrites_the_cta_prefill`,
+`test_deselecting_restores_the_default_prefill`,
+`test_picking_a_second_row_replaces_the_first`, `test_rows_are_keyboard_operable`,
+`test_who_rows_are_plain_and_cta_static_without_js`), one in `test_i18n.py`
+(`test_row_selection_and_language_compose`). Regression-proved per the standing
+protocol: `git stash push -- index.html main.js style.css`, the five that need
+`.row__pick` failed against reverted source, the no-JS guard passed either way;
+popped, all six green.
+
+An early cut used `aria-labelledby` on the pick button; the full suite caught
+`test_every_link_and_button_has_an_accessible_name` (which resolves
+`textContent`/`aria-label`, not `aria-labelledby`) and the button switched to
+the `.vh`-span pattern — the house precedent — rather than the test being
+widened. No existing test was edited.
+
+Verified headless (Trap 2): 375 and 1280, both themes — pick composes the
+prefill onto the base message, the picked hairline shows at `opacity 1`, a
+second pick replaces the first, toggling off restores the default `href`, a
+language switch recomposes the clause in Russian (`созвон`, not `intro call`),
+Enter/Space toggle, no-JS gives plain rows + static CTA, no horizontal overflow
+in either language with the `-14px` rule visible, no console or page errors.
+
+Full suite: **157 passed** (was 151, +6 new cases). No existing test edited.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

@@ -254,3 +254,78 @@ def test_breath_block_takes_no_section_number(open_site):
     assert page.locator(".breath .num").count() == 0
     nums = page.locator(".sec .label .num").all_inner_texts()
     assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05", "06"]
+
+
+# --- Spark Order S5 / move 19: section 05's four "which of these is you?"
+# rows are selectable — an invisible overlay <button> per row toggles a
+# first-person clause onto the section 06 Telegram CTA. Single-choice,
+# toggleable, marked with a hairline rule, gone entirely without JS. ---
+
+_CTA = ".contact__cta"
+
+
+def _decoded_text(page, href):
+    return page.evaluate("h => decodeURIComponent((h.split('?text=')[1]) || '')", href)
+
+
+def test_selecting_a_row_rewrites_the_cta_prefill(open_site):
+    page, _ = open_site()
+    default_href = page.locator(_CTA).get_attribute("href")
+    row = page.locator(".rows > li").nth(1)
+    row.locator(".row__pick").click()
+
+    assert row.locator(".row__pick").get_attribute("aria-pressed") == "true"
+    assert "is-picked" in (row.get_attribute("class") or "")
+    href = page.locator(_CTA).get_attribute("href")
+    assert href != default_href
+    text = _decoded_text(page, href)
+    clause = row.get_attribute("data-prefill-en")
+    assert clause and clause in text
+    assert text.startswith("Hi! I'd like to book the free intro call. — ")
+
+
+def test_deselecting_restores_the_default_prefill(open_site):
+    page, _ = open_site()
+    default_href = page.locator(_CTA).get_attribute("href")
+    pick = page.locator(".rows > li").first.locator(".row__pick")
+    pick.click()
+    assert page.locator(_CTA).get_attribute("href") != default_href
+    pick.click()   # toggle the selected row off
+    assert pick.get_attribute("aria-pressed") == "false"
+    assert page.locator(_CTA).get_attribute("href") == default_href
+    assert page.locator(".rows > li.is-picked").count() == 0
+
+
+def test_picking_a_second_row_replaces_the_first(open_site):
+    page, _ = open_site()
+    rows = page.locator(".rows > li")
+    rows.nth(0).locator(".row__pick").click()
+    rows.nth(2).locator(".row__pick").click()
+    assert rows.nth(0).locator(".row__pick").get_attribute("aria-pressed") == "false"
+    assert rows.nth(2).locator(".row__pick").get_attribute("aria-pressed") == "true"
+    assert page.locator(".rows > li.is-picked").count() == 1
+    assert rows.nth(2).get_attribute("data-prefill-en") in _decoded_text(
+        page, page.locator(_CTA).get_attribute("href")
+    )
+
+
+def test_rows_are_keyboard_operable(open_site):
+    """Tab to a row button, press Enter — it toggles, natively, because it is
+    a real <button> (the origin mark's hit-regions are the house precedent)."""
+    page, _ = open_site()
+    pick = page.locator(".rows > li").first.locator(".row__pick")
+    pick.focus()
+    assert page.evaluate(
+        "document.activeElement === document.querySelector('.rows > li .row__pick')"
+    )
+    page.keyboard.press("Enter")
+    assert pick.get_attribute("aria-pressed") == "true"
+    page.keyboard.press("Enter")
+    assert pick.get_attribute("aria-pressed") == "false"
+
+
+def test_who_rows_are_plain_and_cta_static_without_js(open_site):
+    page, _ = open_site(java_script_enabled=False)
+    assert page.locator(".row__pick").count() == 0
+    cta = page.locator(_CTA)
+    assert cta.get_attribute("href") == cta.get_attribute("data-href-en")

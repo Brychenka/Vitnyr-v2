@@ -798,6 +798,7 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 /* ---------- who ---------- */
 .rows { border-top: 1px solid var(--rule); }
 .rows > li {
+  position: relative;   /* the overlay pick button + the picked-state rule */
   padding-block: clamp(26px, 3vw, 40px);
   border-bottom: 1px solid var(--rule);
   display: grid; gap: 10px;
@@ -807,6 +808,28 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 @media (min-width: 900px) {
   .rows > li { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: baseline; }
 }
+
+/* Spark Order S5 / move 19: each row carries an invisible overlay <button>
+   (built in main.js, so the no-JS row is untouched) that toggles a Telegram
+   prefill on the section 06 CTA. The picked state is marked with the page's
+   hairline vocabulary — a 2px ink rule down the row's leading edge, the same
+   device .line-spec / .wrong / .right use — as a detached ::before so
+   selecting a row never nudges its grid (layout stays off the transform
+   channel). No fill, no card. */
+.row__pick {
+  position: absolute; inset: 0; z-index: 1;
+  margin: 0; padding: 0; border: 0; background: none;
+  font: inherit; color: inherit;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.row__pick:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 4px; }
+.rows > li::before {
+  content: ""; position: absolute; top: 0; bottom: 0;
+  left: -14px; width: 2px;
+  background: var(--ink-target);
+  opacity: 0; transition: opacity var(--t) var(--e);
+}
+.rows > li.is-picked::before { opacity: 1; }
 
 /* ---------- collage composition ----------
    Lives inside the collage view (below), once per domain group (English,

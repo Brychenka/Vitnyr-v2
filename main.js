@@ -109,6 +109,7 @@
      motion and with GSAP present but Lenis off, so it is wired before the
      reduced-motion path returns. */
   initCollageView();
+  initWhoRows();
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {
@@ -733,6 +734,76 @@
     });
 
     sync(true);   // deep-link path; the <head> script already set .collage-open
+  }
+
+  /* ---------- who: the rows answer the question (Spark Order S5 / move 19) ----
+     Section 05 asks "which of these is you?" and, until now, gave no way to
+     say. Each row gets an invisible overlay <button> (built here, so a no-JS
+     reader still sees four plain rows and the CTA keeps its static href).
+     Picking a row is single-choice and toggleable; it composes a first-person
+     clause from the row's own data-prefill-* onto the section 06 Telegram CTA,
+     so Igor receives the answer without the reader having to phrase it.
+     Selection and language compose through one writer, updateCta(), which
+     reads both every time — never the href built in two places. Wired before
+     the reduced-motion return: this is interaction, not decoration. */
+  function initWhoRows() {
+    var cta = document.querySelector('.contact__cta');
+    var rows = document.querySelectorAll('.rows > li');
+    var ref = cta && cta.getAttribute('data-href-en');
+    if (!cta || !rows.length || !ref || ref.indexOf('?text=') < 0) return;
+
+    var BASE = ref.slice(0, ref.indexOf('?text=') + 6);   // "https://t.me/<handle>?text="
+    var selected = null;                                   // picked row index, or null
+
+    function lang() { return root.getAttribute('data-lang') === 'ru' ? 'ru' : 'en'; }
+    function decodedBase(l) {
+      var h = cta.getAttribute('data-href-' + l) || '';
+      var i = h.indexOf('?text=');
+      return i < 0 ? '' : decodeURIComponent(h.slice(i + 6));
+    }
+    // The one place the CTA href is written. No selection: hand it back to
+    // theme.js's plain per-language default (applyLang sets the same value on
+    // a switch — this keeps them in step between switches). A selection:
+    // baseMessage + " — " + the row's clause, in the current language.
+    function updateCta() {
+      var l = lang();
+      if (selected === null) { cta.setAttribute('href', cta.getAttribute('data-href-' + l)); return; }
+      var clause = rows[selected].getAttribute('data-prefill-' + l) || '';
+      cta.setAttribute('href', BASE + encodeURIComponent(decodedBase(l) + ' — ' + clause));
+    }
+
+    var picks = [];
+    rows.forEach(function (li, i) {
+      var h3 = li.querySelector('h3');
+      if (!h3) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'row__pick';
+      btn.setAttribute('aria-pressed', 'false');
+      /* Named by a visually-hidden span carrying the heading's own
+         data-en/data-ru — the exact shape .origin__hit uses, so theme.js's
+         applyLang() keeps the label in the right language for free. Set the
+         initial text here because applyLang has already run by the time
+         main.js builds this. */
+      var vh = document.createElement('span');
+      vh.className = 'vh';
+      if (h3.dataset.en) vh.setAttribute('data-en', h3.dataset.en);
+      if (h3.dataset.ru) vh.setAttribute('data-ru', h3.dataset.ru);
+      vh.textContent = h3.dataset[lang()] || h3.textContent || '';
+      btn.appendChild(vh);
+      btn.addEventListener('click', function () {
+        selected = (selected === i) ? null : i;      // toggleable, single-choice
+        picks.forEach(function (b, j) { b.setAttribute('aria-pressed', selected === j ? 'true' : 'false'); });
+        rows.forEach(function (r, j) { r.classList.toggle('is-picked', selected === j); });
+        updateCta();
+      });
+      li.appendChild(btn);
+      picks.push(btn);
+    });
+
+    // A language switch re-sets the default href and fires this; re-run the
+    // one writer so a live selection recomposes in the new language.
+    document.addEventListener('vitnyr:langchange', updateCta);
   }
 
   /* ---------- last resort ----------
