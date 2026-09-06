@@ -102,7 +102,10 @@ def test_specimen_rows_have_text_equivalent_for_correctness(open_site):
     assert texts == {"Incorrect:", "Correct:", "Reads as:", "Better as:"}
 
     register = page.locator(".spec", has=page.locator("text=Register, not grammar"))
-    register_labels = {t.strip() for t in register.locator(".vh").all_inner_texts()}
+    # .line-spec .vh, same scope as the count above: the specimen also carries a
+    # .vh inside its permalink label now (S9A / move 09), which isn't a
+    # correctness equivalent and shouldn't be swept in here.
+    register_labels = {t.strip() for t in register.locator(".line-spec .vh").all_inner_texts()}
     assert register_labels == {"Reads as:", "Better as:"}
 
 
@@ -326,3 +329,30 @@ def test_specimen_marks_are_proofreading_notation(open_site):
     assert not any("M1 1 L9 9" in d for d in ds), "old ✕ glyph still present"
     # specimen 3 (restructure) uses a different mark than specimens 1-2 (delete)
     assert ds[0] != ds[4] and ds[1] != ds[5]
+
+
+def test_specimen_permalink_names_the_specimen_not_just_the_hash(open_site):
+    """Spark Order S9A / move 09: the label link's accessible name is the
+    specimen's own wording plus an intent phrase — never a bare "#". The
+    decorative # glyph is hidden from assistive tech."""
+    page, _ = open_site()
+    a = page.locator("#specimen-reflexive .spec__permalink")
+    name = a.evaluate("el => el.textContent.replace('#', '').trim()")
+    assert name == "Reflexive carried across, link to this specimen"
+    assert a.locator(".spec__permalink-mark").get_attribute("aria-hidden") == "true"
+    # the copy confirmation is inert until a successful copy
+    status = page.locator("#specimen-reflexive .spec__permalink-status")
+    assert status.get_attribute("hidden") is not None
+    assert status.evaluate("el => getComputedStyle(el).display") == "none"
+
+
+def test_specimen_permalink_degrades_to_a_plain_anchor_without_js(open_site):
+    """With main.js absent the label is still an ordinary in-page anchor to a
+    real element id — the browser handles the jump, nothing is lost."""
+    page, _ = open_site(java_script_enabled=False)
+    for sid in ("specimen-reflexive", "specimen-copula", "specimen-register"):
+        a = page.locator(f"#{sid} .spec__permalink")
+        assert a.get_attribute("href") == f"#{sid}"
+        assert page.locator(f"article#{sid}").count() == 1
+    # no JS => no clipboard confirmation shown
+    assert page.locator("#specimen .spec__permalink-status:not([hidden])").count() == 0

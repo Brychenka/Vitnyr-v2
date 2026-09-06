@@ -92,6 +92,7 @@
   // In-page links go through Lenis so the easing stays consistent.
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     if (a.hasAttribute('data-collage-open')) return;   // the collage router owns this one
+    if (a.hasAttribute('data-permalink')) return;      // initSpecimenPermalinks owns these
     a.addEventListener('click', function (e) {
       var id = a.getAttribute('href');
       if (!id || id === '#') return;
@@ -113,6 +114,7 @@
      reduced-motion path returns. */
   initCollageView();
   initWhoRows();
+  initSpecimenPermalinks();
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {
@@ -625,6 +627,48 @@
     });
   }
 
+  /* ---------- specimen permalinks (Spark Order S9A / move 09) ----------
+     Each <article class="spec"> carries a stable id, and its label is an
+     anchor to that id — so a reader who recognises one of the three errors
+     as their own can link straight to it. A click also drops the full URL on
+     the clipboard and says so, briefly, in the page's own two languages.
+     Everything here is enhancement over a plain in-page anchor: with this
+     file absent the label is still <a href="#specimen-...">, the browser
+     still jumps, and the status line stays hidden. Wired before the
+     reduced-motion return because it is navigation, not motion — the only
+     concession to reduced motion is an instant scroll instead of a smooth
+     one, which is the same rule the generic #-anchor handler above follows. */
+  function initSpecimenPermalinks() {
+    var links = document.querySelectorAll('.spec__permalink[data-permalink]');
+    if (!links.length) return;
+    links.forEach(function (a) {
+      var status = a.parentNode.querySelector('.spec__permalink-status');
+      var clearStatus = null;
+      a.addEventListener('click', function (e) {
+        var id = (a.getAttribute('href') || '').slice(1);
+        var target = id && document.getElementById(id);
+        if (!target) return;   // nothing to route to — let the browser decide
+        e.preventDefault();
+        /* The address bar becomes the shareable link. pushState (not a raw
+           hash assignment) keeps Back working and does NOT fire hashchange,
+           so the collage router's routeAfterHashChange stays out of it. */
+        if (window.history.pushState) window.history.pushState(null, '', '#' + id);
+        else location.hash = id;
+        if (lenis) lenis.scrollTo(target, { offset: 0, duration: 1.2 });
+        else target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        target.focus({ preventScroll: true });   // land inside the specimen, not just near it
+        if (status && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(location.href).then(function () {
+            status.hidden = false;               // role="status" announces the visible language
+            clearTimeout(clearStatus);
+            clearStatus = setTimeout(function () { status.hidden = true; }, 1800);
+          }).catch(function () {});               // clipboard blocked — the URL bar still carries it
+        }
+      });
+    });
+  }
+
   /* ---------- collage: a hash-routed full-screen view ----------
      One file, but #collage behaves like its own page. location.hash is the
      single source of truth, so the browser back and forward buttons work for
@@ -728,7 +772,12 @@
        deferred callback might never run) all fall through to the direct
        call, unchanged. */
     function routeAfterHashChange() {
-      var vt = (location.hash !== '#collage')
+      // Only the close direction takes the transition, and only when the view
+      // is actually open — otherwise sync() is a no-op and wrapping a no-op
+      // update in startViewTransition just fires an invisible cross-fade on
+      // every unrelated in-page hash (the specimen permalinks, #top, #method).
+      var vt = applied
+        && (location.hash !== '#collage')
         && typeof document.startViewTransition === 'function'
         && !reduce
         && document.visibilityState === 'visible';

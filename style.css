@@ -582,6 +582,28 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   padding-bottom: 16px; margin-bottom: 18px;
   border-bottom: 1px solid var(--rule);
 }
+/* Spark Order S9A / move 09 — the label is a permalink to the specimen's own
+   id. Hairline vocabulary: a mono # in secondary ink, the label underlining
+   only on hover/focus, a mono confirmation that shows for ~1.8s. No box, no
+   fill, no accent-as-text (the # is theme ink, not amber/green). The focus
+   ring is the shared :focus-visible rule. */
+.spec__permalink { color: inherit; text-decoration: none; }
+.spec__permalink-mark { font-family: var(--mono); font-weight: 400; margin-right: .45em; }
+.spec__permalink:hover .spec__permalink-text,
+.spec__permalink:focus-visible .spec__permalink-text {
+  text-decoration: underline;
+  text-underline-offset: .22em;
+  text-decoration-thickness: 1px;
+}
+/* :not([hidden]) so the attribute still hides it — a bare `display` here
+   would out-specify the UA [hidden] rule and leak the text on load. */
+.spec__permalink-status:not([hidden]) {
+  display: inline-block;                 /* wrap as a unit, never mid-phrase */
+  white-space: nowrap;
+  font-family: var(--mono); font-size: 12px; font-weight: 400;
+  letter-spacing: .02em; text-transform: none; color: var(--fg2);
+  margin-left: .7em;
+}
 /* The border and the marker glyph carry the specimen/target signal in
    non-text ink, both >=3:1 in each pair, same as always. The one word
    actually responsible for the error, and the one word that fixes it, are
