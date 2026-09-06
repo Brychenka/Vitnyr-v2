@@ -1,7 +1,8 @@
 """The motion system, with animation allowed: the hero plays and lands, and the
-reveal rhythm fires once per element as it enters view. The measured numbers do
-not animate — Spark Order move 17 removed the count-up; test_numbers_do_not_animate
-holds that line."""
+reveal rhythm fires once per element as it enters view. The measured numbers
+count up to their value again (Spark Order move 17 removed the count-up; it was
+restored as "separate instruments") — test_numbers_count_up_to_their_values and
+test_numbers_finish_at_different_times hold that line."""
 
 import pytest
 
@@ -185,19 +186,66 @@ def test_glyph_parts_carry_a_bg_coloured_keyline(open_site):
     assert stroke == "rgb(20, 24, 26)"  # --bg on charcoal
 
 
-def test_numbers_do_not_animate(open_site):
-    """Spark Order move 17: the facts row no longer runs its numbers up. Caught
-    right after it scrolls into view and again ~600ms later — the window the old
-    1.6s count-up lived in — every value is already final and unchanged.
-    Replaces test_counters_count_up_to_exact_values and test_counter_starts_below_its_target."""
+def test_numbers_count_up_to_their_values(open_site):
+    """Spark Order: the facts row runs its numbers up again. Once settled, every
+    value is exactly its confirmed figure — 8, 100+, 2100 — and 7c (not a
+    number, no data-count) is untouched throughout."""
     page, _ = open_site()
     page.locator(".facts").scroll_into_view_if_needed()
-    read = "() => [...document.querySelectorAll('.facts .n')].map(n => n.textContent.trim())"
-    first = page.evaluate(read)
-    page.wait_for_timeout(600)
-    second = page.evaluate(read)
-    assert first == ["8", "100+", "2100", "7c"]
-    assert second == first
+    page.wait_for_function(
+        """() => [...document.querySelectorAll('.facts .n')]
+            .map(n => n.textContent.trim()).join('|') === '8|100+|2100|7c'""",
+        timeout=6000,
+    )
+    seventh = page.evaluate(
+        "() => document.querySelector('.fact--grade .n').textContent.trim()"
+    )
+    assert seventh == "7c"
+
+
+def test_numbers_finish_at_different_times(open_site):
+    """The count-up came back deliberately NOT as one synced gauge (Spark Order,
+    "separate instruments"): each number has its own duration plus a stagger, so
+    8, 100+ and 2100 do not all land on the same frame. Would fail against the
+    old shared-1.6s countUp, where all three finished within a frame or two.
+    Replaces test_numbers_do_not_animate / the pre-move-17 counter pair."""
+    page, _ = open_site()
+    page.locator(".facts").scroll_into_view_if_needed()
+    finished_at = page.evaluate(
+        """async () => {
+            const want = { '8': '8', '100': '100+', '2100': '2100' };
+            const num = { '8': 8, '100': 100, '2100': 2100 };
+            const els = [...document.querySelectorAll('.facts .n[data-count]')];
+            const t0 = performance.now();
+            const low = {}, done = {};
+            await new Promise(resolve => {
+                const tick = () => {
+                    els.forEach(el => {
+                        const k = el.dataset.count;
+                        const v = parseInt(el.textContent, 10);
+                        // only trust a "finished" reading once the number has
+                        // actually been seen counting (below its target) — the
+                        // literal markup value matches want[k] before the tween's
+                        // first frame and would otherwise register instantly.
+                        if (Number.isFinite(v) && v < num[k]) low[k] = true;
+                        if (low[k] && !(k in done) && el.textContent.trim() === want[k]) {
+                            done[k] = performance.now() - t0;
+                        }
+                    });
+                    if (Object.keys(done).length === els.length) return resolve();
+                    if (performance.now() - t0 > 9000) return resolve();
+                    requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            });
+            return done;
+        }"""
+    )
+    assert set(finished_at.keys()) == {"8", "100", "2100"}
+    times = sorted(finished_at.values())
+    # three separate instruments: the last number lands well after the first,
+    # not in lockstep. Spread is ~0.8s by construction; 250ms clears jitter.
+    assert times[-1] - times[0] > 250
 
 
 def _progress_scale_x(page):
