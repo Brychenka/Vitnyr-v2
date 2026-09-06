@@ -43,6 +43,16 @@
   --ink-specimen: var(--amber);
   --ink-target:   var(--green);
 
+  /* The pointer dot's active ink — the fill it eases to over any control
+     (C15, 2026-09-07). Target green on charcoal; specimen amber on cream,
+     Igor's call — green read muddy on the warm ground and amber carries.
+     Pair-swapped in the two light blocks below like every other themed
+     token; the generic active state and .is-target both read from this, so
+     the contact CTA follows the theme too. .is-specimen stays wired
+     straight to --ink-specimen — "the error under examination" is not a
+     per-theme idea. */
+  --cursor-active-ink: var(--ink-target);
+
   /* Text-safe variants for the one exception to "accent never sits on text
      under 24px" — see .mark--specimen / .mark--target below. Amber already
      clears 4.5:1 as text on this bg (4.9:1, since the 2026-09-05 fix to a
@@ -122,6 +132,7 @@
     --amber-dim: #D9C6A3;
     --green-dim: #B8C2B2;
     --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);   /* -2% vs charcoal: equal weight on the luminous cream ground */
+    --cursor-active-ink: var(--ink-specimen);   /* C15: amber, not green, over controls on cream */
   }
 }
 :root[data-theme="light"] {
@@ -135,6 +146,7 @@
   --amber-dim: #D9C6A3;
   --green-dim: #B8C2B2;
   --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
+  --cursor-active-ink: var(--ink-specimen);   /* C15: amber, not green, over controls on cream */
 }
 
 /* Georgia carries no Cyrillic on most systems, so a Russian headline in the
@@ -1298,14 +1310,16 @@ html.has-cursor.cursor-out .cursor { opacity: 0; }
 /* The one signal: the fill crossfades from --fg to an accent over a control —
    same size at rest and active, colour only. Move 02 (Spark Order S4): the
    two accents mean something — specimen amber over a control inside #specimen
-   (the error under examination), target green over the contact CTA and every
-   other control (the outcome). main.js sets .is-specimen / .is-target on
-   .cursor; colour stays in the sheet, off the same --ink-* tokens every other
-   accent uses, and it is a token-to-token swap — never an amber<->green
-   interpolation. */
-html.has-cursor.cursor-active .cursor__dot { background: var(--ink-target); }
+   (the error under examination), the target accent over the contact CTA and
+   every other control (the outcome). C15 (2026-09-07): that target accent is
+   --cursor-active-ink, which is green on charcoal but amber on cream (see the
+   token, top of file) — green sat muddy on the warm ground. main.js sets
+   .is-specimen / .is-target on .cursor; colour stays in the sheet, off the
+   --ink-* / --cursor-active-ink tokens, and every state is a token-to-token
+   swap — never an amber<->green interpolation. */
+html.has-cursor.cursor-active .cursor__dot { background: var(--cursor-active-ink); }
 html.has-cursor.cursor-active .cursor.is-specimen .cursor__dot { background: var(--ink-specimen); }
-html.has-cursor.cursor-active .cursor.is-target .cursor__dot { background: var(--ink-target); }
+html.has-cursor.cursor-active .cursor.is-target .cursor__dot { background: var(--cursor-active-ink); }
 
 /* ---------- reveal rhythm (phase 3) ----------
    Hidden state is applied only when JS is running, so the page is

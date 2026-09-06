@@ -167,6 +167,11 @@ Two fixed pairs only, swapped wholesale via `data-theme` / prefers-color-scheme:
   `--ink-specimen` / `--ink-target` in component CSS — use those semantic
   names, not the raw color variables, when styling something new.
 
+One derived alias exists: `--cursor-active-ink` (the pointer dot's fill over a
+control) resolves to `--ink-target` on charcoal and `--ink-specimen` on cream
+— Igor's call at C15, green read muddy on the warm ground. It's an alias to
+the existing two inks, not a third colour.
+
 Accent color (amber/green) is only ever used as non-text ink — rules,
 underlines, glyphs, display numerals — **never as text under 24px**, because
 amber fails 4.5:1 on cream body text and green fails it on charcoal body

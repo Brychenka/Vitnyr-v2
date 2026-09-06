@@ -29,7 +29,9 @@ and a matching GSAP CustomEase in JS, so the two never drift apart.
    charcoal invents colours the brand doesn't own, and the brand forbids a third
    colour. The cursor is a flat dot that eases its fill to the accent ink over
    interactive elements instead (green, or amber inside `#specimen`) — colour
-   only, no size change (reworked at C14; was a green ring).
+   only, no size change (reworked at C14; was a green ring). The active ink is
+   `--cursor-active-ink`: target green on charcoal, specimen amber on cream
+   (C15); `.is-specimen` inside `#specimen` stays amber in both.
 2. **ScrollTrigger is not loaded at all.** Reveals were always on an
    IntersectionObserver — a scroll-position tween sits at opacity 0 if its rAF
    loop never runs, and an observer is the right shape for "has this entered
@@ -1724,6 +1726,34 @@ Deviation 1 in this file ("flat dot that opens into a green ring") updated to
 **Live artifact not republished** — still on hold behind the collage
 placeholder photos (`assets/collage/PLACEHOLDERS.md`). This change folds into
 the inline rebuild whenever that hold lifts.
+
+## C15 — the dot's active ink goes amber on cream (2026-09-07)
+
+Branch `feature/cursor-cream-amber`. Files: `style.css`, `tests/test_motion.py`,
+plus this note. Igor: *"can we make cursor on cream theme to be ember not green
+when it hovers over clickable stuff."* Green (`--ink-target`, `#3D6543` on the
+light pair) sat muddy against the warm cream ground; amber has more presence
+there.
+
+- New token **`--cursor-active-ink`**, defined once in `:root` as
+  `var(--ink-target)` and pair-swapped to `var(--ink-specimen)` in both light
+  blocks (the `prefers-color-scheme: light` one and `:root[data-theme="light"]`),
+  exactly like every other themed token. `--amber` is fixed, so cream resolves
+  to `#B07C24`; charcoal is unchanged green.
+- Both cursor rules that used to read `--ink-target` — the generic
+  `.cursor-active .cursor__dot` and `.is-target` (the contact CTA) — now read
+  `--cursor-active-ink`. So on cream the dot is amber over *every* control,
+  contact CTA included; the specimen/target split still holds on charcoal.
+- `.is-specimen` (a control inside `#specimen`) stays wired straight to
+  `--ink-specimen` — amber in both pairs. "The error under examination" is not
+  a per-theme idea.
+- No JS change. `main.js` still only toggles `.is-specimen` / `.is-target`.
+- Test: `test_cursor_active_ink_follows_the_theme` (parametrised dark/light) —
+  the generic hover and the contact CTA both settle to `--cursor-active-ink`,
+  and on light that value is `--ink-specimen` and *not* `--ink-target`. The
+  three existing cursor cases run on the charcoal default and are unaffected.
+
+**Live artifact not republished** — same collage hold as C14.
 
 ## Verified
 

@@ -388,6 +388,42 @@ def test_cursor_takes_specimen_ink_over_a_control_inside_specimen(open_site):
     ) == _resolve_var(page, "--ink-specimen")
 
 
+@pytest.mark.parametrize(
+    "scheme,active_token",
+    [("dark", "--ink-target"), ("light", "--ink-specimen")],
+)
+def test_cursor_active_ink_follows_the_theme(open_site, scheme, active_token):
+    """C15 (2026-09-07): the dot's active fill is --cursor-active-ink — target
+    green on charcoal, specimen amber on cream (Igor's call: green read muddy on
+    the warm ground). The generic active state and .is-target both read from it,
+    so the contact CTA follows the theme too; .is-specimen stays amber in both."""
+    page, _ = open_site(color_scheme=scheme)
+    dot = page.locator(".cursor__dot")
+
+    # generic control: the hero scrollcue link
+    page.locator(".scrollcue").hover()
+    page.wait_for_timeout(200)
+    assert "cursor-active" in (page.locator("html").get_attribute("class") or "")
+    page.wait_for_timeout(700)
+    generic = dot.evaluate("el => getComputedStyle(el).backgroundColor")
+    assert generic == _resolve_var(page, "--cursor-active-ink")
+    assert generic == _resolve_var(page, active_token)
+
+    # the contact CTA (.is-target) resolves to the same theme-dependent ink
+    page.locator(".contact__cta").hover()
+    page.wait_for_timeout(200)
+    assert "is-target" in (page.locator(".cursor").get_attribute("class") or "")
+    page.wait_for_timeout(700)
+    assert dot.evaluate("el => getComputedStyle(el).backgroundColor") == _resolve_var(
+        page, "--cursor-active-ink"
+    )
+
+    if scheme == "light":
+        assert generic != _resolve_var(page, "--ink-target"), (
+            "on cream the active dot must be amber, not green"
+        )
+
+
 def test_cursor_absent_on_touch_devices(open_site):
     """initCursor() returns early without a fine pointer, so the dot is never
     shown and the native pointer is never hidden."""
