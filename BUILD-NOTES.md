@@ -1576,6 +1576,40 @@ settled and reduced-motion screenshots in this chat.
 
 Full suite: **169 passed** (was 164, +5 new cases). No existing test edited.
 
+## Spark Order, Stage 8 — subsumed into S6, not built (2026-09-06)
+
+S8 ("The hero — three beats, carried by the rules", move 07) was parked at S0
+pending S6's result, with an explicit note: *"the correction may already
+supply what this was for. Ask again once S6 has been seen; do not start on
+your own judgement."* Asked. Igor's call: **do not build it — mark it
+subsumed.**
+
+The reasoning, recorded so a later chat doesn't reopen it:
+
+- **The payoff now overlaps the centrepiece.** S8 was written to *pre-state*
+  section 04's argument in a form the reader only understands later. S6 now
+  *enacts* that argument — it corrects `vit → nýr`, a broken pattern replaced
+  by one that holds, as motion. Foreshadowing an effect 200px above the place
+  you then fully deliver it is a weaker page, not a richer one.
+- **Risk/reward is upside-down.** The hero is the only thing above the fold,
+  `playHero()` is the most fragile code in the repo, and it has already
+  shipped a `NaN`-cache bug that silently killed every later tween. The
+  reward for re-entering that code was three 1px resting hairlines under
+  three words — an accent most visitors never consciously register.
+- **The ink mapping was imposed, not real.** "amber, amber, green = left arm,
+  right arm, stem" requires climbing to be the *correct outcome* of English
+  and chess. It isn't. A colour pass would read that as a back-door third
+  meaning for the two accents.
+- **Composition budget.** The first viewport already carries the masked-line
+  entrance, the wordmark font-gate, the progress hairline and the restored
+  counters. A fourth timed system is where a page like this stops feeling
+  composed.
+
+No code changed for this decision. `feature/hero-trifecta` was never cut.
+The Spark Order tracking artifact marks S8 subsumed; the Crit Sheet's move 07
+is closed the same way. If the hero is ever revisited, it starts from a fresh
+brief, not this one.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
