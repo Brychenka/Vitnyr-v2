@@ -62,7 +62,7 @@ def test_background_actually_changes_between_pairs(open_site):
 
 def test_theme_button_label_is_localised(open_site):
     page, _ = open_site(color_scheme="dark")
-    page.locator(".langswitch").click()  # -> RU
+    page.locator(".masthead .langswitch").click()  # -> RU
     assert page.locator(".masthead .themeswitch").text_content().strip() == "Крем"
     page.locator(".masthead .themeswitch").click()  # -> light
     assert page.locator(".masthead .themeswitch").text_content().strip() == "Уголь"

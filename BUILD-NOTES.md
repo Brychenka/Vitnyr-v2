@@ -538,6 +538,87 @@ placeholder-photo hold from Collage Stage 3 stands regardless of Stage 2's
 own changes, and this stage's work is a draft, not something Igor has asked
 to ship yet.
 
+## Awwwards-jury review, Stage 3 — accessibility pass (2026-09-06)
+
+Seven findings (C1–C4, C7, P5, P11), branch `feature/a11y-pass`. Same hold as
+Stage 2: not republished, draft only.
+
+- **C1 — language switch missing from the collage bar.** The open view sits
+  above the masthead (z-index), so its `.themeswitch` copy (added earlier)
+  was the only Cream/Charcoal control reachable while it's open — but there
+  was no `.langswitch` there at all, so a Russian-reading visitor stuck in
+  English inside the view had no way back without leaving it. Added a second
+  `.langswitch` to `.view__tools`; `theme.js`'s `applyLang()` and its click
+  wiring changed from `querySelector('.langswitch')` to a `querySelectorAll`
+  loop, the same pattern `labelTheme()` already used for `.themeswitch`, so
+  every copy stays labelled and wired. Six existing tests drove the single
+  masthead button with a bare `.langswitch` selector, which now matches two
+  elements and throws in Playwright's strict mode — rescoped to
+  `.masthead .langswitch`; added a test that actually clicks the in-view
+  copy and confirms the language, the masthead's own copy, and the group
+  heading underneath all follow.
+- **C2 — text touch targets under the 24px WCAG 2.2 minimum.** Measured
+  `.themeswitch`/`.langswitch` at 76×23 / 19×23 and `.view__back` at 70×31
+  on a coarse pointer, beside icons calculated to exactly 44×44. Extended
+  the icons' existing `@media (pointer: coarse)` block: `padding-block` for
+  height (keeps the flex row's baseline from moving — no `height` property
+  involved) plus a small `padding-inline` on `.tool`, since two letters at
+  12px can't reach 24px width through vertical padding alone. Order in the
+  stylesheet matters — `.tool--icon`'s own coarse rule has to come after
+  `.tool`'s or its uniform 12.5px would be overwritten. New tests hold both
+  axes to ≥24px for all three controls on a `has_touch` context.
+- **C3 — heading levels skip and duplicate.** `#collage-title` was an `h2`
+  and its three group headings were `h3`s, both one level under where they'd
+  sit if `#collage` were a real page — which the routing already treats it
+  as (CLAUDE.md's "behaves like its own page" note). Promoted title to `h1`,
+  groups to `h2`, and wrapped `.view__body` in `<main id="collage-main">`
+  (the site's own `<main id="main">` keeps its id — the two are never both
+  exposed, since `#app` goes `inert` while the view is open and the view
+  itself is `visibility:hidden` while closed). `test_single_h1_and_main_landmark`
+  asserted a raw DOM count of 1, which the new architecture makes 2 by
+  design; rewrote it to check what's actually reachable (no `inert`
+  ancestor, not `visibility:hidden`) rather than raw count, and added the
+  mirror case for the view open.
+- **C4 — §05 "Who this is for" skips straight to four `h3` rows with
+  nothing governing them.** Every other section pairs its `.label` with a
+  `.sec__head` `h2`; this one didn't, leaving four answers with no question
+  a heading-level screen-reader pass would land on first. Added
+  "Which of these is you?" / "Какой из этих случаев — про вас?" as a new
+  `h2`, following the section's existing dual-`data-l` pattern. New copy,
+  not yet Igor-reviewed — flagged the same way the shot list flags its own
+  draft copy.
+- **C7 — the origin mark's focus ring was suppressed outright.** The three
+  `.origin__hit` buttons are invisible, oversized rectangles laid over the
+  glyph so touch and keyboard both have a real target; a ring drawn on one
+  of them wouldn't trace anything visible, so `:focus-visible { outline:
+  none }` was the whole answer, relying on the dim/active glyph contrast
+  alone to mark focus — which isn't a focus indicator. Moved the ring to
+  `.origin__mark` (the `<figure>` a reader can see) via
+  `:has(.origin__hit:focus-visible)`, already an established pattern in this
+  file (`.collage__slot:has(img)`). New test confirms the ring appears on
+  the figure and stays off the hit rectangle itself.
+- **P5 — the register specimen's hidden labels overstated the claim.** The
+  third specimen ("Register, not grammar") is grammatically fine on its
+  "wrong" line — the fault is pragmatic, not a grammar error like the other
+  two — so labelling it "Incorrect:" alongside them was inaccurate. Gave it
+  its own visually-hidden pair, "Reads as:" / "Better as:"; the other two
+  specimens keep "Incorrect:"/"Correct:" since those are real grammar
+  errors. Updated `test_specimen_rows_have_text_equivalent_for_correctness`
+  to expect both pairs and to check the register specimen specifically.
+- **P11 — alt text was deferred wholesale to the real-photo swap.** Wrote a
+  bilingual draft (EN/RU) for all 18 frames directly into
+  `collage-shotlist.md`, beside each shot's brief, so alt text lands with
+  the file instead of being drafted after the fact under time pressure. Flagged
+  alongside the shot briefs as a model's first pass — Igor's to confirm, not
+  yet wired into `index.html` (there's nothing to wire it to until the real
+  files replace the placeholders).
+
+The findings with real logic behind them (the h1/main landmark split, the
+origin-mark focus ring, the specimen labels, the touch-target sizes) were
+confirmed failing against pre-fix `main` before the fix landed, not just
+asserted from reading the code. Full suite: **101 passed** (96 at the end of
+Stage 2 + 5 new).
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

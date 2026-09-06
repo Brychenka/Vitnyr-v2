@@ -57,10 +57,13 @@
     d.setAttribute('lang', l);
     var nodes = document.querySelectorAll('[data-en][data-ru]');
     for (var i = 0; i < nodes.length; i++) nodes[i].textContent = nodes[i].dataset[l];
-    var sw = document.querySelector('.langswitch');
-    if (sw) {
-      sw.textContent = (l === 'ru') ? 'EN' : 'RU';
-      sw.setAttribute('aria-label', (l === 'ru') ? 'Switch to English' : 'Переключить на русский');
+    /* More than one .langswitch: the masthead's, plus the one in the collage
+       view's bar (which sits above the masthead when that view is open) —
+       same reason labelTheme() below loops over every .themeswitch. */
+    var sws = document.querySelectorAll('.langswitch');
+    for (var j = 0; j < sws.length; j++) {
+      sws[j].textContent = (l === 'ru') ? 'EN' : 'RU';
+      sws[j].setAttribute('aria-label', (l === 'ru') ? 'Switch to English' : 'Переключить на русский');
     }
     labelTheme();
     // the hero lines differ per language, so their masks need re-measuring
@@ -85,8 +88,8 @@
     applyLang(lang);
     applyTheme();
 
-    var sw = document.querySelector('.langswitch');
-    if (sw) sw.addEventListener('click', function () {
+    var langBtns = document.querySelectorAll('.langswitch');
+    for (var k = 0; k < langBtns.length; k++) langBtns[k].addEventListener('click', function () {
       lang = document.documentElement.getAttribute('data-lang') === 'ru' ? 'en' : 'ru';
       save(LANG_KEY, lang);
       applyLang(lang);

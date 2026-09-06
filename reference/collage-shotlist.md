@@ -69,6 +69,18 @@ Stage 4 also staggers reveals in).
 | 05 | `en-05-markup` | 3:2 | A text between two people being pulled apart — highlighting, margin notes. Hands and page, no faces needed. |
 | 06 | `en-06-window` | 4:5 | The view Igor works against — a specific Yerevan street, tufa stone, Ararat behind the rooflines if it's there. Grounds "Yerevan" without a postcard. |
 
+**Alt text (draft — EN / RU).** Written now, beside the brief it describes,
+so it lands with the file instead of after it. Present tense, describes what
+the frame shows, makes no claim — see the contract below. Igor's to confirm,
+same as the captions.
+
+- `en-01-call` — EN: *Igor Shatsev at his desk, mid-sentence on a video call, headset on.* RU: *Игорь Шацев за столом, на видеозвонке, говорит в наушниках.*
+- `en-02-yerevan-table` — EN: *Igor Shatsev and a student lean over a notebook at a café table, seen from behind.* RU: *Игорь Шацев и ученик склонились над блокнотом за столиком кафе, вид со спины.*
+- `en-03-desk` — EN: *A desk set up for a lesson: open laptop, notes.* RU: *Стол, готовый к занятию: открытый ноутбук, записи.*
+- `en-04-correction` — EN: *A hand correcting a sentence in pen on a page.* RU: *Рука ручкой исправляет фразу на странице.*
+- `en-05-markup` — EN: *Two people's hands marking up a printed text, notes in the margin.* RU: *Руки двух человек делают пометки на полях распечатанного текста.*
+- `en-06-window` — EN: *A street view of Yerevan from a window, tufa-stone buildings.* RU: *Вид на ереванскую улицу из окна, дома из туфа.*
+
 ### Chess — `chess-*`  (the feedback loop is a rating that doesn't negotiate)
 
 | # | slug | ratio | in frame |
@@ -80,6 +92,15 @@ Stage 4 also staggers reveals in).
 | 05 | `chess-05-pieces` | 1:1 | Captured pieces off to the side of the board. Texture tile; quiet. |
 | 06 | `chess-06-notation` | 3:2 | A pen and a score sheet being filled in move by move — the act of notating, not a readable result. |
 
+**Alt text (draft — EN / RU).** Same contract as the English group above.
+
+- `chess-01-board` — EN: *Igor Shatsev seated at a chessboard, hand on a piece mid-game.* RU: *Игорь Шацев сидит за шахматной доской, рука на фигуре посреди партии.*
+- `chess-02-clock` — EN: *A hand near a chess clock between moves.* RU: *Рука у шахматных часов между ходами.*
+- `chess-03-study` — EN: *A chess position set up on a board for study, a book beside it.* RU: *Шахматная позиция, расставленная для разбора, рядом книга.*
+- `chess-04-reset` — EN: *Hands resetting chess pieces to their starting rank.* RU: *Руки расставляют шахматные фигуры на исходную горизонталь.*
+- `chess-05-pieces` — EN: *Captured chess pieces set off to the side of the board.* RU: *Снятые шахматные фигуры сбоку от доски.*
+- `chess-06-notation` — EN: *A hand filling in a chess score sheet with a pen.* RU: *Рука ручкой заполняет бланк для записи шахматной партии.*
+
 ### Climbing — `climb-*`  (the scoreboard is the grade; gravity keeps it honest)
 
 | # | slug | ratio | in frame |
@@ -90,6 +111,15 @@ Stage 4 also staggers reveals in).
 | 04 | `climb-04-crimp` | 4:5 | A hand set on a crimp, chalked fingers, close. Connects to the chess "hands" tile as one pair of hands across two domains. |
 | 05 | `climb-05-rest` | 1:1 | Resting on the wall between goes — a still moment on the board, not a summit. |
 | 06 | `climb-06-wide` | 3:2 | The training board from the floor — the whole adjustable panel, Igor small on it or off it. An adjustable board, not a crag: the point is practice, not adventure. |
+
+**Alt text (draft — EN / RU).** Same contract as the English group above.
+
+- `climb-01-board` — EN: *Igor Shatsev mid-move on a steep indoor training board, chalked hands.* RU: *Игорь Шацев в движении на крутой тренировочной доске, руки в магнезии.*
+- `climb-02-chalk` — EN: *A hand chalking up from a chalk bag.* RU: *Рука набирает магнезию из мешочка.*
+- `climb-03-feet` — EN: *Feet placed on climbing holds before a reach.* RU: *Ноги поставлены на зацепки перед выходом рукой.*
+- `climb-04-crimp` — EN: *A chalked hand gripping a small crimp hold.* RU: *Рука в магнезии держится за мелкий зацеп.*
+- `climb-05-rest` — EN: *Igor Shatsev resting on the climbing wall between attempts.* RU: *Игорь Шацев отдыхает на стене между попытками.*
+- `climb-06-wide` — EN: *A wide view of the adjustable training board from the floor.* RU: *Общий вид регулируемой тренировочной доски снизу.*
 
 ## Delivery contract
 
@@ -163,13 +193,17 @@ assets/collage/
 
 ### Alt text
 
-Real, descriptive, bilingual, added in Stage 3 via the existing
-`data-en` / `data-ru` mechanism — a translatable string, not an afterthought.
-Describes what is in the photograph; makes no claim.
+Real, descriptive, bilingual, via the existing `data-en` / `data-ru`
+mechanism — a translatable string, not an afterthought. Describes what is in
+the photograph; makes no claim. Drafted per frame above, next to each brief,
+rather than left for the real-photo swap: `alt=""` was correct for the
+placeholder stand-ins (empty is the rule for decorative filler, and naming a
+stock stand-in would misdescribe what's actually in the file), but the real
+photographs get these strings the same pass they land in `index.html`.
 
 ### Still Igor's to confirm
 
-The shot briefs above and every Russian caption in `index.html` are a
-model's first pass. Igor coaches language for a living and captions fall
-under "real material only" — he vets the RU and signs off the brief list
-before the shoot.
+The shot briefs above, the draft alt text, and every Russian caption in
+`index.html` are a model's first pass. Igor coaches language for a living and
+captions fall under "real material only" — he vets the RU and signs off the
+brief list, alt text included, before the shoot.

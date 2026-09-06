@@ -202,8 +202,13 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 
     <article class="spec reveal">
       <p class="spec__label" data-en="Register, not grammar" data-ru="Регистр, а не грамматика">Register, not grammar</p>
-      <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>Send me the report today, <span class="mark--specimen">please</span>.</span></p>
-      <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="mark--target">Could you</span> send me the report today?</span></p>
+      <!-- This specimen's "wrong" line is grammatically fine — the fault is
+           register, not correctness, so labelling it "Incorrect" (the other
+           two specimens' real grammar errors) overstates the claim. Own
+           hidden labels for this one; the sighted signature (✕ / ✓ glyph,
+           amber/green ink) is unchanged. -->
+      <p class="line-spec wrong"><span class="vh" data-en="Reads as: " data-ru="Звучит как: ">Reads as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1 L9 9 M9 1 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span>Send me the report today, <span class="mark--specimen">please</span>.</span></p>
+      <p class="line-spec right"><span class="vh" data-en="Better as: " data-ru="Естественнее: ">Better as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 5 L4 8 L9 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><span class="mark--target">Could you</span> send me the report today?</span></p>
       <p class="spec__why" data-l="en">The first sentence is grammatically perfect and lands as an order. A Russian imperative plus «пожалуйста» is neutrally polite; the English imperative isn't, and <em>please</em> doesn't rescue it. Errors of this class never show up in a test score, and they're the ones doing damage at work.</p>
       <p class="spec__why" data-l="ru">Первая фраза грамматически безупречна — и звучит как распоряжение. Русский императив с «пожалуйста» нейтрально вежлив, английский — нет, и <em>please</em> его не спасает. Такие ошибки не видны ни в одном тесте, и именно они портят вам жизнь на работе.</p>
     </article>
@@ -354,6 +359,14 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      ================================================================ -->
 <section class="sec" id="who">
   <p class="label reveal"><span class="num">05</span><span data-en="Who this is for" data-ru="Для кого это">Who this is for</span></p>
+  <!-- Every other .sec pairs its .label with a .sec__head h2; this one went
+       straight to four h3 rows with nothing governing them, skipping a
+       heading level and leaving the four answers with no question. The four
+       rows are the answer, so the h2 asks it. -->
+  <div class="sec__head">
+    <h2 class="reveal" data-l="en">Which of these is you?</h2>
+    <h2 class="reveal" data-l="ru">Какой из этих случаев — про вас?</h2>
+  </div>
   <ul class="rows">
     <li class="reveal">
       <h3 data-en="You plateaued and can't see the wall" data-ru="Вы упёрлись в потолок и не видите во что">You plateaued and can't see the wall</h3>
@@ -435,11 +448,13 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
     </svg>
     <div class="view__tools">
-      <!-- Same theme switch as the masthead's. The open collage view sits above
-           the masthead (z-index), so this is the only Cream/Charcoal control
-           reachable while it's open. theme.js labels and wires every
-           .themeswitch, so both stay in sync. -->
+      <!-- Same theme + language switches as the masthead's. The open collage
+           view sits above the masthead (z-index), so these are the only
+           Cream/Charcoal and EN/RU controls reachable while it's open.
+           theme.js labels and wires every .themeswitch / .langswitch, so all
+           copies of each stay in sync. -->
       <button class="tool themeswitch" type="button" data-magnetic>Cream</button>
+      <button class="tool langswitch" type="button" data-magnetic>RU</button>
       <button class="view__back" type="button">
         <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M26 4H3M7 1 3 4l4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
         <span data-en="Back" data-ru="Назад">Back</span>
@@ -447,11 +462,17 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </div>
   </div>
 
-  <div class="view__body">
+  <!-- #collage behaves like its own page (see CLAUDE.md's routing note), so it
+       gets the page-level landmarks a real page would have: its own <main>
+       (a distinct id from the site's #main — #app's is made inert while this
+       is open, never both exposed at once) and its own single <h1>, not a
+       second heading subordinate to the real page's. Group headings below
+       demote to h2 accordingly. -->
+  <main class="view__body" id="collage-main">
     <p class="label"><span data-en="Photographs" data-ru="Фотографии">Photographs</span></p>
-    <h2 id="collage-title" tabindex="-1"
+    <h1 id="collage-title" tabindex="-1"
         data-en="The work, photographed: a call, a chessboard, a climbing wall."
-        data-ru="Работа в кадре: созвон, шахматная доска, скалодром.">The work, photographed: a call, a chessboard, a climbing wall.</h2>
+        data-ru="Работа в кадре: созвон, шахматная доска, скалодром.">The work, photographed: a call, a chessboard, a climbing wall.</h1>
     <div class="view__lede">
       <p data-l="en">No stock, no staging: the brand rules both out. What's here is Igor Shatsev at work, in the three places the method gets tested: <strong class="mark">an English lesson, a rated game, a graded climb</strong>.</p>
       <p data-l="ru">Ни стоков, ни постановки — бренд не допускает ни того, ни другого. Здесь — Igor Shatsev за работой в трёх местах, где проверяется один и тот же метод: <strong class="mark">урок английского, партия на рейтинг, трасса на категорию</strong>.</p>
@@ -471,9 +492,9 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         </svg>
         <span data-en="English" data-ru="Английский">English</span>
       </p>
-      <h3 id="collage-en" tabindex="-1"
+      <h2 id="collage-en" tabindex="-1"
           data-en="The coaching itself: one-on-one, online or in Yerevan."
-          data-ru="Сама работа — один на один, онлайн или в Ереване.">The coaching itself — one-on-one, online or in Yerevan.</h3>
+          data-ru="Сама работа — один на один, онлайн или в Ереване.">The coaching itself — one-on-one, online or in Yerevan.</h2>
       <p class="view__group-lede" data-l="en">There's no classroom to photograph. This is how a lesson runs: a call, a table, a text being pulled apart.</p>
       <p class="view__group-lede" data-l="ru">Класса, который можно снять, нет. Вот как на самом деле идёт занятие: созвон, стол, текст, который разбирают по частям.</p>
       <div class="collage collage--group">
@@ -551,9 +572,9 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         </svg>
         <span data-en="Chess" data-ru="Шахматы">Chess</span>
       </p>
-      <h3 id="collage-chess" tabindex="-1"
+      <h2 id="collage-chess" tabindex="-1"
           data-en="Where the feedback loop is a rating that doesn't negotiate."
-          data-ru="Где обратная связь — рейтинг, который не торгуется.">Where the feedback loop is a rating that doesn't negotiate.</h3>
+          data-ru="Где обратная связь — рейтинг, который не торгуется.">Where the feedback loop is a rating that doesn't negotiate.</h2>
       <p class="view__group-lede" data-l="en">A 2100 rating, earned move by move. The frames catch the moment before a move is committed, where the pressure sits.</p>
       <p class="view__group-lede" data-l="ru">Рейтинг 2100, набранный ход за ходом. В кадре — момент перед тем, как ход сделан: там и живёт давление.</p>
       <div class="collage collage--group">
@@ -632,9 +653,9 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         </svg>
         <span data-en="Climbing" data-ru="Скалолазание">Climbing</span>
       </p>
-      <h3 id="collage-climb" tabindex="-1"
+      <h2 id="collage-climb" tabindex="-1"
           data-en="Where the scoreboard is the grade, and gravity keeps it honest."
-          data-ru="Где табло — это категория, а гравитация не даёт соврать.">Where the scoreboard is the grade, and gravity keeps it honest.</h3>
+          data-ru="Где табло — это категория, а гравитация не даёт соврать.">Where the scoreboard is the grade, and gravity keeps it honest.</h2>
       <p class="view__group-lede" data-l="en">A 7c redpoint indoors and a 7C Kilter boulder, trained on an adjustable board rather than a crag. The point is deliberate practice, not adventure.</p>
       <p class="view__group-lede" data-l="ru">7c с пробитием на скалодроме и болдер 7C на Kilter — тренировка на регулируемой доске, а не на скале: смысл в осознанной практике, а не в приключении.</p>
       <div class="collage collage--group">
@@ -700,7 +721,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         </figure>
       </div>
     </section>
-  </div>
+  </main>
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
