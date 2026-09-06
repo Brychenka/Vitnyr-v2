@@ -604,6 +604,36 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
 }
 
+/* Spark Order S2 / move 18 — four facts, four units.
+   The differentiation is typographic only: no colour beyond the ink tokens
+   already in use, no new component, no approved string touched. Each .facts li
+   carries a modifier naming what kind of reading it is. */
+
+/* count — a plain tally. Its unit label drops the uppercase caption voice for
+   a mono annotation, so "8 years coaching" reads as a number and its unit
+   rather than a number and a heading. */
+.fact--count .k {
+  font-family: var(--mono); text-transform: none;
+  letter-spacing: .01em; font-size: 13px; font-weight: 400;
+}
+
+/* scale — a position on a continuum, not a count. Tabular figures (already the
+   row default; restated here as the intent) and a short hairline tick beneath
+   the numeral, a gauge mark. The tick is --rule, the sanctioned hairline ink,
+   so it stays a rule and not a third colour. */
+.fact--scale .n { position: relative; font-variant-numeric: tabular-nums; }
+.fact--scale .n::after {
+  content: ""; position: absolute; left: 0; bottom: -.16em;
+  width: .44em; height: 1px; background: var(--rule);
+}
+
+/* grade — two climbing readings under one numeral. "7c redpoint, indoor" and
+   "7C Kilter" were one run-on string joined by a middle dot, which reads as a
+   single fact to a non-climber; stacked and separately labelled, they read as
+   two. The 7c / 7C case difference is meaningful and is left exactly as is. */
+.fact--grade .fact__reading { display: block; }
+.fact--grade .fact__reading + .fact__reading { margin-top: 3px; }
+
 /* ---------- origin (name & mark) ---------- */
 .origin__body {
   display: flex; flex-direction: column; align-items: center;
