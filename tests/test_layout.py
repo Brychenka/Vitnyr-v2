@@ -56,3 +56,33 @@ def test_masthead_ground_turns_opaque_after_scroll(open_site):
     page.evaluate("window.scrollTo(0, 600)")
     page.wait_for_timeout(300)
     assert "is-scrolled" in page.locator("html").get_attribute("class")
+
+
+# --- C10: specimens rebuilt as full-width rows (were three cramped columns)
+# with the sentence pair beside its explanation, not stacked above it. ---
+
+def test_specimen_pair_sits_beside_its_explanation_at_desktop_width(open_site):
+    page, _ = open_site(viewport=WIDE)
+    first = page.locator(".spec").first
+    lines_box = first.locator(".spec__lines").bounding_box()
+    why_box = first.locator(".spec__why:visible").bounding_box()
+    assert abs(lines_box["y"] - why_box["y"]) < 20, "columns aren't top-aligned"
+    assert why_box["x"] > lines_box["x"] + lines_box["width"] - 20, "explanation isn't beside the pair"
+    # and it runs the section's full width, not a third of it
+    assert lines_box["width"] + why_box["width"] > 900
+
+
+def test_specimen_pair_stacks_above_its_explanation_at_mobile_width(open_site):
+    page, _ = open_site(viewport=NARROW)
+    first = page.locator(".spec").first
+    lines_box = first.locator(".spec__lines").bounding_box()
+    why_box = first.locator(".spec__why:visible").bounding_box()
+    assert why_box["y"] > lines_box["y"] + lines_box["height"] - 5
+
+
+def test_specimen_sentence_pair_reads_at_showpiece_size(open_site):
+    page, _ = open_site(viewport=WIDE)
+    size = page.locator(".line-spec").first.evaluate(
+        "el => parseFloat(getComputedStyle(el).fontSize)"
+    )
+    assert size >= 17, f"still {size}px — the cramped three-column size was 14px"

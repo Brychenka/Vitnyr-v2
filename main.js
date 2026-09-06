@@ -358,9 +358,14 @@
         el.classList.toggle('is-active', el.dataset.discipline === name);
       });
     }
+    // C6 (2026-09-06): rest state is English lit, not neutral — English is
+    // the offer, chess and climbing are proof it transfers, not equal-weight
+    // alternatives. This used to strip every class instead, so the mark sat
+    // fully neutral (all three strokes equal weight, panel blank) until the
+    // idle hint below happened to run, or forever under reduced motion,
+    // where the hint never runs at all. Now it just re-asserts the default.
     function clearPaint() {
-      parts.forEach(function (el) { el.classList.remove('is-active', 'is-dim'); });
-      panelItems.forEach(function (el) { el.classList.remove('is-active'); });
+      paint('english');
     }
 
     function setActive(name) {
@@ -374,6 +379,13 @@
         el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
       });
     }
+
+    // Establishes the resting default from the first frame — covers reduced
+    // motion (the idle hint below never runs there) and the gap before the
+    // hint's own IntersectionObserver fires. paint()/clearPaint() carry no
+    // aria side effects (see the comment above paint()), so this is silent
+    // to assistive tech exactly like the hint is.
+    clearPaint();
 
     hits.forEach(function (btn) {
       var name = btn.dataset.discipline;
@@ -441,30 +453,30 @@
     window.addEventListener('mousemove', function (e) {
       mx = e.clientX; my = e.clientY;
       if (!shown) {
-        /* has-cursor hides the native pointer, so it must not go on until
-           there is a replacement to show — a tab loaded in the background
-           would otherwise have no visible cursor at all. */
+        // has-cursor only hides the native pointer over hot targets now
+        // (C13 — see the CSS), so this no longer has to race a replacement
+        // onto the screen; it just arms the class the hot-target rules and
+        // cursor-active's opacity toggle are both keyed off.
         shown = true;
         cx = mx; cy = my;
         gsap.set(el, { x: mx, y: my });
         root.classList.add('has-cursor');
-        gsap.to(el, { opacity: 1, duration: D.micro, ease: EASE });
       }
       kick();
     }, { passive: true });
 
+    // The dot's own visibility is CSS now (html.has-cursor.cursor-active
+    // .cursor { opacity: 1 }) rather than a tween kicked off here — it
+    // only ever needs to be on while the pointer is over one of these, so
+    // there is no separate "hide it when the mouse leaves the window" case
+    // to handle either: leaving a hot target through the viewport edge
+    // fires this same mouseout first.
     var HOT = 'a, button, [data-magnetic]';
     document.addEventListener('mouseover', function (e) {
       if (e.target.closest && e.target.closest(HOT)) { root.classList.add('cursor-active'); sc(3); }
     });
     document.addEventListener('mouseout', function (e) {
       if (e.target.closest && e.target.closest(HOT)) { root.classList.remove('cursor-active'); sc(1); }
-    });
-    document.addEventListener('mouseleave', function () {
-      if (shown) gsap.to(el, { opacity: 0, duration: D.micro, ease: EASE });
-    });
-    document.addEventListener('mouseenter', function () {
-      if (shown) gsap.to(el, { opacity: 1, duration: D.micro, ease: EASE });
     });
   }
 
