@@ -154,7 +154,11 @@ def test_origin_mark_still_interactive_under_reduced_motion(open_site):
     assert item.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 
 
-def test_reduced_motion_counters_show_final_value_without_animating(open_site):
+def test_reduced_motion_facts_row_shows_every_value(open_site):
+    """The reduced-motion branch in main.js returns early; the facts must still
+    read out in full. (Before Spark Order move 17 this branch called countUp(true)
+    to settle the numbers; now they are plain text and this just guards the
+    early-return path from dropping the row.)"""
     page, _ = open_site(reduced_motion=True)
     page.wait_for_timeout(200)
     values = page.locator(".facts .n").all_inner_texts()

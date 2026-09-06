@@ -20,15 +20,14 @@
   var EASE = 'power4.out';
   if (window.CustomEase) { CustomEase.create('brand', '.16, 1, .3, 1'); EASE = 'brand'; }
 
-  /* Five durations, and nothing between them. Every timing on the page comes
+  /* Four durations, and nothing between them. Every timing on the page comes
      from this table so the whole thing reads as one instrument.
        micro  — a thing appearing or disappearing outright
        state  — a hover, a magnet, a theme settling (this is --t in the sheet)
        follow — the pointer catching up: a lag, not a duration
        hero   — the single longest move on the page, used once
-       count  — the numbers running up to their value
      The reveal's own 0.9s lives in the stylesheet, where the transition is. */
-  var D = { micro: 0.3, state: 0.6, follow: 0.45, hero: 1.05, count: 1.6 };
+  var D = { micro: 0.3, state: 0.6, follow: 0.45, hero: 1.05 };
   var STAGGER = 0.08;
 
   /* ---------- first-frame gate ----------
@@ -85,7 +84,6 @@
     document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
     gsap.set('.line__inner', { y: '0%' });
     root.classList.add('hero-done');
-    countUp(true);
     // Unlike cursor/magnetic (pure decoration, nothing lost by skipping
     // them), the origin panel is the only way — short of no-JS — to see
     // which stroke maps to which discipline. Reduced motion drops the
@@ -275,37 +273,11 @@
     armFailsafe();   // belt-and-braces: force-show any tile the observer misses
   }
 
-  /* ---------- measured numbers count to their value ----------
-     Driven by the same IntersectionObserver mechanism as the reveals rather
-     than by ScrollTrigger. Three counters were the only thing left on the page
-     that ScrollTrigger was doing, and this drops both the 40KB plugin and the
-     coupling between a number's value and a scroll position. */
-  function countUp(instant) {
-    var nums = document.querySelectorAll('.n[data-count]');
-    function run(el) {
-      var end = parseFloat(el.dataset.count);
-      var suf = el.dataset.suffix || '';
-      var obj = { v: 0 };
-      gsap.to(obj, {
-        v: end, duration: D.count, ease: EASE,
-        onUpdate: function () { el.textContent = Math.round(obj.v) + suf; }
-      });
-    }
-    if (instant || !('IntersectionObserver' in window)) {
-      nums.forEach(function (el) {
-        el.textContent = el.dataset.count + (el.dataset.suffix || '');
-      });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        io.unobserve(entry.target);
-        whenRendering(function () { run(entry.target); });
-      });
-    }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
-    nums.forEach(function (el) { io.observe(el); });
-  }
+  /* The measured numbers do not animate. They are four readings off four
+     different instruments (years, clients, an Elo scale, a climbing grade) and
+     a shared count-up rhythm made them read as one — Spark Order move 17. They
+     arrive on the ordinary .reveal rhythm with the rest of the row and sit at
+     their value; nothing on the page runs a number up. */
 
   /* ---------- origin: interactive mark ----------
      Hover, focus, or tap one of the three real <button> hit-regions to light
@@ -712,7 +684,6 @@
 
   /* ---------- go ---------- */
   buildReveals();
-  countUp(false);
   initOrigin();
   initCursor();
   initMagnetic();
