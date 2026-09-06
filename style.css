@@ -243,6 +243,31 @@ html.lora-ready .lockup .wm { opacity: 1; }
 .tool:hover { color: var(--fg); }
 .tool:hover::after { transform: scaleX(1); }
 
+/* The language switch swaps every word in .tools at once, and each label is
+   content-sized, so the swap resizes .tools. Because .tools is right-anchored
+   (space-between on .masthead) the cluster then reflows and RU/EN visibly
+   jumps sideways. .themeswitch is upstream of .langswitch in a flex-start
+   row, so its own width change cancels out of RU/EN's position — what moves
+   RU/EN is the Photos/Фото caption downstream shifting the right anchor, plus
+   RU/EN's own sub-pixel R-vs-E difference. Pin both: a zero-height ::before
+   carries the widest string the element can ever show, so the reserved width
+   is whatever the real font renders (text-transform and letter-spacing reach
+   the pseudo too) rather than a hand-tuned pixel value. The shorter label
+   centres in that box. .themeswitch is left as-is: pinning it would only
+   stretch its hover hairline (.tool::after spans the box) past "Cream"/
+   "Уголь". */
+.langswitch, .tools__label { text-align: center; }
+.langswitch::before,
+.tools__label::before {
+  content: "Photos";
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+.langswitch::before { content: "RU"; }
+
 /* ---------- progress hairline (Spark Order S3 / move 20) ----------
    A 1px rule on the masthead's bottom edge. left/right:0 pins it to the
    masthead's own box, so it is exactly as wide as the masthead border-bottom
