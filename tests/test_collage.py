@@ -89,6 +89,35 @@ def test_scroll_position_restored_on_return(open_site):
     assert abs(after - before) < 40, f"returned to {after}, left from {before}"
 
 
+def test_cold_deep_link_returns_to_the_top_on_close(open_site):
+    """The cold-open counterpart to the warm-path test above — the case
+    collage-plan.md's "Notes for the next chat" flagged as asserted nowhere:
+    open #collage in a fresh tab, then close, and confirm the page behind is
+    at the very top.
+
+    Today this holds for a belt-and-braces reason: the <head> script sets
+    .collage-open before first paint so #app never takes layout, the document
+    can't scroll, and the browser's scroll-to-fragment toward #collage (the
+    last element in the DOM) is a no-op. applyOpen(cold) also pins savedScroll
+    to 0 and a post-load settle() re-asserts it. This test pins the outcome so
+    that if either guard is later weakened (an open transition that renders
+    #app, a change to the head-script gate), a close that lands mid-page fails
+    here instead of shipping."""
+    page, _ = open_site(hash="#collage")
+    assert _is_open(page)
+    # let the head script's paint, the browser's fragment jump, and applyOpen's
+    # post-load settle() all run before we leave
+    page.wait_for_timeout(300)
+
+    page.locator(".view__back").click()
+    page.wait_for_timeout(600)
+
+    assert not _is_open(page)
+    assert page.evaluate("location.hash") in ("", "#")
+    after = page.evaluate("window.__lenis ? window.__lenis.scroll : window.scrollY")
+    assert after < 40, f"cold-open close landed at {after}, expected the top"
+
+
 def test_theme_and_language_persist_through_the_view(open_site):
     page, _ = open_site(color_scheme="dark")
     # .themeswitch now exists twice (masthead + collage view bar); the collage
