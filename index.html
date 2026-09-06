@@ -479,23 +479,39 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <h2 class="reveal" data-l="en">Which of these is you?</h2>
     <h2 class="reveal" data-l="ru">Какой из этих случаев — про вас?</h2>
   </div>
+  <!-- Spark Order S5 / move 19: each row is selectable — main.js builds an
+       invisible overlay <button> per row (so the no-JS row is unchanged) that
+       toggles a first-person clause onto the section 06 Telegram CTA, so the
+       reader answers "which of these is you?" without having to phrase it.
+       The data-prefill-en/ru clauses are a model's first pass, restating each
+       row's own approved heading in the first person — flagged for Igor to
+       confirm, the same way reference/collage-shotlist.md flags its draft
+       copy and the §05 h2 above was flagged when C4 added it. -->
   <ul class="rows">
-    <li class="reveal">
+    <li class="reveal"
+        data-prefill-en="I've hit a plateau and can't see what's keeping me there."
+        data-prefill-ru="Я упёрся в потолок и не вижу, что меня держит.">
       <h3 data-en="You plateaued and can't see the wall" data-ru="Вы упёрлись в потолок и не видите во что">You plateaued and can't see the wall</h3>
       <p data-l="en">Years of apps, courses and shows with subtitles, and you're in the same place. A streak <strong class="mark">measures attendance</strong>. Nothing in that loop names the thing keeping you there.</p>
       <p data-l="ru">Годы приложений, курсов и сериалов с субтитрами — и вы там же, где были. Серия дней подряд <strong class="mark">измеряет посещаемость</strong>. Ничто в этом круге не назовёт, что именно держит вас на месте.</p>
     </li>
-    <li class="reveal">
+    <li class="reveal"
+        data-prefill-en="I understand everything but say about a third of it."
+        data-prefill-ru="Я всё понимаю, а говорю треть.">
       <h3 data-en="You understand everything and say a third of it" data-ru="Вы всё понимаете, а говорите треть">You understand everything and say a third of it</h3>
       <p data-l="en">Comprehension ran ahead of speech. You follow the meeting fine and stay quiet in it, because building the sentence takes longer than the moment lasts.</p>
       <p data-l="ru">Понимание ушло далеко вперёд речи. Встречу вы понимаете нормально — и молчите на ней, потому что собрать фразу дольше, чем длится момент.</p>
     </li>
-    <li class="reveal">
+    <li class="reveal"
+        data-prefill-en="My written English is two levels above how I speak it."
+        data-prefill-ru="В переписке мой английский на два уровня выше, чем вслух.">
       <h3 data-en="Your written English is two levels above your spoken English" data-ru="В переписке ваш английский на два уровня выше">Your written English is two levels above your spoken English</h3>
       <p data-l="en">In writing you have time to edit, so you sound like yourself. Out loud you drop a level, and that's the level people meet.</p>
       <p data-l="ru">В переписке есть время отредактировать — и вы звучите как вы. Вслух вы проседаете на уровень, и знакомятся люди именно с этим, нижним.</p>
     </li>
-    <li class="reveal it-row">
+    <li class="reveal it-row"
+        data-prefill-en="I'm read as junior because of how I speak, not what I know."
+        data-prefill-ru="Меня принимают за джуна из-за того, как я говорю, а не что знаю.">
       <h3 data-en="You're read as junior because of how you speak" data-ru="Вас принимают за джуна из-за того, как вы говорите">You're read as junior because of how you speak</h3>
       <p data-l="en">Usually taken for a confidence problem. It's register, and the confidence is the side effect: softening where English wants you direct, blunt where it wants you soft, over-explaining to cover the gap. The technical answer underneath was fine.</p>
       <p data-l="ru">Обычно это списывают на неуверенность. Это регистр, а неуверенность — уже следствие: вы смягчаете там, где английский ждёт прямоты, рубите там, где он ждёт мягкости, и объясняете лишнее, чтобы это закрыть. Технический ответ под всем этим был нормальный.</p>
