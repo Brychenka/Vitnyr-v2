@@ -2,7 +2,10 @@
    Vitnyr — v2 motion
    One easing curve everywhere: cubic-bezier(.16, 1, .3, 1).
    One reveal rhythm: fade + 24px rise, 0.9s, 0.08s stagger, once.
-   One signature move: custom cursor + magnetic targets.
+   Pointer feedback: a custom cursor + magnetic targets (guide phase 4).
+   Not "the signature move" any more — from the Spark Order's S6 correction
+   on, that performed edit is the page's one move; the cursor is just the
+   pointer answering back.
    Everything degrades: no JS, no GSAP, reduced motion, touch, or a
    tab opened in the background all end with the same readable page.
    ============================================================ */
@@ -119,6 +122,38 @@
     // already gates its own idle-hint animation behind `reduce` internally.
     initOrigin();
     return;
+  }
+
+  /* ---------- language crossfade (Spark Order S4 / move 05) ----------
+     theme.js does the language swap synchronously inside its own click
+     handler, so main.js can't slot a fade in front of it without racing.
+     The hook inverts the control: theme.js calls window.__vitnyrLangFade
+     with the swap as a callback when it exists, and runs the swap bare
+     otherwise (no main.js, no GSAP, reduced motion — an instant switch,
+     which test_seeded_language_applies_before_paint and the no-JS path
+     both depend on). Installed here, past the reduced-motion return, so it
+     is only ever present when GSAP is loaded and motion is allowed.
+
+     The swap runs synchronously the moment we're called, then #app is cut
+     to transparent and fades back over D.state on the brand ease — a
+     page-wide transition rather than a hard text swap. It is not deferred
+     to the bottom of a fade-out: there is no second, old-language layer to
+     fade out (that needs S6's clone/FLIP machinery), and deferring it
+     would desync every existing i18n test that asserts on the same tick as
+     the click — which S4 must keep green. #app only: the masthead switch
+     the reader just pressed stays solid so they see it answer. A second
+     click mid-fade re-runs its own swap and retargets the one tween, so a
+     double-click can never strand the page faded with the old language. */
+  var appEl = document.getElementById('app');
+  if (appEl) {
+    var langFadeTween = null;
+    window.__vitnyrLangFade = function (swap) {
+      swap();                                   // always, first thing
+      if (langFadeTween) langFadeTween.kill();  // no stacked opacity tweens
+      langFadeTween = gsap.fromTo(appEl, { opacity: 0 },
+        { opacity: 1, duration: D.state, ease: EASE,
+          onComplete: function () { langFadeTween = null; } });
+    };
   }
 
   /* ---------- hero: line masks, once, on load ---------- */
@@ -421,7 +456,7 @@
     io.observe(mark);
   }
 
-  /* ---------- signature move: cursor + magnetic ---------- */
+  /* ---------- pointer: cursor + magnetic ---------- */
   function initCursor() {
     if (!finePointer) return;
     var el = document.querySelector('.cursor');
@@ -473,10 +508,24 @@
     // fires this same mouseout first.
     var HOT = 'a, button, [data-magnetic]';
     document.addEventListener('mouseover', function (e) {
-      if (e.target.closest && e.target.closest(HOT)) { root.classList.add('cursor-active'); sc(3); }
+      var hot = e.target.closest && e.target.closest(HOT);
+      if (!hot) return;
+      root.classList.add('cursor-active'); sc(3);
+      /* Move 02 (Spark Order S4): over a control inside #specimen the dot
+         takes the specimen ink, over the contact CTA it takes the target
+         ink — the page's own two accents, so the pointer previews "this is
+         the error" / "this is the outcome". The colours are declared in the
+         stylesheet off --ink-specimen / --ink-target; no hex here. The dot
+         is a shape, so the sub-24px accent-on-text contrast rule does not
+         apply. */
+      el.classList.toggle('is-specimen', !!hot.closest('#specimen'));
+      el.classList.toggle('is-target', !!hot.closest('.contact__cta'));
     });
     document.addEventListener('mouseout', function (e) {
-      if (e.target.closest && e.target.closest(HOT)) { root.classList.remove('cursor-active'); sc(1); }
+      if (e.target.closest && e.target.closest(HOT)) {
+        root.classList.remove('cursor-active'); sc(1);
+        el.classList.remove('is-specimen', 'is-target');
+      }
     });
   }
 

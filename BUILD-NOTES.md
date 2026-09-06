@@ -1197,6 +1197,88 @@ Full suite: **144 passed** (was 138, +6 new cases). Nothing edited in the
 existing tests; the earlier `test_scroll_position_restored_on_return` blip was
 a contaminated background run (Trap 1), green on a clean pass.
 
+## Spark Order, Stage 4 — switch and pointer (2026-09-06)
+
+Branch `feature/switch-and-pointer`. Moves 05 and 20's sibling 02 — the
+language swap gets a transition, and the custom dot borrows the page's two
+accents. `theme.js` stays render-blocking and works alone.
+
+**Move 05 — the language crossfade.** `theme.js`'s `.langswitch` handler now
+builds the swap (`applyLang` + `syncLangUrl`) as a callback and, *if*
+`window.__vitnyrLangFade` is a function, hands it over; otherwise it calls it
+straight, exactly as before. `main.js` installs `__vitnyrLangFade` past its
+reduced-motion return, so it exists only under GSAP + motion-allowed. It runs
+the swap, then `gsap.fromTo`s `#app` from `opacity: 0` back to `1` over
+`D.state` on the brand ease — a page-wide fade rather than a hard text swap.
+`#app` only: `.masthead` is its sibling, so the switch the reader just pressed
+stays solid and visibly answers.
+
+- **Deviation from the sheet's literal "fade out over `D.micro`, invoke the
+  callback, then fade back in":** the callback is *not* deferred to the bottom
+  of a fade-out, and there is no explicit out phase. Two reasons. (1) There is
+  no second, old-language layer to fade out — holding one needs S6's
+  clone/FLIP machinery, which isn't built. (2) Deferring the swap by ~`D.micro`
+  desyncs every existing i18n test that asserts on the same tick as the click
+  (`data-lang`, the `?lang=` mirror, `data-l` visibility), and S4 requires
+  those green. Running the swap synchronously satisfies both, and the "callback
+  must always run, even if a second click interrupts" guard becomes trivial:
+  it always runs, first thing, on every call.
+- **Double-click safety.** Each call re-runs its own swap and `kill()`s the
+  running opacity tween before starting a fresh `fromTo`. The last call's tween
+  is never killed by anyone, so `#app` always lands at `opacity: 1` on the
+  final language — three fast clicks end fully visible on RU, never dark on the
+  first.
+- **Degradation.** With `main.js` blocked (no GSAP) `__vitnyrLangFade` is never
+  installed and `theme.js` swaps instantly, `js` class dropped, page fully
+  readable — `test_language_swap_degrades_to_instant_without_gsap` blocks the
+  `gsap|lenis|customease` requests and proves it. Reduced motion: same instant
+  path, `#app` untouched at `opacity: 1`.
+
+**Move 02 — the dot learns the two accents.** `initCursor()`'s delegated
+`mouseover`/`mouseout` pair now also toggles `.is-specimen` / `.is-target` on
+`.cursor`: `is-specimen` when the hot target is inside `#specimen`,
+`is-target` when it is (or is inside) `.contact__cta`. The fill comes from CSS
+— `--ink-specimen` / `--ink-target`, the same tokens every other accent uses;
+no hex entered `main.js`. The dot is a shape, so the sub-24px accent-on-text
+rule doesn't apply. `#specimen` has no interactive control yet (S6 adds them),
+so that branch is wired ahead and tested against an injected `[data-magnetic]`
+probe. Coarse pointers still return early from `initCursor()` — the dot never
+appears on touch (`test_cursor_absent_on_touch_devices`).
+
+**Comment.** `main.js`'s header and the cursor section no longer call the
+cursor "the signature move" — from S6's correction on, the performed edit is
+the page's one move; the cursor is pointer feedback. Guide-phase-4 reference
+kept. `style.css` still says "phase 4" (a build-guide phase label, accurate).
+
+**Tests.** Seven new cases, four files' worth of behaviour in two:
+- `test_i18n.py`: `test_language_swap_fades_app_but_not_the_masthead`,
+  `test_rapid_repeated_clicks_never_strand_the_app_faded`,
+  `test_language_swap_is_instant_under_reduced_motion`,
+  `test_language_swap_degrades_to_instant_without_gsap`.
+- `test_motion.py`: `test_cursor_takes_target_ink_over_the_contact_cta`,
+  `test_cursor_takes_specimen_ink_over_a_control_inside_specimen`,
+  `test_cursor_absent_on_touch_devices`.
+
+Regression-proved per the standing protocol: `git stash push -- main.js
+theme.js style.css`, ran the new cases against reverted source — the three
+that assert the *new* behaviour failed (`__vitnyrLangFade` undefined, no
+`is-target`/`is-specimen` class); the four degradation/guard cases pass either
+way by design (they assert the fallback path, which already worked). Popped,
+all seven green. Every pre-existing i18n test passed untouched — the
+synchronous-swap decision is what keeps that true.
+
+Verified headless (Trap 2: the preview pane reports `clientWidth: 0`): 375 and
+1280, EN and RU, both themes — clicking `.langswitch` dips `#app` below 0.9
+and restores it above 0.98 while `.masthead` holds at 1, the swap lands
+synchronously, no horizontal overflow in either language, no console or page
+errors. Cursor: target-green fill over the CTA, specimen-amber over an
+injected `#specimen` control, both clearing on mouse-out. Reduced motion: no
+hook, instant swap, `#app` at 1.
+
+Full suite: **151 passed** (was 144, +7 new cases). No existing test edited
+for behaviour; the two specimen/target cursor cases gained a 700ms settle wait
+because `.cursor__dot`'s `background` is a `--t` transition.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

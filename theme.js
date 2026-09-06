@@ -115,10 +115,18 @@
 
     var langBtns = document.querySelectorAll('.langswitch');
     for (var k = 0; k < langBtns.length; k++) langBtns[k].addEventListener('click', function () {
-      lang = document.documentElement.getAttribute('data-lang') === 'ru' ? 'en' : 'ru';
-      save(LANG_KEY, lang);
-      applyLang(lang);
-      syncLangUrl(lang);
+      var next = document.documentElement.getAttribute('data-lang') === 'ru' ? 'en' : 'ru';
+      lang = next;
+      save(LANG_KEY, next);
+      /* The swap itself. main.js may wrap this in a crossfade of #app by
+         installing window.__vitnyrLangFade (Spark Order S4 / move 05) — a
+         hook, not an interception. If nothing installed it (main.js absent,
+         GSAP missing, reduced motion) the swap runs straight through, exactly
+         as before; the required degradation is that theme.js still switches
+         instantly on its own. */
+      var swap = function () { applyLang(next); syncLangUrl(next); };
+      if (typeof window.__vitnyrLangFade === 'function') window.__vitnyrLangFade(swap);
+      else swap();
     });
     var ths = document.querySelectorAll('.themeswitch');
     for (var i = 0; i < ths.length; i++) ths[i].addEventListener('click', function () {
