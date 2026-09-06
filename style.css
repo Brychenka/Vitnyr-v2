@@ -50,10 +50,11 @@
      a colour — which blends with whatever renders behind it. Mostly that's
      just --bg, but the amber and green shapes overlap at the mark's shared
      vertex, so a dimmed stroke sitting under the active one alpha-blended
-     with it too, muddying exactly the seam C11 is trying to keep clean.
-     Explicit solid tokens instead: chosen to land close to the old opacity
-     look on this bg (same ~32%-toward---bg blend, computed then hand-set),
-     so the interaction reads the same, but as a real colour that can't bleed
+     with it too, muddying that seam further (the keyline below, added in
+     the same pass, cuts the rest of it). Explicit solid tokens instead:
+     chosen to land close to the old opacity look on this bg (same
+     ~32%-toward---bg blend, computed then hand-set), so the interaction
+     reads the same, but as a real colour that can't bleed
      into a neighbouring shape. */
   --amber-dim: #4A3B21;
   --green-dim: #293D28;
@@ -474,6 +475,14 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   border-left: 2px solid transparent;
   padding: 5px 0 5px 14px;
 }
+/* C11 (2026-09-06): .wrong's border sat flush against .right's — two
+   adjacent boxes with no margin between them, so a 2px amber rule ran
+   straight into a 2px green one with zero gap and read as one stroke
+   changing colour halfway down, right where the wrong/right distinction is
+   the entire point of the device. Margin between the two, not padding
+   inside either one, so the gap is real space rather than more of each
+   line's own box. */
+.line-spec + .line-spec { margin-top: 12px; }
 /* ✕ and ✓ exist in none of the three loaded faces — not even Lora's symbols
    subset — so they rendered from a different system font on every platform,
    in the accent colour, next to a 2px accent rule. Drawn instead. Sized in
@@ -573,18 +582,19 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .glyph__part {
   transition: fill var(--t) var(--e);
 }
-/* C11 (2026-09-06): the amber V and the green stem meet at a shared vertex,
-   and two overlapping fills read as one two-tone shape at exactly the seam
-   where the copy beside it insists these are three separate strokes. A thin
-   --bg-coloured keyline, painted last (the stem sits after the arms in
-   paint order), cuts a clean edge between them without moving a single path
-   coordinate — the mark itself is still never redrawn. */
+/* Extra, alongside C5 (2026-09-06), not a separate finding: the amber V and
+   the green stem meet at a shared vertex, and two overlapping fills read as
+   one two-tone shape at exactly the seam where the copy beside it insists
+   these are three separate strokes. A thin --bg-coloured keyline, painted
+   last (the stem sits after the arms in paint order), cuts a clean edge
+   between them without moving a single path coordinate — the mark itself
+   is still never redrawn. */
 .glyph__part { stroke: var(--bg); stroke-width: 1.25px; }
 /* C5: dimming used to be opacity: .32, which blends with whatever renders
    behind a shape — including the *other* glyph part it overlaps at that same
-   vertex, which was half of the muddying C11 fixes. Explicit solid fill
-   tokens per theme instead: chosen to land close to the old opacity look on
-   each bg, but as colours that can't bleed into a neighbour. */
+   vertex, which was half of what the keyline above cuts through. Explicit
+   solid fill tokens per theme instead: chosen to land close to the old
+   opacity look on each bg, but as colours that can't bleed into a neighbour. */
 .glyph__part--left.is-dim,
 .glyph__part--right.is-dim { fill: var(--amber-dim); }
 .glyph__part--stem.is-dim { fill: var(--green-dim); }
