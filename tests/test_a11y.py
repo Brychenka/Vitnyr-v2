@@ -5,12 +5,40 @@ control, and a fully readable page under prefers-reduced-motion."""
 import pytest
 
 
+def _exposed_ids(page, tag):
+    """ids of <tag> elements actually reachable by assistive tech: not under
+    an inert ancestor (real browsers drop inert subtrees from the
+    accessibility tree; Playwright's own role engine doesn't model that, so
+    this checks the underlying rule directly) and not visibility:hidden."""
+    return page.evaluate(
+        """(tag) => [...document.querySelectorAll(tag)]
+            .filter(el => !el.closest('[inert]')
+                && getComputedStyle(el).visibility !== 'hidden')
+            .map(el => el.id)""",
+        tag,
+    )
+
+
 def test_single_h1_and_main_landmark(open_site):
     page, _ = open_site()
-    assert page.locator("h1").count() == 1
+    # #collage carries its own h1/<main> too (C3 — it behaves like its own
+    # page), so the raw DOM count of each is 2 by design; exactly one of
+    # each is actually exposed while the view sits closed (visibility:hidden).
+    assert page.locator("h1").count() == 2
+    assert _exposed_ids(page, "h1") == [""]  # the site's own, unlabelled
+    assert _exposed_ids(page, "main") == ["main"]
     assert page.locator("main#main").count() == 1
     assert page.locator("header.masthead").count() == 1
     assert page.locator("footer").count() == 1
+
+
+def test_single_h1_and_main_landmark_when_collage_view_is_open(open_site):
+    """The reverse of the case above: with #collage open, #app (the site's
+    own h1 and <main>) is made inert, so exactly one h1 and one <main> stay
+    exposed — the collage's own — never both at once."""
+    page, _ = open_site(hash="#collage")
+    assert _exposed_ids(page, "h1") == ["collage-title"]
+    assert _exposed_ids(page, "main") == ["collage-main"]
 
 
 def test_skip_link_moves_focus_to_main(open_site):
@@ -64,12 +92,18 @@ def test_decorative_svgs_are_hidden_from_a11y_tree(open_site):
 
 def test_specimen_rows_have_text_equivalent_for_correctness(open_site):
     """correct/incorrect is carried by a visually-hidden label, not colour +
-    glyph alone."""
+    glyph alone. The register specimen (P5) isn't a grammar error — its wrong
+    line is grammatically fine, just badly pitched — so it carries its own
+    "Reads as" / "Better as" pair instead of overstating it as "Incorrect"."""
     page, _ = open_site()
     vh = page.locator(".line-spec .vh")
     assert vh.count() == 6
     texts = {t.strip() for t in vh.all_inner_texts()}
-    assert texts == {"Incorrect:", "Correct:"}
+    assert texts == {"Incorrect:", "Correct:", "Reads as:", "Better as:"}
+
+    register = page.locator(".spec", has=page.locator("text=Register, not grammar"))
+    register_labels = {t.strip() for t in register.locator(".vh").all_inner_texts()}
+    assert register_labels == {"Reads as:", "Better as:"}
 
 
 def test_reduced_motion_shows_all_content_immediately(open_site):
@@ -135,3 +169,26 @@ def test_focus_visible_ring_is_the_target_green(open_site):
     )
     # --ink-target on charcoal = #4C7A52
     assert outline == "rgb(76, 122, 82)"
+
+
+def test_origin_mark_shows_a_focus_ring_on_the_visible_figure(open_site):
+    """The hit regions (.origin__hit) are invisible, oversized rectangles —
+    a ring drawn on one of them wouldn't trace anything the reader can see,
+    so it used to be suppressed outright (C7) with only a colour/opacity
+    change on the glyph to mark focus. The ring now lands on .origin__mark,
+    the figure the reader actually sees, via :has(.origin__hit:focus-visible)."""
+    page, _ = open_site()
+    mark = page.locator(".origin__mark")
+    assert mark.evaluate("el => getComputedStyle(el).outlineStyle") == "none"
+
+    page.locator('.origin__hit[data-discipline="chess"]').focus()
+    style = mark.evaluate(
+        "el => ({ style: getComputedStyle(el).outlineStyle, color: getComputedStyle(el).outlineColor })"
+    )
+    assert style["style"] == "solid"
+    assert style["color"] == "rgb(76, 122, 82)"  # --ink-target on charcoal
+    # the hit rectangle itself still carries no ring of its own
+    hit_outline = page.locator('.origin__hit[data-discipline="chess"]').evaluate(
+        "el => getComputedStyle(el).outlineStyle"
+    )
+    assert hit_outline == "none"

@@ -204,3 +204,22 @@ def test_icon_touch_target_is_44px_on_coarse_pointers(open_site):
     for i in range(3):
         box = _icon_buttons(page).nth(i).bounding_box()
         assert box["width"] >= 44 and box["height"] >= 44
+
+
+# --- C2: the text controls beside those icons (theme, language, collage
+# Back) used to sit as low as 19x23 on a coarse pointer — under WCAG 2.2's
+# 24px minimum, next to icons calculated to exactly 44px. ---
+
+def test_text_tool_touch_targets_clear_24px_on_coarse_pointers(open_site):
+    page, _ = open_site(viewport={"width": 375, "height": 780}, has_touch=True)
+    assert page.evaluate("matchMedia('(pointer: coarse)').matches")
+    for selector in (".masthead .themeswitch", ".masthead .langswitch"):
+        box = page.locator(selector).bounding_box()
+        assert box["width"] >= 24 and box["height"] >= 24, f"{selector}: {box}"
+
+
+def test_view_back_touch_target_clears_24px_on_coarse_pointers(open_site):
+    page, _ = open_site(hash="#collage", viewport={"width": 375, "height": 780}, has_touch=True)
+    assert page.evaluate("matchMedia('(pointer: coarse)').matches")
+    box = page.locator(".view__back").bounding_box()
+    assert box["width"] >= 24 and box["height"] >= 24, box

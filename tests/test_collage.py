@@ -107,6 +107,28 @@ def test_theme_and_language_persist_through_the_view(open_site):
     ) == "rgb(239, 235, 227)"
 
 
+# --- C1: the language switch, not just the theme switch, reaches into the
+# collage bar — previously the only Cream/Charcoal-and-EN/RU control open to
+# a reader once the view covers the masthead was the theme switch. ---
+
+def test_language_switch_inside_the_collage_bar_actually_works(open_site):
+    page, _ = open_site(hash="#collage")
+    bar_lang = page.locator("#collage .view__tools .langswitch")
+    assert bar_lang.is_visible()
+    assert bar_lang.text_content().strip() == "RU"
+
+    bar_lang.click()
+    html = page.locator("html")
+    assert html.get_attribute("data-lang") == "ru"
+    assert bar_lang.text_content().strip() == "EN"
+    # the masthead's own copy (behind the view, but still in the DOM) is
+    # kept in sync by the same querySelectorAll loop theme.js already ran
+    # for .themeswitch
+    assert page.locator(".masthead .langswitch").text_content().strip() == "EN"
+    # the group heading itself re-rendered in Russian too
+    assert "Сама работа" in page.locator("#collage-en").text_content()
+
+
 def test_no_js_fallback_leaves_collage_as_a_plain_section(open_site):
     """With JS off, #collage is just the last block of the document and the
     opener is an ordinary in-page anchor to it — nothing hidden, no routing."""

@@ -34,7 +34,7 @@ def test_hero_replays_and_settles_after_language_switch(open_site):
     page.wait_for_function(
         "document.documentElement.classList.contains('hero-done')", timeout=6000
     )
-    page.locator(".langswitch").click()
+    page.locator(".masthead .langswitch").click()
     # class is cleared while the fresh tween runs, then re-set on complete
     page.wait_for_function(
         "document.documentElement.classList.contains('hero-done')", timeout=6000
