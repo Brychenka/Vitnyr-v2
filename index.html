@@ -148,6 +148,17 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </svg>
     </button>
   </nav>
+
+  <!-- Spark Order S3 / move 20 — the progress hairline. Decorative, aria-hidden:
+       a 1px rule on the masthead's bottom edge that scales with scroll depth and
+       switches ink (specimen -> target) as the reader passes #origin. Driven from
+       the one scroll handler in main.js (see trackProgress); two stacked fills so
+       the switch is a crossfade, never an amber->green blend. With JS off it
+       stays at scaleX(0) and is invisible — it carries nothing a reader needs. -->
+  <div class="progress" aria-hidden="true">
+    <span class="progress__fill progress__fill--specimen"></span>
+    <span class="progress__fill progress__fill--target"></span>
+  </div>
 </header>
 
 <!-- #app is everything that is "the site". When the collage view is open it
@@ -217,8 +228,13 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <li class="reveal">
       <span class="mech__n">02</span>
       <h3 data-en="Error correction, not error counting" data-ru="Разбор ошибок, а не их подсчёт">Error correction, not error counting</h3>
-      <p data-l="en">Your mistakes aren't random. They're systematic: mostly Russian structure wearing English words, which makes them a finite set, and every one of them has a name. Once an error has a name it stops being "my English is bad" and becomes one specific thing you can train.</p>
-      <p data-l="ru">Ваши ошибки не случайны. Они системны: чаще всего это русская конструкция в английских словах, а значит, набор конечный и у каждой ошибки есть имя. Названная ошибка перестаёт быть «у меня плохой английский» и становится одной конкретной вещью, которую можно тренировать.</p>
+      <!-- Spark Order S3 / move 08: this paragraph used to close on "Once an
+           error has a name it stops being 'my English is bad'..." — that
+           sentence is now the breath block between #specimen and #disciplines
+           (moved, not echoed, per Igor). Mechanism 02 ends on its previous
+           sentence. -->
+      <p data-l="en">Your mistakes aren't random. They're systematic: mostly Russian structure wearing English words, which makes them a finite set, and every one of them has a name.</p>
+      <p data-l="ru">Ваши ошибки не случайны. Они системны: чаще всего это русская конструкция в английских словах, а значит, набор конечный и у каждой ошибки есть имя.</p>
     </li>
     <li class="reveal">
       <span class="mech__n">03</span>
@@ -277,6 +293,18 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </article>
   </div>
 </section>
+
+<!-- Spark Order S3 / move 08 — the breath. One sentence, set larger than any
+     body copy and smaller than the hero, alone with real vertical air. The
+     line already existed (it closed mechanism 02 of section 01) and is moved
+     here, not echoed. NOT a section: it carries no 01–06 number, takes no
+     .label, and must stay out of test_section_numbering_is_sequential's count.
+     Sized by content + padding — never 100vh, which pushes everything else out
+     of frame on a short laptop. It reveals on the one shared .reveal rhythm. -->
+<div class="breath reveal">
+  <p class="breath__line" data-l="en">Once an error has a name it stops being "my English is bad" and becomes one specific thing you can train.</p>
+  <p class="breath__line" data-l="ru">Названная ошибка перестаёт быть «у меня плохой английский» и становится одной конкретной вещью, которую можно тренировать.</p>
+</div>
 
 <section class="sec" id="disciplines">
   <p class="label reveal"><span class="num">03</span><span data-en="Three domains" data-ru="Три направления">Three domains</span></p>

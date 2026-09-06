@@ -51,9 +51,37 @@
 
   // Drives the masthead's opaque ground — see .is-scrolled in the stylesheet.
   function setStuck(y) { root.classList.toggle('is-scrolled', y > 4); }
-  if (lenis) lenis.on('scroll', function (e) { setStuck(e.scroll); });
-  else window.addEventListener('scroll', function () { setStuck(window.scrollY); }, { passive: true });
-  setStuck(window.scrollY);
+
+  /* The progress hairline (move 20) rides the SAME scroll source — no second
+     listener. trackProgress scales .progress off document depth and, once the
+     reader reaches #origin, flips .past-origin so the rule's ink crossfades
+     from specimen to target (the CSS owns the crossfade; this only picks the
+     side). #origin's page offset is measured once and re-measured on resize
+     and language switch, not read on every scroll frame. */
+  var progressEl = document.querySelector('.progress');
+  var originEl = document.getElementById('origin');
+  var originY = 0;
+  function scrollPos() { return lenis ? lenis.scroll : (window.scrollY || 0); }
+  function measureOrigin() {
+    if (originEl) originY = originEl.getBoundingClientRect().top + scrollPos();
+  }
+  function trackProgress(y) {
+    if (!progressEl) return;
+    var max = root.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    progressEl.style.setProperty('--progress', p.toFixed(4));
+    if (originEl) root.classList.toggle('past-origin', y + window.innerHeight * 0.5 >= originY);
+  }
+  function onScroll(y) { setStuck(y); trackProgress(y); }
+
+  if (lenis) lenis.on('scroll', function (e) { onScroll(e.scroll); });
+  else window.addEventListener('scroll', function () { onScroll(window.scrollY); }, { passive: true });
+  measureOrigin();
+  onScroll(scrollPos());
+  window.addEventListener('resize', function () { measureOrigin(); onScroll(scrollPos()); }, { passive: true });
+  document.addEventListener('vitnyr:langchange', function () {
+    requestAnimationFrame(function () { measureOrigin(); onScroll(scrollPos()); });
+  });
 
   // In-page links go through Lenis so the easing stays consistent.
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {

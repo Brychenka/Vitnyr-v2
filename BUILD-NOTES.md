@@ -1114,6 +1114,89 @@ numerals top-aligned across the row, the `2100` tick visible on both grounds.
 Full suite: **138 passed** (was 137) — the one added test is
 `test_facts_row_names_each_unit_type`; the two edited tests kept their count.
 
+## Spark Order, Stage 3 — pace and progress (2026-09-06)
+
+Branch `feature/pace-and-progress`. Moves 08 and 20. Two additions that give
+the long scroll a beat and a sense of position, both on the existing rhythm —
+no new easing, no new reveal timing, no second scroll listener.
+
+**Move 08 — the breath.** A new full-width block between `#specimen` and
+`#disciplines` carrying one sentence, `<div class="breath reveal">` with a
+`data-l="en"`/`data-l="ru"` pair (the longer-block i18n pattern the hero
+already uses). The line is not new: it closed mechanism 02 of section 01 —
+*"Once an error has a name it stops being 'my English is bad' and becomes one
+specific thing you can train."* Igor's call was **move, not echo**, so
+mechanism 02 now ends on its previous sentence (*"...and every one of them has
+a name."*) in both languages, and the sentence appears once on the page.
+
+- It is **not a section**: no `.label`, no `01–06` numeral, class `breath` not
+  `sec`. `test_section_numbering_is_sequential` still counts exactly six, and
+  `test_breath_block_takes_no_section_number` guards the absence.
+- Sized by **content + padding**, never `100vh`: `padding-block: clamp(100px,
+  18vh, 210px)` on the block, `font-size: clamp(28px, 5.2vw, 60px)` on the
+  line (larger than the 17px body, smaller than the hero at every width).
+  Measured heights: 447px (375/EN), 513px (375/RU), 608px (1280/EN), 679px
+  (1280/RU) — all well inside the viewport. `test_breath_block_is_not_viewport_height`
+  asserts `< 780` at 375×780 in both languages.
+- Same `.reveal` rhythm as everything else; `border-top: 1px var(--rule)` so it
+  divides `#specimen` from `#disciplines` the way every section divides.
+
+**Move 20 — the progress hairline.** A 1px `aria-hidden` rule on the
+masthead's bottom edge: `<div class="progress">` with two stacked
+`.progress__fill` spans, `left/right: 0` so it is exactly as wide as the
+masthead border-bottom it sits on (one hairline width — C12).
+
+- **Driven from the one existing scroll source.** `main.js`'s `setStuck`
+  wiring (`lenis.on('scroll')`, or the `window` listener when Lenis is off)
+  now calls `onScroll(y)` → `setStuck(y)` + `trackProgress(y)`. No second
+  listener. `trackProgress` sets `--progress` (0–1, document depth) on
+  `.progress`; both fills are `transform: scaleX(var(--progress))`,
+  `transform-origin: left` — animation using the transform channel
+  legitimately, on an element that carries no layout (Trap 4 clear).
+- **The colour switches, it does not blend.** `.progress__fill--specimen`
+  (`--ink-specimen`) sits underneath; `.progress__fill--target`
+  (`--ink-target`) is `opacity: 0` and fades to `1` over `--t` when
+  `html.past-origin` is set. Two fills each keeping their own token — never an
+  amber→green interpolation across hues, which would be a third colour by the
+  back door. `past-origin` flips when the reader's viewport-midpoint passes
+  `#origin` (its page offset measured once, re-measured on resize and
+  `vitnyr:langchange`, not read per frame).
+- **Reduced motion:** the block runs before `main.js`'s reduced-motion return,
+  so the bar still tracks position; the `@media (prefers-reduced-motion)`
+  rule collapses the crossfade to an instant switch. Verified: `past-origin`
+  and target opacity still resolve correctly with `reduced_motion` on.
+- With JS off, `--progress` is unset, `scaleX(0)` — the bar is invisible and
+  carries nothing a reader needs.
+
+**Tests.** Three names, six cases, all new:
+
+- `test_motion.py::test_progress_rule_tracks_scroll` — `scaleX` sampled at
+  top / mid / end of the document: `< 0.05`, strictly increasing, `> 0.95`.
+- `test_motion.py::test_progress_rule_switches_ink_at_origin` (×dark, ×light)
+  — each fill's `background-color` equals its resolved token; above `#origin`
+  the target fill is `opacity ~0` and `html` lacks `past-origin`; scrolled to
+  `#origin` both flip.
+- `test_layout.py::test_breath_block_is_not_viewport_height` (×en, ×ru) —
+  `120 < height < 780` at 375×780.
+- `test_layout.py::test_breath_block_takes_no_section_number` — no `.label` /
+  `.num` inside `.breath`; section numbering still `01…06`.
+
+Regression-proved per the standing protocol: `git stash push -- index.html
+main.js style.css`, ran all six new cases against reverted source — every one
+failed (`.breath` / `.progress__fill--specimen` absent) — popped, ran again,
+all six passed.
+
+Verified headless (Trap 2: the preview pane reported `clientWidth: 0`): the
+full matrix — 375 and 1280, EN and RU, both themes, plus reduced-motion — no
+horizontal overflow (`scrollWidth - clientWidth == 0` in every case), no
+console or page errors, `.progress` bounds equal `.masthead` bounds at 375 /
+1280 / 1600, `scaleX` 0→1 across the scroll, `past-origin` off at the top and
+on at `#origin`.
+
+Full suite: **144 passed** (was 138, +6 new cases). Nothing edited in the
+existing tests; the earlier `test_scroll_position_restored_on_return` blip was
+a contaminated background run (Trap 1), green on a clean pass.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
