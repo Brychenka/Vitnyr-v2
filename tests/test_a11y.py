@@ -156,9 +156,9 @@ def test_origin_mark_still_interactive_under_reduced_motion(open_site):
 
 def test_reduced_motion_facts_row_shows_every_value(open_site):
     """The reduced-motion branch in main.js returns early; the facts must still
-    read out in full. (Before Spark Order move 17 this branch called countUp(true)
-    to settle the numbers; now they are plain text and this just guards the
-    early-return path from dropping the row.)"""
+    read out in full. It calls countUp(true), which settles every number to its
+    final text with no tween — so reduced-motion readers get the values, never a
+    count. This guards both that settle and the early-return path itself."""
     page, _ = open_site(reduced_motion=True)
     page.wait_for_timeout(200)
     values = page.locator(".facts .n").all_inner_texts()

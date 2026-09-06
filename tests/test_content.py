@@ -56,14 +56,20 @@ def test_the_three_measured_facts_are_exactly_these(open_site):
     page, _ = open_site()
     # S2 / move 18 split the climbing fact into two stacked .fact__reading
     # elements; every asserted string is still present verbatim, including the
-    # meaningful 7c / 7C case difference.
+    # meaningful 7c / 7C case difference. The three animated numbers are read
+    # from data-count(+suffix) so this stays stable whether or not the count-up
+    # (restored as "separate instruments") is mid-flight when the test runs.
     facts = page.evaluate(
-        """() => [...document.querySelectorAll('.facts li')].map(li => ({
-            n: li.querySelector('.n').textContent.trim(),
-            unit: li.classList.contains('fact--grade')
-                ? [...li.querySelectorAll('.fact__reading')].map(r => r.textContent.trim())
-                : li.querySelector('.k').textContent.trim(),
-        }))"""
+        """() => [...document.querySelectorAll('.facts li')].map(li => {
+            const n = li.querySelector('.n');
+            return {
+                n: n.dataset.count ? n.dataset.count + (n.dataset.suffix || '')
+                                   : n.textContent.trim(),
+                unit: li.classList.contains('fact--grade')
+                    ? [...li.querySelectorAll('.fact__reading')].map(r => r.textContent.trim())
+                    : li.querySelector('.k').textContent.trim(),
+            };
+        })"""
     )
     assert facts == [
         {"n": "8", "unit": "years coaching"},
@@ -88,15 +94,21 @@ def test_facts_row_names_each_unit_type(open_site):
 
 def test_no_unapproved_statistics_in_the_facts_row(open_site):
     """The facts row carries exactly the four confirmed figures and no more.
-    Ported from test_no_unapproved_animated_statistics when Spark Order move 17
-    removed the count-up: there is no [data-count] any longer, but the guard on
-    "real material only" survives the change. A fifth number added to the row —
-    a fabricated statistic slipping in — must fail this."""
+    Guards "real material only": a fifth number — a fabricated statistic
+    slipping in — must fail this, whether it animates (a new data-count) or
+    sits static. The count-up was removed by move 17 and later restored as
+    "separate instruments"; this guard is indifferent to that."""
     page, _ = open_site()
-    numbers = page.evaluate(
-        "() => [...document.querySelectorAll('.facts .n')].map(el => el.textContent.trim())"
+    animated = page.evaluate(
+        "() => [...document.querySelectorAll('.facts .n[data-count]')].map(el => el.dataset.count)"
     )
-    assert numbers == ["8", "100+", "2100", "7c"]
+    assert sorted(animated, key=int) == ["8", "100", "2100"]
+    labels = page.evaluate(
+        """() => [...document.querySelectorAll('.facts .n')].map(el =>
+            el.dataset.count ? el.dataset.count + (el.dataset.suffix || '')
+                             : el.textContent.trim())"""
+    )
+    assert labels == ["8", "100+", "2100", "7c"]
 
 
 def test_contact_handles_are_real(open_site):

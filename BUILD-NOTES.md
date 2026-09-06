@@ -1423,6 +1423,72 @@ Stage 6 chat.
 
 Full suite: **163 passed** (was 157, +6 new cases). No existing test edited.
 
+## Reversal — ticking numbers restored, as separate instruments (2026-09-06)
+
+Branch `feature/restore-ticking-numbers`. Igor asked to undo Spark Order move
+17 (the facts-row count-up removal) — "I like ticking numbers." Move 16 (the
+"no interaction sound, ever" note) is untouched; it was never about the
+numbers.
+
+Move 17's objection was real, so this is not a straight `git revert` (S2–S6
+rebuilt that row anyway). The count-up comes back **without** the thing that
+got it cut: three numbers sweeping up on one shared 1.6s duration read as a
+single gauge. Now each counts on its **own** length.
+
+- **`countUp()` back in `main.js`**, past the same IntersectionObserver the
+  reveals use (`rootMargin: '0px 0px -12% 0px'`). Two call sites restored:
+  `countUp(true)` in the reduced-motion early return (settles every number to
+  its final text, no tween), `countUp(false)` in the go block.
+- **Per-number duration.** `D.count` is back in the table as the *reference*
+  length (1.2s), and each number's actual tween is
+  `D.count * (0.6 + log10(value + 1) / 4)` — counting rate is roughly fixed,
+  so a bigger number takes longer to arrive, log-compressed so 2100 isn't
+  ~260× slower than 8. Measured: 8 lands ≈1.0s, 100+ ≈1.4s, 2100 ≈1.9s. Each
+  also starts `i * STAGGER` (0.08s) after the previous. The `D` comment now
+  names six durations; `count`'s line says "scaled per number so each reads
+  as its own instrument".
+- **No flash of the final value.** The observer zeroes a number
+  (`textContent = '0' + suffix`) the instant it's committed to counting, so
+  the literal markup value never shows for a frame before the first tween
+  update. `onComplete` calls the same `settle()` the reduced-motion path uses,
+  so a cut tween still lands exact.
+- **`index.html`:** `data-count` / `data-suffix` restored on the three `.n`
+  spans (`8`, `100` + `+`, `2100`). `7c` is not a number, has no `data-count`,
+  and never counts — same as before move 17. Literal text in every span is
+  unchanged, so no-JS still reads `8 / 100+ / 2100 / 7c`. S2's `fact--count`
+  / `fact--scale` / `fact--grade` treatments and the `2100` gauge tick are
+  untouched; `tabular-nums` (already on `.facts .n`) keeps digit width steady
+  through the count.
+
+**Tests.** Net +1 (163 → 164).
+- `test_motion.py::test_numbers_do_not_animate` → **`test_numbers_count_up_to_their_values`**
+  (end state exact, `7c` never touched) + **`test_numbers_finish_at_different_times`**
+  (polls each number to completion, ignoring the pre-tween literal match;
+  asserts the last number lands >250ms after the first — fails against the old
+  shared-duration countUp, where all three finished within a frame). Module
+  docstring updated.
+- `test_content.py::test_no_unapproved_statistics_in_the_facts_row` — now
+  reads `.n[data-count]` again (the real-material guard: a fifth `data-count`
+  = a fabricated statistic) plus the rendered-label set. `test_the_three_measured_facts_are_exactly_these`
+  reads the three numbers from `data-count` so it's stable mid-count.
+- `test_a11y.py::test_reduced_motion_facts_row_shows_every_value` — assertion
+  unchanged; comment corrected (the branch calls `countUp(true)` again).
+- `tests/README.md` line for `test_motion.py` updated.
+
+Regression-proved per protocol: `git stash push -- index.html main.js`, ran
+the new cases against reverted source — `test_numbers_finish_at_different_times`
+and `test_no_unapproved_statistics_in_the_facts_row` both fail (no
+`.n[data-count]`); popped, both green.
+
+Verified headless (Trap 2): 375 and 1280, both themes, both languages — the
+numbers zero on scroll-in and count up in a visible cascade (8 first, 2100
+last, spread ~0.9s), settle exact at `8 / 100+ / 2100 / 7c`, no horizontal
+overflow, no console or page errors. Reduced motion: final values immediately,
+no count. No-JS: literal values. Language switch mid-page leaves settled
+numbers alone. Mid-cascade and settled screenshots in this chat.
+
+Full suite: **164 passed** (was 163; −1 test removed, +2 added).
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
@@ -1435,7 +1501,8 @@ Full suite: **163 passed** (was 157, +6 new cases). No existing test edited.
   at 375px: `has-cursor` never goes on, so the native pointer is never hidden.
 - Hero plays and completes in both languages, both themes, both widths, and
   releases its compositor layer when it lands.
-- Counters animate from 0 through the observer with ScrollTrigger absent.
+- Counters animate from 0 through the observer with ScrollTrigger absent —
+  each on its own duration so the four figures don't read as one gauge.
 - Reveals: nothing fires off-screen, and the stagger reads top-to-bottom.
 - Skip link moves focus to `#main`, not just the scroll position.
 - No console errors.
