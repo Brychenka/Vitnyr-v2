@@ -30,7 +30,15 @@
   --green:  #4C7A52;
   --fg:     #F2EFE8;
   --fg2:    #A8ABA9;
-  --rule:   rgba(242,239,232,0.14);
+  /* P12 (2026-09-06): "structure is whitespace and hairline rules" only
+     holds if the hairline survives a real screen — this measured 1.47:1
+     against --bg, elegant on a good display in a dark room and gone on a
+     dim laptop or in daylight. .235 alpha lands ~2.02:1: keeps the
+     restraint (still far short of a border you'd call "visible" outright)
+     but stops disappearing. The light pair's alpha is tuned separately
+     below to land at the same ~2:1, not to match this number — the two
+     bases don't share one alpha that hits the same ratio on both. */
+  --rule:   rgba(242,239,232,0.235);
 
   --ink-specimen: var(--amber);
   --ink-target:   var(--green);
@@ -108,7 +116,7 @@
     --green:  #3D6543;
     --fg:     #1D2224;
     --fg2:    #5A5F60;
-    --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
+    --rule:   rgba(29,34,36,0.33);   /* P12: tuned separately to land at the same ~2:1 against this pair's bg */
     --amber-text: #8C631D;   /* darkened stand-in, tuned to 4.5:1 on this bg (ink amber is 3.07:1) */
     --green-text: var(--green);   /* ink green already clears 4.5:1 as text here (5.62:1) */
     --amber-dim: #D9C6A3;
@@ -121,7 +129,7 @@
   --green:  #3D6543;
   --fg:     #1D2224;
   --fg2:    #5A5F60;
-  --rule:   rgba(29,34,36,0.20);   /* matches the charcoal hairline's weight */
+  --rule:   rgba(29,34,36,0.33);   /* P12: tuned separately to land at the same ~2:1 against this pair's bg */
   --amber-text: #8C631D;
   --green-text: var(--green);
   --amber-dim: #D9C6A3;
@@ -223,6 +231,7 @@ html.lora-ready .lockup .wm { opacity: 1; }
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   letter-spacing: .1em; text-transform: uppercase;
   position: relative;
+  flex-shrink: 0;   /* a touch target is a floor, not something flexbox gets to negotiate down */
   transition: color var(--t) var(--e);
 }
 .tool::after {
@@ -235,8 +244,17 @@ html.lora-ready .lockup .wm { opacity: 1; }
 .tool:hover::after { transform: scaleX(1); }
 
 /* ---------- collage nav icons ---------- */
-.tools__rule { width: 1px; height: 14px; background: var(--rule); }
-.tool--icon { display: inline-flex; padding: 4px; }
+/* P10: a caption for the three icons that follow, in the exact type the
+   rest of .tools already uses — not a new label style, and not interactive
+   (no cursor, no hover state, no underline), so it can't be mistaken for a
+   fourth control. */
+.tools__label {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  white-space: nowrap; flex-shrink: 0;
+}
+.tools__rule { width: 1px; height: 14px; background: var(--rule); flex-shrink: 0; }
+.tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
 .tool--icon svg { display: block; width: 19px; height: 19px; }
 /* .themeswitch/.langswitch measured 76x23 / 19x23 at rest — both fail WCAG
    2.2's 24px touch-target minimum on height, the language switch on both
@@ -355,6 +373,19 @@ html.lora-ready .lockup .wm { opacity: 1; }
   .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
 
+/* C12 (2026-09-06): .sec's own top rule spans its full 1320px box, but
+   .mechanisms/.specs/.domains/.rows/.channels/.proof sit inside that box's
+   padding-inline and so drew their own rules --gut narrower on each side —
+   two rule widths with no stated relationship between them, off by however
+   much --gut happens to be at a given viewport. Bleeding these six back out
+   to the section's own edge (and re-adding the same inset as padding, so
+   the text inside them doesn't move) makes every horizontal rule on the
+   page exactly one width, which is the actual point of a hairline system. */
+.mechanisms, .specs, .domains, .rows, .channels, .proof {
+  margin-inline: calc(var(--gut) * -1);
+  padding-inline: var(--gut);
+}
+
 /* ---------- hero ---------- */
 .hero {
   min-height: 100svh;
@@ -363,6 +394,24 @@ html.lora-ready .lockup .wm { opacity: 1; }
   /* clear the fixed masthead on short viewports too */
   padding-top: calc(var(--head) + clamp(32px, 7vh, 90px));
   padding-bottom: clamp(40px, 8vh, 90px);
+}
+/* P13 (2026-09-06): at 390x844 the two-line header above already spends
+   ~140px — the brand's clear-space floor on the mark and a genuine 44px
+   touch-target row, neither of which has room left to give. What was
+   giving nothing back was .hero's own justify-content:center: on a short
+   mobile viewport the header eats into the space .hero centres within, so
+   the *remaining* slack gets split top-and-bottom, pushing real copy down
+   by more than the header itself. Anchoring hero content to the top and
+   trimming its own breathing room (was clamp(32px,7vh,90px), same as
+   desktop) moves the first line up by over 100px without touching the
+   header, the mark's clear space, or any touch target. Comes after the
+   base .hero rule on purpose — same specificity, so source order is what
+   makes this win under 600px instead of silently losing to the rule above. */
+@media (max-width: 600px) {
+  .hero {
+    justify-content: flex-start;
+    padding-top: calc(var(--head) + clamp(20px, 3vh, 40px));
+  }
 }
 .hero__title {
   font-size: clamp(42px, 8.6vw, 124px);
@@ -431,9 +480,16 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 }
 .mechanisms h3 { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.25; }
 .mechanisms p { color: var(--fg2); max-width: var(--measure); }
+/* P14 (2026-09-06): each <li> is its own grid, so the old middle track —
+   minmax(0, 1fr) — sized itself against the row's *paragraph* column, not
+   its own heading; "Load management" got the same ~470px as the longest
+   heading on the page and sat in a pool of empty track before the
+   paragraph started. fit-content(260px) is the track-sizing keyword built
+   for exactly this: size to the row's own heading, capped so a freak long
+   heading wraps instead of shoving the paragraph column out of the way. */
 @media (min-width: 900px) {
   .mechanisms > li {
-    grid-template-columns: 80px minmax(0, 1fr) minmax(0, 1.35fr);
+    grid-template-columns: 80px fit-content(260px) 1fr;
     gap: clamp(24px, 4vw, 64px); align-items: baseline;
   }
 }
@@ -845,12 +901,17 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 /* entry link — the one CTA into the full photo view. Given the .channels
    scale (Lora, 600, clamp 22-44px) rather than the .scrollcue/.tool scale,
    because the destination is a full-screen view, not a footnote: it earns a
-   full-width row, not an inline tag. The full-width underline reuses the
-   .tool / .channels draw-in, in --ink-target (green) rather than fg — this
-   is the one link on the page whose destination is a fully achieved,
-   positive outcome (real proof), not a specimen. Keyboard focus is the
-   page-wide green ring via :focus-visible; the drawn underline is additive
-   on top of it, not a replacement. */
+   full-width row, not an inline tag. Keyboard focus is the page-wide green
+   ring via :focus-visible; the drawn underline is additive on top of it,
+   not a replacement.
+
+   P9 (2026-09-06): this used to rest at --fg2 with the underline drawn in
+   only on hover — the most recessive large element on the page guarding
+   the only way through to real proof. Full --fg at rest, and the
+   underline already drawn in as a quiet --rule hairline rather than
+   hidden entirely, so the door reads as a door before anyone's pointer
+   finds it; hover still brightens the underline to full --ink-target
+   green as the extra prompt. */
 .proof { margin-top: clamp(48px, 7vw, 88px); border-top: 1px solid var(--rule); }
 .proof__link {
   display: flex; align-items: center; justify-content: space-between;
@@ -859,19 +920,15 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 }
 .proof__link::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0;
-  height: 1px; background: var(--ink-target);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform var(--t) var(--e);
+  height: 1px; background: var(--rule);
+  transition: background var(--t) var(--e);
 }
-.proof__link:hover::after, .proof__link:focus-visible::after { transform: scaleX(1); }
+.proof__link:hover::after, .proof__link:focus-visible::after { background: var(--ink-target); }
 
 .proof__text {
   font-family: var(--serif); font-weight: 600; letter-spacing: -.02em;
-  font-size: clamp(24px, 4vw, 44px); color: var(--fg2);
-  transition: color var(--t) var(--e);
+  font-size: clamp(24px, 4vw, 44px); color: var(--fg);
 }
-.proof__link:hover .proof__text,
-.proof__link:focus-visible .proof__text { color: var(--fg); }
 
 /* Two stacked copies of the same arrow rather than one: on hover the front
    one travels, the back one follows a beat later at partial opacity, which
@@ -899,18 +956,29 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   line-height: 1.02; letter-spacing: -.03em;
   margin-bottom: clamp(24px, 3vw, 40px);
 }
+/* C9 (2026-09-06): the handle used to live in its own grid column pinned to
+   the far right — "Telegram" at 44px Lora beside "@yngvil" at 13px mono,
+   up to 950px apart on a wide screen. Three of those in a row read as a
+   table with its middle column missing, and the piece a reader actually
+   needs (the handle) was both the smallest thing here and the furthest
+   from the label it belongs to. Rebuilt so the handle sits directly behind
+   the platform name as one unit, and the right edge — freed up — carries
+   the same travelling arrow .proof__link uses for its one other CTA. */
 .channels { margin-top: clamp(48px, 6vw, 80px); border-top: 1px solid var(--rule); }
 .channels li { border-bottom: 1px solid var(--rule); }
 .channels a {
-  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
-  gap: 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
   padding-block: clamp(20px, 2.6vw, 32px);
-  transition: color var(--t) var(--e);
+}
+.ch__text {
+  display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: clamp(10px, 1.6vw, 18px); min-width: 0;
 }
 .channels .ch__k {
   font-family: var(--serif); font-size: clamp(22px, 3.4vw, 44px);
   font-weight: 600; letter-spacing: -.02em;
-  position: relative; justify-self: start;
+  position: relative;
 }
 .channels .ch__k::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -.08em;
@@ -921,8 +989,24 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .channels a:hover .ch__k::after,
 .channels a:focus-visible .ch__k::after { transform: scaleX(1); }
 .channels .ch__v {
-  font-family: var(--mono); font-size: 13px; color: var(--fg2);
-  letter-spacing: .04em;
+  font-family: var(--mono); font-size: clamp(14px, 1.5vw, 17px); color: var(--fg2);
+  letter-spacing: .02em;
+}
+/* Same two-copy travelling-arrow device as .proof__arrow (see comment
+   there) — one shared visual language for "this row leads somewhere",
+   not a second one invented for the channels list. */
+.ch__arrow { position: relative; width: 40px; height: 13px; flex: none; }
+.ch__arrow svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  color: var(--fg2);
+  transition: transform var(--t) var(--e), color var(--t) var(--e), opacity var(--t) var(--e);
+}
+.ch__arrow--echo { opacity: 0; }
+.channels a:hover .ch__arrow svg,
+.channels a:focus-visible .ch__arrow svg { color: var(--fg); transform: translateX(10px); }
+.channels a:hover .ch__arrow--echo,
+.channels a:focus-visible .ch__arrow--echo {
+  opacity: .3; transform: translateX(3px); transition-delay: .07s;
 }
 /* ---------- footer ---------- */
 .foot {
@@ -931,11 +1015,16 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   padding-block: clamp(28px, 4vw, 44px);
   border-top: 1px solid var(--rule);
 }
+.foot__id { display: flex; align-items: center; gap: clamp(14px, 2vw, 20px); }
 /* 48px box = 32.2px of actual ink, which is the 32px two-colour minimum.
    The old 32px box was only 21px of mark — inside the band where amber and
    green antialias into one indistinct colour. */
 .footmark { width: 48px; height: 48px; flex: none; }
 .foot p { font-family: var(--sans); font-size: 12px; letter-spacing: .06em; color: var(--fg2); }
+/* P15: .foot__top reuses .tool wholesale (same type, same hover-draws-a-
+   line language as Cream/RU in the masthead) rather than inventing a
+   footer-only control for the one thing the old footer was missing — a
+   way back up. No rules of its own needed. */
 
 /* ============================================================
    Signature move — custom cursor + magnetic targets (phase 4)

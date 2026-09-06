@@ -64,7 +64,15 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
          spec. Each is a shortcut into the #collage view: data-collage-jump opens the
          view (if closed) and smooth-scrolls to that domain's group — wired in main.js
          initCollageView(). The same glyph is echoed on that group's label so the icon
-         visibly lands where it points. -->
+         visibly lands where it points.
+
+         P10 (2026-09-06): these three used to carry no visible label at
+         all — aria-label and a title tooltip, neither of which a touch
+         reader ever sees, pointing at a view the reader hasn't been told
+         exists yet. One shared visible caption instead of gating the icons
+         behind scroll position, which would have meant a second reveal
+         mechanism competing with the one .reveal already owns. -->
+    <span class="tools__label" data-en="Photos" data-ru="Фото">Photos</span>
     <span class="tools__rule" aria-hidden="true"></span>
     <button class="tool tool--icon" type="button" aria-label="Jump to the chess photographs" title="Chess" data-collage-jump="chess" data-magnetic>
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -408,20 +416,64 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <p class="reveal" data-l="ru">Напишите, для чего вам английский и где он сейчас ломается. Начнём с созвона: <strong class="mark">бесплатно и ни к чему не обязывает</strong>. Только индивидуально — онлайн или в Ереване.</p>
   </div>
 
+  <!-- C9 (2026-09-06): the handle used to sit in its own grid column, pinned
+       to the far right at 13px mono — the smallest, most distant thing in a
+       row whose whole point is to hand the reader that exact string. Now it
+       sits right behind the platform name as one inline unit, and the
+       far-right position it gave up goes to the same travelling arrow
+       .proof__link already uses, so "this row leads somewhere" reads the
+       same way twice on the page. -->
   <ul class="channels">
-    <li class="reveal"><a href="https://t.me/yngvil" data-magnetic target="_blank" rel="noopener"><span class="ch__k">Telegram</span><span class="ch__v">@yngvil</span></a></li>
-    <li class="reveal"><a href="https://www.linkedin.com/in/vitnyrcoach/" data-magnetic target="_blank" rel="noopener"><span class="ch__k">LinkedIn</span><span class="ch__v">/in/vitnyrcoach</span></a></li>
-    <li class="reveal"><a href="https://www.instagram.com/brychenka/" data-magnetic target="_blank" rel="noopener"><span class="ch__k">Instagram</span><span class="ch__v">@brychenka</span></a></li>
+    <li class="reveal">
+      <a href="https://t.me/yngvil" data-magnetic target="_blank" rel="noopener">
+        <span class="ch__text"><span class="ch__k">Telegram</span><span class="ch__v">@yngvil</span></span>
+        <span class="ch__arrow" aria-hidden="true">
+          <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+          <svg aria-hidden="true" class="ch__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+      </a>
+    </li>
+    <li class="reveal">
+      <a href="https://www.linkedin.com/in/vitnyrcoach/" data-magnetic target="_blank" rel="noopener">
+        <span class="ch__text"><span class="ch__k">LinkedIn</span><span class="ch__v">/in/vitnyrcoach</span></span>
+        <span class="ch__arrow" aria-hidden="true">
+          <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+          <svg aria-hidden="true" class="ch__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+      </a>
+    </li>
+    <li class="reveal">
+      <a href="https://www.instagram.com/brychenka/" data-magnetic target="_blank" rel="noopener">
+        <span class="ch__text"><span class="ch__k">Instagram</span><span class="ch__v">@brychenka</span></span>
+        <span class="ch__arrow" aria-hidden="true">
+          <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+          <svg aria-hidden="true" class="ch__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </span>
+      </a>
+    </li>
   </ul>
 </section>
 </main>
 
+<!-- P15 (2026-09-06): the footer used to be the mark and one 12px line — after
+     7,500px of scroll the page just stopped. A close, not a stop: a way back
+     to the top (the one navigational thing a page this long is missing) and
+     a year, so the last thing on the page reads as finished rather than as
+     having run out. The three contact channels sit in the section directly
+     above this one with nothing between them and the footer, so repeating
+     them again here would be the redundant kind of ending, not the
+     conclusive kind — left alone on purpose. -->
 <footer class="foot">
-  <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
-    <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
-    <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
-  </svg>
-  <p data-en="Igor Shatsev · Vitnyr · Yerevan" data-ru="Igor Shatsev · Vitnyr · Ереван">Igor Shatsev · Vitnyr · Yerevan</p>
+  <div class="foot__id">
+    <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
+      <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
+      <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
+    </svg>
+    <p data-en="Igor Shatsev · Vitnyr · Yerevan · © 2026" data-ru="Igor Shatsev · Vitnyr · Ереван · © 2026">Igor Shatsev · Vitnyr · Yerevan · © 2026</p>
+  </div>
+  <a class="tool foot__top" href="#top" data-magnetic>
+    <span data-en="Back to top" data-ru="Наверх">Back to top</span>
+  </a>
 </footer>
 </div><!-- /#app -->
 

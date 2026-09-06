@@ -44,9 +44,12 @@ def test_three_icon_buttons_after_a_divider(open_site):
         """() => [...document.querySelector('.tools').children].map(el =>
             el.classList.contains('tool--icon') ? 'icon'
             : el.classList.contains('tools__rule') ? 'rule'
+            : el.classList.contains('tools__label') ? 'label'
             : el.className)"""
     )
-    assert order == ["tool themeswitch", "tool langswitch", "rule", "icon", "icon", "icon"]
+    # P10: the shared "Photos" caption sits right before the divider + icons
+    # it captions.
+    assert order == ["tool themeswitch", "tool langswitch", "label", "rule", "icon", "icon", "icon"]
 
 
 def test_icon_buttons_have_the_exact_expected_accessible_names(open_site):
@@ -223,3 +226,29 @@ def test_view_back_touch_target_clears_24px_on_coarse_pointers(open_site):
     assert page.evaluate("matchMedia('(pointer: coarse)').matches")
     box = page.locator(".view__back").bounding_box()
     assert box["width"] >= 24 and box["height"] >= 24, box
+
+
+# --- P10: the three icons above used to carry no *visible* label at all —
+# aria-label and a title tooltip, neither of which a touch reader ever
+# sees, pointing at a view the reader hasn't been told exists yet. One
+# shared visible caption instead. ---
+
+def test_icons_have_one_shared_visible_caption(open_site):
+    page, _ = open_site()
+    label = page.locator(".tools .tools__label")
+    assert label.count() == 1
+    assert label.text_content().strip() == "Photos"
+    assert label.evaluate("el => getComputedStyle(el).display") != "none"
+    # sits before the divider + icons, not after — reads as their caption
+    assert page.evaluate(
+        """() => {
+            const label = document.querySelector('.tools__label');
+            const rule = document.querySelector('.tools__rule');
+            return label.compareDocumentPosition(rule) & Node.DOCUMENT_POSITION_FOLLOWING;
+        }"""
+    )
+
+
+def test_icon_caption_is_localised(open_site):
+    page, _ = open_site(lang="ru")
+    assert page.locator(".tools .tools__label").text_content().strip() == "Фото"
