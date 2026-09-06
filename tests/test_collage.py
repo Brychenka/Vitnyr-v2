@@ -244,3 +244,39 @@ def test_collage_images_have_noscript_fallback_in_markup(open_site):
     page, _ = open_site()
     html = page.content()
     assert html.count('<noscript><img src="assets/collage/') == 18
+
+
+# --- S7 move 04: the route cross-fades on close, but never at the cost of the
+# synchronous focus move on open. ---
+
+def test_view_transition_does_not_delay_focus(open_site):
+    """Opening focuses #collage-title synchronously — not behind
+    startViewTransition's deferred update callback (the open path is left as a
+    direct call for exactly this reason). Closing does take the transition, and
+    focus still returns to the opener button."""
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    # no wait: focus must already be on the heading
+    assert page.evaluate("document.activeElement.id") == "collage-title"
+    assert page.evaluate("() => document.activeElement.id") == "collage-title"
+
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(500)
+    assert not _is_open(page)
+    assert page.evaluate("() => document.activeElement.matches('[data-collage-open]')")
+
+
+def test_view_transition_falls_back_cleanly_under_reduced_motion(open_site):
+    """Reduced motion skips startViewTransition entirely (an explicit gate, not
+    a reliance on the API's own PRM handling). Open and close still route on
+    location.hash and the class flip is instant."""
+    page, _ = open_site(reduced_motion=True)
+    page.evaluate("""() => { window.__vt = 0; const o = document.startViewTransition;
+        if (o) document.startViewTransition = function (cb) { window.__vt++; return o.call(document, cb); }; }""")
+    page.locator("[data-collage-open]").click()
+    assert page.evaluate("location.hash") == "#collage"
+    assert _is_open(page)
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(200)
+    assert not _is_open(page)
+    assert page.evaluate("window.__vt") == 0, "startViewTransition should not run under reduced motion"

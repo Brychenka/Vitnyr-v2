@@ -154,6 +154,21 @@ def test_origin_mark_still_interactive_under_reduced_motion(open_site):
     assert item.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 
 
+def test_origin_mark_is_complete_under_reduced_motion(open_site):
+    """S7 move 03: the stroke draw is motion; under prefers-reduced-motion the
+    mark is simply present and whole. Each clip rect sits at full geometry — no
+    stroke left clipped away by a rect held at zero (a `height: auto` on a clip
+    rect collapses to 0 here, so the reset uses explicit px)."""
+    page, _ = open_site(reduced_motion=True)
+    page.locator("#origin").scroll_into_view_if_needed()
+    page.wait_for_timeout(150)
+    heights = page.evaluate(
+        """() => ['glyphClipLeft', 'glyphClipRight', 'glyphClipStem'].map(id =>
+            document.querySelector('#' + id + ' rect').getBBox().height)"""
+    )
+    assert heights[0] > 90 and heights[1] > 90 and heights[2] > 40, heights
+
+
 def test_reduced_motion_facts_row_shows_every_value(open_site):
     """The reduced-motion branch in main.js returns early; the facts must still
     read out in full. It calls countUp(true), which settles every number to its

@@ -470,3 +470,75 @@ def test_correction_replays_after_language_switch(open_site):
         "#specimen .spec[data-op='delete'] .line-spec",
         "els => els.map(e => getComputedStyle(e).opacity)")
     assert all(float(x) > 0.98 for x in op), op
+
+
+def _clip_heights(page):
+    # getBBox() reflects the live (CSS-animated) rect geometry; getComputedStyle
+    # reports "auto" for a rect whose CSS height is 0 or auto, which parses to
+    # nothing.
+    return page.evaluate(
+        """() => ['glyphClipLeft', 'glyphClipRight', 'glyphClipStem'].map(id =>
+            document.querySelector('#' + id + ' rect').getBBox().height)"""
+    )
+
+
+def test_origin_mark_draws_its_three_strokes_once(open_site):
+    """S7 move 03: on first reveal the mark assembles from its three strokes in
+    order — the two V arms, then the stem — by growing each clip rect from zero,
+    then holds. It is a real draw (a partial state is seen), the arms fill before
+    the stem, and it is one-shot: still full ~1s later, no loop or reset."""
+    page, _ = open_site()
+    page.locator("#origin").scroll_into_view_if_needed()
+    data = page.evaluate(
+        """async () => {
+            const ids = ['glyphClipLeft', 'glyphClipRight', 'glyphClipStem'];
+            const full = { glyphClipLeft: 100, glyphClipRight: 100, glyphClipStem: 44 };
+            const h = id => document.querySelector('#' + id + ' rect').getBBox().height;
+            const t0 = performance.now();
+            const firstFull = {};
+            let sawPartial = false;
+            await new Promise(res => {
+                const tick = () => {
+                    ids.forEach(id => {
+                        const cur = h(id);
+                        if (cur > 1 && cur < full[id] * 0.6) sawPartial = true;
+                        if (!(id in firstFull) && cur >= full[id] * 0.98) {
+                            firstFull[id] = performance.now() - t0;
+                        }
+                    });
+                    if (Object.keys(firstFull).length === ids.length
+                        || performance.now() - t0 > 4000) return res();
+                    requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            });
+            await new Promise(r => setTimeout(r, 900));
+            return { firstFull, sawPartial, held: ids.map(h) };
+        }"""
+    )
+    ff = data["firstFull"]
+    assert set(ff) == {"glyphClipLeft", "glyphClipRight", "glyphClipStem"}, data
+    assert data["sawPartial"], data
+    # assembled in order: each V arm reaches full before the stem does
+    assert ff["glyphClipLeft"] < ff["glyphClipStem"], ff
+    assert ff["glyphClipRight"] < ff["glyphClipStem"] + 30, ff
+    # one-shot: still drawn ~1s after it finished, nothing reset it
+    held = data["held"]
+    assert held[0] > 98 and held[1] > 98 and held[2] > 42, held
+
+
+def test_origin_mark_holds_still_for_the_hover_states(open_site):
+    """S7 move 03 step 3: the draw must finish before, and never fight, the
+    is-active/is-dim states. Focusing a hit-region after the draw lights that
+    stroke without disturbing the (now full) clip geometry."""
+    page, _ = open_site()
+    page.locator("#origin").scroll_into_view_if_needed()
+    page.wait_for_timeout(1800)   # draw done
+    before = _clip_heights(page)
+    page.locator('.origin__hit[data-discipline="chess"]').focus()
+    page.wait_for_timeout(200)
+    after = _clip_heights(page)
+    assert before[0] > 98 and before[1] > 98 and before[2] > 42, before
+    assert after == pytest.approx(before, abs=0.5), (before, after)
+    assert page.locator('.glyph__part--right').evaluate(
+        "el => el.classList.contains('is-active')") is True
