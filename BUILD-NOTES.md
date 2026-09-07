@@ -2476,6 +2476,93 @@ Master `Claude outputs/climb-02-chalk_v2_edited_highres.jpg`.
 - No layout-shift risk: the box is ratio-locked before the image loads, same
   as every other tile.
 
+## Collage — paired flow-over bottom row (2026-09-07, later still)
+
+Igor: the two climbing photos should take the bottom row completely, "full
+sized", and hovering one should make it flow over the other and become full
+sized — asked for a plan first. Plan reviewed; his calls: **crop both to
+3:2**, hover **fills the row width** (not the whole uncropped frame, not a
+lightbox), rock-route used **as-is** (soft). Built as `.collage__pair`.
+
+**Supersedes** the `--span2` hero + `--34` (`climb-04-crimp`) and the 4:5
+re-crop (`climb-06-wide`) from earlier the same day. Row 1 is unchanged.
+
+### Layout
+
+- `.collage__pair` is one grid item, `grid-column: 1 / -1`, replacing the two
+  separate figures. Inside: `.collage__pair__band` holding two
+  `.collage__pair__fig` (`--l` = `climb-04-crimp`, rock route; `--r` =
+  `climb-06-wide`, overhang), each with a `.collage__slot > img` and a
+  `<figcaption>`.
+- **Base / fallback** (this is the default, not the media-query branch): the
+  band is `display:block`, the two figures are static, each a full 3:2
+  bordered tile with its caption, stacked with `--collage-gap-y` between.
+  Nothing hidden, no interaction needed.
+- **Enhanced**, gated to `@media (min-width:900px) and (hover:hover) and
+  (prefers-reduced-motion:no-preference)`: the band is
+  `position:relative; aspect-ratio:3/2`, the figures are `position:absolute;
+  inset:0`. `--l` slot `clip-path: inset(0 40% 0 0)` (left 60% shown), `--r`
+  slot `inset(0 0 0 40%)` (right 60%), ~20% overlap in the middle with `--r`
+  (z 2) over `--l` (z 1). Captions are `position:absolute; top:100%`, one
+  per side, always visible (band has `margin-bottom: 2.6em` for them).
+
+### The animation
+
+`.collage__pair__fig:hover, :focus-within` → that figure `z-index: 3` and its
+slot `clip-path: inset(0 0 0 0)` — opens to the full band width, flowing over
+the neighbour, which stays put underneath. Transition is **`clip-path`
+only**, new token `--pair-flow: .5s`, easing `--e`. No `transform`, no
+`width`, no layout: the band is aspect-locked so the row never changes
+height, and the reveal's transform channel is never touched (the CLAUDE.md
+motion rule). Reverting on mouse-out / blur clips back to 60/60.
+
+Keyboard: each `<figure>` has `tabindex="0"`, so `:focus-within` gives the
+same reveal; `:focus-visible` draws a ring, `:focus` (mouse) does not.
+
+`.collage__pair` keeps `.reveal is-in` — same one-time entrance
+(opacity + translateY) as every tile, handled by `armCollageReveals`.
+`clip-path` and `transform` are independent properties, so the entrance and
+the hover don't fight.
+
+### Cropping
+
+- `climb-04-crimp` (left): `l.jpg` → `rotate(-90)` → drop the left 300px so
+  the climber moves toward the outer edge → 3:2 → `autocontrast(0.5)`.
+  1200×800 (q60, upscaled from ~660 wide → soft, accepted) + 600×400.
+  Master `Claude outputs/climb-04-crimp_v3_edited_highres.jpg`.
+- `climb-06-wide` (right): from `climb-06-wide_v2` master (5496×3664) → drop
+  the right 1400px so the climber moves toward the outer edge → 3:2, no
+  re-grade. 1200×800 (q74, crisp) + 600×400. Master `…_v6_edited_highres.jpg`.
+- Slugs unchanged (`-crimp` / `-wide`), `srcset` descriptors now `600w` /
+  `1200w`.
+
+### CSS invariant touched
+
+`style.css` line ~1057 still says the groups are "plain repeating grids …
+no overlap". That holds for the three grids themselves; `.collage__pair` is
+a single grid item that overlaps *its own two children* on hover. Recorded
+in the `.collage__pair` comment block; no third colour, shadow or radius,
+one easing, one added duration token.
+
+### Verified (localhost:8010, pane hidden — DOM/geometry + forced-instant clip)
+
+- 1280px enhanced: `.collage__pair` `grid-column: 1 / -1`; band relative, 3:2,
+  1152×768; both figs `position:absolute` filling it; `--l` clip
+  `inset(0 40% 0 0)` z1, `--r` `inset(0 0 0 40%)` z2. Focus `--l` → its slot
+  `inset(0px)`, z3, image covers `--r` (screenshot); focus `--r` → mirror.
+  Blur → back to 60/60. Captions both visible below. No horizontal overflow
+  (`scrollWidth == clientWidth == 1280`).
+- 375px fallback: band static / `aspect-ratio:auto`; figs static, clip
+  `none`, slots `aspect-ratio:3/2`; the two figures stacked (different `y`),
+  335px wide, captions between. No overflow.
+- Reduced-motion / touch: same fallback (the enhanced rules are behind
+  `hover:hover` + `no-preference`, so they simply don't apply).
+- Grayscale `--collage-filter` resolves on the pair imgs (checked light).
+- Image files served: `climb-04-crimp@2x.jpg` and `climb-06-wide@2x.jpg` both
+  1200×800 3:2 (direct GET + tab title), right climbers, right framing.
+
+**Artifact still on hold** — `en-*` and `chess-*` are all stand-ins.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
