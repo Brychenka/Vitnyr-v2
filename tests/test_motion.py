@@ -361,23 +361,13 @@ def test_cursor_takes_target_ink_over_the_contact_cta(open_site):
 
 
 def test_cursor_takes_specimen_ink_over_a_control_inside_specimen(open_site):
-    """#specimen has no interactive control yet (S6 adds them), so the branch
-    is exercised against an injected hot target — the delegated handler keys
-    off `closest('#specimen')`, which is what matters here."""
+    """The delegated handler keys the dot's ink off `closest('#specimen')`.
+    The specimen reveal's `.spec__prompt` button is the real control there."""
     page, _ = open_site()
-    page.evaluate(
-        """() => {
-            const b = document.createElement('button');
-            b.id = 'spec-probe';
-            b.setAttribute('data-magnetic', '');
-            b.textContent = 'probe';
-            b.style.cssText = 'display:block;width:120px;height:44px;margin:20px 0';
-            document.querySelector('#specimen .specs').prepend(b);
-        }"""
-    )
-    probe = page.locator("#spec-probe")
-    probe.scroll_into_view_if_needed()
-    probe.hover()
+    page.locator("#specimen").scroll_into_view_if_needed()
+    page.wait_for_timeout(1500)   # let the section's reveal settle so the button stops rising
+    prompt = page.locator("#specimen .spec__prompt").first
+    prompt.hover()
     page.wait_for_timeout(200)
 
     cursor = page.locator(".cursor")
@@ -666,96 +656,31 @@ def test_collage_bar_mark_turns_once_on_hover(open_site):
     assert abs(_rotation_deg(page, ".view__bar .footmark-spin .footmark")) < 0.5
 
 
-# --- Spark Order S6 / moves 06 + 01: the correction is FLIP over an
-# aria-hidden clone. It is the S0 "bend" — a transform carrying layout — and
-# is only allowed because it is transient: every transform is cleared and the
-# frame is handed back to the untouched static pair. ---
+# --- The specimen reveal (replaces the S6 performed correction). The error is
+# behind a "Show the common mistake" button; hover previews it, click/tap/Enter
+# locks it. No JS -> the untouched static <del>/<ins> pair. Behaviour lives in
+# test_a11y.py::test_specimen_reveal_* ; here we only guard that it introduces
+# no transform and no scroll/time coupling. ---
 
-def test_correction_leaves_no_residual_transform(open_site):
-    """Guards the S0 bend. After the beat settles, no specimen node holds a
-    transform — none or the identity matrix only. Must never be deleted."""
+def test_specimen_reveal_holds_no_transform(open_site):
+    """The reveal is a content swap, not motion — its own machinery
+    (.spec__reveal and everything in it) never takes a transform, opened or
+    closed. The .reveal rise on the .spec itself is a separate system."""
     page, _ = open_site()
+    page.locator("#specimen").scroll_into_view_if_needed()
+    page.wait_for_timeout(1500)   # let the .reveal rise finish
+
+    def stray_transforms():
+        return page.eval_on_selector_all(
+            "#specimen .spec__reveal, #specimen .spec__reveal *",
+            """els => els
+                .map(e => getComputedStyle(e).transform)
+                .filter(t => t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)')""")
+
+    assert stray_transforms() == []
+    page.locator("#specimen .spec__prompt").first.click()   # lock one open
     page.wait_for_timeout(200)
-    page.locator("#specimen").scroll_into_view_if_needed()
-    page.wait_for_timeout(3000)   # beat + settle
-
-    assert page.locator(".spec__perform").count() == 0
-    bad = page.eval_on_selector_all(
-        "#specimen .spec[data-op='delete'] *",
-        """els => els
-            .map(e => getComputedStyle(e).transform)
-            .filter(t => t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)')""")
-    assert bad == [], bad
-    op = page.eval_on_selector_all(
-        "#specimen .spec[data-op='delete'] .line-spec",
-        "els => els.map(e => getComputedStyle(e).opacity)")
-    assert all(float(x) > 0.98 for x in op), op
-
-
-def test_correction_replays_after_language_switch(open_site):
-    """Switch language at the top of the page (beat not yet triggered), then
-    scroll down: the still-armed observer fires, the sentence performs, and
-    nothing holds NaN-derived geometry."""
-    page, _ = open_site()
-    page.wait_for_function(
-        "document.documentElement.classList.contains('hero-done')", timeout=6000)
-    page.locator(".masthead .langswitch").click()
-    page.wait_for_timeout(300)
-
-    page.locator("#specimen").scroll_into_view_if_needed()
-    seen = False
-    for _ in range(60):
-        if page.locator(".spec__perform").count():
-            seen = True
-            break
-        page.wait_for_timeout(25)
-    assert seen, "the beat did not run after a language switch"
-
-    page.wait_for_timeout(3000)
-    assert page.locator(".spec__perform").count() == 0
-    nan = page.eval_on_selector_all(
-        "#specimen *",
-        "els => els.filter(e => /nan/i.test(getComputedStyle(e).transform)).length")
-    assert nan == 0
-    op = page.eval_on_selector_all(
-        "#specimen .spec[data-op='delete'] .line-spec",
-        "els => els.map(e => getComputedStyle(e).opacity)")
-    assert all(float(x) > 0.98 for x in op), op
-
-
-def test_correction_strand_recovers_the_static_pair(open_site):
-    """A beat interrupted mid-flight — a language switch here, the same code
-    path a GSAP throw or a backgrounded tab's stalled ticker takes — must
-    settle(), not strand the section showing only the dimmed error line. The
-    clone tears down and BOTH static lines come back to full opacity."""
-    page, _ = open_site()
-    page.wait_for_function(
-        "document.documentElement.classList.contains('hero-done')", timeout=6000)
-    page.locator("#specimen").scroll_into_view_if_needed()
-
-    seen = False
-    for _ in range(80):
-        if page.locator(".spec__perform").count():
-            seen = True
-            break
-        page.wait_for_timeout(25)
-    assert seen, "the beat never started"
-
-    # strand it while the clone is still on screen
-    page.locator(".masthead .langswitch").click()
-    page.wait_for_timeout(600)
-
-    assert page.locator(".spec__perform").count() == 0, "clone left mounted after a strand"
-    op = page.eval_on_selector_all(
-        "#specimen .spec[data-op='delete'] .line-spec",
-        "els => els.map(e => getComputedStyle(e).opacity)")
-    assert all(float(x) > 0.98 for x in op), op
-    bad = page.eval_on_selector_all(
-        "#specimen .spec[data-op='delete'] *",
-        """els => els
-            .map(e => getComputedStyle(e).transform)
-            .filter(t => t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)')""")
-    assert bad == [], bad
+    assert stray_transforms() == []
 
 
 def _clip_heights(page):

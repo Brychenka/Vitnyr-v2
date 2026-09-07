@@ -744,32 +744,44 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    no-JS or reduced-motion reader gets exactly today's appearance. */
 .line-spec del, .line-spec ins { text-decoration: none; }
 
-/* move 01: the performance layer. initCorrections() builds one
-   .spec__perform per data-op="delete" specimen, aria-hidden, absolutely
-   overlaid on the static pair — which drops to opacity 0 for the ~1s the
-   beat runs, then returns. Never display:none: assistive tech keeps the
-   real paragraphs, and every existing layout test still measures a real
-   box. Deliberately shares no class with .line-spec / .wrong / .right /
-   .vh so the static DOM stays the sole match for their selectors. Mirrors
-   .line-spec + .wrong for the frames the reader actually sees. */
-.spec__perform {
-  position: absolute; left: 0; right: 0;
-  margin: 0; box-sizing: border-box; pointer-events: none;
+/* The specimen reveal. initSpecimenReveal() builds one .spec__reveal > button
+   per specimen and `hidden`s the real .wrong line; with no JS none of this
+   exists and the static <del>/<ins> pair is the whole of it. The button
+   mirrors .line-spec's metrics so it sits in the same rhythm, and carries the
+   specimen's amber rule plus an underlined label so it plainly reads as
+   "open me". Its content swaps — label ⇄ the error sentence — instantly, no
+   layout in the transform channel, nothing time-based. The .wrong line's own
+   `[hidden]` needs help: .line-spec already sets `display: flex`, which
+   out-specifies the UA [hidden] rule, so restore it explicitly. */
+.line-spec[hidden] { display: none; }
+.spec__prompt {
+  -webkit-appearance: none; appearance: none;
+  margin: 0; background: none; border: 0; border-left: 2px solid var(--ink-specimen);
+  width: 100%; text-align: left; cursor: pointer; color: inherit;
   font-family: var(--mono); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55;
   display: flex; gap: 12px; align-items: baseline;
-  border-left: 2px solid var(--ink-specimen);
   padding: 5px 0 5px 14px;
 }
-.spec__perform .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; color: var(--ink-specimen); }
-.spec__perform .sig svg { display: block; width: .68em; height: .68em; }
-.spec__perform del { text-decoration: none; color: var(--amber-text); display: inline-block; }
-.spec__perform .spec__tail { display: inline-block; }
-/* move 01 (revised): the static pair crossfades back as the clone drops into
-   the "Correct:" row and fades — not the old hard snap, which flashed the
-   struck word back into the top line the instant the beat ended. Scoped to
-   while the clone is mounted, so the no-JS / reduced-motion render and every
-   box-measuring test are untouched, and nothing is left mid-transition. */
-.spec__perform ~ .line-spec { transition: opacity .3s var(--e); }
+.spec__prompt-mark {
+  flex: none; width: .68em; text-align: center;
+  font-family: var(--mono); color: var(--ink-specimen);
+}
+.spec__prompt-label {
+  color: var(--fg2);
+  text-decoration: underline; text-decoration-color: var(--ink-specimen);
+  text-underline-offset: .22em; text-decoration-thickness: 1px;
+  transition: color var(--t) var(--e);
+}
+.spec__prompt:hover .spec__prompt-label,
+.spec__prompt:focus-visible .spec__prompt-label {
+  color: var(--fg); text-decoration-thickness: 2px;
+}
+/* :not([hidden]) so the attribute still hides it — a bare `display` here would
+   out-specify the UA [hidden] rule (same trap as .spec__permalink-status). */
+.spec__prompt-mistake:not([hidden]) { display: flex; gap: 12px; align-items: baseline; }
+.spec__prompt-mistake .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; color: var(--ink-specimen); }
+.spec__prompt-mistake .sig svg { display: block; width: .68em; height: .68em; }
+.spec__prompt-mistake del { text-decoration: none; color: var(--amber-text); }
 
 /* ---------- domains ---------- */
 .domains { border-top: 1px solid var(--rule); margin-bottom: clamp(56px, 8vw, 110px); }

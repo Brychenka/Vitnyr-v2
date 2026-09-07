@@ -116,6 +116,7 @@
   initCollageView();
   initWhoRows();
   initSpecimenPermalinks();
+  initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {
@@ -970,164 +971,89 @@
     document.addEventListener('vitnyr:langchange', updateCta);
   }
 
-  /* ---------- the correction (Spark Order S6 / moves 06 + 01) ----------
-     The page's one performed edit: a specimen sentence is corrected in front
-     of the reader — the deleted word lifts out, the surviving text reflows
-     closed over the gap, and the corrected line settles into the "Correct:"
-     row while the static pair crossfades back up under it. The S0 "bend" (a
-     transform carrying layout) is allowed here only because it is transient:
-     every transform lives on a throwaway aria-hidden clone that is removed on
-     completion. With no JS, no GSAP or reduced motion this never runs and the
-     static <del>/<ins> pair is the whole of it. Only data-op="delete"
-     specimens perform; the register restructure ships static.
+  /* ---------- the specimen reveal ----------
+     Rest state is the "Correct:" line plus a prompt where the error used to
+     be — "+ Show the common mistake", an amber-ruled control with an
+     underline (and the pointer dot's own specimen ink over it, since HOT
+     includes <button>). Hover, tap or keyboard focus opens it: the prompt's
+     content swaps to the error sentence itself — the cloned .sig glyph and
+     the <del> word in amber — and the marker flips to "−". A tap or Enter
+     locks it open; a plain hover closes again on leave.
 
-     Every way the beat can end — normal completion, a GSAP throw, the tab
-     backgrounding mid-beat so the ticker never advances again, a language
-     switch — routes through settle(): idempotent, restores BOTH static lines
-     to full opacity (test_correction_leaves_no_residual_transform pins this),
-     strips the clone, leaves nothing transformed. A 4s per-spec guard and the
-     page-wide failsafe() sweep both call it, so the section can never be
-     stranded showing only the amber error line. The beat also waits out most
-     of the card's 0.9s reveal before it starts, so it isn't spent while the
-     card is still fading in. */
-  var recoverCorrections = null;   // failsafe() reaches the beat through this
+     No transform, nothing time-based, no scroll trigger, so this is wired
+     before the reduced-motion return, same as the collage router and the
+     origin panel: an affordance, not motion. With no JS the button is never
+     built and the untouched static <del>/<ins> pair is the whole of it — the
+     real .wrong line stays in the DOM (only `hidden` under JS) so that render
+     and every box-measuring test keep their source of truth. */
+  function initSpecimenReveal() {
+    var specs = document.querySelectorAll('#specimen .spec');
+    if (!specs.length) return;
+    var isRu = function () { return document.documentElement.getAttribute('data-lang') === 'ru'; };
 
-  function initCorrections() {
-    var specs = document.querySelectorAll('#specimen .spec[data-op="delete"]');
-    if (!specs.length || !('IntersectionObserver' in window)) return;
-    // per spec: { started, done, perf, tl, guard, built, drop }
-    var state = [];
-    specs.forEach(function () {
-      state.push({ started: false, done: false, perf: null, tl: null, guard: 0, built: null, drop: 0 });
-    });
-
-    // Rebuild the frames the reader sees from the static .wrong line: its
-    // marker glyph and its sentence, with everything after the <del> wrapped
-    // so the reflow has one element to FLIP. The static pair is never touched
-    // beyond an opacity toggle it always gets back.
-    function build(spec) {
+    specs.forEach(function (spec) {
       var lines = spec.querySelector('.spec__lines');
       var wrong = spec.querySelector('.line-spec.wrong');
-      var right = spec.querySelector('.line-spec.right');
-      if (!lines || !wrong || !right) return null;
-      var src = wrong.children[wrong.children.length - 1];   // the sentence <span>
-      var sentence = src ? src.cloneNode(true) : null;
-      var del = sentence && sentence.querySelector('del, .mark--specimen');
-      if (!del) return null;
-      var tail = document.createElement('span');
-      tail.className = 'spec__tail';
-      while (del.nextSibling) tail.appendChild(del.nextSibling);
-      sentence.appendChild(tail);
-
-      var perf = document.createElement('p');
-      perf.className = 'spec__perform';
-      perf.setAttribute('aria-hidden', 'true');
+      if (!lines || !wrong) return;
+      var sentence = wrong.children[wrong.children.length - 1];   // the visible sentence <span>
+      if (!sentence) return;
       var sig = wrong.querySelector('.sig');
-      if (sig) perf.appendChild(sig.cloneNode(true));
-      perf.appendChild(sentence);
 
-      wrong.style.opacity = '0';
-      right.style.opacity = '0';
-      lines.insertBefore(perf, wrong);
-      return { perf: perf, del: del, tail: tail, wrong: wrong, right: right };
-    }
+      var wrap = document.createElement('div');
+      wrap.className = 'spec__reveal';
+      wrap.setAttribute('data-open', 'false');
 
-    // The one exit — safe to call more than once and at any point in the beat.
-    // Kills the timeline, clears every transform it set, removes the clone, and
-    // puts BOTH static lines back to full opacity: the settled state is the
-    // static pair, same as the no-JS / reduced-motion render.
-    function settle(i) {
-      var s = state[i];
-      if (s.done) return;
-      s.done = true;
-      if (s.guard) { clearTimeout(s.guard); s.guard = 0; }
-      if (s.tl) { try { s.tl.kill(); } catch (e) {} s.tl = null; }
-      if (s.built) {
-        try { gsap.set([s.built.tail, s.built.del], { clearProps: 'transform' }); } catch (e) {}
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'spec__prompt';
+      btn.setAttribute('aria-expanded', 'false');
+
+      var mark = document.createElement('span');
+      mark.className = 'spec__prompt-mark';
+      mark.setAttribute('aria-hidden', 'true');
+      mark.textContent = '+';
+
+      var label = document.createElement('span');
+      label.className = 'spec__prompt-label';
+      label.setAttribute('data-en', 'Show the common mistake');
+      label.setAttribute('data-ru', 'Показать типичную ошибку');
+      label.textContent = isRu() ? 'Показать типичную ошибку' : 'Show the common mistake';
+
+      var reveal = document.createElement('span');
+      reveal.className = 'spec__prompt-mistake';
+      reveal.hidden = true;
+      if (sig) reveal.appendChild(sig.cloneNode(true));
+      reveal.appendChild(sentence.cloneNode(true));
+
+      btn.appendChild(mark);
+      btn.appendChild(label);
+      btn.appendChild(reveal);
+      wrap.appendChild(btn);
+      lines.insertBefore(wrap, wrong);
+      wrong.hidden = true;   // JS-only: the static pair stays the no-JS source of truth
+
+      // hover previews it; a click/tap/Enter locks it open or shut. Keyboard
+      // is the lock alone (Tab to the button, Enter) — no focus-preview, so a
+      // mouse click that leaves the button focused can't wedge it open.
+      var st = { hover: false, lock: false };
+      function render() {
+        var open = st.hover || st.lock;
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        wrap.setAttribute('data-open', open ? 'true' : 'false');
+        label.hidden = open;
+        reveal.hidden = !open;
+        mark.textContent = open ? '−' : '+';   // − / +
       }
-      if (s.perf) { s.perf.remove(); s.perf = null; }
-      specs[i].querySelectorAll('.line-spec').forEach(function (el) { el.style.opacity = ''; });
-      s.built = null;
-    }
 
-    function play(i) {
-      var s = state[i];
-      if (s.done || s.perf) return;
-      var built;
-      try { built = build(specs[i]); }
-      catch (err) { settle(i); return; }
-      if (!built) { s.done = true; return; }   // degrade to the static pair
-      s.built = built;
-      s.perf = built.perf;
-
-      // If the beat is stranded before onComplete — a throw, or the tab going
-      // to the background so GSAP's rAF ticker stops — hand the frame back.
-      s.guard = setTimeout(function () { settle(i); }, 4000);
-
-      var tl;
-      try { tl = gsap.timeline({ onComplete: function () { settle(i); } }); }
-      catch (err) { settle(i); return; }
-      s.tl = tl;
-
-      tl.to(built.del, { opacity: 0, yPercent: -35, duration: D.correct * 0.42, ease: EASE });
-      tl.add(function () {
-        // FLIP: the surviving text's left edge before the deletion, then after,
-        // then tween the delta to zero. yPercent/opacity on <del> haven't moved
-        // it horizontally, so this reads the real pre-reflow left edge. Also
-        // measure how far the corrected line sits above the "Correct:" row.
-        var before = built.tail.getBoundingClientRect().left;
-        built.del.style.display = 'none';
-        var after = built.tail.getBoundingClientRect().left;
-        var dx = before - after;
-        gsap.set(built.tail, { x: Math.abs(dx) < 1 ? 0 : dx });
-        var d = built.right.getBoundingClientRect().top - built.perf.getBoundingClientRect().top;
-        s.drop = isFinite(d) ? d : 0;
+      btn.addEventListener('mouseenter', function () { st.hover = true; render(); });
+      btn.addEventListener('mouseleave', function () { st.hover = false; render(); });
+      btn.addEventListener('click', function () {
+        st.lock = !st.lock;
+        st.hover = false;   // a tap owns the state; ignore any synthetic hover it fires
+        render();
       });
-      tl.to(built.tail, { x: 0, duration: D.correct, ease: EASE, clearProps: 'transform' });
-      tl.addLabel('fixed');
-      // Hold on the corrected sentence so it reads as a result, then hand off:
-      // the static pair fades up (CSS transition on .spec__perform ~ .line-spec)
-      // as the clone drops into the "Correct:" row and fades — a crossfade, not
-      // the old hard snap that flashed the struck word back into the top line.
-      tl.add(function () {
-        built.wrong.style.opacity = '';
-        built.right.style.opacity = '';
-      }, 'fixed+=0.4');
-      // y resolved at run time — s.drop is measured mid-beat, in the FLIP step.
-      tl.to(built.perf, { opacity: 0, y: function () { return s.drop; }, duration: D.micro, ease: EASE }, 'fixed+=0.4');
-    }
 
-    // Wait out most of the card's 0.9s reveal before performing, so the beat
-    // isn't spent while the card is still fading in. whenRendering defers the
-    // start off a backgrounded tab, where the ticker would not advance anyway.
-    function schedule(i) {
-      var s = state[i];
-      if (s.started || s.done) return;
-      s.started = true;
-      setTimeout(function () {
-        if (!s.done) whenRendering(function () { play(i); });
-      }, 500);
-    }
-
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-        var i = Array.prototype.indexOf.call(specs, e.target);
-        if (i > -1) schedule(i);
-      });
-    }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });   // the reveal rhythm's own line
-    specs.forEach(function (s) { io.observe(s); });
-
-    recoverCorrections = function () {
-      state.forEach(function (s, i) { if ((s.perf || s.tl) && !s.done) settle(i); });
-    };
-
-    // A language switch must not strand a beat behind #app's S4 crossfade. The
-    // specimen sentences are identical in both languages, so there is nothing
-    // to rebuild — settle whatever has started; the rest stay armed.
-    document.addEventListener('vitnyr:langchange', function () {
-      state.forEach(function (s, i) { if (s.started && !s.done) settle(i); });
+      render();
     });
   }
 
@@ -1147,10 +1073,6 @@
       if (r.top < line && r.bottom > 0 && parseFloat(getComputedStyle(el).opacity) < 0.05) stuck.push(el);
     });
     stuck.forEach(function (el) { el.classList.add('is-in'); });
-    // A correction beat stranded before its onComplete (a throw, or the tab
-    // backgrounded so the ticker stalled) leaves its static pair hidden by
-    // inline opacity the .reveal sweep above can't see — hand those back too.
-    if (recoverCorrections) recoverCorrections();
     // The hero carries no .reveal class, so the sweep above cannot reach it —
     // armHeroGuard() covers it, on every play rather than only this one.
     if (!heroStarted) showHeroNow();
@@ -1165,7 +1087,6 @@
   initOrigin();
   initCursor();
   initMagnetic();
-  initCorrections();   // past the reduced-motion return: the static pair is that reader's version
 
   whenRendering(function () {
     /* Hold the hero until the display face is real, so the lines don't rise in

@@ -2058,6 +2058,61 @@ scroll-through on a real browser.
 
 **Live artifact not republished** — same collage-placeholder hold.
 
+## The specimen error goes behind a reveal (2026-09-07)
+
+Branch `feature/specimen-hover-reveal`. Igor: *"make it that the mistake only
+shows when we hover over it, but make it obvious it should be hovered."* This
+**retires the S6 performed correction** (`initCorrections`, `.spec__perform`,
+the FLIP, the two follow-up fixes above) — a self-correcting animation and a
+hidden-until-hover error are mutually exclusive. Answered questions settled the
+shape: the *"Correct:"* line shows at rest; the error sits behind a **labelled
+prompt**; touch/keyboard get a **tap/Enter toggle**.
+
+- **`initSpecimenReveal()`** (wired before the reduced-motion return, next to
+  `initSpecimenPermalinks` — it's an affordance, not motion). Per specimen it
+  builds `.spec__reveal > button.spec__prompt` and sets `hidden` on the real
+  `.line-spec.wrong`. The button mirrors `.line-spec`'s mono / size / amber
+  left-rule and carries `[+] Show the common mistake` with an underline; its
+  content **swaps in place** to the cloned error sentence (`.sig` glyph + the
+  `<del>` word in amber) with the marker flipping to `−`. `aria-expanded`
+  tracks state; the pointer dot already goes specimen-amber over it (HOT
+  includes `<button>`). All three specimens, register one included.
+- **Interaction.** `open = hover || lock`. `mouseenter`/`mouseleave` preview;
+  `click` (tap / Enter / Space) toggles `lock` and clears `hover` so a tap
+  owns the state. No focus-preview — a mouse click that leaves the button
+  focused can't wedge it open; keyboard is Tab-then-Enter. Opening shifts
+  nothing below it (measured 0px on the "Correct:" line and the explanation).
+- **`.line-spec[hidden] { display: none }`** — `.line-spec` sets `display:
+  flex`, which out-specifies the UA `[hidden]` rule (the same trap the file
+  already notes for `.spec__permalink-status`); `.spec__prompt-mistake` uses
+  `:not([hidden])` for the same reason.
+- **Degrades to today's page.** No JS → no button, the untouched static
+  `<del>`/`<ins>` pair. Reduced motion → the button still works (no
+  transition to drop; nothing was ever animated). The real `.wrong` line
+  stays in the DOM for the no-JS render and is reachable through the button
+  (a disclosure) for assistive tech.
+
+**Tests.** `test_motion.py`: the three S6 beat tests removed (mechanism gone),
+replaced by `test_specimen_reveal_holds_no_transform`; the injected-probe
+cursor test now hovers the real `.spec__prompt`. `test_a11y.py`: the
+performed-correction / reduced-motion-static-pair cases replaced by
+`test_specimen_reveal_is_an_accessible_disclosure`,
+`test_specimen_reveal_works_under_reduced_motion`,
+`test_specimen_mistake_is_hidden_until_hover_or_tap`;
+`test_specimen_rows_have_text_equivalent_for_correctness` reads
+`text_content` now (the `.wrong` label renders nothing while `[hidden]`).
+`test_layout.py`: the wrong/right gap check runs without JS (both lines only
+coexist there now). Full suite **185 passed**; the 3 failures
+(`test_collage_nav_icons.py` ×2, `test_i18n.py` langswitch-shift) are the
+concurrent P19/P20 masthead/collage-nav work and fail without this branch too.
+
+Not verified by eye — the preview pane doesn't paint on demand this session;
+structure, styling, the hover/lock state machine, i18n of the label and
+zero layout-shift were checked through the DOM and the test suite's real
+Chromium. Worth a scroll-through on a real browser.
+
+**Live artifact not republished** — same collage-placeholder hold.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

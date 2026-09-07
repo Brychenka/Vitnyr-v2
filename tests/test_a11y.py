@@ -98,14 +98,18 @@ def test_specimen_rows_have_text_equivalent_for_correctness(open_site):
     page, _ = open_site()
     vh = page.locator(".line-spec .vh")
     assert vh.count() == 6
-    texts = {t.strip() for t in vh.all_inner_texts()}
+    # text_contents, not inner_texts: under JS the .wrong line is [hidden] (the
+    # error moved behind the reveal button), so its label renders nothing — but
+    # the equivalent is still in the DOM for the no-JS render and for AT once
+    # the disclosure is opened.
+    texts = {t.strip() for t in vh.all_text_contents()}
     assert texts == {"Incorrect:", "Correct:", "Reads as:", "Better as:"}
 
     register = page.locator(".spec", has=page.locator("text=Register, not grammar"))
     # .line-spec .vh, same scope as the count above: the specimen also carries a
     # .vh inside its permalink label now (S9A / move 09), which isn't a
     # correctness equivalent and shouldn't be swept in here.
-    register_labels = {t.strip() for t in register.locator(".line-spec .vh").all_inner_texts()}
+    register_labels = {t.strip() for t in register.locator(".line-spec .vh").all_text_contents()}
     assert register_labels == {"Reads as:", "Better as:"}
 
 
@@ -276,10 +280,11 @@ def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
     assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 
 
-# --- Spark Order S6 (moves 06 + 01): the specimen correction is performed on
-# a throwaway aria-hidden clone; the static <del>/<ins> pair stays the source
-# of truth for no-JS, reduced-motion and screen-reader readers, and the
-# ✕/✓ glyphs are now real proofreading marks. ---
+# --- The specimen reveal: the error sits behind a "Show the common mistake"
+# button (hover previews, click/tap/Enter locks); the "Correct:" line is always
+# shown. With no JS the button is never built and the static <del>/<ins> pair
+# is the whole of it — that pair stays the source of truth, and the ✕/✓ glyphs
+# are real proofreading marks. ---
 
 def _spec_pair_readable(page):
     for cls in (".wrong", ".right"):
@@ -293,46 +298,78 @@ def _spec_pair_readable(page):
 def test_specimen_static_pair_survives_without_js(open_site):
     page, _ = open_site(java_script_enabled=False)
     _spec_pair_readable(page)
-    # and no performance layer was built
-    assert page.locator(".spec__perform").count() == 0
+    # nothing was built: no prompt button, the three real <del> pairs are it
+    assert page.locator(".spec__prompt").count() == 0
     assert page.locator("#specimen .line-spec del").count() == 3
 
 
-def test_specimen_static_pair_survives_reduced_motion(open_site):
+def test_specimen_reveal_is_an_accessible_disclosure(open_site):
+    """With JS: each specimen's error is behind a real <button> that names
+    itself and carries aria-expanded; the "Correct:" line stays visible; the
+    static .wrong line is [hidden] (out of the a11y tree) until the button is
+    activated, and activating it toggles the state back and forth."""
+    page, _ = open_site()
+    prompts = page.locator("#specimen .spec__prompt")
+    rights = page.locator("#specimen .line-spec.right")
+    assert prompts.count() == 3
+    for i in range(3):
+        btn = prompts.nth(i)
+        assert btn.get_attribute("aria-expanded") == "false"
+        assert "show the common mistake" in btn.inner_text().strip().lower()
+        assert rights.nth(i).is_visible()
+
+    wrong0 = page.locator("#specimen .line-spec.wrong").first
+    assert wrong0.get_attribute("hidden") is not None
+    assert not wrong0.is_visible()
+
+    btn0 = prompts.first
+    btn0.click()
+    assert btn0.get_attribute("aria-expanded") == "true"
+    assert "myself" in btn0.inner_text()                     # the error is now shown, in place
+    assert rights.first.is_visible()                          # the fix never went away
+    btn0.click()
+    assert btn0.get_attribute("aria-expanded") == "false"
+    assert "myself" not in btn0.inner_text()
+
+
+def test_specimen_reveal_works_under_reduced_motion(open_site):
+    """It is an affordance, not motion, so it is wired before the reduced-motion
+    return: a reduced-motion reader still gets the button and can open it."""
     page, _ = open_site(reduced_motion=True)
     page.wait_for_timeout(300)
     page.locator("#specimen").scroll_into_view_if_needed()
-    page.wait_for_timeout(400)
-    _spec_pair_readable(page)
-    assert page.locator(".spec__perform").count() == 0
-    # nothing was left dimmed
-    op = page.eval_on_selector_all(
-        "#specimen .line-spec", "els => els.map(e => getComputedStyle(e).opacity)")
-    assert all(float(x) > 0.98 for x in op), op
+
+    btn = page.locator("#specimen .spec__prompt").first
+    assert btn.count() == 1
+    assert "show the common mistake" in btn.inner_text().strip().lower()
+    btn.click()
+    assert btn.get_attribute("aria-expanded") == "true"
+    mistake = btn.locator(".spec__prompt-mistake")
+    assert mistake.is_visible() and mistake.inner_text().strip()
+    assert float(mistake.evaluate("el => getComputedStyle(el).opacity")) > 0.98
 
 
-def test_correction_performance_is_hidden_from_assistive_tech(open_site):
+def test_specimen_mistake_is_hidden_until_hover_or_tap(open_site):
+    """The point of the change: at rest the mistake isn't on screen. Hover the
+    prompt to preview it, leave to hide it again; a click locks it open."""
     page, _ = open_site()
-    page.wait_for_timeout(200)
-    page.locator("#specimen").scroll_into_view_if_needed()
-    # catch a perf element while the beat is running
-    seen_hidden = False
-    for _ in range(60):
-        perf = page.locator(".spec__perform")
-        if perf.count():
-            assert perf.first.get_attribute("aria-hidden") == "true"
-            seen_hidden = True
-            break
-        page.wait_for_timeout(25)
-    assert seen_hidden, "the performance element never appeared"
-    # the real paragraphs are untouched: no aria-hidden, real text, and the
-    # corrected sentence is findable by an assistive-tech reader
-    for cls in (".wrong", ".right"):
-        for i in range(3):
-            assert page.locator(f"#specimen .line-spec{cls}").nth(i).get_attribute("aria-hidden") is None
-    assert page.get_by_text("I feel good today.").count() >= 1
-    page.wait_for_timeout(2600)
-    assert page.locator(".spec__perform").count() == 0   # torn down when it settles
+    btn = page.locator("#specimen .spec__prompt").first
+    btn.scroll_into_view_if_needed()
+    mistake = btn.locator(".spec__prompt-mistake")
+    label = btn.locator(".spec__prompt-label")
+
+    assert not mistake.is_visible() and label.is_visible()
+
+    btn.hover()
+    assert mistake.is_visible() and not label.is_visible()
+
+    page.mouse.move(5, 5)                     # leave the button
+    assert not mistake.is_visible() and label.is_visible()
+
+    btn.click()                              # lock it open
+    assert mistake.is_visible()
+    page.mouse.move(5, 5)
+    assert mistake.is_visible(), "a locked reveal should survive the pointer leaving"
 
 
 def test_specimen_marks_are_proofreading_notation(open_site):
