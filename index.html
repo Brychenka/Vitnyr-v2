@@ -111,9 +111,10 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
          (jumps into #collage). P17 (2026-09-07): a uniform gap made all six
          controls read as equally related; .tools__rule now marks the real
          seam between the two kinds, the within-cluster gap is ~3x tighter
-         than the between-cluster gap so proximity does the grouping, and
-         .tools__group--nav carries a resting hairline that binds "Photos" to
-         its glyphs. Order is util-first on purpose: the theme switch is
+         than the between-cluster gap so proximity does the grouping.
+         (P19, 2026-09-07: .tools__group--nav's resting hairline was dropped —
+         the tight gap and P18's --fg contrast step carry the grouping on
+         their own.) Order is util-first on purpose: the theme switch is
          width-unpinned (see .themeswitch note in style.css) and must stay
          upstream of everything that holds position on a language toggle, so
          the nav icons sit downstream of it where its width swing cancels.
