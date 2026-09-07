@@ -2281,21 +2281,22 @@ first climbing 4:5 slot.
 
 ### `climb-06-wide` — mid-move on the overhang, from the floor
 
-A low-angle action frame: Igor tensioned horizontal on a steep overhanging
-spray wall, one hand on a hold, the whole panel and the gym behind. Replaces
-the `climb-06-wide` stand-in — the second climbing 3:2 slot. Its shot-list
-intent ("the board from the floor, Igor small on it") and its existing
-caption *"The board, from the floor." / "Доска — снизу, от пола."* both fit
-as-is; only the `<img alt>` was filled in.
+A low-angle action frame: Igor tensioned on a steep overhanging spray wall,
+one hand on a hold, body running the diagonal. Replaces the `climb-06-wide`
+stand-in — the second climbing 3:2 slot. Its shot-list intent ("the board
+from the floor") and its existing caption *"The board, from the floor." /
+"Доска — снизу, от пола."* both fit as-is; only the `<img alt>` was filled in.
 
 - **Source** `~/Downloads/Climbing Photos/IMG_8681.CR2` — Canon RAW,
   5472×3648 (native 3:2). Decoded to JPEG with `sips` (no dcraw/ImageMagick
   on this machine), then edited in Pillow.
-- **Edit** trimmed 260px off the left (dead-dark wall) staying exactly 3:2,
+- **Edit** the first pass sat too wide — Igor small, dead gym wall filling the
+  right half. Re-cropped tight to a 4050×2700 window (still exactly 3:2) on
+  the figure, cutting the empty right-side wall and some ceiling.
   `autocontrast(cutoff=0.5)` then `Brightness ×1.06`, `Contrast ×1.03` — the
   gym frame was underexposed and needed a lift the seated shot did not. No
   colour work. Master at
-  `Claude outputs/climb-06-wide_v3_edited_highres.jpg` (5212×3475).
+  `Claude outputs/climb-06-wide_v4_edited_highres.jpg` (4050×2700).
 - **Derived** `climb-06-wide.jpg` 450×300 and `climb-06-wide@2x.jpg` 900×600,
   JPEG q82 — same dimensions and `--32` class as the stand-in.
 
