@@ -1937,6 +1937,48 @@ errors.
 
 **Live artifact not republished** — same collage-placeholder hold.
 
+## P18 — masthead nav cluster lifted for legibility (2026-09-07)
+
+Branch `feature/masthead-nav-legibility`. Files: `style.css`, this note. Igor
+on the header: the "Photos" text and the three icons are too small to read
+clearly. Measured on desktop: the caption and both toggles were 12px caps in
+`--fg2`, the icons 19px glyphs at 1.8px stroke — a stroke-only icon (the
+carabiner, the book) came out as filigree, not an object, and the caption sat
+in the same dim ink as the theme/language toggles despite the nav cluster
+being the masthead's one jump into content.
+
+- **Hierarchy by ink, not size.** `.tools__label` + `.tool--icon` now rest at
+  `--fg`; `.themeswitch` / `.langswitch` stay `--fg2`. The contrast step,
+  plus the `.tools__group--nav::after` hairline from P17, marks the nav
+  cluster as primary without enlarging the row toward the wordmark's clear
+  space. One size across the whole row — a 1px split between adjacent clusters
+  would have read as a mistake.
+- **Type 12 → 13px** on `.tool` and `.tools__label` (an existing rung —
+  `.channels`, the mechanism numbers), tracking `.1em → .09em` since what
+  opened the caps at 12 over-spaced them at 13. `.foot__top` reuses `.tool`
+  and rides along; checked, reads fine.
+- **Icons 19 → 22px**, `stroke-width: 2` set in CSS on `.tool--icon svg` —
+  overrides the `1.8` baked into each `<svg>` as a presentation attribute (CSS
+  wins), so no path was touched. The chess glyph's `<rect>` fills are
+  unaffected.
+- **Touch target held at 44px.** Coarse-pointer `.tool--icon` padding
+  `12.5 → 11` so `22 + 11 + 11` still lands exactly 44 — the glyph grew
+  *inside* a fixed target, so the phone row's width and `--head`'s two-line
+  calc are unchanged from P17.
+- **Fine-pointer target fixed.** New `@media (pointer: fine) { .tool {
+  padding-block: 6px } }` — `CHARCOAL` / `RU` measured ~23px tall on a mouse
+  (only the coarse path had been padded to 44); now 27.5px, clearing the
+  WCAG 2.2 24px minimum on both pointer types.
+
+Wordmark untouched. Verified in an isolated `git worktree` (a concurrent
+chat held the shared checkout): both themes, EN + RU (`Фото` still centres in
+the `Photos`-width pin), 1280 + 375, coarse-pointer icon targets exactly 44px
+and the one-line mobile header still fits inside the gutter, no console
+errors, no horizontal overflow at either width. No motion added — the change
+rides the existing `transition: color`, inert under reduced-motion.
+
+**Live artifact not republished** — same collage-placeholder hold.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
