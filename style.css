@@ -347,10 +347,9 @@ html.past-origin .progress__fill--target { opacity: 1; }
 .tools__rule { width: 1px; height: 14px; background: var(--rule); flex-shrink: 0; }
 /* P18 (2026-09-07): the nav cluster (this caption + the three glyphs) is the
    masthead's one navigational control — a jump into the #collage view — so it
-   rests at full --fg while the theme/language toggles stay dim --fg2. The
-   contrast step, plus the resting hairline .tools__group--nav::after already
-   carries, is what marks this cluster as primary without enlarging the row
-   past the wordmark's clear space. Glyph 19 -> 22px so a stroke-only icon
+   rests at full --fg while the theme/language toggles stay dim --fg2. That
+   contrast step is what marks this cluster as primary without enlarging the
+   row past the wordmark's clear space. Glyph 19 -> 22px so a stroke-only icon
    (the carabiner, the book) reads as an object, not filigree; stroke-width 2
    overrides the 1.8 baked into each <svg> as a presentation attribute (CSS
    wins) and holds the ratio roughly constant at the larger size. */
@@ -360,18 +359,11 @@ html.past-origin .progress__fill--target { opacity: 1; }
    first, then .tools__rule, then .tools__group--nav (Photos caption + the
    three collage jumps); order and rationale in index.html. A uniform gap had
    made all six controls read as one strip; the tight within-cluster gap does
-   the grouping. This hairline binds the caption to its glyphs: 1px under the
-   whole nav cluster in --rule, lifting to target ink while anything inside is
-   hovered or focused. Same vocabulary as .tool::after; pseudo-element only,
-   so no layout rides the transform channel. */
-.tools__group--nav { position: relative; }
-.tools__group--nav::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
-  height: 1px; background: var(--rule);
-  transition: background var(--t) var(--e);
-}
-.tools__group--nav:hover::after,
-.tools__group--nav:focus-within::after { background: var(--ink-target); }
+   the grouping. P19 (2026-09-07): the resting hairline this cluster used to
+   carry (a 1px --rule underline lifting to target ink on hover/focus) was
+   dropped at Igor's call — the tight gap plus P18's --fg/--fg2 contrast step
+   already mark it as one primary control, and the line read as clutter under
+   the photo/icon zone. */
 /* .themeswitch/.langswitch measured 76x23 / 19x23 at rest — both fail WCAG
    2.2's 24px touch-target minimum on height, the language switch on both
    axes (two letters, no room to grow but sideways), while the three glyph
