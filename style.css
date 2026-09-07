@@ -339,22 +339,31 @@ html.past-origin .progress__fill--target { opacity: 1; }
    rest of .tools already uses — not a new label style, and not interactive
    (no cursor, no hover state, no underline), so it can't be mistaken for a
    fourth control. */
+/* P20 (2026-09-07): the caption leads the cluster now — 13 -> 14px (one rung
+   over the 13px utility row, the smallest step that reads deliberate), so the
+   nav's prominence rides on scale, not on ink or stroke weight. Tracking eased
+   .09em -> .08em: what opened the caps at 13 over-spaces them at 14. Back to
+   --fg2 at rest (P18 had lifted it to --fg): size + .tools__rule + the tight
+   proximity gap already mark this as the one nav control, so the ink lift on
+   top was the redundant heaviness Igor flagged. */
 .tools__label {
-  font-family: var(--sans); font-size: 13px; font-weight: 500;
-  letter-spacing: .09em; text-transform: uppercase; color: var(--fg);
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--fg2);
   white-space: nowrap; flex-shrink: 0;
 }
 .tools__rule { width: 1px; height: 14px; background: var(--rule); flex-shrink: 0; }
-/* P18 (2026-09-07): the nav cluster (this caption + the three glyphs) is the
-   masthead's one navigational control — a jump into the #collage view — so it
-   rests at full --fg while the theme/language toggles stay dim --fg2. That
-   contrast step is what marks this cluster as primary without enlarging the
-   row past the wordmark's clear space. Glyph 19 -> 22px so a stroke-only icon
-   (the carabiner, the book) reads as an object, not filigree; stroke-width 2
-   overrides the 1.8 baked into each <svg> as a presentation attribute (CSS
-   wins) and holds the ratio roughly constant at the larger size. */
-.tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; color: var(--fg); }
-.tool--icon svg { display: block; width: 22px; height: 22px; stroke-width: 2; }
+/* P20 (2026-09-07): the nav cluster (this caption + the three glyphs) is the
+   masthead's one navigational control — a jump into the #collage view. P18
+   marked it primary with weight (glyph 22px, stroke 2, resting --fg) and it
+   read heavy; P20 moves that job to scale and lets the weight go light. Glyph
+   -> 24px (1:1 with the 0 0 24 viewBox, so the stroke lands exact). stroke-width
+   1.5 here and in each <svg>'s own attribute (kept in sync) — below the old
+   1.8, not just back to it: all three icons are one hairline set now, and the
+   chess glyph's two formerly-solid squares are open strokes too (see index.html).
+   No colour override: .tool--icon inherits .tool's --fg2 at rest and lifts to
+   --fg on hover/focus through .tool:hover, same as the toggles. */
+.tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
+.tool--icon svg { display: block; width: 24px; height: 24px; stroke-width: 1.5; }
 /* P17 (2026-09-07): the row is two clusters now — the theme/language toggles
    first, then .tools__rule, then .tools__group--nav (Photos caption + the
    three collage jumps); order and rationale in index.html. A uniform gap had
@@ -376,12 +385,12 @@ html.past-origin .progress__fill--target { opacity: 1; }
 @media (pointer: coarse) { .tool { padding-block: 11px; padding-inline: 4px; } }
 /* Handoff specified 13px 10px for this, commented as a 44px target — with a
    17px glyph that's actually 37x43, short on the horizontal axis. The glyph
-   was since nudged to 19px, then to 22px (P18, for legibility); padding
-   tracks it down 12.5 -> 11 so the outer target still hits exactly 44
-   (22 + 11 + 11) and the phone row's width is unchanged from before P18 —
-   the glyph grew inside a fixed target, so --head's two-line-header calc
-   below needs no adjustment. */
-@media (pointer: coarse) { .tool--icon { padding: 11px; } }
+   was since nudged to 19px, then 22px (P18), then 24px (P20 — 1:1 with the
+   viewBox); padding tracks it down 12.5 -> 11 -> 10 so the outer target still
+   hits exactly 44 (24 + 10 + 10). The phone row's width is unchanged across
+   all of these — the glyph grew inside a fixed 44px target — so --head's
+   two-line-header calc below needs no adjustment. */
+@media (pointer: coarse) { .tool--icon { padding: 10px; } }
 
 /* Photos + the three icon buttons + Cream/RU, at coarse-pointer touch-target
    padding, don't fit next to a lockup held at its 176px floor below ~600px —
@@ -398,6 +407,12 @@ html.past-origin .progress__fill--target { opacity: 1; }
   .masthead { flex-wrap: wrap; row-gap: 10px; }
   .tools { flex-basis: 100%; justify-content: flex-end; flex-wrap: nowrap; }
   :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 54px); }
+  /* P20: the 14px caption (P20, for desktop prominence) has no room to spare
+     on this single flush line — at 375px the last icon lands hard against the
+     viewport edge. The phone row is a utility strip, not where the caption
+     needs to lead, so it drops back to the 13px it was before P20 and the row
+     keeps the ~5px edge margin it had. */
+  .tools__label { font-size: 13px; letter-spacing: .09em; }
 }
 
 /* ---------- in-copy emphasis ----------
