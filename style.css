@@ -1075,6 +1075,7 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 .collage__fig--32 .collage__slot { aspect-ratio: 3 / 2; }
 .collage__fig--11 .collage__slot { aspect-ratio: 1 / 1; }
 .collage__fig--34 .collage__slot { aspect-ratio: 3 / 4; }
+.collage__fig--916 .collage__slot { aspect-ratio: 9 / 16; }
 
 /* Real photo fills the ratio box the placeholder already reserved — the 1px
    hairline on .collage__slot stays as the frame, the padding (there for the

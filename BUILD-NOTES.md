@@ -2458,6 +2458,24 @@ transform, so the reveal channel is untouched (`CLAUDE.md` motion rule holds).
 rock-route climber is him). **Artifact still on hold** — `en-*` and `chess-*`
 are all stand-ins.
 
+### `climb-02-chalk` — also uncropped (2026-09-07, later)
+
+Igor again: the belay-loop frame is "still cropped" — use the full frame.
+Re-processed from `~/Downloads/climbing.jpg` (720×1280) with **no crop**:
+`Brightness ×1.20`, `Contrast ×1.08`, `autocontrast(cutoff=0.4)`, no colour.
+Master `Claude outputs/climb-02-chalk_v2_edited_highres.jpg`.
+
+- **Derived** `climb-02-chalk.jpg` 450×800 and `@2x` 900×1600 (q75, 223 KB —
+  parity with `climb-05-rest`; only matters once the hold lifts). Source is
+  720 wide, so the `@2x` is a mild 1.25× upscale — same call as
+  `climb-05-rest`.
+- **Figure** class `--11` → **`--916`** (new ratio, `aspect-ratio: 9/16`).
+  It stays at DOM position 2, so row 1 is now `01 (4:5)`, `02 (9:16, tall)`,
+  `05 (1:1)` — ragged, `align-items: start` handles it. Caption/alt
+  unchanged.
+- No layout-shift risk: the box is ratio-locked before the image loads, same
+  as every other tile.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
