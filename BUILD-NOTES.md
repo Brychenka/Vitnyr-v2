@@ -2249,10 +2249,14 @@ scroll-through on a real browser.
 
 **Live artifact not republished** — same collage-placeholder hold.
 
-## Collage — first real photo (2026-09-07)
+## Collage — first real photos (2026-09-07)
 
-Igor supplied the first real photograph of himself for the `#collage` view: a
-front-on frame of him seated on the pad at the foot of an indoor bouldering
+Igor supplied the first real photographs of himself for the `#collage` view.
+Two landed the same day, both in the climbing group:
+
+### `climb-01-board` — seated at the foot of the wall
+
+A front-on frame of him seated on the pad at the foot of an indoor bouldering
 wall, blue volumes behind. It replaces the `climb-01-board` stand-in — the
 first climbing 4:5 slot.
 
@@ -2275,8 +2279,30 @@ first climbing 4:5 slot.
   forbids inventing a third one).
 - Provenance note updated in `assets/collage/PLACEHOLDERS.md`.
 
-**Live artifact not republished.** The other 17 collage frames (all of
-`en-*`, all of `chess-*`, `climb-02`–`climb-06`) are still stand-ins, so the
+### `climb-06-wide` — mid-move on the overhang, from the floor
+
+A low-angle action frame: Igor tensioned horizontal on a steep overhanging
+spray wall, one hand on a hold, the whole panel and the gym behind. Replaces
+the `climb-06-wide` stand-in — the second climbing 3:2 slot. Its shot-list
+intent ("the board from the floor, Igor small on it") and its existing
+caption *"The board, from the floor." / "Доска — снизу, от пола."* both fit
+as-is; only the `<img alt>` was filled in.
+
+- **Source** `~/Downloads/Climbing Photos/IMG_8681.CR2` — Canon RAW,
+  5472×3648 (native 3:2). Decoded to JPEG with `sips` (no dcraw/ImageMagick
+  on this machine), then edited in Pillow.
+- **Edit** trimmed 260px off the left (dead-dark wall) staying exactly 3:2,
+  `autocontrast(cutoff=0.5)` then `Brightness ×1.06`, `Contrast ×1.03` — the
+  gym frame was underexposed and needed a lift the seated shot did not. No
+  colour work. Master at
+  `Claude outputs/climb-06-wide_v3_edited_highres.jpg` (5212×3475).
+- **Derived** `climb-06-wide.jpg` 450×300 and `climb-06-wide@2x.jpg` 900×600,
+  JPEG q82 — same dimensions and `--32` class as the stand-in.
+
+Provenance note updated in `assets/collage/PLACEHOLDERS.md`.
+
+**Live artifact not republished.** The other 16 collage frames (all of
+`en-*`, all of `chess-*`, `climb-02`–`climb-05`) are still stand-ins, so the
 Collage Stage 3 hold stands until the rest of the shoot lands.
 
 ## Verified
