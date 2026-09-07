@@ -757,6 +757,12 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .spec__perform .sig svg { display: block; width: .68em; height: .68em; }
 .spec__perform del { text-decoration: none; color: var(--amber-text); display: inline-block; }
 .spec__perform .spec__tail { display: inline-block; }
+/* move 01 (revised): the static pair crossfades back as the clone drops into
+   the "Correct:" row and fades — not the old hard snap, which flashed the
+   struck word back into the top line the instant the beat ended. Scoped to
+   while the clone is mounted, so the no-JS / reduced-motion render and every
+   box-measuring test are untouched, and nothing is left mid-transition. */
+.spec__perform ~ .line-spec { transition: opacity .3s var(--e); }
 
 /* ---------- domains ---------- */
 .domains { border-top: 1px solid var(--rule); margin-bottom: clamp(56px, 8vw, 110px); }

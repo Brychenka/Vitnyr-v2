@@ -972,24 +972,34 @@
 
   /* ---------- the correction (Spark Order S6 / moves 06 + 01) ----------
      The page's one performed edit: a specimen sentence is corrected in front
-     of the reader — the deleted word lifts out and the surviving text reflows
-     closed over the gap. This is the S0 "bend" (a transform carrying layout),
-     and it is only allowed because it is transient: it runs on a throwaway
-     aria-hidden clone, clears its own transforms on completion, and hands the
-     frame back to the untouched static pair. With no JS, no GSAP or reduced
-     motion this never runs and the static <del>/<ins> pair is the whole of it.
-     Only data-op="delete" specimens perform; the register restructure ships
-     static (two convincing deletions beat three where one is awkward).
-     The specimen sentences carry no data-l twin — they are English error
-     examples, identical in both languages — so a language switch has nothing
-     to rebuild here; it only has to not leave a beat mid-flight behind #app's
-     S4 crossfade, so the langchange handler kills any running timeline and
-     snaps to the settled end. */
+     of the reader — the deleted word lifts out, the surviving text reflows
+     closed over the gap, and the corrected line settles into the "Correct:"
+     row while the static pair crossfades back up under it. The S0 "bend" (a
+     transform carrying layout) is allowed here only because it is transient:
+     every transform lives on a throwaway aria-hidden clone that is removed on
+     completion. With no JS, no GSAP or reduced motion this never runs and the
+     static <del>/<ins> pair is the whole of it. Only data-op="delete"
+     specimens perform; the register restructure ships static.
+
+     Every way the beat can end — normal completion, a GSAP throw, the tab
+     backgrounding mid-beat so the ticker never advances again, a language
+     switch — routes through settle(): idempotent, restores BOTH static lines
+     to full opacity (test_correction_leaves_no_residual_transform pins this),
+     strips the clone, leaves nothing transformed. A 4s per-spec guard and the
+     page-wide failsafe() sweep both call it, so the section can never be
+     stranded showing only the amber error line. The beat also waits out most
+     of the card's 0.9s reveal before it starts, so it isn't spent while the
+     card is still fading in. */
+  var recoverCorrections = null;   // failsafe() reaches the beat through this
+
   function initCorrections() {
     var specs = document.querySelectorAll('#specimen .spec[data-op="delete"]');
     if (!specs.length || !('IntersectionObserver' in window)) return;
-    var state = [];   // per spec: { done, perf, tl }
-    specs.forEach(function () { state.push({ done: false, perf: null, tl: null }); });
+    // per spec: { started, done, perf, tl, guard, built, drop }
+    var state = [];
+    specs.forEach(function () {
+      state.push({ started: false, done: false, perf: null, tl: null, guard: 0, built: null, drop: 0 });
+    });
 
     // Rebuild the frames the reader sees from the static .wrong line: its
     // marker glyph and its sentence, with everything after the <del> wrapped
@@ -1022,10 +1032,22 @@
       return { perf: perf, del: del, tail: tail, wrong: wrong, right: right };
     }
 
-    function revealStatic(built) {
-      if (!built) return;
-      built.wrong.style.opacity = '';
-      built.right.style.opacity = '';
+    // The one exit — safe to call more than once and at any point in the beat.
+    // Kills the timeline, clears every transform it set, removes the clone, and
+    // puts BOTH static lines back to full opacity: the settled state is the
+    // static pair, same as the no-JS / reduced-motion render.
+    function settle(i) {
+      var s = state[i];
+      if (s.done) return;
+      s.done = true;
+      if (s.guard) { clearTimeout(s.guard); s.guard = 0; }
+      if (s.tl) { try { s.tl.kill(); } catch (e) {} s.tl = null; }
+      if (s.built) {
+        try { gsap.set([s.built.tail, s.built.del], { clearProps: 'transform' }); } catch (e) {}
+      }
+      if (s.perf) { s.perf.remove(); s.perf = null; }
+      specs[i].querySelectorAll('.line-spec').forEach(function (el) { el.style.opacity = ''; });
+      s.built = null;
     }
 
     function play(i) {
@@ -1033,30 +1055,58 @@
       if (s.done || s.perf) return;
       var built;
       try { built = build(specs[i]); }
-      catch (err) { s.done = true; return; }
+      catch (err) { settle(i); return; }
       if (!built) { s.done = true; return; }   // degrade to the static pair
+      s.built = built;
       s.perf = built.perf;
 
-      var tl = gsap.timeline({ onComplete: function () {
-        if (s.perf) s.perf.remove();
-        s.perf = null; s.tl = null; s.done = true;
-      } });
+      // If the beat is stranded before onComplete — a throw, or the tab going
+      // to the background so GSAP's rAF ticker stops — hand the frame back.
+      s.guard = setTimeout(function () { settle(i); }, 4000);
+
+      var tl;
+      try { tl = gsap.timeline({ onComplete: function () { settle(i); } }); }
+      catch (err) { settle(i); return; }
       s.tl = tl;
 
       tl.to(built.del, { opacity: 0, yPercent: -35, duration: D.correct * 0.42, ease: EASE });
       tl.add(function () {
-        // FLIP: the surviving text's position before the deletion, then after,
+        // FLIP: the surviving text's left edge before the deletion, then after,
         // then tween the delta to zero. yPercent/opacity on <del> haven't moved
-        // it horizontally, so this reads the real pre-reflow left edge.
+        // it horizontally, so this reads the real pre-reflow left edge. Also
+        // measure how far the corrected line sits above the "Correct:" row.
         var before = built.tail.getBoundingClientRect().left;
         built.del.style.display = 'none';
         var after = built.tail.getBoundingClientRect().left;
         var dx = before - after;
         gsap.set(built.tail, { x: Math.abs(dx) < 1 ? 0 : dx });
+        var d = built.right.getBoundingClientRect().top - built.perf.getBoundingClientRect().top;
+        s.drop = isFinite(d) ? d : 0;
       });
       tl.to(built.tail, { x: 0, duration: D.correct, ease: EASE, clearProps: 'transform' });
-      tl.to(built.perf, { opacity: 0, duration: D.micro, ease: EASE }, '+=0.1');
-      tl.add(function () { revealStatic(built); });   // hand the frame back once the performance has faded
+      tl.addLabel('fixed');
+      // Hold on the corrected sentence so it reads as a result, then hand off:
+      // the static pair fades up (CSS transition on .spec__perform ~ .line-spec)
+      // as the clone drops into the "Correct:" row and fades — a crossfade, not
+      // the old hard snap that flashed the struck word back into the top line.
+      tl.add(function () {
+        built.wrong.style.opacity = '';
+        built.right.style.opacity = '';
+      }, 'fixed+=0.4');
+      // y resolved at run time — s.drop is measured mid-beat, in the FLIP step.
+      tl.to(built.perf, { opacity: 0, y: function () { return s.drop; }, duration: D.micro, ease: EASE }, 'fixed+=0.4');
+    }
+
+    // Wait out most of the card's 0.9s reveal before performing, so the beat
+    // isn't spent while the card is still fading in. whenRendering defers the
+    // start off a backgrounded tab, where the ticker would not advance anyway.
+    function schedule(i) {
+      var s = state[i];
+      if (s.started || s.done) return;
+      s.started = true;
+      setTimeout(function () {
+        if (!s.done) whenRendering(function () { play(i); });
+      }, 500);
     }
 
     var io = new IntersectionObserver(function (entries) {
@@ -1064,19 +1114,20 @@
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
         var i = Array.prototype.indexOf.call(specs, e.target);
-        if (i > -1) play(i);
+        if (i > -1) schedule(i);
       });
     }, { rootMargin: '0px 0px -20% 0px', threshold: 0 });   // the reveal rhythm's own line
     specs.forEach(function (s) { io.observe(s); });
 
+    recoverCorrections = function () {
+      state.forEach(function (s, i) { if ((s.perf || s.tl) && !s.done) settle(i); });
+    };
+
+    // A language switch must not strand a beat behind #app's S4 crossfade. The
+    // specimen sentences are identical in both languages, so there is nothing
+    // to rebuild — settle whatever has started; the rest stay armed.
     document.addEventListener('vitnyr:langchange', function () {
-      state.forEach(function (s, i) {
-        if (!s.tl && !s.perf) return;   // never started — leave it armed for its scroll
-        if (s.tl) s.tl.kill();
-        if (s.perf) s.perf.remove();
-        specs[i].querySelectorAll('.line-spec').forEach(function (el) { el.style.opacity = ''; });
-        s.perf = null; s.tl = null; s.done = true;   // settled: the static pair is the corrected form
-      });
+      state.forEach(function (s, i) { if (s.started && !s.done) settle(i); });
     });
   }
 
@@ -1096,6 +1147,10 @@
       if (r.top < line && r.bottom > 0 && parseFloat(getComputedStyle(el).opacity) < 0.05) stuck.push(el);
     });
     stuck.forEach(function (el) { el.classList.add('is-in'); });
+    // A correction beat stranded before its onComplete (a throw, or the tab
+    // backgrounded so the ticker stalled) leaves its static pair hidden by
+    // inline opacity the .reveal sweep above can't see — hand those back too.
+    if (recoverCorrections) recoverCorrections();
     // The hero carries no .reveal class, so the sweep above cannot reach it —
     // armHeroGuard() covers it, on every play rather than only this one.
     if (!heroStarted) showHeroNow();
