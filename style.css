@@ -1322,19 +1322,27 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    green antialias into one indistinct colour. */
 .footmark { width: 48px; height: 48px; flex: none; }
 /* F1 (2026-09-07): hover spins the FOOTER mark one full clockwise turn and
-   stops. Scoped to .foot — the same .footmark also sits in the #collage
-   view bar and is left alone. 360deg lands it back on its own geometry
-   exactly, so the mark is never left off-register. --e (an ease-out) is fine
-   here even though it's banned on the scrollcue loop: this doesn't return to
-   its start value, it goes 0 -> 360 once, so it accelerates out of rest and
-   settles soft into the finish. The `transition` sits ONLY on :hover — so
-   pointer-leave has no transition and the mark jumps 360 -> 0 with no visible
-   motion (360deg == 0deg) and no reverse spin. Each hover re-arms a clean
-   single turn. CSS-only: with JS or GSAP absent the mark is simply static, as
-   before. Decorative — the mark is role=img, not a control, so no
-   :focus-visible path and no tab stop added. */
-.foot .footmark { transform: rotate(0deg); }
-.foot .footmark:hover {
+   stops. Lives only in the footer — the same .footmark also sits in the
+   #collage view bar and is left alone. 360deg lands it back on its own
+   geometry exactly, so the mark is never left off-register. --e (an ease-out)
+   is fine here even though it's banned on the scrollcue loop: this doesn't
+   return to its start value, it goes 0 -> 360 once, so it accelerates out of
+   rest and settles soft into the finish. The `transition` sits ONLY on the
+   hover state — so pointer-leave has no transition and the mark jumps
+   360 -> 0 with no visible motion (360deg == 0deg) and no reverse spin. Each
+   hover re-arms a clean single turn. CSS-only: with JS or GSAP absent the
+   mark is simply static, as before. Decorative — the mark is role=img, not a
+   control, so no :focus-visible path and no tab stop added.
+
+   The hover target is the .footmark-spin WRAPPER, never the <svg>: a rotating
+   element's own box sweeps under a pointer parked near its edge, so :hover on
+   it flickers and the turn restarts on every re-enter ("spinning like
+   crazy"). The wrapper is a fixed 48px box that never transforms, so :hover
+   holds steady until the pointer leaves that box; the <svg> is
+   pointer-events:none so its sweeping corners can't retrigger it either. */
+.footmark-spin { display: inline-flex; }
+.foot .footmark { transform: rotate(0deg); pointer-events: none; }
+.footmark-spin:hover .footmark {
   transform: rotate(360deg);
   transition: transform var(--t-turn) var(--e);
   will-change: transform;
@@ -1423,7 +1431,7 @@ html.js .line__inner { transform: translateY(110%); }
   .tool, .view__back { transform: none !important; }
   /* F1: no hover turn on the footer mark. Without this the global
      transition-duration override below just makes it instant-flip on hover. */
-  .foot .footmark:hover { transform: none !important; will-change: auto !important; }
+  .footmark-spin:hover .footmark { transform: none !important; will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
      which would clip the stroke away rather than show it whole. */

@@ -635,10 +635,19 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      conclusive kind — left alone on purpose. -->
 <footer class="foot">
   <div class="foot__id">
-    <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
-      <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
-      <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
-    </svg>
+    <!-- F1: the .footmark-spin wrapper is the hover target for the one-turn
+         rotation, not the <svg> itself. A rotating element's own box sweeps
+         under a pointer parked near its edge, so :hover on it flickers and the
+         turn restarts on every re-enter. The wrapper is a fixed 48px box that
+         never transforms, so :hover stays put; the <svg> inside is
+         pointer-events:none so its sweeping corners can't retrigger it either.
+         See style.css and BUILD-NOTES F1. -->
+    <span class="footmark-spin">
+      <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
+        <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
+        <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
+      </svg>
+    </span>
     <p data-en="Igor Shatsev · Vitnyr · Yerevan · © 2026" data-ru="Igor Shatsev · Vitnyr · Ереван · © 2026">Igor Shatsev · Vitnyr · Yerevan · © 2026</p>
   </div>
   <a class="tool foot__top" href="#top" data-magnetic>
