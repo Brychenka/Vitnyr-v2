@@ -358,10 +358,12 @@ html.past-origin .progress__fill--target { opacity: 1; }
    read heavy; P20 moves that job to scale and lets the weight go light. Glyph
    -> 24px (1:1 with the 0 0 24 viewBox, so the stroke lands exact). stroke-width
    1.5 here and in each <svg>'s own attribute (kept in sync) — below the old
-   1.8, not just back to it: all three icons are one hairline set now, and the
-   chess glyph's two formerly-solid squares are open strokes too (see index.html).
-   No colour override: .tool--icon inherits .tool's --fg2 at rest and lifts to
-   --fg on hover/focus through .tool:hover, same as the toggles. */
+   1.8, not just back to it, so the strokes read as one light set. The chess
+   glyph keeps its checkerboard (two filled squares, two 1.5 outlines) — P21
+   put that back after a brief all-outline version stopped reading as chess;
+   its outlines take this same 1.5. No colour override: .tool--icon inherits
+   .tool's --fg2 at rest and lifts to --fg on hover/focus through .tool:hover,
+   same as the toggles. */
 .tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
 .tool--icon svg { display: block; width: 24px; height: 24px; stroke-width: 1.5; }
 /* P17 (2026-09-07): the row is two clusters now — the theme/language toggles
