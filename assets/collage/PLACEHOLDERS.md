@@ -11,15 +11,21 @@ Every file is grayscaled at display time by `--collage-filter`; none carries a
 caption claim (the `<figcaption>` describes the *intended* shot, not the
 stand-in) and every `<img alt>` is empty on purpose.
 
-**Exception — `climb-01-board` is real (2026-09-07).** Igor supplied a real
-photograph of himself seated at the foot of an indoor bouldering wall; it now
-fills the first climbing 4:5 slot (crop-to-4:5 + gentle autocontrast, no
-colour work — see `BUILD-NOTES.md` → "Collage — first real photo"). Its
-`<figcaption>` and `<img alt>` carry real, claim-free descriptions of what is
-in frame. The frame differs from this slot's shot-list intent (a mid-move
-board shot); the slot's 4:5 ratio and hard-coded `--45` class are unchanged.
-The other 17 collage frames remain the stand-ins below, so the artifact hold
-still stands.
+**Exception — `climb-01-board` and `climb-06-wide` are real (2026-09-07).**
+Igor supplied two real photographs of himself:
+- `climb-01-board` — seated at the foot of an indoor bouldering wall, first
+  climbing 4:5 slot (crop-to-4:5 + gentle autocontrast, no colour). The frame
+  differs from this slot's shot-list intent (a mid-move board shot).
+- `climb-06-wide` — mid-move on a steep overhanging wall, shot from the floor,
+  the second climbing 3:2 slot. From `IMG_8681.CR2` (Canon RAW, 5472×3648):
+  slight left trim to stay 3:2, autocontrast + a small exposure/contrast lift
+  because the gym frame was underexposed, no colour. Matches this slot's
+  existing caption ("The board, from the floor.") exactly.
+
+Both carry real, claim-free `<figcaption>` / `<img alt>` text; both keep their
+slot's locked ratio and hard-coded `--45` / `--32` class (no layout shift).
+See `BUILD-NOTES.md` → "Collage — first real photos". The other 16 collage
+frames remain the stand-ins below, so the artifact hold still stands.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -53,4 +59,3 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 | climb-03-feet | climbing,shoes | 15 |
 | climb-04-crimp | climbing,rock | 16 |
 | climb-05-rest | bouldering,gym | 17 |
-| climb-06-wide | bouldering,wall | 18 |
