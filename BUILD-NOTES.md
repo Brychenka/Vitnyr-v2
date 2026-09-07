@@ -2333,9 +2333,63 @@ Replaces the `climb-05-rest` stand-in — a climbing 1:1 slot.
 
 Provenance note updated in `assets/collage/PLACEHOLDERS.md`.
 
-**Live artifact not republished.** The other 15 collage frames (all of
-`en-*`, all of `chess-*`, `climb-02`–`climb-04`) are still stand-ins, so the
-Collage Stage 3 hold stands until the rest of the shoot lands.
+**Live artifact not republished.** The other collage frames are still
+stand-ins, so the Collage Stage 3 hold stands until the rest of the shoot
+lands. (Superseded same day — see below.)
+
+## Collage — two more real photos (2026-09-07)
+
+Igor supplied two more real photos and asked for them in the vacant climbing
+slots. The climbing group is now **5 real / 1 placeholder** (`climb-03-feet`
+alone).
+
+### `climb-04-crimp` — on rock, mid-route
+
+Igor on an outdoor rock face, on a top rope, reaching for a hold. Replaces
+the `climb-04-crimp` stand-in — a climbing 4:5 slot. This is the slot the
+shot list earmarked for a chalked-hand crimp close-up (paired with the chess
+"hands" tile); that pairing is dropped. Slug keeps `-crimp` so the four
+`data-src` / `srcset` / `noscript` references and the BUILD-NOTES trail don't
+have to churn — same reasoning as `climb-01-board` keeping `-board`.
+
+- **Source** `~/Downloads/l.jpg`, 1280×960, delivered rotated 90° CW (phone
+  export, Display P3, no EXIF orientation). Rotated upright in PIL
+  (`rotate(-90, expand=True)`).
+- **Edit** crop-to-4:5 on the figure (`yoff=0.25`, keeps the reaching hand
+  and head in the upper third, feet and a margin of rock below);
+  `autocontrast(cutoff=0.5)`; no colour. Master at
+  `Claude outputs/climb-04-crimp_v1_edited_highres.jpg`.
+- **Derived** `climb-04-crimp.jpg` 450×563 (q62) and `climb-04-crimp@2x.jpg`
+  900×1125 (q54) — same dimensions and `--45` class as the stand-in. Dense
+  lichen-rock texture does not compress small; 246 KB `@2x` is roughly parity
+  with `climb-05-rest`'s 231 KB and only matters once the artifact hold lifts.
+- **Caption** changed from *"A hand set on a crimp." / "Рука на мизере."* to
+  *"On rock, mid-route." / "На скале, посреди маршрута."*; real claim-free
+  `<img alt>`.
+
+### `climb-02-chalk` — at the belay loop, before setting off
+
+A hand pinching the harness belay loop, feeding the rope through, before a
+climb — outdoors, grass behind. Replaces the `climb-02-chalk` stand-in — a
+climbing 1:1 slot. Shot-list intent was chalking up from a chalk bag; that is
+dropped, slug keeps `-chalk`.
+
+- **Source** `~/Downloads/climbing.jpg`, 720×1280 phone photo, underexposed.
+- **Edit** 1:1 crop (`yoff=0.60`, centres the hand + belay loop);
+  `Brightness ×1.20`, `Contrast ×1.08`, then `autocontrast(cutoff=0.4)`; no
+  colour. Master at `Claude outputs/climb-02-chalk_v1_edited_highres.jpg`.
+- **Derived** `climb-02-chalk.jpg` 450×450 and `climb-02-chalk@2x.jpg`
+  900×900, q78 (143 KB `@2x`) — same dimensions and `--11` class as the
+  stand-in.
+- **Caption** changed from *"Chalking up between attempts." / "Магнезия между
+  попытками."* to *"At the belay loop, before setting off." / "У страховочной
+  петли, перед стартом."*; real claim-free `<img alt>`.
+
+**Still Igor's to confirm:** the two new EN/RU captions and alt strings, and
+that `climb-04-crimp` is in fact him (helmet + angle hide the face).
+
+**Live artifact still not republished** — `climb-03-feet`, all `en-*`, all
+`chess-*` remain stand-ins, so the Collage Stage 3 hold stands.
 
 ## Verified
 

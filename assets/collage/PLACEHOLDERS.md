@@ -11,8 +11,9 @@ Every file is grayscaled at display time by `--collage-filter`; none carries a
 caption claim (the `<figcaption>` describes the *intended* shot, not the
 stand-in) and every `<img alt>` is empty on purpose.
 
-**Exception — `climb-01-board`, `climb-06-wide`, `climb-05-rest` are real
-(2026-09-07).** Igor supplied three real photographs of himself:
+**Exception — `climb-01-board`, `climb-06-wide`, `climb-05-rest`,
+`climb-04-crimp`, `climb-02-chalk` are real (2026-09-07).** Igor supplied five
+real photographs of himself:
 - `climb-01-board` — seated at the foot of an indoor bouldering wall, first
   climbing 4:5 slot (crop-to-4:5 + gentle autocontrast, no colour). The frame
   differs from this slot's shot-list intent (a mid-move board shot).
@@ -29,11 +30,26 @@ stand-in) and every `<img alt>` is empty on purpose.
   day — it no longer says "rather than a crag … not adventure" (see
   `BUILD-NOTES.md`).
 
-All three carry real, claim-free `<figcaption>` / `<img alt>` text and keep
+- `climb-04-crimp` — Igor on an **outdoor rock face**, on a top rope,
+  mid-route, reaching for a hold. From a phone photo delivered rotated 90°
+  (`l.jpg`, 1280×960); rotated upright, crop-to-4:5 on the figure, gentle
+  autocontrast, no colour. This diverges from the slot's shot-list intent
+  (a chalked-hand crimp close-up pairing with the chess "hands" tile); the
+  slug keeps `-crimp` to avoid churn. Caption changed to "On rock,
+  mid-route."
+- `climb-02-chalk` — a hand at the harness belay loop, threading the rope
+  before a climb. From a phone photo (`climbing.jpg`, 720×1280); 1:1 crop on
+  the hand + belay loop, +20% brightness / small contrast lift (frame was
+  underexposed) + autocontrast, no colour. Diverges from the slot's intent
+  (chalking up from a chalk bag); slug keeps `-chalk`. Caption changed to
+  "At the belay loop, before setting off."
+
+All five carry real, claim-free `<figcaption>` / `<img alt>` text and keep
 their slot's locked ratio + hard-coded `--45` / `--32` / `--11` class (no
 layout shift). See `BUILD-NOTES.md` → "Collage — first real photos". The
-other 15 collage frames remain the stand-ins below, so the artifact hold
-still stands.
+climbing group now runs 5 real / 1 placeholder (`climb-03-feet`); the other
+12 collage frames remain the stand-ins below, so the artifact hold still
+stands.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -63,6 +79,4 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 | chess-04-reset | chess,pieces | 304 |
 | chess-05-pieces | chess,knight | 305 |
 | chess-06-notation | chess,game | 12 |
-| climb-02-chalk | climbing,chalk | 306 |
 | climb-03-feet | climbing,shoes | 15 |
-| climb-04-crimp | climbing,rock | 16 |
