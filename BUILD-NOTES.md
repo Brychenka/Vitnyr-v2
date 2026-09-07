@@ -2252,7 +2252,7 @@ scroll-through on a real browser.
 ## Collage — first real photos (2026-09-07)
 
 Igor supplied the first real photographs of himself for the `#collage` view.
-Two landed the same day, both in the climbing group:
+Three landed the same day, all in the climbing group:
 
 ### `climb-01-board` — seated at the foot of the wall
 
@@ -2302,8 +2302,39 @@ from the floor") and its existing caption *"The board, from the floor." /
 
 Provenance note updated in `assets/collage/PLACEHOLDERS.md`.
 
-**Live artifact not republished.** The other 16 collage frames (all of
-`en-*`, all of `chess-*`, `climb-02`–`climb-05`) are still stand-ins, so the
+### `climb-05-rest` — at the crag, between climbs
+
+Igor at the foot of an **outdoor crag**, mid-gesture and laughing, a belayer
+and a second partner beside him (both backs to camera, not identifiable).
+Replaces the `climb-05-rest` stand-in — a climbing 1:1 slot.
+
+- **Source** `~/Downloads/climbingl.jpg` — a low-res phone photo, 960×1280.
+  Softer than the two DSLR frames; acceptable only because the tile renders
+  small and grayscale.
+- **Edit** 1:1 crop (720×720 window at 240,360) tight on Igor, keeping him
+  whole with the two partners as edge context; `autocontrast(cutoff=0.4)` +
+  `Brightness ×1.05`, `Contrast ×1.04`; no colour. Upscaled 720→900 for the
+  `@2x`. Master at `Claude outputs/climb-05-rest_v1_edited_highres.jpg`.
+- **Derived** `climb-05-rest.jpg` 450×450 and `climb-05-rest@2x.jpg` 900×900,
+  q82 — same dimensions and `--11` class as the stand-in.
+- **Caption** changed from *"Resting on the wall between goes."* to *"At the
+  crag, between climbs." / "У скалы, между попытками."*; real claim-free
+  `<img alt>`.
+- **Lede softened.** This is the first crag frame, and the climbing group's
+  lede used to read *"trained on an adjustable board rather than a crag. The
+  point is deliberate practice, not adventure."* — which the photo
+  contradicts. Igor's call (2026-09-07): keep the photo, reword the lede.
+  Now: EN *"A 7c redpoint indoors and a 7C Kilter boulder, built on an
+  adjustable training board. The point is deliberate practice."*; RU *"7c с
+  пробитием на скалодроме и болдер 7C на Kilter — наработано на регулируемой
+  тренировочной доске. Смысл в осознанной практике."* The two confirmed
+  grade facts are still worded exactly; only the anti-crag / anti-adventure
+  clauses are gone.
+
+Provenance note updated in `assets/collage/PLACEHOLDERS.md`.
+
+**Live artifact not republished.** The other 15 collage frames (all of
+`en-*`, all of `chess-*`, `climb-02`–`climb-04`) are still stand-ins, so the
 Collage Stage 3 hold stands until the rest of the shoot lands.
 
 ## Verified

@@ -11,21 +11,29 @@ Every file is grayscaled at display time by `--collage-filter`; none carries a
 caption claim (the `<figcaption>` describes the *intended* shot, not the
 stand-in) and every `<img alt>` is empty on purpose.
 
-**Exception — `climb-01-board` and `climb-06-wide` are real (2026-09-07).**
-Igor supplied two real photographs of himself:
+**Exception — `climb-01-board`, `climb-06-wide`, `climb-05-rest` are real
+(2026-09-07).** Igor supplied three real photographs of himself:
 - `climb-01-board` — seated at the foot of an indoor bouldering wall, first
   climbing 4:5 slot (crop-to-4:5 + gentle autocontrast, no colour). The frame
   differs from this slot's shot-list intent (a mid-move board shot).
 - `climb-06-wide` — mid-move on a steep overhanging wall, shot from the floor,
   the second climbing 3:2 slot. From `IMG_8681.CR2` (Canon RAW, 5472×3648):
-  slight left trim to stay 3:2, autocontrast + a small exposure/contrast lift
-  because the gym frame was underexposed, no colour. Matches this slot's
+  tight 3:2 re-crop on the figure, autocontrast + a small exposure/contrast
+  lift because the gym frame was underexposed, no colour. Matches this slot's
   existing caption ("The board, from the floor.") exactly.
+- `climb-05-rest` — Igor at the foot of an **outdoor crag**, mid-gesture,
+  two partners nearby (backs to camera, not identifiable). From a low-res
+  phone photo (`climbingl.jpg`, 960×1280); 1:1 crop on Igor, gentle level,
+  no colour. Caption changed to "At the crag, between climbs." Because this
+  is the first crag frame, the climbing group's lede was softened the same
+  day — it no longer says "rather than a crag … not adventure" (see
+  `BUILD-NOTES.md`).
 
-Both carry real, claim-free `<figcaption>` / `<img alt>` text; both keep their
-slot's locked ratio and hard-coded `--45` / `--32` class (no layout shift).
-See `BUILD-NOTES.md` → "Collage — first real photos". The other 16 collage
-frames remain the stand-ins below, so the artifact hold still stands.
+All three carry real, claim-free `<figcaption>` / `<img alt>` text and keep
+their slot's locked ratio + hard-coded `--45` / `--32` / `--11` class (no
+layout shift). See `BUILD-NOTES.md` → "Collage — first real photos". The
+other 15 collage frames remain the stand-ins below, so the artifact hold
+still stands.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -58,4 +66,3 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 | climb-02-chalk | climbing,chalk | 306 |
 | climb-03-feet | climbing,shoes | 15 |
 | climb-04-crimp | climbing,rock | 16 |
-| climb-05-rest | bouldering,gym | 17 |
