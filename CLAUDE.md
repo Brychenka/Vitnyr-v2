@@ -92,8 +92,12 @@ Four files, each with one job:
   ticker, the IntersectionObserver-driven reveal animation, the hero's
   line-mask entrance, animated counters, and the pointer dot — one dot that
   rides the pointer everywhere and eases its fill to the accent ink over a
-  control (colour only; the 3× balloon and the magnetic pull on `data-magnetic`
-  targets were both retired at C14, see `BUILD-NOTES.md`). Wrapped in one IIFE,
+  control (colour only — the 3× balloon was retired at C14). Plus a magnetic
+  pull (`initMagnetic`) that nudges a hovered control toward the pointer:
+  retired at C14, brought back at C16 scoped to non-text controls only
+  (`.tool, .view__back` — the switches, collage icon-nav, "Back to top",
+  "Back"), never on `data-magnetic` text links, which keep the dot's colour
+  cue but no movement. See `BUILD-NOTES.md`. Wrapped in one IIFE,
   no exports, no modules. GSAP + CustomEase + Lenis are loaded from CDN
   `<script>` tags in `index.html`, in that order, before `main.js`.
 - **`style.css`** — one `:root` token block (colors, fonts, easing, spacing)
