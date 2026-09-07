@@ -2249,6 +2249,36 @@ scroll-through on a real browser.
 
 **Live artifact not republished** — same collage-placeholder hold.
 
+## Collage — first real photo (2026-09-07)
+
+Igor supplied the first real photograph of himself for the `#collage` view: a
+front-on frame of him seated on the pad at the foot of an indoor bouldering
+wall, blue volumes behind. It replaces the `climb-01-board` stand-in — the
+first climbing 4:5 slot.
+
+- **Source** `~/Downloads/PXL_20260625_140608117.PORTRAIT.jpg`, 3072×4080.
+- **Edit** crop-to-4:5 only (kept full width, trimmed height to 3840 with an
+  180px top bias so the wall reads above the head and the pad edge stays at
+  the bottom), then a gentle `ImageOps.autocontrast(cutoff=0.5)`. No colour
+  work — the tile renders through `--collage-filter` grayscale anyway.
+  High-res edited master kept at
+  `Claude outputs/climb-01-board_v2_edited_highres.jpg` (3072×3840).
+- **Derived** `assets/collage/climb-01-board.jpg` 450×563 and
+  `climb-01-board@2x.jpg` 900×1125, JPEG q82 — same dimensions and `--45`
+  class as the stand-in, so no layout shift and the ratio contract holds.
+- **Content vs. intent** the shot list wanted `climb-01` as a mid-move board
+  shot; this is a between-attempts seated frame. The slot, its ratio and its
+  reading order are unchanged; only the frame's subject differs. `figcaption`
+  is now *"At the foot of the wall, between attempts." / "У подножия стены,
+  между попытками."* and the `<img alt>` carries a real claim-free
+  description (English only — there is no alt i18n mechanism and `CLAUDE.md`
+  forbids inventing a third one).
+- Provenance note updated in `assets/collage/PLACEHOLDERS.md`.
+
+**Live artifact not republished.** The other 17 collage frames (all of
+`en-*`, all of `chess-*`, `climb-02`–`climb-06`) are still stand-ins, so the
+Collage Stage 3 hold stands until the rest of the shoot lands.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

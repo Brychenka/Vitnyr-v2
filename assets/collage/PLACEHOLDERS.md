@@ -11,6 +11,16 @@ Every file is grayscaled at display time by `--collage-filter`; none carries a
 caption claim (the `<figcaption>` describes the *intended* shot, not the
 stand-in) and every `<img alt>` is empty on purpose.
 
+**Exception — `climb-01-board` is real (2026-09-07).** Igor supplied a real
+photograph of himself seated at the foot of an indoor bouldering wall; it now
+fills the first climbing 4:5 slot (crop-to-4:5 + gentle autocontrast, no
+colour work — see `BUILD-NOTES.md` → "Collage — first real photo"). Its
+`<figcaption>` and `<img alt>` carry real, claim-free descriptions of what is
+in frame. The frame differs from this slot's shot-list intent (a mid-move
+board shot); the slot's 4:5 ratio and hard-coded `--45` class are unchanged.
+The other 17 collage frames remain the stand-ins below, so the artifact hold
+still stands.
+
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
 | file | Openverse ID | creator | source |
@@ -39,7 +49,6 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 | chess-04-reset | chess,pieces | 304 |
 | chess-05-pieces | chess,knight | 305 |
 | chess-06-notation | chess,game | 12 |
-| climb-01-board | climbing,indoor | 13 |
 | climb-02-chalk | climbing,chalk | 306 |
 | climb-03-feet | climbing,shoes | 15 |
 | climb-04-crimp | climbing,rock | 16 |
