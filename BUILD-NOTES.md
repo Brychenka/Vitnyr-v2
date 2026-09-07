@@ -2563,6 +2563,20 @@ one easing, one added duration token.
 
 **Artifact still on hold** — `en-*` and `chess-*` are all stand-ins.
 
+### Reverted to a plain 50/50 split (2026-09-07, later still)
+
+Igor: the flow-over "doesn't really work well" — go back to the two photos
+just splitting the bottom row into two equal zones, cropped to fit.
+`.collage__pair` is now a plain two-column grid (`1fr 1fr` at ≥600px, one
+column below) inside the full-width grid item — no band, no `clip-path`, no
+hover/focus behaviour, no `tabindex`, `--pair-flow` token removed. Each
+figure is a normal 3:2 `.collage__slot` and its own `.reveal` (staggers like
+every other tile). Both photos re-cropped to a **centred** 3:2 (the
+outer-edge bias only mattered for the clip); `climb-04-crimp` from `l.jpg`
+rotated upright (`yoff 0.25`), `climb-06-wide` near-native from the v2
+master. Masters `climb-04-crimp_v4` / `climb-06-wide_v7`. Verified 1280
+(two equal 562-wide 3:2 zones, same row) and 375 (stacked), no overflow.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

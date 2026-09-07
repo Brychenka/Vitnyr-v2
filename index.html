@@ -963,34 +963,31 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
           </div>
           <figcaption data-en="At the crag, between climbs." data-ru="У скалы, между попытками.">At the crag, between climbs.</figcaption>
         </figure>
-        <!-- Climbing group's paired bottom row: two photos filling the group's
-             full width. Fallback (narrow / touch / reduced motion) is the two
-             figures stacked; at >=900px + hover + motion the hovered one's
-             clip-path opens to full width over its neighbour. See
-             .collage__pair in style.css and BUILD-NOTES. -->
-        <div class="collage__pair reveal is-in">
-          <div class="collage__pair__band">
-            <figure class="collage__pair__fig collage__pair__fig--l" tabindex="0">
-              <div class="collage__slot">
-                <img data-src="assets/collage/climb-04-crimp@2x.jpg"
-                     data-srcset="assets/collage/climb-04-crimp.jpg 600w, assets/collage/climb-04-crimp@2x.jpg 1200w"
-                     sizes="(min-width: 900px) 640px, 100vw"
-                     width="1200" height="800" decoding="async" alt="Igor Shatsev climbing an outdoor rock face on a top rope, reaching for a hold.">
-                <noscript><img src="assets/collage/climb-04-crimp@2x.jpg" srcset="assets/collage/climb-04-crimp.jpg 600w, assets/collage/climb-04-crimp@2x.jpg 1200w" sizes="(min-width: 900px) 640px, 100vw" width="1200" height="800" loading="lazy" decoding="async" alt="Igor Shatsev climbing an outdoor rock face on a top rope, reaching for a hold."></noscript>
-              </div>
-              <figcaption data-en="On rock, mid-route." data-ru="На скале, посреди маршрута.">On rock, mid-route.</figcaption>
-            </figure>
-            <figure class="collage__pair__fig collage__pair__fig--r" tabindex="0">
-              <div class="collage__slot">
-                <img data-src="assets/collage/climb-06-wide@2x.jpg"
-                     data-srcset="assets/collage/climb-06-wide.jpg 600w, assets/collage/climb-06-wide@2x.jpg 1200w"
-                     sizes="(min-width: 900px) 640px, 100vw"
-                     width="1200" height="800" decoding="async" alt="Igor Shatsev mid-move on a steep overhanging bouldering wall, shot from the floor.">
-                <noscript><img src="assets/collage/climb-06-wide@2x.jpg" srcset="assets/collage/climb-06-wide.jpg 600w, assets/collage/climb-06-wide@2x.jpg 1200w" sizes="(min-width: 900px) 640px, 100vw" width="1200" height="800" loading="lazy" decoding="async" alt="Igor Shatsev mid-move on a steep overhanging bouldering wall, shot from the floor."></noscript>
-              </div>
-              <figcaption data-en="The board, from the floor." data-ru="Доска — снизу, от пола.">The board, from the floor.</figcaption>
-            </figure>
-          </div>
+        <!-- Climbing group's last row: two photos split into two equal 3:2
+             zones, filling the group's full width. Just a two-column grid
+             inside one full-width grid item (stacks on narrow). See
+             .collage__pair in style.css. -->
+        <div class="collage__pair">
+          <figure class="collage__pair__fig reveal is-in">
+            <div class="collage__slot">
+              <img data-src="assets/collage/climb-04-crimp@2x.jpg"
+                   data-srcset="assets/collage/climb-04-crimp.jpg 600w, assets/collage/climb-04-crimp@2x.jpg 1200w"
+                   sizes="(min-width: 600px) 50vw, 100vw"
+                   width="1200" height="800" decoding="async" alt="Igor Shatsev climbing an outdoor rock face on a top rope, reaching for a hold.">
+              <noscript><img src="assets/collage/climb-04-crimp@2x.jpg" srcset="assets/collage/climb-04-crimp.jpg 600w, assets/collage/climb-04-crimp@2x.jpg 1200w" sizes="(min-width: 600px) 50vw, 100vw" width="1200" height="800" loading="lazy" decoding="async" alt="Igor Shatsev climbing an outdoor rock face on a top rope, reaching for a hold."></noscript>
+            </div>
+            <figcaption data-en="On rock, mid-route." data-ru="На скале, посреди маршрута.">On rock, mid-route.</figcaption>
+          </figure>
+          <figure class="collage__pair__fig reveal is-in">
+            <div class="collage__slot">
+              <img data-src="assets/collage/climb-06-wide@2x.jpg"
+                   data-srcset="assets/collage/climb-06-wide.jpg 600w, assets/collage/climb-06-wide@2x.jpg 1200w"
+                   sizes="(min-width: 600px) 50vw, 100vw"
+                   width="1200" height="800" decoding="async" alt="Igor Shatsev mid-move on a steep overhanging bouldering wall, shot from the floor.">
+              <noscript><img src="assets/collage/climb-06-wide@2x.jpg" srcset="assets/collage/climb-06-wide.jpg 600w, assets/collage/climb-06-wide@2x.jpg 1200w" sizes="(min-width: 600px) 50vw, 100vw" width="1200" height="800" loading="lazy" decoding="async" alt="Igor Shatsev mid-move on a steep overhanging bouldering wall, shot from the floor."></noscript>
+            </div>
+            <figcaption data-en="The board, from the floor." data-ru="Доска — снизу, от пола.">The board, from the floor.</figcaption>
+          </figure>
         </div>
       </div>
     </section>
