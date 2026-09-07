@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Igor Shatsev — Vitnyr</title>
 <meta name="description" content="Igor Shatsev, English coach in Yerevan. For people who know English far better than they speak it. 100+ one-on-one clients over 8 years. Chess and climbing as evidence the method works.">
-<meta name="theme-color" content="#14181A">
+<meta name="theme-color" content="#EFEBE3">
 
 <meta property="og:title" content="Igor Shatsev — Vitnyr">
 <meta property="og:description" content="For people who know English far better than they speak it. 100+ one-on-one clients over 8 years, Yerevan.">
@@ -88,11 +88,30 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 <header class="masthead">
   <a class="lockup" href="#top" aria-label="Vitnyr — top of page">
     <!-- Mark pasted from the pack master. Fills are pair tokens, so one copy is
-         correct on charcoal and on cream. Never regenerate or redraw this. -->
+         correct on charcoal and on cream. Never regenerate or redraw this.
+         P22: the amber V is split for the draw-in exactly as §04's origin mark
+         is — its d= is moved verbatim into <defs> as #lockV and referenced
+         twice via <use>, each half clipped at x=50 (the shape's verified
+         symmetry axis). Three clipPaths, own ids (one document, §04 owns
+         #glyphClip*), grown from zero by initLockmark() + style.css on load
+         and on hover. No coordinate is touched; with JS off the rects keep
+         full size and the finished mark just shows. -->
     <svg viewBox="0 0 705.9 195" role="img" aria-label="Vitnyr">
+      <defs>
+        <path id="lockV" d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z"/>
+        <!-- Rects are the ink bounds of each stroke, not the half-box §04 uses:
+             the V arms live only in y≈15..57, so a full-height clip would spend
+             half the draw revealing empty space (P22 slick pass). style.css
+             collapses these under html.js and grows them back; full size here
+             keeps the whole mark for no-JS. -->
+        <clipPath id="lockClipLeft"  clipPathUnits="userSpaceOnUse"><rect x="0"  y="15" width="50" height="42"/></clipPath>
+        <clipPath id="lockClipRight" clipPathUnits="userSpaceOnUse"><rect x="50" y="15" width="50" height="42"/></clipPath>
+        <clipPath id="lockClipStem"  clipPathUnits="userSpaceOnUse"><rect x="38" y="42" width="24" height="44"/></clipPath>
+      </defs>
       <g transform="translate(0.4851 0.4851) scale(1.9403)">
-        <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
-        <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
+        <path class="lockmark__part lockmark__part--stem" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)" clip-path="url(#lockClipStem)"/>
+        <use class="lockmark__part lockmark__part--left"  href="#lockV" fill="var(--amber)" clip-path="url(#lockClipLeft)"/>
+        <use class="lockmark__part lockmark__part--right" href="#lockV" fill="var(--amber)" clip-path="url(#lockClipRight)"/>
       </g>
       <g class="wm" transform="translate(195 132.665)" font-family="Lora" font-size="100">
         <text x="-0.33" y="0" font-weight="600" fill="var(--amber)">V</text>

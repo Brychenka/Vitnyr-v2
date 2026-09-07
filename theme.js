@@ -16,11 +16,11 @@
   }
   function save(key, v) { try { localStorage.setItem(key, v); } catch (e) {} }
 
-  var prefersLight = window.matchMedia && matchMedia('(prefers-color-scheme: light)');
-
+  /* Cream is the default pair (Igor, 2026-09-07). The OS `prefers-color-scheme`
+     no longer has a say — the page opens on cream in every case and only goes
+     charcoal once the reader picks it with the theme control. */
   function effectiveTheme() {
-    return stored(THEME_KEY, 'light', 'dark')
-        || (prefersLight && prefersLight.matches ? 'light' : 'dark');
+    return stored(THEME_KEY, 'light', 'dark') || 'light';
   }
   function applyTheme() {
     var chosen = stored(THEME_KEY, 'light', 'dark');
@@ -133,10 +133,5 @@
       save(THEME_KEY, effectiveTheme() === 'dark' ? 'light' : 'dark');
       applyTheme();
     });
-    if (prefersLight && prefersLight.addEventListener) {
-      prefersLight.addEventListener('change', function () {
-        if (!stored(THEME_KEY, 'light', 'dark')) applyTheme();
-      });
-    }
   });
 })();
