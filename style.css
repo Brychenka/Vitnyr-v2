@@ -251,12 +251,22 @@ html.lora-ready .lockup .wm { opacity: 1; }
 .tool {
   background: none; border: 0; padding: 4px 0; cursor: pointer;
   color: var(--fg2);
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase;
+  /* P18 (2026-09-07): 12px read too faint in this row — the whole strip goes
+     to 13px (an existing rung: .channels, the mechanism numbers). One size
+     across the row on purpose; the util-vs-nav hierarchy is carried by ink
+     (see .tools__label / .tool--icon at --fg below), not a 1px size split
+     that would read as a mistake. Tracking eased .1em -> .09em: what opened
+     the caps nicely at 12 over-spaces them at 13. */
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  letter-spacing: .09em; text-transform: uppercase;
   position: relative;
   flex-shrink: 0;   /* a touch target is a floor, not something flexbox gets to negotiate down */
   transition: color var(--t) var(--e);
 }
+/* P18: land CHARCOAL / RU at >=24px height on a mouse too — the coarse-pointer
+   rule below already gives touch its 44px, but fine pointers were left at the
+   ~23px the 13px line-box measures. Mirrors the (pointer: coarse) block. */
+@media (pointer: fine) { .tool { padding-block: 6px; } }
 .tool::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0;
   height: 1px; background: var(--ink-target);
@@ -330,13 +340,22 @@ html.past-origin .progress__fill--target { opacity: 1; }
    (no cursor, no hover state, no underline), so it can't be mistaken for a
    fourth control. */
 .tools__label {
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--fg);
   white-space: nowrap; flex-shrink: 0;
 }
 .tools__rule { width: 1px; height: 14px; background: var(--rule); flex-shrink: 0; }
-.tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
-.tool--icon svg { display: block; width: 19px; height: 19px; }
+/* P18 (2026-09-07): the nav cluster (this caption + the three glyphs) is the
+   masthead's one navigational control — a jump into the #collage view — so it
+   rests at full --fg while the theme/language toggles stay dim --fg2. The
+   contrast step, plus the resting hairline .tools__group--nav::after already
+   carries, is what marks this cluster as primary without enlarging the row
+   past the wordmark's clear space. Glyph 19 -> 22px so a stroke-only icon
+   (the carabiner, the book) reads as an object, not filigree; stroke-width 2
+   overrides the 1.8 baked into each <svg> as a presentation attribute (CSS
+   wins) and holds the ratio roughly constant at the larger size. */
+.tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; color: var(--fg); }
+.tool--icon svg { display: block; width: 22px; height: 22px; stroke-width: 2; }
 /* P17 (2026-09-07): the row is two clusters now — the theme/language toggles
    first, then .tools__rule, then .tools__group--nav (Photos caption + the
    three collage jumps); order and rationale in index.html. A uniform gap had
@@ -365,9 +384,12 @@ html.past-origin .progress__fill--target { opacity: 1; }
 @media (pointer: coarse) { .tool { padding-block: 11px; padding-inline: 4px; } }
 /* Handoff specified 13px 10px for this, commented as a 44px target — with a
    17px glyph that's actually 37x43, short on the horizontal axis. The glyph
-   was since nudged to 19px for parity with the uppercase labels; padding
-   squared up to a uniform 12.5px so both axes still hit 44 exactly. */
-@media (pointer: coarse) { .tool--icon { padding: 12.5px; } }
+   was since nudged to 19px, then to 22px (P18, for legibility); padding
+   tracks it down 12.5 -> 11 so the outer target still hits exactly 44
+   (22 + 11 + 11) and the phone row's width is unchanged from before P18 —
+   the glyph grew inside a fixed target, so --head's two-line-header calc
+   below needs no adjustment. */
+@media (pointer: coarse) { .tool--icon { padding: 11px; } }
 
 /* Photos + the three icon buttons + Cream/RU, at coarse-pointer touch-target
    padding, don't fit next to a lockup held at its 176px floor below ~600px —
