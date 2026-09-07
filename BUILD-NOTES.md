@@ -2006,6 +2006,58 @@ rides the existing `transition: color`, inert under reduced-motion.
 
 **Live artifact not republished** — same collage-placeholder hold.
 
+## S6 follow-up — the correction survives interruption and stops racing the reveal (2026-09-07)
+
+Branch `feature/correction-persists-and-recovers`. `initCorrections()` only —
+no markup change, one scoped CSS rule. Three faults in the S6 beat:
+
+- **It could strand the section.** `build()` drops both static lines to
+  `opacity: 0` and mounts the clone *before* the GSAP timeline exists, and
+  only `build()` was wrapped. Anything between there and the timeline's
+  `onComplete` — a throw, or the tab backgrounding so GSAP's rAF ticker never
+  advances again — left the two real lines invisible for good, showing only
+  the amber error clone. `failsafe()` couldn't see it: it sweeps `.reveal`
+  elements, and the hidden state here is inline opacity on their children.
+- **It raced the card's own 0.9s reveal.** Both observers fire on the same
+  `-20%` line, so `play()` ran while the `.spec` was still fading/sliding in;
+  on a quick scroll the whole ~1.8s beat finished before the card was legible
+  and the reader saw only the settled pair.
+- **The hand-back was a hard snap.** The clone faded, then `revealStatic()`
+  slammed both lines back to `opacity: 1` — flashing the struck word back
+  into the top line the instant the correction had removed it.
+
+Fixes:
+
+- **One exit, `settle(i)`.** Idempotent. Every path — `onComplete`, a
+  `catch` around both `build()` and `gsap.timeline()`, a new 4s per-spec
+  guard `setTimeout`, the `vitnyr:langchange` handler, and `failsafe()` via a
+  module-level `recoverCorrections` hook — routes through it. It kills the
+  timeline, `clearProps` the (throwaway) transforms, removes the clone, and
+  restores **both** static lines. `test_correction_leaves_no_residual_transform`
+  already pinned "both lines end > 0.98 opacity"; that stays the contract.
+- **`schedule(i)` dwells ~500ms** after the intersection, then `whenRendering`
+  (so a backgrounded tab defers the start rather than stranding it), then
+  `play()`. The card is well into its reveal by the time the word lifts.
+- **Crossfade, not snap.** New timeline tail: hold on the fixed sentence,
+  then fade the static pair up (`.spec__perform ~ .line-spec { transition:
+  opacity .3s }`, scoped to while the clone is mounted) while the clone
+  drops into the "Correct:" row and fades. FLIP step also measures that drop.
+
+**Tests.** +1 in `test_motion.py`
+(`test_correction_strand_recovers_the_static_pair`): trigger the beat, strand
+it mid-clone with a language switch, assert the clone is gone, both lines are
+opaque, and nothing holds a transform. All six existing S6 cases
+(`test_a11y.py` ×4, `test_motion.py` ×2) pass untouched. Full suite: **185
+passed**; the 3 failures in `test_collage_nav_icons.py` predate this branch
+(icon size/ink, P17/P18 collage-nav churn) and are untouched here.
+
+Not verified by eye — the preview pane repaints only on demand this session,
+so the beat was checked through the test suite's real Chromium (clone mounts,
+tears down, lines settle, recovery + replay) rather than watched. Worth a
+scroll-through on a real browser.
+
+**Live artifact not republished** — same collage-placeholder hold.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

@@ -723,6 +723,41 @@ def test_correction_replays_after_language_switch(open_site):
     assert all(float(x) > 0.98 for x in op), op
 
 
+def test_correction_strand_recovers_the_static_pair(open_site):
+    """A beat interrupted mid-flight — a language switch here, the same code
+    path a GSAP throw or a backgrounded tab's stalled ticker takes — must
+    settle(), not strand the section showing only the dimmed error line. The
+    clone tears down and BOTH static lines come back to full opacity."""
+    page, _ = open_site()
+    page.wait_for_function(
+        "document.documentElement.classList.contains('hero-done')", timeout=6000)
+    page.locator("#specimen").scroll_into_view_if_needed()
+
+    seen = False
+    for _ in range(80):
+        if page.locator(".spec__perform").count():
+            seen = True
+            break
+        page.wait_for_timeout(25)
+    assert seen, "the beat never started"
+
+    # strand it while the clone is still on screen
+    page.locator(".masthead .langswitch").click()
+    page.wait_for_timeout(600)
+
+    assert page.locator(".spec__perform").count() == 0, "clone left mounted after a strand"
+    op = page.eval_on_selector_all(
+        "#specimen .spec[data-op='delete'] .line-spec",
+        "els => els.map(e => getComputedStyle(e).opacity)")
+    assert all(float(x) > 0.98 for x in op), op
+    bad = page.eval_on_selector_all(
+        "#specimen .spec[data-op='delete'] *",
+        """els => els
+            .map(e => getComputedStyle(e).transform)
+            .filter(t => t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)')""")
+    assert bad == [], bad
+
+
 def _clip_heights(page):
     # getBBox() reflects the live (CSS-animated) rect geometry; getComputedStyle
     # reports "auto" for a rect whose CSS height is 0 or auto, which parses to
