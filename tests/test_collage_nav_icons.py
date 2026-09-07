@@ -40,16 +40,32 @@ def test_three_icon_buttons_after_a_divider(open_site):
     assert tools.locator(".tools__rule").count() == 1
     assert _icon_buttons(page).count() == 3
 
-    order = page.evaluate(
+    # P17: .tools is two clusters with the divider at the seam — the util
+    # toggles (theme + language) that mutate the current page, then
+    # .tools__rule, then the collage-nav cluster (the "Photos" caption plus
+    # the three jump icons it captions).
+    top = page.evaluate(
         """() => [...document.querySelector('.tools').children].map(el =>
-            el.classList.contains('tool--icon') ? 'icon'
+            el.classList.contains('tools__group--util') ? 'util'
             : el.classList.contains('tools__rule') ? 'rule'
-            : el.classList.contains('tools__label') ? 'label'
+            : el.classList.contains('tools__group--nav') ? 'nav'
             : el.className)"""
     )
-    # P10: the shared "Photos" caption sits right before the divider + icons
-    # it captions.
-    assert order == ["tool themeswitch", "tool langswitch", "label", "rule", "icon", "icon", "icon"]
+    assert top == ["util", "rule", "nav"]
+
+    def group_order(selector):
+        return page.evaluate(
+            """(sel) => [...document.querySelector(sel).children].map(el =>
+                el.classList.contains('tool--icon') ? 'icon'
+                : el.classList.contains('tools__label') ? 'label'
+                : el.className)""",
+            selector,
+        )
+
+    assert group_order(".tools__group--util") == ["tool themeswitch", "tool langswitch"]
+    # P10: the shared "Photos" caption opens the nav cluster, right before
+    # the icons it captions.
+    assert group_order(".tools__group--nav") == ["label", "icon", "icon", "icon"]
 
 
 def test_icon_buttons_have_the_exact_expected_accessible_names(open_site):
@@ -239,12 +255,15 @@ def test_icons_have_one_shared_visible_caption(open_site):
     assert label.count() == 1
     assert label.text_content().strip() == "Photos"
     assert label.evaluate("el => getComputedStyle(el).display") != "none"
-    # sits before the divider + icons, not after — reads as their caption
+    # P17: the caption opens the collage-nav cluster — past the divider,
+    # inside .tools__group--nav, and before the three icons it captions, so
+    # it still reads as their heading rather than as a sibling of the icons.
     assert page.evaluate(
         """() => {
             const label = document.querySelector('.tools__label');
-            const rule = document.querySelector('.tools__rule');
-            return label.compareDocumentPosition(rule) & Node.DOCUMENT_POSITION_FOLLOWING;
+            const firstIcon = document.querySelector('.tools .tool--icon');
+            return label.closest('.tools__group--nav')
+                && (label.compareDocumentPosition(firstIcon) & Node.DOCUMENT_POSITION_FOLLOWING);
         }"""
     )
 
