@@ -1907,13 +1907,14 @@ rotate just once."*
 
 - **CSS only, no `main.js`.** The spin is pure decoration, so it degrades to a
   static mark with JS or GSAP absent — nothing in `main.js` knows about it.
-- **`.footmark` base gets `transform: rotate(0deg)`; `.footmark:hover` gets
-  `rotate(360deg)` + `transition: transform var(--t-turn) var(--e)`.** A full
-  turn lands the mark back on its own geometry exactly, so it is never left
-  off-register — the reason a full 360 and not, say, a wobble.
-- **`--t-turn: .8s`**, new token beside `--t`. Matches `D.correct` (main.js),
-  the "a correction resolving" duration — the right register for this mark,
-  and slower than `--t` so it reads as deliberate.
+- **Scoped to `.foot`** — `.foot .footmark` base gets `transform: rotate(0deg)`,
+  `.foot .footmark:hover` gets `rotate(360deg)` + `transition: transform
+  var(--t-turn) var(--e)`. The same `.footmark` in the `#collage` view bar is
+  left alone. A full turn lands the mark back on its own geometry exactly, so
+  it is never left off-register — the reason a full 360 and not, say, a wobble.
+- **`--t-turn: 1.2s`**, new token beside `--t`. Started at .8s (`D.correct`);
+  Igor asked for it 30–50% slower so the whole rotation reads — bumped to
+  `D.count`'s 1.2s, the "measured, counting" register, a turn you watch finish.
 - **`--e` is allowed here.** The scrollcue note bans the ease-out on a loop
   that returns to its start value (it snaps mid-way). This doesn't loop: 0 ->
   360 once, accelerate out of rest, settle soft into the finish.

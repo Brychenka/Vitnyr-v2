@@ -572,7 +572,7 @@ def _rotation_deg(page, selector):
 def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
     """F1 (2026-09-07): hovering the footer wordmark spins it one full clockwise
     turn (transition on :hover only, so leave snaps 360->0 with no reverse). The
-    turn runs on --t-turn (0.8s) and the one brand ease."""
+    turn runs on --t-turn (1.2s) and the one brand ease."""
     page, _ = open_site()
     mark = page.locator(".foot .footmark")
     mark.scroll_into_view_if_needed()
@@ -584,15 +584,15 @@ def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
     assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
 
     mark.hover()
-    page.wait_for_timeout(150)
-    # mid-turn: the transition is armed on transform for 0.8s and the mark has
+    page.wait_for_timeout(250)
+    # mid-turn: the transition is armed on transform for 1.2s and the mark has
     # visibly rotated off its rest angle
-    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0.8s"
+    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
     assert "transform" in mark.evaluate("el => getComputedStyle(el).transitionProperty")
     assert abs(_rotation_deg(page, ".foot .footmark")) > 5, "the mark should be mid-turn"
 
     # after the turn: back on its own geometry (360deg == rest)
-    page.wait_for_timeout(900)
+    page.wait_for_timeout(1300)
     assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
 
     # leaving: no transition, so it snaps home with no animated reverse spin
