@@ -20,38 +20,40 @@
    ============================================================ */
 
 :root {
-  --bg:     #14181A;
+  /* Cream is the default pair (Igor, 2026-09-07): the page always opens on
+     cream and only switches to charcoal when the reader picks it with the
+     theme control. The OS `prefers-color-scheme` no longer decides — the
+     charcoal values live in `:root[data-theme="dark"]` below and nowhere
+     else, so an explicit choice is the only way in. */
+  --bg:     #EFEBE3;
   /* Amber is fixed, not theme-swapped: Igor picked the single darker value
      (#B07C24) over the brighter one the charcoal pair used to carry, so one
      shade of the mark's yellow now ships everywhere (2026-09-05). It still
      clears the >=3:1 non-text-ink floor on both backgrounds (3.07:1 on
      cream, 4.9:1 on charcoal) — see the in-copy-emphasis comment below. */
   --amber:  #B07C24;
-  --green:  #4C7A52;
-  --fg:     #F2EFE8;
-  --fg2:    #A8ABA9;
+  --green:  #3D6543;
+  --fg:     #1D2224;
+  --fg2:    #5A5F60;
   /* P12 (2026-09-06): "structure is whitespace and hairline rules" only
-     holds if the hairline survives a real screen — this measured 1.47:1
-     against --bg, elegant on a good display in a dark room and gone on a
-     dim laptop or in daylight. .235 alpha lands ~2.02:1: keeps the
-     restraint (still far short of a border you'd call "visible" outright)
-     but stops disappearing. The light pair's alpha is tuned separately
-     below to land at the same ~2:1, not to match this number — the two
-     bases don't share one alpha that hits the same ratio on both. */
-  --rule:   rgba(242,239,232,0.235);
+     holds if the hairline survives a real screen. This alpha is tuned to
+     land ~2:1 against the cream bg — the charcoal pair's alpha is tuned
+     separately (in the dark block below) to hit the same ~2:1, not to
+     match this number: the two bases don't share one alpha that works on
+     both. */
+  --rule:   rgba(29,34,36,0.33);
 
   --ink-specimen: var(--amber);
   --ink-target:   var(--green);
 
   /* The pointer dot's active ink — the fill it eases to over any control
-     (C15, 2026-09-07). Target green on charcoal; specimen amber on cream,
-     Igor's call — green read muddy on the warm ground and amber carries.
-     Pair-swapped in the two light blocks below like every other themed
-     token; the generic active state and .is-target both read from this, so
-     the contact CTA follows the theme too. .is-specimen stays wired
-     straight to --ink-specimen — "the error under examination" is not a
-     per-theme idea. */
-  --cursor-active-ink: var(--ink-target);
+     (C15, 2026-09-07). Specimen amber on cream (the default), Igor's call —
+     green read muddy on the warm ground and amber carries; the dark block
+     below swaps it to target green on charcoal. The generic active state
+     and .is-target both read from this, so the contact CTA follows the
+     theme too. .is-specimen stays wired straight to --ink-specimen — "the
+     error under examination" is not a per-theme idea. */
+  --cursor-active-ink: var(--ink-specimen);
 
   /* Text-safe variants for the one exception to "accent never sits on text
      under 24px" — see .mark--specimen / .mark--target below. Amber already
@@ -60,9 +62,11 @@
      so it's reused as-is; green doesn't (3.58:1), so this is the same hue
      lightened to exactly 4.5:1. Kept off --ink-target/--amber so every
      non-text use (borders, glyphs, the wordmark) is completely unaffected.
-     Added 2026-09-05. */
-  --amber-text: var(--amber);
-  --green-text: #578C5E;
+     Added 2026-09-05. On the default cream pair it is the reverse — amber
+     fails 4.5:1 as body text on cream and green clears it — so the base
+     values below are the cream-safe ones and the dark block re-swaps. */
+  --amber-text: #8C631D;
+  --green-text: var(--green);
 
   /* C5 (2026-09-06): the origin mark's "dimmed" stroke was opacity: .32, not
      a colour — which blends with whatever renders behind it. Mostly that's
@@ -73,9 +77,10 @@
      chosen to land close to the old opacity look on this bg (same
      ~32%-toward---bg blend, computed then hand-set), so the interaction
      reads the same, but as a real colour that can't bleed
-     into a neighbouring shape. */
-  --amber-dim: #4A3B21;
-  --green-dim: #293D28;
+     into a neighbouring shape. These are the cream-pair blends (the default);
+     the dark block below carries the charcoal ones. */
+  --amber-dim: #D9C6A3;
+  --green-dim: #B8C2B2;
 
   --serif: Lora, Georgia, "Times New Roman", serif;
   --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -120,37 +125,28 @@
      +/-2% brightness (below) so the image carries equal visual weight on
      the luminous cream ground and on charcoal. Judged against en-01 in both
      pairs at 375 and 1280; Stage 3 re-checks once chess + climbing (very
-     different luminance profiles) are in. */
-  --collage-filter: grayscale(1) contrast(1.08) brightness(1.02);
+     different luminance profiles) are in. -2% vs charcoal: equal weight on
+     the luminous cream ground. */
+  --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
 }
 
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg:     #EFEBE3;
-    --green:  #3D6543;
-    --fg:     #1D2224;
-    --fg2:    #5A5F60;
-    --rule:   rgba(29,34,36,0.33);   /* P12: tuned separately to land at the same ~2:1 against this pair's bg */
-    --amber-text: #8C631D;   /* darkened stand-in, tuned to 4.5:1 on this bg (ink amber is 3.07:1) */
-    --green-text: var(--green);   /* ink green already clears 4.5:1 as text here (5.62:1) */
-    --amber-dim: #D9C6A3;
-    --green-dim: #B8C2B2;
-    --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);   /* -2% vs charcoal: equal weight on the luminous cream ground */
-    --cursor-active-ink: var(--ink-specimen);   /* C15: amber, not green, over controls on cream */
-  }
-}
-:root[data-theme="light"] {
-  --bg:     #EFEBE3;
-  --green:  #3D6543;
-  --fg:     #1D2224;
-  --fg2:    #5A5F60;
-  --rule:   rgba(29,34,36,0.33);   /* P12: tuned separately to land at the same ~2:1 against this pair's bg */
-  --amber-text: #8C631D;
-  --green-text: var(--green);
-  --amber-dim: #D9C6A3;
-  --green-dim: #B8C2B2;
-  --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
-  --cursor-active-ink: var(--ink-specimen);   /* C15: amber, not green, over controls on cream */
+/* ---------- charcoal pair: opt-in only ----------
+   Applied solely when the reader picks it (theme.js stamps
+   data-theme="dark"). No prefers-color-scheme branch — cream is the default
+   in every OS setting (Igor, 2026-09-07). Every value here is the charcoal
+   counterpart of a token defined on :root above; nothing new is introduced. */
+:root[data-theme="dark"] {
+  --bg:     #14181A;
+  --green:  #4C7A52;
+  --fg:     #F2EFE8;
+  --fg2:    #A8ABA9;
+  --rule:   rgba(242,239,232,0.235);   /* P12: tuned separately to land ~2:1 against this pair's bg */
+  --amber-text: var(--amber);   /* ink amber already clears 4.5:1 as text on charcoal (4.9:1) */
+  --green-text: #578C5E;         /* ink green fails 4.5:1 here (3.58:1); same hue lightened to exactly 4.5:1 */
+  --amber-dim: #4A3B21;
+  --green-dim: #293D28;
+  --collage-filter: grayscale(1) contrast(1.08) brightness(1.02);
+  --cursor-active-ink: var(--ink-target);   /* C15: green over controls on charcoal */
 }
 
 /* Georgia carries no Cyrillic on most systems, so a Russian headline in the
@@ -239,6 +235,45 @@ html.is-scrolled .masthead {
    is confirmed loaded; the mark alone is a sanctioned lockup. */
 .lockup .wm { opacity: 0; transition: opacity .3s var(--e); }
 html.lora-ready .lockup .wm { opacity: 1; }
+
+/* P22 — the V/Y mark draws itself in ONCE, a beat after load (initLockmark()
+   in main.js adds .is-drawing and never removes it — no hover replay). Three
+   strokes, in the order §04's copy names them: left arm top->vertex, right arm
+   vertex->tip, then the stem down from the vertex.
+
+   Reads as a pen tracing the mark, so two things differ from §04's S7 draw:
+
+   1. Easing is `linear`, NOT --e. A traced line moves at constant speed; --e
+      is a hard ease-out that fires each stroke ~80% in a blink then crawls the
+      rest — pop / hang / pop, with the velocity slamming to near-zero right at
+      the vertex where the next stroke starts. linear removes the discontinuity:
+      left and right arms are one even sweep through the vertex. It is the
+      absence of a character curve, not a second one beside --e (the .scrollcue
+      loop is likewise `ease-in-out` for its own reason).
+   2. Own @keyframes over tight clip bounds. §04 clips each arm to a 100-unit
+      half-box, but the V arms only ink y≈15..57 — a full-height clip spends
+      half the run revealing empty space, so the stroke "appears then finishes"
+      in a burst mid-timeline. lockmark-arm-l/-r grow a 42-unit band (y15..57)
+      instead, so 0..100% of the run maps to 0..100% of the visible stroke. The
+      stem's §04 box (y42, h44) was already close to its ink, so it keeps
+      glyph-draw-stem.
+
+   Fully sequential: each animation-delay is the previous plus a whole run
+   (0 / 1s / 2s), so a stroke starts exactly as the one before it ends — no
+   overlap, no gap. Per-stroke run 1s. Total ~3s. This is a bespoke tempo
+   for the mark-draw, not a second reveal rhythm.
+
+   Presentation only: markup keeps the clip rects full-size, so with JS off
+   (html:not(.js)) the finished mark just shows. The rects sit at `forwards`,
+   so once .is-drawing is on the finished mark holds for good. */
+html.js .lockup #lockClipLeft  rect { height: 0; }
+html.js .lockup #lockClipRight rect { y: 57px; height: 0; }
+html.js .lockup #lockClipStem  rect { height: 0; }
+html.js .lockup.is-drawing #lockClipLeft  rect { animation: lockmark-arm-l  1s linear 0s forwards; }
+html.js .lockup.is-drawing #lockClipRight rect { animation: lockmark-arm-r  1s linear 1s forwards; }
+html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s linear 2s forwards; }
+@keyframes lockmark-arm-l { from { height: 0; }             to { height: 42px; } }
+@keyframes lockmark-arm-r { from { y: 57px; height: 0; }    to { y: 15px; height: 42px; } }
 
 /* gap here is the BETWEEN-cluster gap; the WITHIN-cluster gap lives on
    .tools__group and is deliberately ~2.5x tighter, so proximity alone reads
@@ -1466,5 +1501,12 @@ html.js .line__inner { transform: translateY(110%); }
   html.js .origin__mark #glyphClipLeft rect,
   html.js .origin__mark #glyphClipRight rect { y: 0 !important; height: 100px !important; animation: none !important; }
   html.js .origin__mark #glyphClipStem rect { height: 44px !important; animation: none !important; }
+  /* P22: same for the masthead mark. initLockmark() sits past the
+     reduced-motion return in main.js, so .is-drawing is never added here —
+     without this the html.js base rule leaves the drawn-in mark clipped away.
+     Values are the tight ink-bound clips (y15..57 arms, y42 h44 stem). */
+  html.js .lockup #lockClipLeft rect { height: 42px !important; animation: none !important; }
+  html.js .lockup #lockClipRight rect { y: 15px !important; height: 42px !important; animation: none !important; }
+  html.js .lockup #lockClipStem rect { height: 44px !important; animation: none !important; }
   * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }

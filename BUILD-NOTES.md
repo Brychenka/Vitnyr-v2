@@ -2113,6 +2113,142 @@ Chromium. Worth a scroll-through on a real browser.
 
 **Live artifact not republished** — same collage-placeholder hold.
 
+## P22 — the masthead mark draws itself in (2026-09-07)
+
+Branch `feature/lockmark-draw`. Files: `index.html`, `style.css`, `main.js`,
+this note. Igor asked for the navbar logo to "appear line by line … as if
+drawn by paint or pencil", repeating on every hover. Design/animation review
+narrowed it: **the V/Y glyph only, never the Lora wordmark** (filled serif
+letters can only be traced, not written, and the mark is a "never redraw"
+asset); and **a single considered entrance**, not a logo that re-performs on
+every pass-over — a wordmark is a fixed point on the page. Then several tuning
+passes: speed ("slow it down 50%", "another 30%", "decrease it by 50%" again,
+then "+40%" back), start delay ("half a second, not two"), strokes made
+sequential ("after the first line is drawn the second starts immediately"),
+easing (`--e` felt staccato → `linear` for a slick constant-speed trace), and
+finally **replay removed** — a hover repeat was built and then cut ("we agreed
+it should show once and then stop"). Landed on a slow, deliberate,
+one-line-at-a-time draw that plays exactly once, well clear of §04's tempo.
+
+- **Reuses §04's S7 draw wholesale.** The masthead mark and the origin mark
+  are geometrically identical (same `#glyphV` d=, same stem d=, just scaled
+  `1.9403`). So `index.html` moves the amber V's d= verbatim into `<defs>` as
+  `#lockV`, references it twice via `<use>` clipped at x=50, and adds three
+  clipPaths (`#lockClipLeft/Right/Stem`, own ids — one document) matching
+  §04's. No path coordinate is touched; paint order stays stem→V so the
+  resting mark is pixel-identical to before. (The animation itself — easing,
+  keyframes, clip bounds — then diverged from §04; see the next bullet.)
+- **Draw order = the natural V gesture.** Left arm top→vertex, right arm
+  vertex→tip, then the stem drops — the same "two for the V, one for the
+  stem" the §04 copy describes.
+- **Timing, easing and clip bounds all diverge from §04 on purpose.** §04's
+  `.45s / .22s` overlapping strokes on `--e`, each clipped to a 100-unit
+  half-box, are a one-shot under a scroll-reveal fade. At this mark's
+  deliberate speed two things about that read wrong and Igor kept feeling it
+  ("too fast" ×3, then "same or worse … make it slick and smooth"):
+  - **`--e` is the wrong curve for a trace.** A hard ease-out fires each
+    stroke ~80% in a blink then crawls the tail — pop / hang / pop, velocity
+    collapsing to near-zero exactly at the vertex where the next stroke
+    starts. Switched to **`linear`**: constant pen speed, left+right arms one
+    even sweep through the vertex. Not a second character curve beside `--e` —
+    the absence of one; `.scrollcue` already runs `ease-in-out` for its own
+    reason.
+  - **The half-box clips are way bigger than the ink.** The V arms only ink
+    y≈15..57 of the 100-unit box, so ~half of each run revealed empty space —
+    the stroke "appeared then finished" in a burst partway through its
+    timeline, which is exactly the stop-start Igor was describing. New
+    `@keyframes lockmark-arm-l/-r` grow a 42-unit band (y15..57), so the run
+    maps 1:1 to visible stroke progress. Stem's §04 box was already close to
+    its ink; it keeps `glyph-draw-stem`. Clip rects in `index.html` carry the
+    tight bounds full-size (no-JS shows the whole mark); `style.css` collapses
+    them under `html.js` and the reduced-motion block forces them back.
+  **Fully sequential**: `animation-delay` `0 / 1s / 2s`, each the previous
+  plus a whole run, so a stroke starts exactly as the prior ends — no overlap,
+  no gap. Per-stroke run `1s` (settled after one more "+40% speed" pass once
+  the delay and easing were right). Total ~3s. Bespoke tempo for the
+  mark-draw, not a second reveal rhythm — the reveal system is untouched.
+- **`initLockmark()` in `main.js`**, wired past the reduced-motion return next
+  to `initOrigin` — pure decoration. It is now four lines: `setTimeout` adds
+  `.is-drawing` to `.lockup` once, `LOCKMARK_INTRO = 150ms` after init (a beat
+  so it reads as deliberate, not a frame-1 glitch), and never removes it. The
+  three clip rects sit at `forwards`, so the finished mark just holds. An
+  earlier version replayed on `mouseenter` and carried a `drawing` flag +
+  reflow-restart + `animationend` backstop to keep a mid-draw re-enter from
+  restarting it ("spinning like crazy", à la F1); all of that came out with
+  the replay.
+- **Degrades.** Hidden start state is `html.js`-only, so no-JS / no-GSAP shows
+  the finished mark. `@media (prefers-reduced-motion: reduce)` forces the clip
+  rects to their ink bounds (`height: 42px` arms / `44px` stem, `y: 15px`
+  right, `animation: none`) — needed because `initLockmark` never runs under
+  reduce, so nothing else would open them. `failsafe()` gained a guarded line
+  that arms the draw if `initLockmark` never ran at all; it no-ops on the
+  normal path (class already on by 150ms).
+- **No transform channel used** — it's a clip-rect wipe, so it can't collide
+  with the magnetic pull that also targets `.tool` / `.origin__mark`.
+
+**Verified** against a hand-started `localhost:8010` (the pane can't run the
+repo's server — sandbox denies `os.getcwd`): no console errors; resting mark
+intact in Charcoal + Cream, EN + RU, 1280px + 375px; no horizontal overflow
+(`scrollWidth == clientWidth` at both widths); `.lockup` holds its 176px floor
+on mobile. The clip animation was proven by pausing each `getAnimations()[0]`
+and scrubbing `currentTime` — easing reads `linear`, delays are `0 / 1s / 2s`,
+and with the tight clip bounds `getComputedStyle(rect).height` tracks 1:1 with
+time (50% run → 21px of 42; before the retighten, 50% run was already ~100%).
+A paused mid-draw screenshot shows one stroke at a time, partially drawn, the
+rest absent; the vertex handoff is continuous (left hits it at 1s, right
+leaves it at 1s). The free-running clock in the preview pane doesn't advance
+in a bare await loop, so the real-speed run is worth a look on a real browser.
+Reduced-motion path checked by CSS-rule inspection + the fact that
+`initLockmark` sits after the `if (reduce) return`.
+
+**Live artifact not republished** — same collage-placeholder hold.
+
+## Cream is the default pair; charcoal is opt-in only (2026-09-07)
+
+Branch `feature/lockmark-draw` (continued). Files: `style.css`, `theme.js`,
+`index.html`, this note. Igor: "make cream the default one, only moving to
+dark one if the choosers chose to." Previously the page followed the OS
+`prefers-color-scheme` when the reader had made no choice — dark OS opened on
+charcoal. Now cream opens in every case and charcoal appears only after the
+theme control is used.
+
+- **`style.css` cascade inverted.** The base `:root` block used to hold the
+  charcoal values with the cream pair layered on top via
+  `@media (prefers-color-scheme: light)` and `:root[data-theme="light"]`.
+  Base `:root` now carries the **cream** values, and a single new
+  `:root[data-theme="dark"]` block carries the charcoal counterparts —
+  `--bg --green --fg --fg2 --rule --amber-text --green-text --amber-dim
+  --green-dim --collage-filter --cursor-active-ink`. No
+  `prefers-color-scheme` branch anywhere now. `--amber` stays fixed (not
+  theme-swapped) as before. Same ten pair values, same tuned contrast
+  shades — only which selector owns which set changed. No component rule
+  referenced `[data-theme="light"]`, so nothing else moved.
+- **`theme.js`.** `effectiveTheme()` falls back to `'light'` instead of the
+  OS query. The `prefersLight` matchMedia var and its `change` listener are
+  gone (nothing to react to). `applyTheme()` unchanged: no stored choice →
+  no `data-theme` attribute → base `:root` → cream; `'dark'` stored →
+  `data-theme="dark"`; `'light'` stored → attribute set but resolves to the
+  same base cream. The switch handler and `localStorage` key
+  (`vitnyr-theme`) are untouched, so an existing reader who had picked
+  charcoal keeps it.
+- **`index.html`.** Static `<meta name="theme-color">` flipped to `#EFEBE3`
+  so a no-JS load's browser chrome matches the cream default too.
+
+**Verified** against a hand-started `localhost:8010`. With
+`vitnyr-theme` cleared and the tab's `prefers-color-scheme` emulated **dark**:
+`data-theme` is absent, `--bg` resolves `#EFEBE3`, `meta[theme-color]` is
+`#EFEBE3` — OS dark no longer forces charcoal. Clicking `.themeswitch` →
+`data-theme="dark"`, `--bg` `#14181A`, `localStorage.vitnyr-theme` `"dark"`,
+button relabels to Cream/Крем; survives reload. Emulated **light** with no
+stored choice → cream as well. No console errors; `scrollWidth <=
+innerWidth`. Both palettes screenshotted on the hero (charcoal and cream) via
+a direct attribute set after load — the preview pane's on-demand repaint
+means the below-hero reveals were confirmed by reading the DOM (sections at
+`opacity: 1`, `.reveal` elements `is-in`) rather than by eye; worth a
+scroll-through on a real browser.
+
+**Live artifact not republished** — same collage-placeholder hold.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

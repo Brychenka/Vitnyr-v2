@@ -670,6 +670,27 @@
     });
   }
 
+  /* ---------- masthead mark: draw-in (P22) ----------
+     The V/Y symbol assembles from its three strokes — left arm of the V, then
+     the right, then the stem (see style.css). It plays exactly ONCE, a short
+     beat after load, then holds — no hover replay: a wordmark is a fixed point
+     on the page, not something that re-performs every time the pointer crosses
+     it. Pure decoration: wired past the reduced-motion return, so a reduce
+     reader never reaches it and the stylesheet pins the clip rects open for
+     them instead.
+
+     .is-drawing on .lockup is all the CSS needs; the three rects sit at
+     `forwards`, so the finished mark holds once the class is on. Because it is
+     added once and never removed, no restart/guard machinery is needed. */
+  var LOCKMARK_INTRO = 150;   // ms after this runs before the one-time draw starts
+  function initLockmark() {
+    var lockup = document.querySelector('.lockup');
+    if (!lockup) return;
+    // A short beat, not frame 0, so it reads as deliberate rather than a
+    // glitch. failsafe() is the backstop if this timer never fires.
+    setTimeout(function () { lockup.classList.add('is-drawing'); }, LOCKMARK_INTRO);
+  }
+
   /* ---------- specimen permalinks (Spark Order S9A / move 09) ----------
      Each <article class="spec"> carries a stable id, and its label is an
      anchor to that id — so a reader who recognises one of the three errors
@@ -1076,6 +1097,12 @@
     // The hero carries no .reveal class, so the sweep above cannot reach it —
     // armHeroGuard() covers it, on every play rather than only this one.
     if (!heroStarted) showHeroNow();
+    // The masthead mark is not a .reveal target (it must not rise), so the
+    // sweep can't reach it either. If initLockmark() never armed the draw its
+    // clip rects are still collapsed under html.js — show it outright. Guarded,
+    // so a mark that drew normally is left alone (no re-draw 2.5s in).
+    var lm = document.querySelector('.lockup');
+    if (lm && !lm.classList.contains('is-drawing')) lm.classList.add('is-drawing');
   }
   // Re-armed rather than one-shot: a language switch brings a different set of
   // elements on screen, all of them after this sweep would have come and gone.
@@ -1085,6 +1112,7 @@
   buildReveals();
   countUp(false);
   initOrigin();
+  initLockmark();
   initCursor();
   initMagnetic();
 
