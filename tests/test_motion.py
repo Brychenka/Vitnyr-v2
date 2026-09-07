@@ -438,6 +438,71 @@ def test_cursor_absent_on_touch_devices(open_site):
     assert page.locator(".cursor").evaluate("el => getComputedStyle(el).display") == "none"
 
 
+def _translate_xy(page, selector):
+    """(tx, ty) from the element's computed transform matrix; (0, 0) for none."""
+    return page.locator(selector).evaluate(
+        """el => {
+            const t = getComputedStyle(el).transform;
+            if (!t || t === 'none') return [0, 0];
+            const m = t.match(/matrix\\(([^)]+)\\)/);
+            if (!m) return [0, 0];
+            const p = m[1].split(',').map(Number);
+            return [p[4], p[5]];
+        }"""
+    )
+
+
+def test_magnetic_pull_moves_a_control_but_not_a_text_link(open_site):
+    """C16 (2026-09-07): initMagnetic is back, scoped to .tool / .view__back.
+    A hovered control eases toward the pointer and returns to rest on leave;
+    a text link that also carries data-magnetic gets the dot's colour cue but
+    never moves."""
+    page, _ = open_site()
+    page.mouse.move(400, 300)
+
+    sw = page.locator(".tools__group--util .langswitch")
+    box = sw.bounding_box()
+    sw.hover()                      # enter → the field captures the box at centre
+    page.wait_for_timeout(150)
+    # a point near the right edge, vertically centred: a clear +x pull, ~0 y
+    page.mouse.move(box["x"] + box["width"] - 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(500)      # quickTo runs over D.state (0.6s)
+    tx, ty = _translate_xy(page, ".tools__group--util .langswitch")
+    assert tx > 1.5, f"the switch should be pulled toward the pointer (tx={tx})"
+    assert abs(ty) < 3, f"a mid-height hover pulls almost pure-x (ty={ty})"
+
+    # leaving retargets the same tween back to rest
+    page.mouse.move(400, 300)
+    page.wait_for_timeout(700)
+    tx, ty = _translate_xy(page, ".tools__group--util .langswitch")
+    assert abs(tx) < 0.5 and abs(ty) < 0.5, "the switch must settle back to rest"
+
+    # a text link with data-magnetic (the hero scrollcue) never moves
+    cue = page.locator(".scrollcue")
+    cbox = cue.bounding_box()
+    cue.hover()
+    page.wait_for_timeout(150)
+    page.mouse.move(cbox["x"] + cbox["width"] - 2, cbox["y"] + cbox["height"] / 2)
+    page.wait_for_timeout(500)
+    assert "cursor-active" in (page.locator("html").get_attribute("class") or "")  # colour cue on
+    tx, ty = _translate_xy(page, ".scrollcue")
+    assert tx == 0 and ty == 0, f"a text link must not be pulled (tx={tx}, ty={ty})"
+
+
+def test_magnetic_pull_absent_under_reduced_motion(open_site):
+    """initMagnetic sits past the reduced-motion return, and the sheet pins the
+    controls flat as well — a reduce reader gets no nudge."""
+    page, _ = open_site(reduced_motion=True)
+    sw = page.locator(".tools__group--util .langswitch")
+    box = sw.bounding_box()
+    sw.hover()
+    page.wait_for_timeout(150)
+    page.mouse.move(box["x"] + box["width"] - 2, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(400)
+    tx, ty = _translate_xy(page, ".tools__group--util .langswitch")
+    assert tx == 0 and ty == 0
+
+
 def test_back_to_top_returns_from_the_footer_to_hero(open_site):
     """P15: the footer used to be a dead end after 7,500px of scroll — no
     way back up. Goes through the same in-page Lenis link wiring every

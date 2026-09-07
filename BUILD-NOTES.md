@@ -1806,6 +1806,56 @@ mobile one-line header below the lockup with 44px icon targets, and
 **Live artifact not republished** — same collage-placeholder hold. Folds into
 the inline rebuild when that lifts.
 
+## C16 — magnetic pull back, controls only (2026-09-07)
+
+Branch `feature/magnetic-controls`. Files: `main.js`, `style.css`, this note,
+`CLAUDE.md`, `tests/test_motion.py`. Igor: *"it used to be that when i hover
+over interactable things they would slightly move… why u removed it?"* — then
+*"can we bring this movement back?"*, and chose **controls only** when asked
+the scope (the option C14's own note had pre-approved: *"belongs on non-text
+controls only… never on running copy"*).
+
+- **`initMagnetic()` restored verbatim** from `1a94b4c^` — same field maths
+  (60px halo, `PULL` 12, per-axis normalise against the element's half-size,
+  vector scaled not axis-clamped so a diagonal can't exceed `PULL`, peaks
+  halfway out, zero at the rim), same `gsap.quickTo` on `x`/`y` over `D.state`
+  retargeted on leave so one tween never fights itself, same measure-once-on-
+  enter with the element's own translate subtracted. Called after `initCursor()`
+  in the go block — **past the reduced-motion return**, so a `reduce` reader
+  never gets it.
+- **Scope is the only change from the retired version.** It now queries
+  `.tool, .view__back` — the Cream/RU switches (masthead + collage bar), the
+  three collage icon-nav buttons, the footer "Back to top", the collage
+  "Back" — **not** `[data-magnetic]`. That attribute stays exactly as C14 left
+  it: the broad interactive hint the dot's `HOT` colour selector reads, still
+  on the text links (`.scrollcue`, `.proof__link`, contact CTA, footer
+  handles, `.origin__mark`) which get colour but no movement.
+- **`will-change`** is granted only on `:hover` of those controls
+  (`.tool:hover, .view__back:hover { will-change: transform }`), same
+  standing-layer discipline as the hero lines. The reduced-motion block drops
+  that hint and pins `.tool, .view__back` to `transform: none !important` as
+  belt-and-braces (the JS already never runs there). `.tool::after`'s hover
+  hairline is a pseudo-element and untouched.
+- **Transform channel is clear on these elements** — none are `.reveal`
+  targets, nothing else tweens them, theme.js only rewrites their text. So the
+  pull owns the channel with nothing to compose against (the hazard CLAUDE.md's
+  motion section flags).
+- Test: `test_magnetic_pull_moves_a_control_but_not_a_text_link` in
+  `test_motion.py` — hovering the masthead `.langswitch` shifts its computed
+  `transform` off `none` toward the pointer and it eases back to `none` on
+  leave; hovering the `.scrollcue` text link (also `data-magnetic`) never
+  moves it. Runs on the fine-pointer default; skipped shape matches the other
+  cursor cases.
+
+Verified in-browser: pull on all four control types in both themes and both
+languages, drift back to exactly `none` on leave (both axes), nothing on the
+text links, `data-collage-jump` still routes, no console errors, no horizontal
+overflow at 1280 or 375, and `prefers-reduced-motion: reduce` leaves every
+control flat.
+
+**Live artifact not republished** — same collage-placeholder hold. Folds into
+the inline rebuild when that lifts.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
@@ -1815,8 +1865,9 @@ the inline rebuild when that lifts.
 - Contrast in both pairs: all body text >= 5.45:1, all accent ink >= 3.07:1.
 - Fonts resolve to Lora / Inter / JetBrains Mono, Cyrillic included.
 - The dot disables itself on coarse pointers — confirmed at 375px: `has-cursor`
-  never goes on, so the native pointer is never hidden (magnetic pull retired
-  entirely at C14).
+  never goes on, so the native pointer is never hidden. The magnetic pull
+  (`initMagnetic`, back at C16 on controls only) is behind the same
+  `finePointer` gate, so it is off there too.
 - Hero plays and completes in both languages, both themes, both widths, and
   releases its compositor layer when it lands.
 - Counters animate from 0 through the observer with ScrollTrigger absent —

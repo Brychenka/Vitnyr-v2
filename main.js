@@ -517,11 +517,11 @@
      fill eases from --fg to --ink-target green over a control, or to
      --ink-specimen amber over a control inside #specimen — the same
      token-to-token crossfade the progress hairline uses, declared in the
-     stylesheet off the same --ink-* tokens (no hex here). Retired with the
-     old behaviour: the 3x balloon and the magnetic pull that dragged links
-     toward the pointer (initMagnetic, gone). Everything still degrades — no
-     JS, no GSAP, reduced motion or touch all keep the native cursor and no
-     dot. */
+     stylesheet off the same --ink-* tokens (no hex here). The 3x balloon that
+     used to fire here is gone for good (C14); the magnetic pull came back at
+     C16 but lives in initMagnetic() below and only on non-text controls, not
+     on this size/colour path. Everything still degrades — no JS, no GSAP,
+     reduced motion or touch all keep the native cursor and no dot. */
   function initCursor() {
     if (!finePointer) return;
     var el = document.querySelector('.cursor');
@@ -592,12 +592,63 @@
     });
   }
 
-  /* initMagnetic() retired at C14 (2026-09-07). It pulled every [data-magnetic]
-     element toward the pointer on hover — the fidgety half of "the way the
-     cursor gets over letters" Igor called out. The attribute stays in the
-     markup as the interactive-hint hook the dot's HOT selector still reads;
-     only the movement is gone. If it ever comes back it belongs on non-text
-     controls only (the icon buttons, the switches), never on running copy. */
+  /* ---------- pointer: magnetic pull on controls ----------
+     C16 (2026-09-07): the hover pull is back, but only where C14's note said
+     it could return — non-text controls: the Cream/RU switches, the collage
+     icon-nav buttons, the footer "Back to top", the collage "Back". Never on
+     running copy or standalone text links (that was the half Igor flagged as
+     "the way the cursor gets over letters"), so this keys off the control
+     classes .tool / .view__back, not the broad [data-magnetic] hint the dot's
+     colour still reads. Same field as before: a 60px halo, ≤12px displacement,
+     peaking halfway out and back to zero at the rim so it's continuous where
+     the field ends. Past the reduced-motion return, so a reduce reader never
+     sees it. The transform channel on these elements is otherwise free — none
+     are .reveal targets and nothing else tweens them — so the pull owns it. */
+  function initMagnetic() {
+    if (!finePointer) return;
+    var RADIUS = 60, PULL = 12;
+    document.querySelectorAll('.tool, .view__back').forEach(function (el) {
+      var qx = gsap.quickTo(el, 'x', { duration: D.state, ease: EASE });
+      var qy = gsap.quickTo(el, 'y', { duration: D.state, ease: EASE });
+      var box = null;
+
+      /* Measured once on enter, with the element's own translate subtracted,
+         so the reading can't feed the displacement back into itself — and no
+         layout is forced on every mousemove. */
+      function capture() {
+        var r = el.getBoundingClientRect();
+        var tx = Number(gsap.getProperty(el, 'x')) || 0;
+        var ty = Number(gsap.getProperty(el, 'y')) || 0;
+        box = {
+          cx: r.left + r.width / 2 - tx,
+          cy: r.top + r.height / 2 - ty,
+          rx: r.width / 2 + RADIUS,
+          ry: r.height / 2 + RADIUS
+        };
+      }
+
+      el.addEventListener('mouseenter', capture);
+      el.addEventListener('mousemove', function (e) {
+        if (!box) capture();
+        /* Normalised per axis against the element's own half-size, so a wide
+           switch answers the pointer the same way a 19px icon button does
+           instead of pinning at full pull across almost all of itself. */
+        var nx = (e.clientX - box.cx) / box.rx;
+        var ny = (e.clientY - box.cy) / box.ry;
+        var d = Math.hypot(nx, ny);
+        /* The vector is scaled, not each axis clamped, so PULL is a real
+           ceiling on the distance moved — a diagonal can't reach PULL√2.
+           Peaks at PULL halfway out and returns to zero at the edge, which
+           keeps it continuous where the field ends. */
+        var k = 4 * Math.max(0, 1 - d) * PULL;
+        qx(nx * k); qy(ny * k);
+      });
+      el.addEventListener('mouseleave', function () {
+        box = null;
+        qx(0); qy(0);   // the same tween, retargeted — not a second one fighting it
+      });
+    });
+  }
 
   /* ---------- specimen permalinks (Spark Order S9A / move 09) ----------
      Each <article class="spec"> carries a stable id, and its label is an
@@ -1039,6 +1090,7 @@
   countUp(false);
   initOrigin();
   initCursor();
+  initMagnetic();
   initCorrections();   // past the reduced-motion return: the static pair is that reader's version
 
   whenRendering(function () {
