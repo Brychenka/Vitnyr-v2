@@ -1901,17 +1901,29 @@ errors, no overflow at 1280 or 375.
 
 ## F1 — the footer mark turns once on hover (2026-09-07)
 
-Branch `feature/footer-mark-spin`. Files: `style.css`, this note. Igor: *"there
-is vitnyr logo [in the footer] … rotate it 360 degrees when u hover over it.
-rotate just once."*
+Branches `feature/footer-mark-spin`, `-slower`, `-stable`. Files: `index.html`,
+`style.css`, `tests/test_motion.py`, this note. Igor: *"there is vitnyr logo
+[in the footer] … rotate it 360 degrees when u hover over it. rotate just
+once."* — then *"slow it down 30–50%"*, then *"if i hover on the edge … it
+start rotating like crazy … hover once without repeating until i move the
+cursor away far."*
 
 - **CSS only, no `main.js`.** The spin is pure decoration, so it degrades to a
   static mark with JS or GSAP absent — nothing in `main.js` knows about it.
-- **Scoped to `.foot`** — `.foot .footmark` base gets `transform: rotate(0deg)`,
-  `.foot .footmark:hover` gets `rotate(360deg)` + `transition: transform
-  var(--t-turn) var(--e)`. The same `.footmark` in the `#collage` view bar is
-  left alone. A full turn lands the mark back on its own geometry exactly, so
-  it is never left off-register — the reason a full 360 and not, say, a wobble.
+- **The hover target is a fixed wrapper, not the rotating `<svg>`.** First cut
+  put `:hover` on `.foot .footmark` itself — but a rotating element's own box
+  sweeps out from under a pointer parked near its edge, so `:hover` toggled on
+  every frame and the turn restarted continuously ("spinning like crazy", Igor).
+  Fix: `index.html` wraps the mark in `<span class="footmark-spin">`, a 48px
+  box that never transforms; `.footmark-spin:hover .footmark` drives the turn,
+  and `.foot .footmark` is `pointer-events: none` so the `<svg>`'s sweeping
+  corners can't retrigger it either. Hover now holds steady the whole time the
+  pointer is anywhere in that box, and only re-arms once it leaves the box.
+  Lives only in the footer (the wrapper doesn't exist in the `#collage` bar).
+- **`.foot .footmark` base gets `transform: rotate(0deg)`; the hover state gets
+  `rotate(360deg)` + `transition: transform var(--t-turn) var(--e)`.** A full
+  turn lands the mark back on its own geometry exactly, so it is never left
+  off-register — the reason a full 360 and not, say, a wobble.
 - **`--t-turn: 1.2s`**, new token beside `--t`. Started at .8s (`D.correct`);
   Igor asked for it 30–50% slower so the whole rotation reads — bumped to
   `D.count`'s 1.2s, the "measured, counting" register, a turn you watch finish.
@@ -1924,16 +1936,17 @@ rotate just once."*
   leaving mid-spin cuts straight back to rest — accepted for a flourish.
 - **No `:focus-visible` / no tab stop.** The mark is `role="img"`, not a
   control; making it focusable would plant a keyboard stop on decoration.
-- **`will-change: transform`** on `:hover` only; reduced-motion block resets it
-  to `auto` and adds `.footmark:hover { transform: none !important }` — without
-  that, the global `transition-duration: .01ms` override just turns the hover
-  into an instant flip.
+- **`will-change: transform`** on the hover state only; reduced-motion block
+  resets it to `auto` and adds `.footmark-spin:hover .footmark { transform:
+  none !important }` — without that, the global `transition-duration: .01ms`
+  override just turns the hover into an instant flip.
 
-Verified: one clockwise turn on hover in both themes (amber/green land back in
-place), instant silent reset on leave, re-hover turns again cleanly, EN + RU,
-1280 + 375, no horizontal scrollbar during the turn (checked across real
-animation frames), `prefers-reduced-motion: reduce` leaves it flat, no console
-errors.
+Verified (real Chromium, `tests/test_motion.py`): one clockwise turn per
+hover, settles back on its own geometry, instant silent reset on leave, no
+restart when the pointer moves around inside the mark (incl. hard into a
+corner), no reverse spin, `prefers-reduced-motion: reduce` leaves it flat, no
+horizontal overflow at any angle at 1280 + 375. Colours are on the SVG paths,
+untouched by the transform, so both themes and EN/RU are unaffected.
 
 **Live artifact not republished** — same collage-placeholder hold.
 

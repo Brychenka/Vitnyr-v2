@@ -571,49 +571,75 @@ def _rotation_deg(page, selector):
 
 def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
     """F1 (2026-09-07): hovering the footer wordmark spins it one full clockwise
-    turn (transition on :hover only, so leave snaps 360->0 with no reverse). The
-    turn runs on --t-turn (1.2s) and the one brand ease."""
+    turn (transition on the hover state only, so leave snaps 360->0 with no
+    reverse). The turn runs on --t-turn (1.2s) and the one brand ease. The
+    hover target is the .footmark-spin wrapper, not the rotating <svg>."""
     page, _ = open_site()
-    mark = page.locator(".foot .footmark")
-    mark.scroll_into_view_if_needed()
+    wrap = page.locator(".footmark-spin")
+    mark = page.locator(".footmark-spin .footmark")
+    wrap.scroll_into_view_if_needed()
     page.mouse.move(400, 300)
     page.wait_for_timeout(150)
 
-    # at rest: no rotation, and no transition armed on the base rule
-    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+    # at rest: no rotation, and no transition armed
+    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
     assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
 
-    mark.hover()
+    wrap.hover()
     page.wait_for_timeout(250)
     # mid-turn: the transition is armed on transform for 1.2s and the mark has
     # visibly rotated off its rest angle
     assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
     assert "transform" in mark.evaluate("el => getComputedStyle(el).transitionProperty")
-    assert abs(_rotation_deg(page, ".foot .footmark")) > 5, "the mark should be mid-turn"
+    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) > 5, "should be mid-turn"
 
     # after the turn: back on its own geometry (360deg == rest)
     page.wait_for_timeout(1300)
-    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
 
     # leaving: no transition, so it snaps home with no animated reverse spin
     page.mouse.move(400, 300)
     page.wait_for_timeout(60)
-    assert page.locator(".foot .footmark").evaluate(
+    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
+    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+
+
+def test_footer_mark_does_not_restart_when_the_pointer_moves_within_it(open_site):
+    """F1 regression: the turn used to restart on the tiniest re-enter when the
+    pointer sat near the mark's edge — :hover was on the rotating <svg>, whose
+    box sweeps out from under a parked cursor. With the fixed .footmark-spin
+    wrapper as the target (and the <svg> pointer-events:none), nudging the
+    pointer around inside the mark leaves the settled turn alone."""
+    page, _ = open_site()
+    wrap = page.locator(".footmark-spin")
+    wrap.scroll_into_view_if_needed()
+    box = wrap.bounding_box()
+    wrap.hover()
+    page.wait_for_timeout(1600)                     # let the one turn finish
+    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+
+    # walk the pointer around inside the box, including hard into a corner where
+    # the old rotating hit-area flickered worst
+    for fx, fy in [(0.5, 0.5), (0.9, 0.1), (0.1, 0.9), (0.95, 0.95), (0.5, 0.5)]:
+        page.mouse.move(box["x"] + box["width"] * fx, box["y"] + box["height"] * fy)
+        page.wait_for_timeout(80)
+    # still settled, still armed — no restart, no reverse
+    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+    assert page.locator(".footmark-spin .footmark").evaluate(
         "el => getComputedStyle(el).transitionDuration"
-    ) == "0s"
-    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+    ) == "1.2s"
 
 
 def test_footer_mark_does_not_turn_under_reduced_motion(open_site):
-    """F1: the reduced-motion block pins .footmark:hover to transform:none, so a
+    """F1: the reduced-motion block pins the hover turn to transform:none, so a
     reduce reader gets no spin (without it the global transition-duration
     override would just instant-flip it)."""
     page, _ = open_site(reduced_motion=True)
-    mark = page.locator(".foot .footmark")
-    mark.scroll_into_view_if_needed()
-    mark.hover()
+    wrap = page.locator(".footmark-spin")
+    wrap.scroll_into_view_if_needed()
+    wrap.hover()
     page.wait_for_timeout(300)
-    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
 
 
 # --- Spark Order S6 / moves 06 + 01: the correction is FLIP over an
