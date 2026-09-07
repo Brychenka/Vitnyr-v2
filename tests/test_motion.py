@@ -553,6 +553,69 @@ def test_back_to_top_returns_from_the_footer_to_hero(open_site):
     page.wait_for_function("window.scrollY < 50", timeout=3000)
 
 
+def _rotation_deg(page, selector):
+    """Signed degrees from the element's computed transform matrix; 0 for none.
+    A completed 360deg turn reads as 0 here — identical to rest, which is the
+    point (360 lands the mark back on its own geometry)."""
+    return page.locator(selector).evaluate(
+        """el => {
+            const t = getComputedStyle(el).transform;
+            if (!t || t === 'none') return 0;
+            const m = t.match(/matrix\\(([^)]+)\\)/);
+            if (!m) return 0;
+            const p = m[1].split(',').map(Number);
+            return Math.atan2(p[1], p[0]) * 180 / Math.PI;
+        }"""
+    )
+
+
+def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
+    """F1 (2026-09-07): hovering the footer wordmark spins it one full clockwise
+    turn (transition on :hover only, so leave snaps 360->0 with no reverse). The
+    turn runs on --t-turn (0.8s) and the one brand ease."""
+    page, _ = open_site()
+    mark = page.locator(".foot .footmark")
+    mark.scroll_into_view_if_needed()
+    page.mouse.move(400, 300)
+    page.wait_for_timeout(150)
+
+    # at rest: no rotation, and no transition armed on the base rule
+    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
+
+    mark.hover()
+    page.wait_for_timeout(150)
+    # mid-turn: the transition is armed on transform for 0.8s and the mark has
+    # visibly rotated off its rest angle
+    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0.8s"
+    assert "transform" in mark.evaluate("el => getComputedStyle(el).transitionProperty")
+    assert abs(_rotation_deg(page, ".foot .footmark")) > 5, "the mark should be mid-turn"
+
+    # after the turn: back on its own geometry (360deg == rest)
+    page.wait_for_timeout(900)
+    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+
+    # leaving: no transition, so it snaps home with no animated reverse spin
+    page.mouse.move(400, 300)
+    page.wait_for_timeout(60)
+    assert page.locator(".foot .footmark").evaluate(
+        "el => getComputedStyle(el).transitionDuration"
+    ) == "0s"
+    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+
+
+def test_footer_mark_does_not_turn_under_reduced_motion(open_site):
+    """F1: the reduced-motion block pins .footmark:hover to transform:none, so a
+    reduce reader gets no spin (without it the global transition-duration
+    override would just instant-flip it)."""
+    page, _ = open_site(reduced_motion=True)
+    mark = page.locator(".foot .footmark")
+    mark.scroll_into_view_if_needed()
+    mark.hover()
+    page.wait_for_timeout(300)
+    assert abs(_rotation_deg(page, ".foot .footmark")) < 0.5
+
+
 # --- Spark Order S6 / moves 06 + 01: the correction is FLIP over an
 # aria-hidden clone. It is the S0 "bend" — a transform carrying layout — and
 # is only allowed because it is transient: every transform is cleared and the
