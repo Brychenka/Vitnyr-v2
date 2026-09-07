@@ -22,10 +22,10 @@ stand-in, `climb-03-feet`, was **dropped** (the group now ships 5, which
 - `climb-06-wide` — mid-move on a steep overhanging wall, shot from the floor.
   From `IMG_8681.CR2` (Canon RAW, 5472×3648), autocontrast + a small
   exposure/contrast lift (the gym frame was underexposed), no colour.
-  **Re-cropped 2026-09-07** from 3:2 to **4:5** ("seen more vertically",
-  Igor's call), right-biased so the whole figure and the mats stay in frame;
-  the figure class moved `--32` → `--45`. Caption unchanged ("The board,
-  from the floor.").
+  **Now the right half of the paired bottom row** (see below): re-cropped to
+  **3:2**, figure biased right so the climber sits toward the outer edge and
+  reads at rest under the 60% clip. Delivered 1200×800 / 600×400. Caption
+  unchanged ("The board, from the floor.").
 - `climb-05-rest` — Igor at the foot of an **outdoor crag**, mid-gesture,
   two partners nearby (backs to camera, not identifiable). From a low-res
   phone photo (`climbingl.jpg`, 960×1280); 1:1 crop on Igor, gentle level,
@@ -36,15 +36,13 @@ stand-in, `climb-03-feet`, was **dropped** (the group now ships 5, which
 
 - `climb-04-crimp` — Igor on an **outdoor rock face**, on a top rope,
   mid-route, reaching for a hold. From a phone photo delivered rotated 90°
-  (`l.jpg`, 1280×960); rotated upright, **not cropped** (Igor's call — full
-  3:4 frame kept), gentle autocontrast, no colour. This diverges from the
-  slot's shot-list intent (a chalked-hand crimp close-up pairing with the
-  chess "hands" tile); the slug keeps `-crimp` to avoid churn. Caption
-  changed to "On rock, mid-route." **This is the climbing group's hero
-  frame** — 3:4 (`--34`) and spanning two columns (`--span2`) on desktop, so
-  it reads larger than its neighbours; it sits beside `climb-06-wide` in the
-  last row. DOM order within the group is now 01, 02, 05, 04, 06 (the NN
-  slugs no longer track reading order — the swap avoids renaming four files).
+  (`l.jpg`, 1280×960, low-res); rotated upright, cropped to **3:2** (window
+  shifted right so the climber sits toward the left/outer edge), gentle
+  autocontrast, no colour. Upscaled to 1200×800 for delivery — **soft, and
+  Igor accepted that** (no higher-res original). Diverges from the slot's
+  shot-list intent (a chalked-hand crimp close-up); slug keeps `-crimp`.
+  Caption "On rock, mid-route." **Left half of the paired bottom row** (see
+  below).
 - `climb-02-chalk` — a hand at the harness belay loop, threading the rope
   before a climb. From a phone photo (`climbing.jpg`, 720×1280); **not
   cropped** (Igor's call — full 9:16 frame kept), +20% brightness / small
@@ -53,12 +51,16 @@ stand-in, `climb-03-feet`, was **dropped** (the group now ships 5, which
   row 1. Diverges from the slot's intent (chalking up from a chalk bag);
   slug keeps `-chalk`. Caption "At the belay loop, before setting off."
 
-All five carry real, claim-free `<figcaption>` / `<img alt>` text. Ratios are
-still hard-coded per figure, but the set in play is now `--45` / `--11` /
-`--34` / `--916` (+`--span2` on the hero); `--32` is retired from the
-climbing group.
-See `BUILD-NOTES.md` → "Collage — first real photos" and "Collage — rock-route
-hero". The climbing group is **fully real** now; the other 12 collage frames
+All five carry real, claim-free `<figcaption>` / `<img alt>` text. Row 1 is
+three ratio-locked tiles (`--45` / `--11` / `--916`). Row 2 is the
+**`.collage__pair`**: `climb-04-crimp` and `climb-06-wide` as two 3:2 photos
+filling the group's full width — stacked on narrow / touch / reduced-motion,
+and side-by-side on desktop where hovering (or keyboard-focusing) one opens
+its `clip-path` to full width so it flows over the other. `--32` / `--34` /
+`--span2` are retired.
+See `BUILD-NOTES.md` → "Collage — first real photos", "Collage — rock-route
+hero", and "Collage — paired flow-over bottom row". The climbing group is
+**fully real** now; the other 12 collage frames
 (all `en-*`, all `chess-*`) remain the stand-ins below, so the artifact hold
 still stands.
 

@@ -108,6 +108,11 @@
      transform channel Stage 4's reveal needs. */
   --collage-gap-x:    clamp(14px, 2.2vw, 30px);
   --collage-gap-y:    clamp(28px, 4vw, 52px);
+  /* One extra duration for the climbing group's paired bottom row: the
+     hovered photo's clip-path opens to full width over its neighbour. Slower
+     than the cursor dot, faster than the .9s reveal. Same --e easing as
+     everything else. */
+  --pair-flow:        .5s;
 
   /* Collage photos are dropped to grayscale so uncontrolled colour — climbing
      holds, skin, branded clothing, a chessboard's black-and-white — never
@@ -1074,7 +1079,6 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 .collage__fig--45 .collage__slot { aspect-ratio: 4 / 5; }
 .collage__fig--32 .collage__slot { aspect-ratio: 3 / 2; }
 .collage__fig--11 .collage__slot { aspect-ratio: 1 / 1; }
-.collage__fig--34 .collage__slot { aspect-ratio: 3 / 4; }
 .collage__fig--916 .collage__slot { aspect-ratio: 9 / 16; }
 
 /* Real photo fills the ratio box the placeholder already reserved — the 1px
@@ -1113,14 +1117,72 @@ html.js .origin__panel-item.is-active { opacity: 1; }
   }
 }
 
-/* three-up on desktop — the count each domain group is sized for. Plain grid,
-   no margins, no transform. One sanctioned exception: .collage__fig--span2
-   takes two column tracks so a single hero frame reads larger than its
-   neighbours (climbing group, the rock-route shot beside "from the floor").
-   This is grid placement, not a transform, so the reveal channel stays free. */
+/* three-up on desktop — the count each domain group is sized for. Still a
+   plain grid: no spanning, no margins, no transform. */
 @media (min-width: 900px) {
   .collage--group { grid-template-columns: repeat(3, 1fr); }
-  .collage__fig--span2 { grid-column: span 2; }
+}
+
+/* ---------- collage paired row (climbing group only) ----------
+   The climbing group ends on a two-photo row that fills the group's full
+   width: Igor on rock (left) beside the training board from the floor
+   (right). Base / fallback layout — narrow viewports, touch (hover:none),
+   and reduced motion all land here — is the two photos simply stacked, each
+   a full 3:2 tile with its caption. Nothing is hidden, no interaction
+   required. The overlap-on-hover treatment below is layered on top only
+   where it can be driven and seen. */
+.collage__pair { grid-column: 1 / -1; }
+.collage__pair__band { display: block; }
+.collage__pair__fig { margin: 0; }
+.collage__pair__fig + .collage__pair__fig { margin-top: var(--collage-gap-y); }
+.collage__pair__fig .collage__slot {
+  display: block; position: relative;
+  aspect-ratio: 3 / 2;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+/* Enhanced: side by side, and the hovered / focused photo's clip-path opens
+   to the full row width, flowing over its neighbour. Only clip-path and
+   z-index animate — no transform (the reveal channel stays free, per the
+   motion rules), no width, no layout: the band is aspect-locked so the row
+   never changes height. Gated to a pointer that hovers, a viewport with the
+   three-column grid, and motion allowed. */
+@media (min-width: 900px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .collage__pair__band {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    margin-bottom: 2.6em;            /* room for the absolutely-placed captions */
+  }
+  .collage__pair__fig {
+    position: absolute; inset: 0;
+  }
+  .collage__pair__fig + .collage__pair__fig { margin-top: 0; }
+  .collage__pair__fig .collage__slot {
+    position: absolute; inset: 0;
+    aspect-ratio: auto;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path var(--pair-flow) var(--e);
+    will-change: clip-path;
+  }
+  .collage__pair__fig--l .collage__slot { clip-path: inset(0 40% 0 0); }  /* show left 60% */
+  .collage__pair__fig--r .collage__slot { clip-path: inset(0 0 0 40%); }  /* show right 60% */
+  .collage__pair__fig--l { z-index: 1; }
+  .collage__pair__fig--r { z-index: 2; }
+  .collage__pair__fig:hover,
+  .collage__pair__fig:focus-within { z-index: 3; }
+  .collage__pair__fig:hover .collage__slot,
+  .collage__pair__fig:focus-within .collage__slot { clip-path: inset(0 0 0 0); }
+  /* keyboard: the figure is focusable (tabindex in the markup) so the reveal
+     is reachable without a pointer; kill the default outline on the box but
+     keep a ring when focus is from the keyboard. */
+  .collage__pair__fig:focus { outline: none; }
+  .collage__pair__fig:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+  .collage__pair__fig figcaption {
+    position: absolute; top: 100%; margin-top: 12px; max-width: 46%;
+  }
+  .collage__pair__fig--l figcaption { left: 0; }
+  .collage__pair__fig--r figcaption { right: 0; text-align: right; }
 }
 
 /* ---------- collage view ----------
