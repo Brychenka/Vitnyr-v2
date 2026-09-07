@@ -96,8 +96,12 @@ Four files, each with one job:
   pull (`initMagnetic`) that nudges a hovered control toward the pointer:
   retired at C14, brought back at C16 scoped to non-text controls only
   (`.tool, .view__back` — the switches, collage icon-nav, "Back to top",
-  "Back"), never on `data-magnetic` text links, which keep the dot's colour
-  cue but no movement. See `BUILD-NOTES.md`. Wrapped in one IIFE,
+  "Back"; C17 adds the §04 `.origin__mark`), never on `data-magnetic` text
+  links, which keep the dot's colour cue but no movement. `.origin__mark` is
+  also a `.reveal` target, so `initMagnetic` hands the transform channel back
+  from the reveal on first hover (`transitionProperty = 'opacity'`) — a
+  transient transform releasing the channel, per the motion rules below. See
+  `BUILD-NOTES.md`. Wrapped in one IIFE,
   no exports, no modules. GSAP + CustomEase + Lenis are loaded from CDN
   `<script>` tags in `index.html`, in that order, before `main.js`.
 - **`style.css`** — one `:root` token block (colors, fonts, easing, spacing)

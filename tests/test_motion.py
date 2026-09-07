@@ -489,6 +489,43 @@ def test_magnetic_pull_moves_a_control_but_not_a_text_link(open_site):
     assert tx == 0 and ty == 0, f"a text link must not be pulled (tx={tx}, ty={ty})"
 
 
+def test_magnetic_pull_reaches_the_origin_mark(open_site):
+    """C17 (2026-09-07): the §04 origin mark (interactive V glyph) joins the
+    pull. It is also a .reveal target, so initMagnetic drops `transform` from
+    its transition on the first enter and GSAP owns the channel: the mark eases
+    toward the pointer and back to rest, and the lighting still works."""
+    page, _ = open_site()
+    mark = page.locator(".origin__mark")
+    mark.scroll_into_view_if_needed()
+    page.wait_for_timeout(1200)          # let the reveal rise + glyph draw settle
+    # revealed and settled: transform is back to none before any hover
+    tx, ty = _translate_xy(page, ".origin__mark")
+    assert abs(tx) < 0.5 and abs(ty) < 0.5
+
+    box = mark.bounding_box()
+    mark.hover()
+    page.wait_for_timeout(150)
+    page.mouse.move(box["x"] + box["width"] - 3, box["y"] + box["height"] / 2)
+    page.wait_for_timeout(500)
+    tx, ty = _translate_xy(page, ".origin__mark")
+    assert tx > 1.5, f"the origin mark should be pulled toward the pointer (tx={tx})"
+    # the transform channel was handed over — no `transform` left in the transition
+    assert page.locator(".origin__mark").evaluate(
+        "el => el.style.transitionProperty"
+    ) == "opacity"
+    # lighting still responds: hovering the chess stroke lights its panel line
+    page.locator(".origin__hit--right").hover()
+    page.wait_for_timeout(200)
+    assert page.locator('.origin__panel-item[data-discipline="chess"]').evaluate(
+        "el => el.classList.contains('is-active')"
+    )
+
+    page.mouse.move(400, 300)
+    page.wait_for_timeout(700)
+    tx, ty = _translate_xy(page, ".origin__mark")
+    assert abs(tx) < 0.5 and abs(ty) < 0.5, "the mark must settle back to rest"
+
+
 def test_magnetic_pull_absent_under_reduced_motion(open_site):
     """initMagnetic sits past the reduced-motion return, and the sheet pins the
     controls flat as well — a reduce reader gets no nudge."""

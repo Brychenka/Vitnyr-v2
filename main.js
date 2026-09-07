@@ -602,20 +602,39 @@
      colour still reads. Same field as before: a 60px halo, ≤12px displacement,
      peaking halfway out and back to zero at the rim so it's continuous where
      the field ends. Past the reduced-motion return, so a reduce reader never
-     sees it. The transform channel on these elements is otherwise free — none
-     are .reveal targets and nothing else tweens them — so the pull owns it. */
+     sees it.
+
+     C17 (2026-09-07): the §04 origin mark (the interactive V glyph — three
+     real <button> hit-regions, already focusable, already answers hover by
+     lighting a stroke) joins the set. It is also a .reveal target, so the
+     transform channel is shared with the one-shot rise: the reveal uses it
+     for 0.9s, once, then leaves it at `none` forever (CLAUDE.md's motion
+     note — a transient transform is allowed to hand the channel back). The
+     first mouseenter here is always well after §04 has revealed and settled,
+     so on that first enter we drop `transform` from the element's transition
+     list — GSAP's quickTo then owns the channel unopposed, with no CSS
+     transform-transition double-easing every nudge. The lighting/panel path
+     (initOrigin) is untouched. */
   function initMagnetic() {
     if (!finePointer) return;
     var RADIUS = 60, PULL = 12;
-    document.querySelectorAll('.tool, .view__back').forEach(function (el) {
+    document.querySelectorAll('.tool, .view__back, .origin__mark').forEach(function (el) {
       var qx = gsap.quickTo(el, 'x', { duration: D.state, ease: EASE });
       var qy = gsap.quickTo(el, 'y', { duration: D.state, ease: EASE });
       var box = null;
+      var freed = false;
 
       /* Measured once on enter, with the element's own translate subtracted,
          so the reading can't feed the displacement back into itself — and no
          layout is forced on every mousemove. */
       function capture() {
+        /* A .reveal target still lists `transform` in its transition (for the
+           rise). By the first hover that rise is long done; hand the channel
+           to the pull so quickTo isn't fighting a 0.9s CSS ease. */
+        if (!freed && el.classList.contains('reveal')) {
+          el.style.transitionProperty = 'opacity';
+          freed = true;
+        }
         var r = el.getBoundingClientRect();
         var tx = Number(gsap.getProperty(el, 'x')) || 0;
         var ty = Number(gsap.getProperty(el, 'y')) || 0;
