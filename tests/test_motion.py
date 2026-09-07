@@ -575,14 +575,14 @@ def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
     reverse). The turn runs on --t-turn (1.2s) and the one brand ease. The
     hover target is the .footmark-spin wrapper, not the rotating <svg>."""
     page, _ = open_site()
-    wrap = page.locator(".footmark-spin")
-    mark = page.locator(".footmark-spin .footmark")
+    wrap = page.locator(".foot .footmark-spin")
+    mark = page.locator(".foot .footmark-spin .footmark")
     wrap.scroll_into_view_if_needed()
     page.mouse.move(400, 300)
     page.wait_for_timeout(150)
 
     # at rest: no rotation, and no transition armed
-    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
     assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
 
     wrap.hover()
@@ -591,17 +591,17 @@ def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
     # visibly rotated off its rest angle
     assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
     assert "transform" in mark.evaluate("el => getComputedStyle(el).transitionProperty")
-    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) > 5, "should be mid-turn"
+    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) > 5, "should be mid-turn"
 
     # after the turn: back on its own geometry (360deg == rest)
     page.wait_for_timeout(1300)
-    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
 
     # leaving: no transition, so it snaps home with no animated reverse spin
     page.mouse.move(400, 300)
     page.wait_for_timeout(60)
     assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
-    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
 
 
 def test_footer_mark_does_not_restart_when_the_pointer_moves_within_it(open_site):
@@ -611,12 +611,12 @@ def test_footer_mark_does_not_restart_when_the_pointer_moves_within_it(open_site
     wrapper as the target (and the <svg> pointer-events:none), nudging the
     pointer around inside the mark leaves the settled turn alone."""
     page, _ = open_site()
-    wrap = page.locator(".footmark-spin")
+    wrap = page.locator(".foot .footmark-spin")
     wrap.scroll_into_view_if_needed()
     box = wrap.bounding_box()
     wrap.hover()
     page.wait_for_timeout(1600)                     # let the one turn finish
-    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
 
     # walk the pointer around inside the box, including hard into a corner where
     # the old rotating hit-area flickered worst
@@ -624,8 +624,8 @@ def test_footer_mark_does_not_restart_when_the_pointer_moves_within_it(open_site
         page.mouse.move(box["x"] + box["width"] * fx, box["y"] + box["height"] * fy)
         page.wait_for_timeout(80)
     # still settled, still armed — no restart, no reverse
-    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
-    assert page.locator(".footmark-spin .footmark").evaluate(
+    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
+    assert page.locator(".foot .footmark-spin .footmark").evaluate(
         "el => getComputedStyle(el).transitionDuration"
     ) == "1.2s"
 
@@ -635,11 +635,35 @@ def test_footer_mark_does_not_turn_under_reduced_motion(open_site):
     reduce reader gets no spin (without it the global transition-duration
     override would just instant-flip it)."""
     page, _ = open_site(reduced_motion=True)
-    wrap = page.locator(".footmark-spin")
+    wrap = page.locator(".foot .footmark-spin")
     wrap.scroll_into_view_if_needed()
     wrap.hover()
     page.wait_for_timeout(300)
-    assert abs(_rotation_deg(page, ".footmark-spin .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
+
+
+def test_collage_bar_mark_turns_once_on_hover(open_site):
+    """F1 (2026-09-07): the #collage view bar carries the same one-turn-on-hover
+    Vitnyr mark as the footer, via the same .footmark-spin wrapper. Open the
+    view, hover the bar mark: one clockwise turn on --t-turn (1.2s), settling
+    back on its own geometry, transition armed on the hover state only."""
+    page, _ = open_site(hash="#collage")
+    page.wait_for_selector("html.collage-open")
+    wrap = page.locator(".view__bar .footmark-spin")
+    mark = page.locator(".view__bar .footmark-spin .footmark")
+
+    # at rest: no rotation, no transition armed
+    assert abs(_rotation_deg(page, ".view__bar .footmark-spin .footmark")) < 0.5
+    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
+
+    wrap.hover()
+    page.wait_for_timeout(250)
+    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
+    assert abs(_rotation_deg(page, ".view__bar .footmark-spin .footmark")) > 5, "should be mid-turn"
+
+    # after the turn: back on its own geometry (360deg == rest)
+    page.wait_for_timeout(1300)
+    assert abs(_rotation_deg(page, ".view__bar .footmark-spin .footmark")) < 0.5
 
 
 # --- Spark Order S6 / moves 06 + 01: the correction is FLIP over an

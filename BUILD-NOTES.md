@@ -1901,8 +1901,9 @@ errors, no overflow at 1280 or 375.
 
 ## F1 — the footer mark turns once on hover (2026-09-07)
 
-Branches `feature/footer-mark-spin`, `-slower`, `-stable`. Files: `index.html`,
-`style.css`, `tests/test_motion.py`, this note. Igor: *"there is vitnyr logo
+Branches `feature/footer-mark-spin`, `-slower`, `-stable`,
+`feature/collage-mark-spin`. Files: `index.html`, `style.css`,
+`tests/test_motion.py`, this note. Igor: *"there is vitnyr logo
 [in the footer] … rotate it 360 degrees when u hover over it. rotate just
 once."* — then *"slow it down 30–50%"*, then *"if i hover on the edge … it
 start rotating like crazy … hover once without repeating until i move the
@@ -1919,8 +1920,17 @@ cursor away far."*
   and `.foot .footmark` is `pointer-events: none` so the `<svg>`'s sweeping
   corners can't retrigger it either. Hover now holds steady the whole time the
   pointer is anywhere in that box, and only re-arms once it leaves the box.
-  Lives only in the footer (the wrapper doesn't exist in the `#collage` bar).
-- **`.foot .footmark` base gets `transform: rotate(0deg)`; the hover state gets
+- **Both Vitnyr marks spin — footer and `#collage` view bar.** The wrapper
+  started footer-only; a follow-up (branch `feature/collage-mark-spin`, Igor:
+  *"collage page there is a logo i want u to make it rotate like the logo on
+  footer"*) added the same `<span class="footmark-spin">` around the
+  `.view__bar` `<svg>`. The base/hover rules are keyed off the wrapper now
+  (`.footmark-spin .footmark { transform: rotate(0deg); pointer-events: none }`,
+  not `.foot .footmark`), so the one rule set drives both. `.view .footmark`
+  stays 34px, `.foot .footmark` 48px — the wrapper is `inline-flex` and
+  shrink-wraps whichever. Test locators for the footer mark are scoped
+  `.foot .footmark-spin` now that the class matches two elements.
+- **base gets `transform: rotate(0deg)`; the hover state gets
   `rotate(360deg)` + `transition: transform var(--t-turn) var(--e)`.** A full
   turn lands the mark back on its own geometry exactly, so it is never left
   off-register — the reason a full 360 and not, say, a wobble.
@@ -1946,7 +1956,11 @@ hover, settles back on its own geometry, instant silent reset on leave, no
 restart when the pointer moves around inside the mark (incl. hard into a
 corner), no reverse spin, `prefers-reduced-motion: reduce` leaves it flat, no
 horizontal overflow at any angle at 1280 + 375. Colours are on the SVG paths,
-untouched by the transform, so both themes and EN/RU are unaffected.
+untouched by the transform, so both themes and EN/RU are unaffected. The
+`#collage` bar mark was verified the same way (added test
+`test_collage_bar_mark_turns_once_on_hover`, plus a live check at 1280 and
+375 on charcoal — one turn on hover, settles on its geometry, no bar-layout
+shift, no overflow).
 
 **Live artifact not republished** — same collage-placeholder hold.
 

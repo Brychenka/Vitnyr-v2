@@ -1321,9 +1321,9 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    The old 32px box was only 21px of mark — inside the band where amber and
    green antialias into one indistinct colour. */
 .footmark { width: 48px; height: 48px; flex: none; }
-/* F1 (2026-09-07): hover spins the FOOTER mark one full clockwise turn and
-   stops. Lives only in the footer — the same .footmark also sits in the
-   #collage view bar and is left alone. 360deg lands it back on its own
+/* F1 (2026-09-07): hover spins the Vitnyr mark one full clockwise turn and
+   stops. Runs wherever the mark carries the .footmark-spin wrapper — the
+   footer and the #collage view bar both do. 360deg lands it back on its own
    geometry exactly, so the mark is never left off-register. --e (an ease-out)
    is fine here even though it's banned on the scrollcue loop: this doesn't
    return to its start value, it goes 0 -> 360 once, so it accelerates out of
@@ -1341,7 +1341,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    holds steady until the pointer leaves that box; the <svg> is
    pointer-events:none so its sweeping corners can't retrigger it either. */
 .footmark-spin { display: inline-flex; }
-.foot .footmark { transform: rotate(0deg); pointer-events: none; }
+.footmark-spin .footmark { transform: rotate(0deg); pointer-events: none; }
 .footmark-spin:hover .footmark {
   transform: rotate(360deg);
   transition: transform var(--t-turn) var(--e);
@@ -1429,8 +1429,9 @@ html.js .line__inner { transform: translateY(110%); }
      .origin__mark is already covered by the .reveal transform reset above. */
   .tool:hover, .view__back:hover, .origin__mark:hover { will-change: auto !important; }
   .tool, .view__back { transform: none !important; }
-  /* F1: no hover turn on the footer mark. Without this the global
-     transition-duration override below just makes it instant-flip on hover. */
+  /* F1: no hover turn on either Vitnyr mark (footer + #collage bar). Without
+     this the global transition-duration override below just makes it
+     instant-flip on hover. */
   .footmark-spin:hover .footmark { transform: none !important; will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
