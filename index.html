@@ -140,14 +140,18 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <div class="tools__group tools__group--nav">
       <span class="tools__label" data-en="Photos" data-ru="Фото">Photos</span>
       <button class="tool tool--icon" type="button" aria-label="Jump to the chess photographs" title="Chess" data-collage-jump="chess" data-magnetic>
-        <!-- P20: all four squares are open strokes now (two used to be solid
-             fills) so the chess glyph matches the pure-stroke carabiner and
-             book. stroke-width comes from .tool--icon svg in style.css. -->
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor">
-          <rect x="5" y="5" width="6.25" height="6.25"/>
-          <rect x="12.75" y="5" width="6.25" height="6.25"/>
-          <rect x="5" y="12.75" width="6.25" height="6.25"/>
-          <rect x="12.75" y="12.75" width="6.25" height="6.25"/>
+        <!-- P21: back to the checkerboard — two diagonal squares filled, two
+             outlined — which is what reads as "chess". P20's all-outline 2x2
+             read as a plain grid. Squares enlarged 6.25 -> 7.5 (the 1.5 seam
+             between them kept), recentred in the 24 box, so the glyph carries
+             the same optical weight as the carabiner and book beside it.
+             stroke-width for the two outlined squares comes from
+             .tool--icon svg in style.css. -->
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.75" y="3.75" width="7.5" height="7.5" fill="currentColor"/>
+          <rect x="12.75" y="3.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+          <rect x="3.75" y="12.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+          <rect x="12.75" y="12.75" width="7.5" height="7.5" fill="currentColor"/>
         </svg>
       </button>
       <button class="tool tool--icon" type="button" aria-label="Jump to the climbing photographs" title="Climbing" data-collage-jump="climb" data-magnetic>
