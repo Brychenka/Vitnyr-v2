@@ -1347,9 +1347,10 @@ html.has-cursor.cursor-active .cursor.is-target .cursor__dot { background: var(-
 
 /* C16 (2026-09-07): the magnetic pull is back on non-text controls only
    (initMagnetic in main.js — the .tool switches / icon-nav, .view__back).
-   will-change is a standing layer request, so it is granted only while the
-   pointer is actually over one of them and the pull is running. */
-.tool:hover, .view__back:hover { will-change: transform; }
+   C17 adds the §04 .origin__mark (interactive V glyph). will-change is a
+   standing layer request, so it is granted only while the pointer is
+   actually over one of them and the pull is running. */
+.tool:hover, .view__back:hover, .origin__mark:hover { will-change: transform; }
 
 /* ---------- reveal rhythm (phase 3) ----------
    Hidden state is applied only when JS is running, so the page is
@@ -1372,8 +1373,9 @@ html.js .line__inner { transform: translateY(110%); }
   .scrollcue:hover svg { animation: none; }
   .cursor, .line__inner { will-change: auto !important; }
   /* initMagnetic never runs under reduced motion (past the reduce return in
-     main.js), but drop the standing layer hint too and pin the controls flat. */
-  .tool:hover, .view__back:hover { will-change: auto !important; }
+     main.js), but drop the standing layer hint too and pin the controls flat.
+     .origin__mark is already covered by the .reveal transform reset above. */
+  .tool:hover, .view__back:hover, .origin__mark:hover { will-change: auto !important; }
   .tool, .view__back { transform: none !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,

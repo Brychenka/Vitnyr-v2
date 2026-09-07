@@ -1856,6 +1856,49 @@ control flat.
 **Live artifact not republished** — same collage-placeholder hold. Folds into
 the inline rebuild when that lifts.
 
+## C17 — magnetic pull reaches the §04 origin mark (2026-09-07)
+
+Branch `feature/magnetic-origin-mark`. Files: `main.js`, `style.css`, this
+note, `CLAUDE.md`, `tests/test_motion.py`. Straight after C16 Igor pointed at
+the "What Vitnyr stands for" section — *"the history block with 3 lines
+showing what they stand for, can u bring it back too?"* — and, asked to pick
+how, said: *"i want you to just make it magnetic. don't change the way lines
+light up or anything like that."* So this is C16's pull extended to one more
+target and **nothing else** — `initOrigin()` (stroke lighting, the panel
+reveal, the idle hint) is untouched.
+
+- **`.origin__mark` added to the pull selector** — now
+  `.tool, .view__back, .origin__mark`. The mark is a fair target by C14's own
+  rule: it is an interactive control (three real `<button>` hit-regions,
+  focusable, already answers hover), not running copy. It already carried
+  `data-magnetic` for the dot's colour cue; now it moves too.
+- **It is also a `.reveal` target — the one real complication.** `.reveal`
+  uses the transform channel for its 24px rise (`transition: … transform .9s`
+  under `.is-in`). Left alone, every magnetic nudge would be double-eased
+  (GSAP `D.state` 0.6s + that CSS 0.9s). CLAUDE.md's motion note allows a
+  *transient* transform to hand the channel back once it's done: the rise is
+  one-shot and settles at `none`, and §04 is deep enough that the first hover
+  is always long after it. So `initMagnetic`'s `capture()` does, once, on the
+  first `mouseenter` of a `.reveal` target: `el.style.transitionProperty =
+  'opacity'`. The rise still plays for the normal first view; from then on
+  GSAP owns the channel unopposed. No DOM change, no second reveal timing.
+- **`will-change`** hint extended to `.origin__mark:hover`; the
+  reduced-motion block adds it to the `will-change: auto` reset (the existing
+  `html.js .reveal { transform: none !important }` already pins the mark flat
+  there, and `initMagnetic` never runs under `reduce` anyway).
+- Test: `test_magnetic_pull_reaches_the_origin_mark` in `test_motion.py` —
+  the mark sits at rest `(0,0)` after its reveal, eases toward the pointer on
+  hover (`tx > 1.5`), its `transitionProperty` is `opacity` after the
+  handoff, hovering the chess stroke still lights that panel line, and it
+  returns to rest on leave.
+
+Verified: pull on the mark in both themes, reveal rise still plays on first
+scroll-in, stroke lighting + panel reveal unchanged, settles to exactly
+`(0,0)` on leave, `prefers-reduced-motion: reduce` leaves it flat, no console
+errors, no overflow at 1280 or 375.
+
+**Live artifact not republished** — same collage-placeholder hold.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
