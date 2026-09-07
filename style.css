@@ -83,6 +83,10 @@
 
   --e: cubic-bezier(.16, 1, .3, 1);
   --t: .6s;
+  /* One deliberate turn of the footer mark on hover — slower than --t so it
+     reads as considered, not a snap. Sits at D.correct's 0.8s (main.js), the
+     "a correction resolving" register, which is the right one for the mark. */
+  --t-turn: .8s;
 
   --gut:  clamp(20px, 5vw, 80px);
   /* The mark's ink is 67% of its SVG box — the other 33% IS the brand's
@@ -1295,6 +1299,24 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    The old 32px box was only 21px of mark — inside the band where amber and
    green antialias into one indistinct colour. */
 .footmark { width: 48px; height: 48px; flex: none; }
+/* F1 (2026-09-07): hover spins the FOOTER mark one full clockwise turn and
+   stops. Scoped to .foot — the same .footmark also sits in the #collage
+   view bar and is left alone. 360deg lands it back on its own geometry
+   exactly, so the mark is never left off-register. --e (an ease-out) is fine
+   here even though it's banned on the scrollcue loop: this doesn't return to
+   its start value, it goes 0 -> 360 once, so it accelerates out of rest and
+   settles soft into the finish. The `transition` sits ONLY on :hover — so
+   pointer-leave has no transition and the mark jumps 360 -> 0 with no visible
+   motion (360deg == 0deg) and no reverse spin. Each hover re-arms a clean
+   single turn. CSS-only: with JS or GSAP absent the mark is simply static, as
+   before. Decorative — the mark is role=img, not a control, so no
+   :focus-visible path and no tab stop added. */
+.foot .footmark { transform: rotate(0deg); }
+.foot .footmark:hover {
+  transform: rotate(360deg);
+  transition: transform var(--t-turn) var(--e);
+  will-change: transform;
+}
 .foot p { font-family: var(--sans); font-size: 12px; letter-spacing: .06em; color: var(--fg2); }
 /* P15: .foot__top reuses .tool wholesale (same type, same hover-draws-a-
    line language as Cream/RU in the masthead) rather than inventing a
@@ -1377,6 +1399,9 @@ html.js .line__inner { transform: translateY(110%); }
      .origin__mark is already covered by the .reveal transform reset above. */
   .tool:hover, .view__back:hover, .origin__mark:hover { will-change: auto !important; }
   .tool, .view__back { transform: none !important; }
+  /* F1: no hover turn on the footer mark. Without this the global
+     transition-duration override below just makes it instant-flip on hover. */
+  .foot .footmark:hover { transform: none !important; will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
      which would clip the stroke away rather than show it whole. */

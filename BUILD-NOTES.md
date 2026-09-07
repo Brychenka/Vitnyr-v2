@@ -1899,6 +1899,43 @@ errors, no overflow at 1280 or 375.
 
 **Live artifact not republished** — same collage-placeholder hold.
 
+## F1 — the footer mark turns once on hover (2026-09-07)
+
+Branch `feature/footer-mark-spin`. Files: `style.css`, this note. Igor: *"there
+is vitnyr logo [in the footer] … rotate it 360 degrees when u hover over it.
+rotate just once."*
+
+- **CSS only, no `main.js`.** The spin is pure decoration, so it degrades to a
+  static mark with JS or GSAP absent — nothing in `main.js` knows about it.
+- **`.footmark` base gets `transform: rotate(0deg)`; `.footmark:hover` gets
+  `rotate(360deg)` + `transition: transform var(--t-turn) var(--e)`.** A full
+  turn lands the mark back on its own geometry exactly, so it is never left
+  off-register — the reason a full 360 and not, say, a wobble.
+- **`--t-turn: .8s`**, new token beside `--t`. Matches `D.correct` (main.js),
+  the "a correction resolving" duration — the right register for this mark,
+  and slower than `--t` so it reads as deliberate.
+- **`--e` is allowed here.** The scrollcue note bans the ease-out on a loop
+  that returns to its start value (it snaps mid-way). This doesn't loop: 0 ->
+  360 once, accelerate out of rest, settle soft into the finish.
+- **"Just once" = `transition` on `:hover` only.** Pointer-leave has no
+  transition, so the mark jumps 360 -> 0 with no visible motion (360deg ==
+  0deg) and no reverse spin. Each new hover re-arms one clean turn. Cost:
+  leaving mid-spin cuts straight back to rest — accepted for a flourish.
+- **No `:focus-visible` / no tab stop.** The mark is `role="img"`, not a
+  control; making it focusable would plant a keyboard stop on decoration.
+- **`will-change: transform`** on `:hover` only; reduced-motion block resets it
+  to `auto` and adds `.footmark:hover { transform: none !important }` — without
+  that, the global `transition-duration: .01ms` override just turns the hover
+  into an instant flip.
+
+Verified: one clockwise turn on hover in both themes (amber/green land back in
+place), instant silent reset on leave, re-hover turns again cleanly, EN + RU,
+1280 + 375, no horizontal scrollbar during the turn (checked across real
+animation frames), `prefers-reduced-motion: reduce` leaves it flat, no console
+errors.
+
+**Live artifact not republished** — same collage-placeholder hold.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
