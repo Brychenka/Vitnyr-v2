@@ -46,15 +46,17 @@ stand-in, `climb-03-feet`, was **dropped** (the group now ships 5, which
   last row. DOM order within the group is now 01, 02, 05, 04, 06 (the NN
   slugs no longer track reading order — the swap avoids renaming four files).
 - `climb-02-chalk` — a hand at the harness belay loop, threading the rope
-  before a climb. From a phone photo (`climbing.jpg`, 720×1280); 1:1 crop on
-  the hand + belay loop, +20% brightness / small contrast lift (frame was
-  underexposed) + autocontrast, no colour. Diverges from the slot's intent
-  (chalking up from a chalk bag); slug keeps `-chalk`. Caption changed to
-  "At the belay loop, before setting off."
+  before a climb. From a phone photo (`climbing.jpg`, 720×1280); **not
+  cropped** (Igor's call — full 9:16 frame kept), +20% brightness / small
+  contrast lift (frame was underexposed) + autocontrast, no colour. Figure
+  class is `--916` (`aspect-ratio: 9/16`), so this is the tallest tile in
+  row 1. Diverges from the slot's intent (chalking up from a chalk bag);
+  slug keeps `-chalk`. Caption "At the belay loop, before setting off."
 
 All five carry real, claim-free `<figcaption>` / `<img alt>` text. Ratios are
 still hard-coded per figure, but the set in play is now `--45` / `--11` /
-`--34` (+`--span2` on the hero); `--32` is retired from the climbing group.
+`--34` / `--916` (+`--span2` on the hero); `--32` is retired from the
+climbing group.
 See `BUILD-NOTES.md` → "Collage — first real photos" and "Collage — rock-route
 hero". The climbing group is **fully real** now; the other 12 collage frames
 (all `en-*`, all `chess-*`) remain the stand-ins below, so the artifact hold
