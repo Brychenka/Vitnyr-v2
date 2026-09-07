@@ -2391,6 +2391,73 @@ that `climb-04-crimp` is in fact him (helmet + angle hide the face).
 **Live artifact still not republished** — `climb-03-feet`, all `en-*`, all
 `chess-*` remain stand-ins, so the Collage Stage 3 hold stands.
 
+> Superseded a few hours later: `climb-04-crimp` is no longer cropped and is
+> now the group's span-2 hero; `climb-06-wide` was re-cropped 3:2 → 4:5;
+> `climb-03-feet` was dropped. See the next section.
+
+## Collage — rock-route hero (2026-09-07)
+
+Same day, Igor: don't crop the rock-route photo, colour-correct it only, and
+give it "more real estate" next to `climb-06-wide`; and crop `climb-06-wide`
+"even further so it's seen more vertically". Net effect: the climbing group
+loses its last stand-in and its bottom row becomes a large vertical of Igor
+on real rock beside a taller crop of the overhang board.
+
+### `climb-04-crimp` — uncropped, span-2 hero
+
+- **Re-processed from `~/Downloads/l.jpg`**: `rotate(-90, expand=True)` to
+  upright, `autocontrast(cutoff=0.5)`, **no crop** — the full 960×1280 (3:4)
+  frame. Master `Claude outputs/climb-04-crimp_v2_edited_highres.jpg`.
+- **Derived** `climb-04-crimp.jpg` 450×600 (q66) and `@2x` 900×1200 (q58,
+  278 KB — rock texture, comparable to `climb-05-rest`; matters only once the
+  hold lifts).
+- **Figure** class `--45` → **`--34`** (new ratio, `aspect-ratio: 3/4`) plus
+  **`--span2`** (`grid-column: span 2` at ≥900px only). It moves to DOM
+  position 5 so it sits directly left of `climb-06-wide`; group order is now
+  `01, 02, 05, 04, 06` (NN slugs stop tracking reading order — the reorder is
+  block moves, no file renames).
+- Caption unchanged from the earlier pass ("On rock, mid-route.").
+
+### `climb-06-wide` — re-cropped to 4:5
+
+- From the existing master `Claude outputs/climb-06-wide_v4_edited_highres.jpg`
+  (4050×2700): vertical crop to **4:5**, x-offset 0.70 (right-biased) so the
+  whole diagonal figure and the floor mats stay in; no other grade change.
+  New master `…_v5_edited_highres.jpg`.
+- **Derived** `climb-06-wide.jpg` 450×563 and `@2x` 900×1125 (q72, 89 KB).
+- **Figure** class `--32` → `--45`. `--32` is now unused in the climbing
+  group. Caption unchanged ("The board, from the floor." — still shot from
+  the floor).
+
+### `climb-03-feet` — dropped
+
+The last climbing stand-in (a LoremFlickr swing-set frame). Removed the
+`<figure>` and both JPEGs. `collage-shotlist.md` allows a group of five, and
+this makes the **whole climbing group real**. Its 3:2 slot is not
+backfilled — the group is `01(4:5) 02(1:1) 05(1:1)` over
+`04(3:4, span-2) 06(4:5)`.
+
+### CSS
+
+One new invariant break, noted in `style.css`: the ≥900px rule now has
+`.collage__fig--span2 { grid-column: span 2 }`. Grid placement, not a
+transform, so the reveal channel is untouched (`CLAUDE.md` motion rule holds).
+
+### Verified (localhost:8010, pane hidden → DOM-measured)
+
+- 1280px: row 1 = three tiles at y-equal; row 2 = span-2 hero (759×1047)
+  at x64 with `climb-06-wide` (365×492) at x851 immediately right. No
+  horizontal overflow (`scrollWidth == clientWidth == 1280`).
+- 375px and 768px: no overflow; `--span2` inactive below 900px, hero renders
+  as a single full-width 3:4 tile.
+- `climb-04-crimp@2x` and `climb-06-wide@2x` render correct (direct GET +
+  grayscale sim); `climb-03-feet` now 404s.
+- No new animation; `prefers-reduced-motion` path unaffected.
+
+**Still Igor's to confirm:** same as above (captions/alt, and that the
+rock-route climber is him). **Artifact still on hold** — `en-*` and `chess-*`
+are all stand-ins.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

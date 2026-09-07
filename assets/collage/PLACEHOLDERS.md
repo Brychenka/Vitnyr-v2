@@ -11,17 +11,21 @@ Every file is grayscaled at display time by `--collage-filter`; none carries a
 caption claim (the `<figcaption>` describes the *intended* shot, not the
 stand-in) and every `<img alt>` is empty on purpose.
 
-**Exception — `climb-01-board`, `climb-06-wide`, `climb-05-rest`,
-`climb-04-crimp`, `climb-02-chalk` are real (2026-09-07).** Igor supplied five
-real photographs of himself:
+**Exception — the entire climbing group is real (2026-09-07).**
+`climb-01-board`, `climb-02-chalk`, `climb-05-rest`, `climb-04-crimp`,
+`climb-06-wide` are all photographs Igor supplied; the sixth climbing
+stand-in, `climb-03-feet`, was **dropped** (the group now ships 5, which
+`collage-shotlist.md` allows). Details:
 - `climb-01-board` — seated at the foot of an indoor bouldering wall, first
   climbing 4:5 slot (crop-to-4:5 + gentle autocontrast, no colour). The frame
   differs from this slot's shot-list intent (a mid-move board shot).
-- `climb-06-wide` — mid-move on a steep overhanging wall, shot from the floor,
-  the second climbing 3:2 slot. From `IMG_8681.CR2` (Canon RAW, 5472×3648):
-  tight 3:2 re-crop on the figure, autocontrast + a small exposure/contrast
-  lift because the gym frame was underexposed, no colour. Matches this slot's
-  existing caption ("The board, from the floor.") exactly.
+- `climb-06-wide` — mid-move on a steep overhanging wall, shot from the floor.
+  From `IMG_8681.CR2` (Canon RAW, 5472×3648), autocontrast + a small
+  exposure/contrast lift (the gym frame was underexposed), no colour.
+  **Re-cropped 2026-09-07** from 3:2 to **4:5** ("seen more vertically",
+  Igor's call), right-biased so the whole figure and the mats stay in frame;
+  the figure class moved `--32` → `--45`. Caption unchanged ("The board,
+  from the floor.").
 - `climb-05-rest` — Igor at the foot of an **outdoor crag**, mid-gesture,
   two partners nearby (backs to camera, not identifiable). From a low-res
   phone photo (`climbingl.jpg`, 960×1280); 1:1 crop on Igor, gentle level,
@@ -32,11 +36,15 @@ real photographs of himself:
 
 - `climb-04-crimp` — Igor on an **outdoor rock face**, on a top rope,
   mid-route, reaching for a hold. From a phone photo delivered rotated 90°
-  (`l.jpg`, 1280×960); rotated upright, crop-to-4:5 on the figure, gentle
-  autocontrast, no colour. This diverges from the slot's shot-list intent
-  (a chalked-hand crimp close-up pairing with the chess "hands" tile); the
-  slug keeps `-crimp` to avoid churn. Caption changed to "On rock,
-  mid-route."
+  (`l.jpg`, 1280×960); rotated upright, **not cropped** (Igor's call — full
+  3:4 frame kept), gentle autocontrast, no colour. This diverges from the
+  slot's shot-list intent (a chalked-hand crimp close-up pairing with the
+  chess "hands" tile); the slug keeps `-crimp` to avoid churn. Caption
+  changed to "On rock, mid-route." **This is the climbing group's hero
+  frame** — 3:4 (`--34`) and spanning two columns (`--span2`) on desktop, so
+  it reads larger than its neighbours; it sits beside `climb-06-wide` in the
+  last row. DOM order within the group is now 01, 02, 05, 04, 06 (the NN
+  slugs no longer track reading order — the swap avoids renaming four files).
 - `climb-02-chalk` — a hand at the harness belay loop, threading the rope
   before a climb. From a phone photo (`climbing.jpg`, 720×1280); 1:1 crop on
   the hand + belay loop, +20% brightness / small contrast lift (frame was
@@ -44,12 +52,13 @@ real photographs of himself:
   (chalking up from a chalk bag); slug keeps `-chalk`. Caption changed to
   "At the belay loop, before setting off."
 
-All five carry real, claim-free `<figcaption>` / `<img alt>` text and keep
-their slot's locked ratio + hard-coded `--45` / `--32` / `--11` class (no
-layout shift). See `BUILD-NOTES.md` → "Collage — first real photos". The
-climbing group now runs 5 real / 1 placeholder (`climb-03-feet`); the other
-12 collage frames remain the stand-ins below, so the artifact hold still
-stands.
+All five carry real, claim-free `<figcaption>` / `<img alt>` text. Ratios are
+still hard-coded per figure, but the set in play is now `--45` / `--11` /
+`--34` (+`--span2` on the hero); `--32` is retired from the climbing group.
+See `BUILD-NOTES.md` → "Collage — first real photos" and "Collage — rock-route
+hero". The climbing group is **fully real** now; the other 12 collage frames
+(all `en-*`, all `chess-*`) remain the stand-ins below, so the artifact hold
+still stands.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -60,11 +69,12 @@ stands.
 | en-04-correction | `b73d6a7e-37f4-4f5e-9468-5ac1d0ef30fe` | Helloquence | https://stocksnap.io/photo/writing-papers-Y01VDYAX63 |
 | en-05-markup | `281b6a9b-acdb-48bf-9ca7-f699d191b73b` | — | https://www.rawpixel.com/image/5903740/ |
 
-## en-06 + chess-* + climb-* — LoremFlickr (Flickr Creative Commons proxy)
+## en-06 + chess-* — LoremFlickr (Flickr Creative Commons proxy)
 
-Openverse rate-limited the batch partway through, so the remaining thirteen
-came from `loremflickr.com`, which serves tag-matched images drawn from
-Flickr's Creative-Commons pool. LoremFlickr does not return per-image
+Openverse rate-limited the batch partway through, so the rest came from
+`loremflickr.com`, which serves tag-matched images drawn from Flickr's
+Creative-Commons pool. (The climbing stand-ins that were also from here are
+all gone now — replaced by real photos or, for `climb-03-feet`, dropped.) LoremFlickr does not return per-image
 attribution through the proxy; because these files do not ship, the collective
 source note here stands in for it. If any of these somehow needs to outlive the
 shoot, pull the real attribution or swap it for a CC0 image first.
@@ -79,4 +89,3 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 | chess-04-reset | chess,pieces | 304 |
 | chess-05-pieces | chess,knight | 305 |
 | chess-06-notation | chess,game | 12 |
-| climb-03-feet | climbing,shoes | 15 |
