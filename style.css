@@ -1074,6 +1074,7 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 .collage__fig--45 .collage__slot { aspect-ratio: 4 / 5; }
 .collage__fig--32 .collage__slot { aspect-ratio: 3 / 2; }
 .collage__fig--11 .collage__slot { aspect-ratio: 1 / 1; }
+.collage__fig--34 .collage__slot { aspect-ratio: 3 / 4; }
 
 /* Real photo fills the ratio box the placeholder already reserved — the 1px
    hairline on .collage__slot stays as the frame, the padding (there for the
@@ -1111,10 +1112,14 @@ html.js .origin__panel-item.is-active { opacity: 1; }
   }
 }
 
-/* three-up on desktop — the count each domain group is sized for. Still a
-   plain grid: no spanning, no margins, no transform. */
+/* three-up on desktop — the count each domain group is sized for. Plain grid,
+   no margins, no transform. One sanctioned exception: .collage__fig--span2
+   takes two column tracks so a single hero frame reads larger than its
+   neighbours (climbing group, the rock-route shot beside "from the floor").
+   This is grid placement, not a transform, so the reveal channel stays free. */
 @media (min-width: 900px) {
   .collage--group { grid-template-columns: repeat(3, 1fr); }
+  .collage__fig--span2 { grid-column: span 2; }
 }
 
 /* ---------- collage view ----------
