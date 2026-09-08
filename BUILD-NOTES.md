@@ -2577,6 +2577,34 @@ rotated upright (`yoff 0.25`), `climb-06-wide` near-native from the v2
 master. Masters `climb-04-crimp_v4` / `climb-06-wide_v7`. Verified 1280
 (two equal 562-wide 3:2 zones, same row) and 375 (stacked), no overflow.
 
+## Collage — first real chess frame (2026-09-08)
+
+`chess-01-board` is now a real photograph of Igor — mid-move at an outdoor
+tournament, shirt-sleeve reach across the board, eyes down on the position.
+Source `IMG_7689.JPG` (1280×853, native 3:2), supplied by Igor. It's the
+first real frame in the chess group; the other five `chess-*` slots plus all
+`en-*` stay stand-ins, so the **artifact hold still stands**.
+
+- **Edit** Igor asked for the side players cropped out. Portrait crop tight
+  on him — window `(372, 95, 760, 580)` on the source, exact **4:5**
+  (388×485) — drops the boy at the left edge, the seated spectator behind,
+  the far-right neighbour, and all but an unreadable sliver of the opponent's
+  shirt bottom-right. Gentle `ImageOps.autocontrast(cutoff=0.5)`, no colour
+  (the per-theme `--collage-filter` greys it at display). Upscaled to
+  900×1125 / 450×563 with a light unsharp mask — soft from the 2.3× blow-up,
+  the same trade `climb-04-crimp` took; fine at the slot's display width.
+  `@2x` 82 KB (≤90 KB budget).
+- **Slot / markup** unchanged — the placeholder already reserved
+  `.collage__fig--45` at 900×1125, and the caption "Over the board,
+  mid-game." / «За доской, посреди партии.» already describes this frame.
+  Only the two `assets/collage/chess-01-board*.jpg` files changed.
+- **Verified**: file served at 900×1125, valid decode (direct `Image()` load
+  — the pane's own cache held a stale entry for the un-busted URL, a dev
+  artifact only). Grayscale treatment simulated for the cream theme: reads
+  as intended, no identifiable second person. Not re-checked by eye in the
+  routed view (pane hidden); layout can't shift — same class, same
+  dimensions.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`

@@ -56,9 +56,21 @@ photos splitting the group's full width, side by side (stacked on narrow).
 No overlap, no hover behaviour. `--32` / `--34` / `--span2` are retired.
 See `BUILD-NOTES.md` → "Collage — first real photos", "Collage — rock-route
 hero", and "Collage — paired bottom row". The climbing group is
-**fully real** now; the other 12 collage frames
-(all `en-*`, all `chess-*`) remain the stand-ins below, so the artifact hold
-still stands.
+**fully real** now.
+
+**Exception — `chess-01-board` is real (2026-09-08).** The chess group's
+lede tile is a photograph of Igor mid-move at an outdoor tournament (source
+`IMG_7689.JPG`, 1280×853, native 3:2, supplied by Igor). Portrait crop tight
+on him — window `(372, 95, 760, 580)`, exact 4:5 — at Igor's request, to
+keep the other players at the table out of frame; gentle
+`autocontrast(cutoff=0.5)`, no colour; upscaled to 900×1125 / 450×563 with a
+light unsharp mask (soft from the 2.3× blow-up, same trade as
+`climb-04-crimp`). Slot class and caption ("Over the board, mid-game.")
+unchanged — only the two `chess-01-board*.jpg` files. See `BUILD-NOTES.md` →
+"Collage — first real chess frame".
+
+The other 11 collage frames (all `en-*`; `chess-02`…`chess-06`) remain the
+stand-ins below, so the artifact hold still stands.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -83,7 +95,7 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 |---|---|---|
 | en-01-call | office,laptop | 22 |
 | en-06-window | yerevan,armenia | 6 |
-| chess-01-board | chess,player | 7 |
+| chess-01-board | chess,player | 7 | *(replaced by a real photo 2026-09-08 — see exception above)* |
 | chess-02-clock | chess,clock | 302 |
 | chess-03-study | chess,board | 9 |
 | chess-04-reset | chess,pieces | 304 |
