@@ -1227,8 +1227,13 @@ html.js .view__bar {
   max-width: 24ch; margin: 0 0 clamp(20px, 3vw, 32px);
 }
 html[data-lang="ru"] .view__body > h1 { letter-spacing: -.01em; }
-.view__body > h1:focus { outline: none; }
-.view__body > h1:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 6px; }
+/* Focus lands here programmatically on entering #collage (main.js) so screen
+   readers start at the view's heading — the .focus() call stays. Igor asked
+   for no visible ring on that focus: the h1 is not an interactive control, so
+   the outline read as a stray box rather than a keyboard cue. Suppressed for
+   :focus-visible too (keyboard entry), matching the plain :focus rule. */
+.view__body > h1:focus,
+.view__body > h1:focus-visible { outline: none; }
 .view__lede {
   max-width: var(--measure); color: var(--fg2);
   margin: 0 0 clamp(48px, 7vw, 96px);
