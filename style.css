@@ -1116,6 +1116,18 @@ html.js .origin__panel-item.is-active { opacity: 1; }
    plain grid: no spanning, no margins, no transform. */
 @media (min-width: 900px) {
   .collage--group { grid-template-columns: repeat(3, 1fr); }
+
+  /* Climbing group's first row of three (4:5 / 9:16 / 1:1). Equal 1fr
+     columns made the 9:16 belay-loop frame tower over the other two. Size
+     the columns to the inverse of each crop's width:height instead
+     (0.8 : 0.5625 : 1 -> 64 : 45 : 80), so at a shared row height all three
+     line up: the tall middle frame goes narrow, the 4:5 and 1:1 take the
+     width it gives back. Still one plain grid row — the slots keep their
+     own aspect-ratio classes, nothing stretched or transformed. The
+     full-width .collage__pair below is unaffected (grid-column: 1 / -1). */
+  .collage--group:has(.collage__pair) {
+    grid-template-columns: 64fr 45fr 80fr;
+  }
 }
 
 /* ---------- collage paired row (climbing group only) ----------
