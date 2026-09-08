@@ -2612,6 +2612,46 @@ tight, "there is no chess seen — don't crop." So:
   artifact only). Grayscale treatment simulated for the cream theme. Not
   re-checked by eye in the routed view.
 
+## Collage — two more real chess frames (2026-09-08)
+
+Igor sent two more of his own chess photos, "another 2 for chess section,"
+with a clear instruction after the earlier back-and-forth: **don't crop them
+down — either crop so the idea of the photo survives, or not at all.** So
+both landed in slots whose ratio the photo already had; no ratio classes
+changed, no `width`/`height` changed, captions rewritten to match.
+
+- **`chess-04-reset`** (the `--45` slot, was "Pieces back to the starting
+  rank.") — Igor mid-move, fingers on a pawn, glasses, clock in frame,
+  stone-wall venue. Source was a 1102×1422 phone frame (≈4:5 already).
+  Trimmed **44 px of out-of-focus wall off the top** to make it an exact
+  4:5 — the only cut. `autocontrast(cutoff=0.5)`, no colour, 900×1125 /
+  450×563. Caption → "Mid-move, on the clock." / «Ход — под часами.» Slug
+  unchanged (content diverged from "reset", same call as `climb-04-crimp`).
+- **`chess-05-pieces`** (the `--11` slot, was "Captured pieces, off to the
+  side.") — a hand-carved figurative set mid-position on a carved table.
+  Source `camphoto_684387517.jpg` 3024×4032; the bottom third was a
+  serving-cart drawer with a white knob and a saucer — not the subject.
+  **Square crop on the board** drops exactly that and nothing else: whole
+  board, all pieces, carved frame on all four sides. `autocontrast`, no
+  colour, 900×900 / 450×450. `@2x` ≈ 155 KB — the carved-wood detail
+  resists JPEG; still well under the shipped climbing frames (~220 KB), and
+  the weight budget has been aspirational since those landed. Caption → "A
+  hand-carved set, mid-game." / «Резной комплект, партия в разгаре.»
+
+Chess group is now three real frames (01 `--32`, 04 `--45`, 05 `--11`) and
+three stand-ins (02 `--11`, 03 `--32`, 06 `--32`). Desktop rows:
+`--32`/`--11`/`--32` then `--45`/`--11`/`--32` — one tall tile (04), the
+rest short/medium, top-aligned by the existing `align-items: start`.
+
+**Verified** (localhost, pane hidden — DOM/geometry + fresh `Image()`
+decode): both files decode at their stated sizes; chess-04 slot resolves
+`aspect-ratio: 4 / 5`, chess-05 `1 / 1`, both `object-fit: cover` +
+`--collage-filter`; `scrollWidth == innerWidth` at 1280 (no overflow);
+`width`/`height` attrs match the delivered pixels so CLS stays zero.
+Grayscale treatment simulated for the cream theme — both read as intended.
+Not re-checked by eye in the routed view. **Artifact hold still stands** —
+`en-*`, `chess-02`, `chess-03`, `chess-06` are still stand-ins.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
