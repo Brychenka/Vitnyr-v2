@@ -2585,25 +2585,32 @@ Source `IMG_7689.JPG` (1280×853, native 3:2), supplied by Igor. It's the
 first real frame in the chess group; the other five `chess-*` slots plus all
 `en-*` stay stand-ins, so the **artifact hold still stands**.
 
-- **Edit** Igor asked for the side players cropped out. Portrait crop tight
-  on him — window `(372, 95, 760, 580)` on the source, exact **4:5**
-  (388×485) — drops the boy at the left edge, the seated spectator behind,
-  the far-right neighbour, and all but an unreadable sliver of the opponent's
-  shirt bottom-right. Gentle `ImageOps.autocontrast(cutoff=0.5)`, no colour
-  (the per-theme `--collage-filter` greys it at display). Upscaled to
-  900×1125 / 450×563 with a light unsharp mask — soft from the 2.3× blow-up,
-  the same trade `climb-04-crimp` took; fine at the slot's display width.
-  `@2x` 82 KB (≤90 KB budget).
-- **Slot / markup** unchanged — the placeholder already reserved
-  `.collage__fig--45` at 900×1125, and the caption "Over the board,
-  mid-game." / «За доской, посреди партии.» already describes this frame.
-  Only the two `assets/collage/chess-01-board*.jpg` files changed.
-- **Verified**: file served at 900×1125, valid decode (direct `Image()` load
-  — the pane's own cache held a stale entry for the un-busted URL, a dev
-  artifact only). Grayscale treatment simulated for the cream theme: reads
-  as intended, no identifiable second person. Not re-checked by eye in the
-  routed view (pane hidden); layout can't shift — same class, same
-  dimensions.
+First pass was a tight 4:5 portrait crop on Igor (to keep the other players
+at the table out of frame, as he'd asked). Igor's call on seeing it: too
+tight, "there is no chess seen — don't crop." So:
+
+- **Edit** the **full frame, uncropped**. Native 1280×853 ≈ 3:2; gentle
+  `ImageOps.autocontrast(cutoff=0.5)`, no colour (the per-theme
+  `--collage-filter` greys it at display). Resized to 900×600 / 450×300 with
+  a light unsharp mask — a straight downscale from the source, so it's sharp.
+  `@2x` 80 KB (≤90 KB budget). The other players at the table are visible;
+  that's the accepted trade for showing the board and clocks.
+- **Slot** changed `--45` → `--32` (`index.html`), and the `<img>` /
+  `<noscript>` `width`/`height` from `900`/`1125` to `900`/`600` — so the
+  reserved box matches the frame and CLS stays zero. Caption "Over the board,
+  mid-game." / «За доской, посреди партии.» still fits, unchanged.
+- Chess group's desktop row 1 is now `--32` / `--11` / `--32` (chess-01,
+  chess-02-clock, chess-03-study). Ragged bottom — the 1:1 clock tile is
+  tallest, the two 3:2 align to the top of the row, which the
+  `align-items: start` grid already does (see the `.collage--group` comment).
+- **Verified** (localhost:8013, pane mostly hidden — DOM/geometry): at
+  1280px the chess group is a clean 3×365px grid, `scrollWidth == innerWidth`
+  (no overflow); chess-01 slot resolves `aspect-ratio: 3 / 2`,
+  `object-fit: cover`, `--collage-filter` applied. File served and decodes at
+  900×600 via a direct `Image()` load (the pane's own cache holds stale
+  low-res entries for every collage URL without a query string — a dev
+  artifact only). Grayscale treatment simulated for the cream theme. Not
+  re-checked by eye in the routed view.
 
 ## Verified
 
