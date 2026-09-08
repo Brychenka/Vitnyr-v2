@@ -100,8 +100,15 @@ captions; `<img alt>` stays empty; greyed at display by `--collage-filter`.
 See `BUILD-NOTES.md` → "Collage — first real chess frame", "Collage — two
 more real chess frames" and "Collage — a real park-chess frame".
 
-The other 8 collage frames (all `en-*`; `chess-03`, `chess-06`) remain the
-stand-ins below, so the artifact hold still stands.
+**`chess-03-study` and `chess-06-notation` were pulled from the page on
+2026-09-08** (Igor: "remove picture 3 and 6 for now … they are not mine").
+The chess group now ships the four real frames only, two-up on desktop
+(`.collage--group--pairs`; see `BUILD-NOTES.md` → "Collage — chess group
+drops to four real frames"). Their `.jpg`/`@2x.jpg` files are still on disk
+and their provenance stays recorded below, in case Igor wants them back.
+
+The other 6 collage frames (all `en-*`) remain the stand-ins below, so the
+artifact hold still stands.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -122,13 +129,14 @@ attribution through the proxy; because these files do not ship, the collective
 source note here stands in for it. If any of these somehow needs to outlive the
 shoot, pull the real attribution or swap it for a CC0 image first.
 
-| file | tags | lock |
-|---|---|---|
-| en-01-call | office,laptop | 22 |
-| en-06-window | yerevan,armenia | 6 |
-| chess-03-study | chess,board | 9 |
-| chess-06-notation | chess,game | 12 |
+| file | tags | lock | on the page? |
+|---|---|---|---|
+| en-01-call | office,laptop | 22 | yes |
+| en-06-window | yerevan,armenia | 6 | yes |
+| chess-03-study | chess,board | 9 | no — pulled 2026-09-08 |
+| chess-06-notation | chess,game | 12 | no — pulled 2026-09-08 |
 
 *(`chess-01-board`, `chess-02-clock`, `chess-04-reset` and `chess-05-pieces`
 were replaced by real photos of Igor's on 2026-09-08 — see the exception
-above.)*
+above. `chess-03-study` and `chess-06-notation` were then removed from the
+page the same day; the files stay here for provenance and easy restore.)*

@@ -1117,6 +1117,13 @@ html.js .origin__panel-item.is-active { opacity: 1; }
 @media (min-width: 900px) {
   .collage--group { grid-template-columns: repeat(3, 1fr); }
 
+  /* Chess group ships four real frames, not six — two-up (2x2) so each one
+     takes ~half the group's width instead of being squeezed to a third with
+     an orphan on a fourth. Equal columns; slots keep their own ratio classes,
+     nothing stretched. align-items:start (inherited from the 600px rule) keeps
+     the ragged bottoms the rest of the collage already has. */
+  .collage--group--pairs { grid-template-columns: repeat(2, 1fr); }
+
   /* Climbing group's first row of three (4:5 / 9:16 / 1:1). Equal 1fr
      columns made the 9:16 belay-loop frame tower over the other two. Size
      the columns to the inverse of each crop's width:height instead
