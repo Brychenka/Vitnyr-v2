@@ -2732,6 +2732,37 @@ overlap. Not re-checked by eye in the routed view (pane was hidden the
 whole session). **Artifact hold still stands** — the six `en-*` frames
 are still stand-ins.
 
+## Collage — title and lede rewrite (2026-09-08, later still)
+
+Igor's copy, verbatim: heading → **"The process, photographed: a call, a
+chess match, a climbing wall."** (was "The work, photographed: a call, a
+chessboard, a climbing wall."), lede → **"It's me at work, in three places
+the method gets tested."** (one sentence, replacing the whole "No stock, no
+staging: the brand rules both out. What's here is Igor Shatsev at work …
+an English lesson, a rated game, a graded climb." paragraph).
+
+- "chessmatch" in the brief rendered as **"a chess match"** (two words).
+- RU kept in step: «Процесс в кадре: созвон, шахматная партия, скалодром.»
+  / «Это я за работой — в трёх местах, где проверяется метод.»
+- The `<strong class="mark">` triple in both lede languages is gone — the
+  new lede has no emphasised span. `.mark` is unused here now; still used
+  in the main-page lede.
+- **This drops the only visible "Igor Shatsev" in the routed collage view**
+  (the `<img alt>` text and the masthead/footer on the main page still
+  carry it). Igor asked for the first-person wording directly, so the
+  "Igor Shatsev everywhere" note in `CLAUDE.md` is knowingly relaxed for
+  this one line — flagged with him at the time.
+- No brand claim lost that isn't restated elsewhere: "no stock, no
+  staging" is still in `PLACEHOLDERS.md` and the collage intro comment;
+  the on-page promise now lives only in the real photos themselves.
+
+**Verified** (localhost:8010): heading and lede resolve to the new strings
+in both `data-lang` states; language switch re-applies the heading
+(`applyLang` copies `data-ru`/`data-en` into `textContent`); EN lede hidden
+/ RU shown by the `[data-l]` CSS; `scrollWidth == clientWidth` at 375 and
+1280 in both languages; zero `.view__lede .mark`. Screenshotted in the
+routed view at desktop, EN. Artifact hold still stands (`en-*` stand-ins).
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
