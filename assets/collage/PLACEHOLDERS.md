@@ -58,7 +58,7 @@ See `BUILD-NOTES.md` → "Collage — first real photos", "Collage — rock-rout
 hero", and "Collage — paired bottom row". The climbing group is
 **fully real** now.
 
-**Exception — three chess frames are real (`chess-01`, `chess-04`,
+**Exception — four chess frames are real (`chess-01`, `chess-02`, `chess-04`,
 `chess-05`; 2026-09-08).** All supplied by Igor. Grade-neutral, claim-free
 captions; `<img alt>` stays empty; greyed at display by `--collage-filter`.
 
@@ -69,6 +69,17 @@ captions; `<img alt>` stays empty; greyed at display by `--collage-filter`.
   `autocontrast(cutoff=0.5)`, no colour; straight downscale to 900×600 /
   450×300. Slot changed `--45` → `--32`, img `width`/`height` → 900/600.
   Caption "Over the board, mid-game." unchanged.
+- `chess-02-clock` — a life-size outdoor chess set on a paved board in a
+  park, a game in progress, spectators at the left, trees behind (source
+  `2026-09-08 16.00.54.jpg`, 960×1280 phone portrait). **Centred 1:1 crop**
+  lifted 80 px to favour the pieces and onlookers over empty foreground
+  paving — whole board, every standing piece, the spectators and the park
+  all kept. `autocontrast(cutoff=0.5)`, no colour; 900×900 / 450×450 (`@2x`
+  ~222 KB — the tiled board and foliage are high-frequency and resist JPEG,
+  in line with the real climbing frames' ~220 KB). Slot unchanged (`--11`,
+  900×900 already). Caption rewritten "The clock, between moves." →
+  **"A life-size board, out in the park."** / «Доска в полный рост, в
+  парке.» Slug keeps `-clock` (cf. `chess-04-reset`), content diverged.
 - `chess-04-reset` — Igor mid-move, fingers on a pawn, clock in frame, at a
   stone-walled venue (source a 1102×1422 phone frame). Trimmed only **44 px
   of blurred wall off the top** to hit an exact 4:5 — nothing else cropped.
@@ -86,11 +97,11 @@ captions; `<img alt>` stays empty; greyed at display by `--collage-filter`.
   "Captured pieces, off to the side." → **"A hand-carved set, mid-game."** /
   «Резной комплект, партия в разгаре.» Slug keeps `-pieces`.
 
-See `BUILD-NOTES.md` → "Collage — first real chess frame" and "Collage — two
-more real chess frames".
+See `BUILD-NOTES.md` → "Collage — first real chess frame", "Collage — two
+more real chess frames" and "Collage — a real park-chess frame".
 
-The other 9 collage frames (all `en-*`; `chess-02`, `chess-03`, `chess-06`)
-remain the stand-ins below, so the artifact hold still stands.
+The other 8 collage frames (all `en-*`; `chess-03`, `chess-06`) remain the
+stand-ins below, so the artifact hold still stands.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -115,9 +126,9 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 |---|---|---|
 | en-01-call | office,laptop | 22 |
 | en-06-window | yerevan,armenia | 6 |
-| chess-02-clock | chess,clock | 302 |
 | chess-03-study | chess,board | 9 |
 | chess-06-notation | chess,game | 12 |
 
-*(`chess-01-board`, `chess-04-reset` and `chess-05-pieces` were replaced by
-real photos of Igor's on 2026-09-08 — see the exception above.)*
+*(`chess-01-board`, `chess-02-clock`, `chess-04-reset` and `chess-05-pieces`
+were replaced by real photos of Igor's on 2026-09-08 — see the exception
+above.)*

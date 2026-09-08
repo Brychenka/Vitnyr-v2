@@ -2652,6 +2652,45 @@ Grayscale treatment simulated for the cream theme — both read as intended.
 Not re-checked by eye in the routed view. **Artifact hold still stands** —
 `en-*`, `chess-02`, `chess-03`, `chess-06` are still stand-ins.
 
+## Collage — a real park-chess frame (2026-09-08, later)
+
+Igor: "another one add to the collage," with a life-size outdoor chess photo
+of his own — a paved board in a park, a game in progress, spectators at the
+left, trees behind. Different register from the three tournament frames: the
+casual, public side of the same discipline.
+
+Landed in the last square chess slot, replacing the `chess-02-clock`
+stand-in. Source `2026-09-08 16.00.54.jpg` (960×1280 phone portrait).
+**Centred 1:1 crop lifted 80 px** (centred would cut 160 px each side; the
+lift trades empty foreground paving for the pieces and onlookers) — whole
+board, every standing piece, the spectators and the park all kept. This is
+the "crop so the idea survives" case from the earlier chess rounds, not a
+crop-down. `autocontrast(cutoff=0.5)`, no colour; straight downscale with a
+light unsharp mask to 900×900 / 450×450. `@2x` ≈ 222 KB — the tiled board
+and foliage are high-frequency and resist JPEG, in line with the real
+climbing frames (~220 KB); the weight budget has been aspirational since
+those.
+
+- Slot **unchanged**: `--11`, `width`/`height` already `900`/`900`, so CLS
+  stays zero and no CSS moved.
+- Slug **keeps `-clock`** though the frame has no clock — same call as
+  `chess-04-reset` / `climb-04-crimp`, to avoid churning filenames/srcset.
+- Caption rewritten "The clock, between moves." →
+  **"A life-size board, out in the park."** / «Доска в полный рост, в
+  парке.» — grade-neutral, claim-free, `<img alt>` stays empty.
+
+Chess group is now four real frames (01 `--32`, 02 `--11`, 04 `--45`,
+05 `--11`) and two stand-ins (03 `--32`, 06 `--32`). Desktop rows
+`--32`/`--11`/`--32` then `--45`/`--11`/`--32` — unchanged.
+
+**Verified** (localhost:8010, pane hidden — DOM/geometry + fresh `Image()`
+decode): file decodes at 900×900; `chess-02` slot resolves
+`aspect-ratio: 1 / 1`, `object-fit: cover`, `--collage-filter` applied;
+`scrollWidth == innerWidth` at 1280 and 375 (no overflow); RU caption
+renders. Grayscale simulated for the cream theme — reads as intended. Not
+re-checked by eye in the routed view. **Artifact hold still stands** —
+`en-*`, `chess-03`, `chess-06` are still stand-ins.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
