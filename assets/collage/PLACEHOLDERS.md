@@ -60,14 +60,14 @@ hero", and "Collage — paired bottom row". The climbing group is
 
 **Exception — `chess-01-board` is real (2026-09-08).** The chess group's
 lede tile is a photograph of Igor mid-move at an outdoor tournament (source
-`IMG_7689.JPG`, 1280×853, native 3:2, supplied by Igor). Portrait crop tight
-on him — window `(372, 95, 760, 580)`, exact 4:5 — at Igor's request, to
-keep the other players at the table out of frame; gentle
-`autocontrast(cutoff=0.5)`, no colour; upscaled to 900×1125 / 450×563 with a
-light unsharp mask (soft from the 2.3× blow-up, same trade as
-`climb-04-crimp`). Slot class and caption ("Over the board, mid-game.")
-unchanged — only the two `chess-01-board*.jpg` files. See `BUILD-NOTES.md` →
-"Collage — first real chess frame".
+`IMG_7689.JPG`, 1280×853, native 3:2, supplied by Igor). **Full frame, not
+cropped** — a first tight-4:5 crop hid the board, so Igor's call was to keep
+the whole frame even though the other players at the table stay visible.
+Gentle `autocontrast(cutoff=0.5)`, no colour; straight downscale to
+900×600 / 450×300 + light unsharp mask (sharp). Slot changed `--45` → `--32`
+and the img `width`/`height` to 900/600 to match; caption ("Over the board,
+mid-game.") unchanged. See `BUILD-NOTES.md` → "Collage — first real chess
+frame".
 
 The other 11 collage frames (all `en-*`; `chess-02`…`chess-06`) remain the
 stand-ins below, so the artifact hold still stands.
