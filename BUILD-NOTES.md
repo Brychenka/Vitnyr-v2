@@ -2691,6 +2691,47 @@ renders. Grayscale simulated for the cream theme — reads as intended. Not
 re-checked by eye in the routed view. **Artifact hold still stands** —
 `en-*`, `chess-03`, `chess-06` are still stand-ins.
 
+## Collage — chess group drops to four real frames (2026-09-08, later still)
+
+Igor: "remove picture 3 and 6 for now in collage, they are not mine. leave 4
+of mine. make sure they get enough space and everything nicely aligned."
+`chess-03-study` and `chess-06-notation` were the last two chess stand-ins
+(LoremFlickr, never Igor); the other four (`chess-01` `--32`, `chess-02`
+`--11`, `chess-04` `--45`, `chess-05` `--11`) are his own photos.
+
+- **Markup:** both stand-in `<figure>`s deleted from `index.html`. The
+  four real figures keep their ratio classes and captions untouched. The
+  `.jpg`/`@2x.jpg` files for 03 and 06 are left on disk (Igor said "for
+  now" — reversible; provenance still recorded in `PLACEHOLDERS.md`).
+- **Layout:** a fourth stand-in used to fill the third desktop column, so
+  the group was a 3-wide grid twice over. Four frames in a 3-wide grid
+  leaves a one-tile orphan row. New modifier `.collage--group--pairs` on
+  the chess `.collage` div overrides the `@media (min-width: 900px)`
+  `repeat(3, 1fr)` to `repeat(2, 1fr)` — a 2×2 of equal columns, each
+  ~562px at 1280 (roughly half the group width, vs ~365px at 3-up). The
+  600–900px rule was already 2-up, so only the ≥900 case changed. The
+  English group (still six stand-ins) and the climbing group (its own
+  `:has(.collage__pair)` 64/45/80fr rule) are untouched.
+- `sizes` on the four chess `<img>`/`<noscript>` pairs went
+  `(min-width: 900px) 33vw, (min-width: 600px) 50vw, 100vw` →
+  `(min-width: 600px) 50vw, 100vw` to match the new column width.
+- Still a plain grid: no span, no margin, no transform — the
+  layout-off-the-transform-channel invariant holds. `align-items: start`
+  (inherited from the 600px rule) keeps the ragged bottoms the rest of
+  the collage already has; no stretching to a shared row height.
+
+**Verified** (localhost:8010, pane hidden — DOM/geometry): chess group
+`grid-template-columns` resolves to two equal columns at 1280
+(`561.9px 561.9px`), one column at 375 (`335px`), two at 760
+(`333.6px`); English stays `365px ×3`, climbing stays `371/261/464px`.
+Four `.collage__fig`, zero `.collage__pair` in the chess group. All four
+`<img>` decode (`naturalWidth > 0`), `opacity: 1`, `transform: none`.
+`scrollWidth == clientWidth` at 375 / 760 / 1280 — no overflow. Rows sit
+at local top 90 and 739 with a ~52px gap off the taller row-1 tile — no
+overlap. Not re-checked by eye in the routed view (pane was hidden the
+whole session). **Artifact hold still stands** — the six `en-*` frames
+are still stand-ins.
+
 ## Verified
 
 - No horizontal overflow at 1440px or 375px (`scrollWidth` equals `innerWidth`
