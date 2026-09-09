@@ -188,7 +188,8 @@ def test_reduced_motion_facts_row_shows_every_value(open_site):
 
 
 def test_focus_visible_ring_is_the_target_green(open_site):
-    page, _ = open_site()
+    # theme="dark": the expected value below is --ink-target on charcoal.
+    page, _ = open_site(theme="dark")
     page.locator(".scrollcue").focus()
     outline = page.locator(".scrollcue").evaluate(
         "el => getComputedStyle(el).outlineColor"
@@ -203,7 +204,7 @@ def test_origin_mark_shows_a_focus_ring_on_the_visible_figure(open_site):
     so it used to be suppressed outright (C7) with only a colour/opacity
     change on the glyph to mark focus. The ring now lands on .origin__mark,
     the figure the reader actually sees, via :has(.origin__hit:focus-visible)."""
-    page, _ = open_site()
+    page, _ = open_site(theme="dark")
     mark = page.locator(".origin__mark")
     assert mark.evaluate("el => getComputedStyle(el).outlineStyle") == "none"
 
@@ -246,7 +247,7 @@ def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
     """The dot never changes size. Its one state change is colour: .cursor-active
     is added over a link/button (fill -> --ink-target) and removed off it, while
     the dot stays visible either way."""
-    page, _ = open_site()
+    page, _ = open_site(theme="dark")
     dot = page.locator(".cursor")
     dot_dot = page.locator(".cursor__dot")
     link = page.locator('a[href="#method"]')  # the scrollcue

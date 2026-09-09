@@ -112,7 +112,7 @@ def test_icons_use_the_theme_ink_token_no_new_colour(open_site, scheme, expected
     """No colour value in the handoff except currentColor/none — the glyph's
     rendered colour must trace to --fg2, the same token every other .tool
     uses at rest, in both pairs."""
-    page, _ = open_site(color_scheme=scheme)
+    page, _ = open_site(theme=scheme)
     buttons = _icon_buttons(page)
     for i in range(3):
         assert buttons.nth(i).evaluate("el => getComputedStyle(el).color") == expected_fg2
@@ -125,14 +125,15 @@ def test_icons_use_the_theme_ink_token_no_new_colour(open_site, scheme, expected
         assert colours == []
 
 
-def test_icon_svgs_render_at_the_specified_19px(open_site):
-    # Nudged 17px -> 19px for parity with the uppercase labels (see the
-    # .tool--icon svg comment in style.css; commits 48e40a0 / 597e188).
+def test_icon_svgs_render_at_the_specified_24px(open_site):
+    # 17 -> 19 (48e40a0 / 597e188), 19 -> 22 at P18, then 22 -> 24 with
+    # stroke-width 1.5 at P20 ("carry the nav cluster with scale, not weight",
+    # 315eb8e). See the .tool--icon svg comment in style.css.
     page, _ = open_site()
     for i in range(3):
         box = _icon_buttons(page).nth(i).locator("svg").bounding_box()
-        assert box["width"] == pytest.approx(19, abs=0.5)
-        assert box["height"] == pytest.approx(19, abs=0.5)
+        assert box["width"] == pytest.approx(24, abs=0.5)
+        assert box["height"] == pytest.approx(24, abs=0.5)
 
 
 @pytest.mark.parametrize("jump_key,heading_id", JUMP_TARGETS)

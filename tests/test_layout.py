@@ -228,7 +228,7 @@ def test_contact_cta_prefill_text_is_localized(open_site):
 
 
 def test_see_the_work_reads_at_full_foreground_and_underlined_at_rest(open_site):
-    page, _ = open_site(color_scheme="dark", viewport=WIDE)
+    page, _ = open_site(theme="dark", viewport=WIDE)
     link = page.locator(".proof__link")
     text_color = link.locator(".proof__text").evaluate("el => getComputedStyle(el).color")
     body_fg = page.evaluate("getComputedStyle(document.body).color")

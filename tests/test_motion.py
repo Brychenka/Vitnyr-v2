@@ -150,7 +150,7 @@ def test_glyph_dim_state_is_a_solid_fill_not_partial_opacity(open_site):
     at the mark's shared vertex, muddying exactly the seam the keyline below
     keeps clean. Explicit solid fill tokens per theme instead: full opacity,
     a real colour that can't bleed into a neighbour."""
-    page, _ = open_site(color_scheme="dark")
+    page, _ = open_site(theme="dark")
     page.locator("#origin").scroll_into_view_if_needed()
     page.locator('.origin__hit[data-discipline="climbing"]').hover()
     page.wait_for_timeout(700)
@@ -181,7 +181,7 @@ def test_glyph_parts_carry_a_bg_coloured_keyline(open_site):
     shape at exactly the seam the page's own copy calls three separate
     strokes. A thin --bg stroke, not a change to any path coordinate, keeps
     the seam clean."""
-    page, _ = open_site(color_scheme="dark")
+    page, _ = open_site(theme="dark")
     stroke = page.locator(".glyph__part--stem").evaluate("el => getComputedStyle(el).stroke")
     assert stroke == "rgb(20, 24, 26)"  # --bg on charcoal
 
@@ -305,7 +305,7 @@ def test_progress_rule_switches_ink_at_origin(open_site, scheme):
     down, target ink. The switch is an opacity crossfade between two fills that
     each keep their own token — never an amber->green interpolation (a third
     colour by the back door). Verified in both pairs."""
-    page, _ = open_site(color_scheme=scheme)
+    page, _ = open_site(theme=scheme)
     page.wait_for_timeout(300)
 
     specimen = page.locator(".progress__fill--specimen")
@@ -340,7 +340,9 @@ def test_progress_rule_switches_ink_at_origin(open_site, scheme):
 # only toggles .is-specimen / .is-target on .cursor. ---
 
 def test_cursor_takes_target_ink_over_the_contact_cta(open_site):
-    page, _ = open_site()
+    # theme="dark": --cursor-active-ink is target green on charcoal but specimen
+    # amber on cream (C15), so this assertion is charcoal's.
+    page, _ = open_site(theme="dark")
     cursor = page.locator(".cursor")
     dot = page.locator(".cursor__dot")
 
@@ -387,7 +389,7 @@ def test_cursor_active_ink_follows_the_theme(open_site, scheme, active_token):
     green on charcoal, specimen amber on cream (Igor's call: green read muddy on
     the warm ground). The generic active state and .is-target both read from it,
     so the contact CTA follows the theme too; .is-specimen stays amber in both."""
-    page, _ = open_site(color_scheme=scheme)
+    page, _ = open_site(theme=scheme)
     dot = page.locator(".cursor__dot")
 
     # generic control: the hero scrollcue link
