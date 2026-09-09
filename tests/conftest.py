@@ -78,8 +78,9 @@ def open_site(site_url, browser):
     """
     Factory: open index.html in a fresh context.
 
-      open_site(theme=None|'light'|'dark',   # explicit stored choice
-                color_scheme='light'|'dark',  # the OS-level preference
+      open_site(theme=None|'light'|'dark',   # explicit stored choice; the ONLY
+                                             # way to select the charcoal pair
+                color_scheme='light'|'dark',  # OS preference; the page ignores it
                 lang=None|'en'|'ru',          # stored language choice
                 query='',                     # e.g. '?lang=ru'
                 hash='',                      # e.g. '#collage'
@@ -94,7 +95,13 @@ def open_site(site_url, browser):
 
     def _open(
         theme=None,
-        color_scheme="dark",
+        # Cream is the default pair since 2026-09-07 and `prefers-color-scheme`
+        # no longer has a say (theme.js `effectiveTheme`, BUILD-NOTES "Cream is
+        # the default pair; charcoal is opt-in only"). This knob therefore only
+        # sets the OS preference the page is *allowed to ignore* — it does not
+        # choose the pair. A test that wants the charcoal pair must seed the
+        # explicit stored choice with theme="dark".
+        color_scheme="light",
         lang=None,
         query="",
         hash="",

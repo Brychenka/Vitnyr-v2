@@ -4,6 +4,11 @@ stops scrolling, theme/language persist, scroll resets on the way back."""
 
 import pytest
 
+# Photographs currently in the view. Real frames land in batches (commit 5970eae
+# dropped the two chess stand-ins, 18 -> 15), so keep the count in one place and
+# update this line when the shoot adds more.
+COLLAGE_IMAGES = 15
+
 
 def _is_open(page):
     return page.evaluate(
@@ -119,7 +124,7 @@ def test_cold_deep_link_returns_to_the_top_on_close(open_site):
 
 
 def test_theme_and_language_persist_through_the_view(open_site):
-    page, _ = open_site(color_scheme="dark")
+    page, _ = open_site(theme="dark")
     # .themeswitch now exists twice (masthead + collage view bar); the collage
     # copy is unreachable until the view opens, so drive the masthead one.
     page.locator(".masthead .themeswitch").click()  # -> light
@@ -256,7 +261,7 @@ def test_collage_images_are_not_fetched_before_the_view_opens(open_site):
     assert _fetched_collage_jpegs(page) == 0
     assert page.evaluate(
         "() => document.querySelectorAll('#collage img[data-src]').length"
-    ) == 18
+    ) == COLLAGE_IMAGES
 
 
 def test_collage_images_promote_and_fetch_on_first_open(open_site):
@@ -266,13 +271,13 @@ def test_collage_images_promote_and_fetch_on_first_open(open_site):
     assert page.evaluate(
         "() => document.querySelectorAll('#collage img[data-src]').length"
     ) == 0
-    assert _fetched_collage_jpegs(page) == 18
+    assert _fetched_collage_jpegs(page) == COLLAGE_IMAGES
 
 
 def test_collage_images_have_noscript_fallback_in_markup(open_site):
     page, _ = open_site()
     html = page.content()
-    assert html.count('<noscript><img src="assets/collage/') == 18
+    assert html.count('<noscript><img src="assets/collage/') == COLLAGE_IMAGES
 
 
 # --- S7 move 04: the route cross-fades on close, but never at the cost of the
