@@ -440,7 +440,7 @@ html.past-origin .progress__fill--target { opacity: 1; }
    for the real case here (phones = coarse pointers = 44px targets + 10px
    row-gap); a mouse-narrowed desktop window lands a touch more generous, not
    tight, which is the safe side to be on. */
-@media (max-width: 600px) {
+@media (max-width: 602px) {
   .masthead { flex-wrap: wrap; row-gap: 10px; }
   .tools { flex-basis: 100%; justify-content: flex-end; flex-wrap: nowrap; }
   :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 54px); }
@@ -450,6 +450,38 @@ html.past-origin .progress__fill--target { opacity: 1; }
      needs to lead, so it drops back to the 13px it was before P20 and the row
      keeps the ~5px edge margin it had. */
   .tools__label { font-size: 13px; letter-spacing: .09em; }
+  /* 2026-09-10: the between-cluster gap's 18px floor was the last 3px keeping
+     the English row from fitting at 375 — over the floor, .tools__group--nav
+     (flex-shrink:1) absorbed the difference, so EN->RU visibly slid the whole
+     nav cluster 3.3px sideways. Floor drops to 16 and climbs back to 18 by
+     ~419px, where there is room again. */
+  .tools { gap: clamp(16px, 4.3vw, 18px); }
+}
+
+/* 2026-09-10 — the phone row was clipping its own controls.
+   P20 took the icons to 24px, and on a COARSE pointer each one also carries
+   11px of touch padding, so the real phone row is ~36px wider than the same
+   width measured with a mouse. Past that budget the row does not wrap (the
+   rule above is flex-wrap:nowrap by design) and does not scroll the document
+   (.masthead is overflow-clipped) — it simply ran off the right edge, taking
+   the collage jumps with it: at 375px/EN the book icon sat 35px outside the
+   viewport, at 320px two of the three were gone. Silent, and invisible to a
+   scrollWidth check, which is why it outlived every other layout guard.
+   The caption yields first, for the reason the P20 note above already gives —
+   this row is a utility strip. Each icon keeps its own aria-label, so the
+   group is still named once the visible word goes. */
+@media (max-width: 400px) {
+  .tools__label { display: none; }
+}
+/* At 320 with English labels, three 44px targets and a divider genuinely do
+   not fit; the divider goes too (with the caption gone, words-vs-glyphs
+   already separates the two clusters) and the gap drops to its tightest.
+   That width clears the edge by ~2px rather than the ~20px the wider phones
+   keep — the honest floor for 44px targets here, and still the difference
+   between a reachable control and one that is not on screen. */
+@media (max-width: 340px) {
+  .tools { gap: 12px; }
+  .tools__rule { display: none; }
 }
 
 /* ---------- in-copy emphasis ----------
@@ -601,7 +633,10 @@ html[data-lang="ru"] .breath__line { max-width: 26ch; letter-spacing: -.012em; }
    header, the mark's clear space, or any touch target. Comes after the
    base .hero rule on purpose — same specificity, so source order is what
    makes this win under 600px instead of silently losing to the rule above. */
-@media (max-width: 600px) {
+/* 602, not 600: --head takes its two-line value in the masthead block above,
+   and this padding has to change on exactly the same tick or the hero pads
+   for a one-line header the masthead has already stopped drawing. */
+@media (max-width: 602px) {
   .hero {
     justify-content: flex-start;
     padding-top: calc(var(--head) + clamp(20px, 3vh, 40px));

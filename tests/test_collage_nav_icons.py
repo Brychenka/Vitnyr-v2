@@ -184,7 +184,7 @@ def test_lockup_holds_its_brand_minimum_with_icons_present(open_site):
         assert width == pytest.approx(LOCKUP_FLOOR, abs=1), viewport
 
 
-@pytest.mark.parametrize("width,wrapped", [(601, False), (600, True), (375, True), (320, True)])
+@pytest.mark.parametrize("width,wrapped", [(603, False), (602, True), (375, True), (320, True)])
 def test_tools_row_wraps_below_600px_single_row_above(open_site, width, wrapped):
     """.masthead has exactly two flex children — .lockup and .tools — so
     wrapping moves .tools (Cream, RU, divider and all three icons together)
@@ -206,6 +206,37 @@ def test_tools_row_wraps_below_600px_single_row_above(open_site, width, wrapped)
 
     # the mark still holds its floor even while .tools is wrapping under it
     assert lockup_box["width"] == pytest.approx(LOCKUP_FLOOR, abs=1)
+
+
+# --- 2026-09-10: the row was running its own controls off the right edge.
+# .masthead is overflow-clipped and .tools never wraps below 602px, so an
+# over-full row neither scrolled nor stacked — the collage jumps simply left
+# the viewport. documentElement.scrollWidth stayed clean throughout, which is
+# why every existing layout guard passed while the book icon sat 35px outside
+# the screen at 375/EN. Measure the icons against the viewport itself, on a
+# COARSE pointer: touch padding makes the real phone row ~36px wider than the
+# same width measured with a mouse, and that gap is the whole bug. ---
+
+@pytest.mark.parametrize("width", [320, 360, 375, 390, 414, 480, 602])
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_nav_icons_stay_inside_the_viewport_on_a_phone(open_site, width, lang):
+    page, _ = open_site(
+        viewport={"width": width, "height": 780}, has_touch=True, lang=lang
+    )
+    page.wait_for_timeout(200)
+
+    vw = page.evaluate("() => window.innerWidth")
+    boxes = [
+        _icon_buttons(page).nth(i).bounding_box() for i in range(3)
+    ]
+    for i, box in enumerate(boxes):
+        assert box["x"] >= -0.5, f"icon {i} runs off the LEFT at {width}px/{lang}"
+        assert box["x"] + box["width"] <= vw + 0.5, (
+            f"icon {i} runs {box['x'] + box['width'] - vw:.0f}px past the right "
+            f"edge at {width}px/{lang} — clipped, and unreachable"
+        )
+        # the target itself must survive whatever tightening got it to fit
+        assert box["width"] >= 43.5, f"icon {i} target shrank at {width}px/{lang}"
 
 
 def test_wrapped_masthead_does_not_overlap_hero_content(open_site):
