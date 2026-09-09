@@ -2786,3 +2786,73 @@ routed view at desktop, EN. Artifact hold still stands (`en-*` stand-ins).
 Not verified by eye: everything below the hero. The preview pane repaints only
 on demand, so those sections were checked by measuring the DOM rather than
 looking at them. Worth a scroll-through on a real browser.
+
+## The phone masthead was clipping its own nav (2026-09-10)
+
+Branch `fix/masthead-tools-row`. Files: `style.css`, `tests/`, this note.
+Found by running the QA suite rather than by eye — though the suite did not
+catch the main bug either; it surfaced two smaller ones whose diagnosis led
+here.
+
+**The real bug: the collage jumps were off-screen on phones.** P20 took the
+icons to 24px, and on a **coarse pointer** each also carries 11px of touch
+padding — so the true phone row is ~36px wider than the same width measured
+with a mouse, which is how it went unnoticed. Past that budget the row has
+nowhere to go: `flex-wrap: nowrap` below the breakpoint by design, and
+`.masthead` is overflow-clipped. So it simply ran off the right edge, taking
+the collage nav with it. Measured, coarse pointer, English:
+
+| width | last icon vs. right edge | icons clipped |
+|---|---|---|
+| 320px | +90px | 2 of 3 |
+| 360px | +50px | 1 |
+| 375px | +35px | 1 |
+| 390px | +20px | 1 |
+| 414px | −3px | 0 |
+
+Russian is ~32px narrower ("УГОЛЬ" vs "CHARCOAL") and clipped one icon from
+375 down. **`documentElement.scrollWidth` stayed clean at every one of these**
+— the clip hides it — which is exactly why the existing horizontal-overflow
+guard, the 44px touch-target tests and the wrap test all passed while the book
+icon sat outside the viewport.
+
+- **The caption yields first** (`display: none` at `max-width: 400px`), for the
+  reason the P20 note already gives: the phone row is a utility strip, not
+  where "Photos" needs to lead. Frees ~70px (label + its group gap). Each icon
+  keeps its own `aria-label`, so the group is still named once the visible word
+  goes.
+- **At 320px the divider goes too** and the gap tightens to 12px — three 44px
+  targets plus English labels genuinely do not fit otherwise. That width now
+  clears the edge by ~2px rather than the ~20px the wider phones keep. That is
+  the honest floor while the targets stay 44px; it is still the difference
+  between a reachable control and one that is not on screen. Noted rather than
+  hidden.
+- **Touch targets held at 44px** everywhere — verified, not assumed.
+
+**Two smaller fixes in the same row.**
+
+- **The nav cluster slid 3.3px on EN→RU at 375px.** The between-cluster gap's
+  18px floor was the last 3px keeping the English row from fitting, so
+  `.tools__group--nav` (`flex-shrink: 1`) absorbed the difference and the whole
+  cluster moved on the swap. The `::before` reserve on `.langswitch` was doing
+  its job — the compression was one level up, on the group. Floor drops to 16
+  and climbs back to 18 by ~419px.
+- **The masthead broke into two lines at 601–602px**, a two-pixel window with a
+  dangling divider hairline and the caption orphaned below. P20's bigger icons
+  pushed the true fit threshold to 603 while the breakpoint stayed at ~600, so
+  the stacked layout handed off two pixels too early. Breakpoint 600 → 602, in
+  both the masthead block and the hero-padding block that reads `--head` from
+  it — those two have to move on the same tick.
+
+**New guard.** `test_nav_icons_stay_inside_the_viewport_on_a_phone` measures
+each icon against `window.innerWidth` on a **coarse pointer**, 7 widths × both
+languages, and asserts the 44px target survives whatever tightening got it to
+fit. Measuring against the viewport rather than `scrollWidth` is the point:
+the old guards could not see this class of bug at all.
+
+**Verified**: full suite 202 pass / 0 fail (was 166/22). Masthead screenshotted
+at 320, 375 (touch, both pairs), 601 and 1280. Desktop row unchanged.
+
+**Live artifact not republished** — the collage placeholder hold still stands
+(`assets/collage/PLACEHOLDERS.md`); the English and chess groups are still
+stand-ins.
