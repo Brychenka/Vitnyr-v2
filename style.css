@@ -1125,7 +1125,18 @@ html.js .origin__panel-item.is-active { opacity: 1; }
   display: block; width: 100%; height: 100%;
   object-fit: cover;
   filter: var(--collage-filter);
+  /* Stage 4: earned now that Stage 3 made the tiles real controls. The scale
+     lives on the image, never the grid item, so layout keeps the transform
+     channel clear — .collage__slot's overflow:hidden (set in Stage 1) is
+     what contains it. .6s tracks D.state (main.js); kept in sync by hand,
+     same as var(--e) is between this file and the GSAP 'brand' ease. Paired
+     with :focus-visible, matching this page's existing hover/focus pairing
+     (e.g. .proof__link) so keyboard activation gets the same cue. Still no
+     colour reveal — grayscale (--collage-filter) is untouched. */
+  transition: transform .6s var(--e);
 }
+.collage__trigger:hover img,
+.collage__trigger:focus-visible img { transform: scale(1.04); }
 /* Stage 3: main.js wraps every .collage__slot in a real <button> at
    runtime (initCollageLightbox) — a no-JS reader never sees this class at
    all. Reset to plain-block rather than `all: unset`, so only the button
@@ -1701,6 +1712,10 @@ html.js .collage .reveal.is-in .collage__slot {
      .origin__mark is already covered by the .reveal transform reset above. */
   .tool:hover, .view__back:hover, .origin__mark:hover { will-change: auto !important; }
   .tool, .view__back { transform: none !important; }
+  /* Stage 4's hover scale is the same kind of hover-triggered transform as
+     the magnetic pull above — dropped outright under reduced motion, not
+     just made instant, matching that precedent. */
+  .collage__trigger:hover img, .collage__trigger:focus-visible img { transform: none !important; }
   /* F1: no hover turn on either Vitnyr mark (footer + #collage bar). Without
      this the global transition-duration override below just makes it
      instant-flip on hover. */

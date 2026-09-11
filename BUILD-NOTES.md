@@ -3143,3 +3143,96 @@ series' testing convention.
 
 **Live artifact not republished** — code-only; the collage placeholder hold
 still applies.
+
+## Collage Stage 4 — the affordances, now earned (2026-09-11)
+
+Branch `feature/collage-earned-affordances`. Files: `style.css`,
+`tests/test_collage_lightbox.py`. No JS change — Stage 3 already made every
+tile a real `<button class="collage__trigger">`, so this stage is CSS-only.
+
+**Reverses Stage 5's "add nothing to the tiles" ruling, on schedule** — Stage
+3's entry above already named this as the reason it existed. With the tiles
+real controls, a hover cue and a keyboard focus ring stop being affordances
+for behaviour that isn't there and start describing behaviour that is.
+
+**Hover scale lives on the `<img>`, never on `.collage__slot` or the grid
+item** — `.collage__trigger:hover img, .collage__trigger:focus-visible img {
+transform: scale(1.04); }` — so layout keeps the transform channel the
+`.reveal` wipe (Stage 1) and any future parallax would need. `.collage__slot`'s
+`overflow: hidden` — set in Stage 1 for exactly this, per that stage's own
+comment — is what clips the scaled image back to the frame; the 1px hairline
+belongs to `.collage__slot`, not the image, so it never moves. `.6s var(--e)`
+tracks `D.state` (`main.js`) by hand, the same way `var(--e)` itself is kept
+in sync between this file and the GSAP `'brand'` `CustomEase` — there's no
+mechanism that enforces it, just the convention of naming the source of truth
+in a comment.
+
+**Paired with `:focus-visible`, not hover-only** — matching this page's
+existing convention (`.proof__link`, `.contact__cta`, `.channels a` all pair
+`:hover` and `:focus-visible` for the same visual cue) — so a keyboard user
+gets the same "this one's about to open" signal a mouse user does, not just
+the ring.
+
+**The focus ring itself needed no new CSS.** The page-wide `:focus-visible`
+rule (`style.css:204`) already applies to any element with no local override,
+and nothing scopes one onto `.collage__trigger` — so the ring showed up the
+moment Stage 3 turned the tiles into real `<button>`s. This stage's ring work
+was confirming that, not building it.
+
+**No `data-magnetic`.** The pointer dot needs no work either — its `HOT`
+selector (`main.js`) is already `'a, button, [data-magnetic]'`, so a
+`<button>` tile lights it up for free. Stage 5's own note that a 12px
+magnetic pull on a ~460px tile would read as unexplained drift still holds;
+this stage doesn't reopen that.
+
+**Reduced motion drops the hover scale outright, not just the transition.**
+`style.css`'s existing reduced-motion block already does this for the
+magnetic pull (`.tool, .view__back { transform: none !important; }`) — same
+treatment here: `.collage__trigger:hover img, .collage__trigger:focus-visible
+img { transform: none !important; }` inside `@media (prefers-reduced-motion:
+reduce)`, rather than relying only on that block's blanket `* {
+transition-duration: .01ms !important; }` to make it instant. A hover-
+triggered transform is either present or it isn't under reduced motion on
+this page; "instant" was never the house style for it.
+
+**No grayscale→colour at any size, confirmed rather than assumed** — a new
+test hovers a tile and asserts `--collage-filter`'s computed value is
+unchanged. The colour system's ban on a third colour was never about the
+lightbox specifically; it governs hover too.
+
+**New tests** (`tests/test_collage_lightbox.py`, 5 new): the tile image
+scales on hover; it also scales on keyboard focus (deep-links straight into
+`#collage` rather than going through `_open_collage()`'s click on the
+opener — Chromium's `:focus-visible` modality is page-wide, so an earlier
+real mouse click would make a later programmatic `.focus()` resolve as
+not-visible, exactly as it would for an actual user); the hover scale is
+dropped, not just sped up, under reduced motion (uses the `.collage-open`
+class signal rather than the title-focus wait, for the same pre-existing
+reduced-motion timing quirk `test_lightbox_opens_immediately_under_reduced_
+motion` already documents above); the tile shows the page-wide green
+`:focus-visible` ring; grayscale is unchanged on hover. Confirmed failing
+pre-fix: reverted the two new CSS rules and re-ran the hover/keyboard-scale
+tests standalone — both failed as expected (`'none' != 'none'`), restored,
+re-ran green, per this series' testing convention.
+
+**Verified**: full suite green, 232 items collected (up from 227 pre-stage) —
+`tests/.venv/bin/pytest` from the repo root, 232 passed. Driven live in the
+browser pane on a hand-started `localhost:8020` (a fresh port, not 8010 —
+mid-session the previous port's tab had cached a stale pre-fix `main.js`
+across full-page reloads and even a hard reload, which briefly looked like
+the lightbox itself had broken; a new port sidesteps the browser's shared
+disk cache for an unversioned script URL entirely — worth remembering for
+the next stage's manual QA rather than trusting a reload alone). With that
+resolved: hovering a tile scales its image to `matrix(1.04, 0, 0, 1.04, 0,
+0)`, clipped to the frame, grayscale unchanged; keyboard `.focus()` on a
+tile shows the green ring immediately and settles to the same scale once the
+`.6s` transition completes; both themes (explicit switch, not just the
+system default — this sandbox's own default happened to be Charcoal/RU from
+its locale, which was then switched explicitly to confirm the other pair
+too), both languages, 375px with no horizontal overflow, no console errors.
+The lightbox itself (open / next / close) still worked unchanged, confirming
+Stage 3 wasn't disturbed.
+
+**Live artifact not republished** — code-only; the collage placeholder hold
+still applies. Plan's Stage 5 (bar wayfinding) stays deferred per its own
+recommendation; Stage 6 (real photos) is next and is what lifts the hold.

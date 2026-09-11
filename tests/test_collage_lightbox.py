@@ -240,3 +240,94 @@ def test_prev_button_is_not_covered_by_the_photo_at_375(open_site):
         "}"
     )
     assert hit
+
+
+# --- Stage 4 (2026-09-11): the tiles are real controls now (Stage 3), so the
+# hover/focus affordances Stage 5 originally rejected are earned rather than
+# a lie. Scope is deliberately narrow: a restrained scale on the <img> itself
+# (never the grid item — .collage__slot's overflow:hidden, set in Stage 1,
+# contains it) plus the page's existing :focus-visible ring, which the tiles
+# pick up for free now that they're <button>s with no local override. Still
+# no grayscale-to-colour reveal at any size — the colour system governs. ---
+
+def test_tile_image_scales_on_hover(open_site):
+    page, _ = open_site()
+    _open_collage(page)
+
+    img = page.locator(".collage__trigger").first.locator("img")
+    assert img.evaluate("el => getComputedStyle(el).transform") == "none"
+
+    page.locator(".collage__trigger").first.hover()
+    scaled = img.evaluate("el => getComputedStyle(el).transform")
+    assert scaled != "none"
+
+
+def test_tile_image_scales_on_keyboard_focus_too(open_site):
+    """Paired with :hover (this page's existing convention — e.g.
+    .proof__link) so keyboard use gets the same cue, not just the ring.
+
+    Deep-links straight into #collage rather than going through
+    _open_collage()'s click on the opener: Chromium's :focus-visible
+    modality is page-wide, so a real mouse click earlier in the test would
+    make the later programmatic .focus() resolve as not-visible, same as it
+    would for a real user who just clicked with a mouse."""
+    page, _ = open_site(hash="#collage")
+    page.wait_for_selector(".collage__trigger")
+
+    trigger = page.locator(".collage__trigger").first
+    trigger.focus()
+    scaled = trigger.locator("img").evaluate(
+        "el => getComputedStyle(el).transform"
+    )
+    assert scaled != "none"
+
+
+def test_tile_hover_scale_is_dropped_under_reduced_motion(open_site):
+    """Matches the magnetic pull's precedent (style.css's reduced-motion
+    block): a hover-triggered transform is dropped outright, not just made
+    instant.
+
+    Uses .collage-open rather than _open_collage()'s title-focus wait — see
+    test_lightbox_opens_immediately_under_reduced_motion's docstring above
+    for why that wait is unreliable under reduced motion."""
+    page, _ = open_site(reduced_motion=True)
+    page.locator("[data-collage-open]").click()
+    page.wait_for_function(
+        "document.documentElement.classList.contains('collage-open')",
+        timeout=3000,
+    )
+
+    trigger = page.locator(".collage__trigger").first
+    trigger.hover()
+    assert trigger.locator("img").evaluate(
+        "el => getComputedStyle(el).transform"
+    ) == "none"
+
+
+def test_tile_shows_the_page_wide_focus_ring(open_site):
+    # theme="dark": expected colour below is --ink-target on charcoal.
+    # Deep-links into #collage for the same modality reason as the test
+    # above — no mouse click before the programmatic .focus().
+    page, _ = open_site(theme="dark", hash="#collage")
+    page.wait_for_selector(".collage__trigger")
+
+    trigger = page.locator(".collage__trigger").first
+    trigger.focus()
+    style = trigger.evaluate(
+        "el => ({ style: getComputedStyle(el).outlineStyle, color: getComputedStyle(el).outlineColor })"
+    )
+    assert style["style"] == "solid"
+    assert style["color"] == "rgb(76, 122, 82)"  # --ink-target on charcoal
+
+
+def test_tile_still_grayscale_on_hover(open_site):
+    """Stage 5's grayscale-to-colour rejection still stands at every size —
+    hovering must not touch --collage-filter."""
+    page, _ = open_site()
+    _open_collage(page)
+
+    img = page.locator(".collage__trigger").first.locator("img")
+    before = img.evaluate("el => getComputedStyle(el).filter")
+    page.locator(".collage__trigger").first.hover()
+    after = img.evaluate("el => getComputedStyle(el).filter")
+    assert before == after and before != "none"
