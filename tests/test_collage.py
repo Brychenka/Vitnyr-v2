@@ -241,6 +241,81 @@ def test_collage_reopen_lands_on_a_settled_view(open_site):
     )
 
 
+# --- Stage 1: photographs get a wipe (clip-path on .collage__slot) instead
+# of the body-copy rise (translateY). Same .9s/var(--e)/var(--d) rhythm, only
+# the distance channel changes, and the ratio box must never move while it
+# fires (the wipe clips the frame in place, it does not resize it). ---
+
+def test_collage_tile_wipe_is_clipped_before_it_reveals(open_site):
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(400)
+
+    last_slot = page.locator("#collage .view__group").last.locator(".reveal").last.locator(".collage__slot")
+    assert last_slot.evaluate("el => getComputedStyle(el).clipPath") == "inset(100% 0px 0px)"
+
+
+def test_collage_tile_wipe_settles_to_full_frame_on_reveal(open_site):
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(400)
+
+    last_tile = page.locator("#collage .view__group").last.locator(".reveal").last
+    last_slot = last_tile.locator(".collage__slot")
+    last_tile.scroll_into_view_if_needed()
+    page.wait_for_timeout(1500)
+
+    assert "is-in" in (last_tile.get_attribute("class") or "")
+    assert last_slot.evaluate("el => getComputedStyle(el).clipPath") == "inset(0px)"
+
+
+def test_collage_tile_wipe_is_inert_under_reduced_motion(open_site):
+    page, _ = open_site(reduced_motion=True)
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(400)
+    assert page.evaluate(
+        "() => [...document.querySelectorAll('#collage .collage__slot')]"
+        ".every(s => getComputedStyle(s).clipPath === 'none')"
+    )
+
+
+def test_collage_tile_wipe_still_settled_on_reopen(open_site):
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(300)
+    page.locator("#collage .view__back").click()
+    page.wait_for_timeout(400)
+    page.locator("[data-collage-open]").click()
+    # the .9s clip-path transition on the forced-settled tiles (applyClose()
+    # adds .is-in to every tile, not just the ones the observer had already
+    # fired) needs to actually finish before the shape reads as fully open
+    page.wait_for_timeout(1200)
+    assert page.evaluate(
+        "() => [...document.querySelectorAll('#collage .collage__slot')]"
+        ".every(s => getComputedStyle(s).clipPath === 'inset(0px)')"
+    )
+
+
+def test_collage_tile_ratio_box_is_unaffected_by_the_wipe(open_site):
+    """The wipe animates clip-path only — the box the aspect-ratio class
+    reserves must be pixel-identical hidden vs. revealed, or the wipe would
+    be silently riding on a layout shift instead of clipping in place."""
+    page, _ = open_site()
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(400)
+
+    last_tile = page.locator("#collage .view__group").last.locator(".reveal").last
+    last_slot = last_tile.locator(".collage__slot")
+    before = last_slot.bounding_box()
+
+    last_tile.scroll_into_view_if_needed()
+    page.wait_for_timeout(1500)
+    after = last_slot.bounding_box()
+
+    assert before["width"] == after["width"]
+    assert before["height"] == after["height"]
+
+
 # --- B4: the 18 figures are fetched only once the view actually opens ---
 # The view sits opacity:0/visibility:hidden, not display:none, so the
 # browser's native loading="lazy" (distance-from-viewport) fetched every one

@@ -1105,6 +1105,10 @@ html.js .origin__panel-item.is-active { opacity: 1; }
   border: 1px solid var(--rule);
   display: grid; place-items: center;
   padding: 16px;
+  /* Reserved for Stage 1's reveal wipe (clip-path) — also the container
+     Stage 4's hover scale needs, set here so the two stages stay independent
+     of each other. */
+  overflow: hidden;
 }
 .collage__fig--45 .collage__slot { aspect-ratio: 4 / 5; }
 .collage__fig--32 .collage__slot { aspect-ratio: 3 / 2; }
@@ -1559,8 +1563,26 @@ html.js .reveal.is-in {
 }
 html.js .line__inner { transform: translateY(110%); }
 
+/* Stage 1: collage tiles get a wipe instead of the body-copy rise —
+   photographs, not paragraphs. Same .9s, same var(--e), same var(--d)
+   stagger, so no new rhythm enters the system; only the distance channel
+   changes, from translateY to clip-path. Revealing upward from the bottom
+   edge echoes the page's existing 24px rise. transform stays none in both
+   states (overriding the generic rule above) so the transform channel
+   this tile might need later (Stage 4's hover scale) is left untouched.
+   The wipe clips .collage__slot's 1px hairline along with the photo, so the
+   frame draws in with the image — intended, no new ink. */
+html.js .collage .reveal { transform: none; }
+html.js .collage .reveal .collage__slot { clip-path: inset(100% 0 0 0); }
+html.js .collage .reveal.is-in .collage__slot {
+  clip-path: inset(0);
+  transition: clip-path .9s var(--e);
+  transition-delay: var(--d, 0s);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.js .reveal, html.js .line__inner { opacity: 1 !important; transform: none !important; }
+  html.js .collage .reveal .collage__slot { clip-path: none !important; }
   .scrollcue:hover svg { animation: none; }
   .cursor, .line__inner { will-change: auto !important; }
   /* initMagnetic never runs under reduced motion (past the reduce return in
