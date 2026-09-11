@@ -2856,3 +2856,55 @@ at 320, 375 (touch, both pairs), 601 and 1280. Desktop row unchanged.
 **Live artifact not republished** — the collage placeholder hold still stands
 (`assets/collage/PLACEHOLDERS.md`); the English and chess groups are still
 stand-ins.
+
+## Collage Stage 1 — a reveal that belongs to photographs (2026-09-11)
+
+Branch `feature/collage-reveal-wipe`. First move of the multi-stage collage
+plan agreed this session (`BUILD-NOTES.md`'s Stage 5 "nothing added to the
+tiles" ruling is being revisited across that series — this stage doesn't
+touch it, later ones do). Files: `style.css`, `tests/test_collage.py`.
+
+All 18 collage tiles ran the page's body-copy reveal (24px rise + fade). The
+hero already treats a bespoke entrance as legitimate when the material
+differs (its line-mask); this gives photographs the same standing.
+
+- **`.collage__slot` now wipes in** instead of rising: `clip-path: inset(100%
+  0 0 0)` → `inset(0)` on `.is-in`, scoped to `html.js .collage .reveal`, at
+  the *same* `.9s` / `var(--e)` / `var(--d)` stagger the rest of the page
+  uses — no new rhythm entered the system, only the distance channel changed
+  from `translateY` to `clip-path`. Direction is upward from the bottom edge,
+  echoing the page's existing 24px rise.
+- `transform` is pinned to `none` in both reveal states for collage tiles
+  only (overriding the generic `.reveal` rule), leaving the transform channel
+  free for Stage 4's hover scale later — the wipe never touches it.
+- The wipe clips `.collage__slot`'s 1px hairline along with the photo, so the
+  frame draws in with the image. No new ink.
+- **`overflow: hidden` landed on `.collage__slot` in this stage, not
+  Stage 4**, on purpose: reduced motion sets `clip-path: none`, so the wipe's
+  clipping can't be what contains a later hover scale. Setting it now keeps
+  the two stages independent of each other.
+- Reduced-motion neutraliser gained `clip-path: none !important` for
+  `.collage .reveal .collage__slot`, alongside the existing opacity/transform
+  reset.
+- No JS changed — `armCollageReveals()`, the shared `fireReveals()` stagger
+  and `armFailsafe()` all still work unmodified; they only ever touch classes
+  and `--d`, never `clip-path` directly.
+
+**New tests** (`tests/test_collage.py`): wipe present (`inset(100% 0px 0px)`)
+before a tile scrolls into view; settles to `inset(0px)` once `.is-in` lands;
+`clip-path: none` under `prefers-reduced-motion: reduce`; still settled after
+a close/reopen cycle (extends `test_collage_reopen_lands_on_a_settled_view`'s
+forced-settle behaviour — needed a longer wait than that test since the
+forced tiles now run a real `.9s` clip-path transition, not just opacity);
+and the ratio box's `bounding_box()` is pixel-identical hidden vs. revealed,
+so the wipe is confirmed to clip in place rather than ride on a layout shift.
+
+**Verified**: full suite 207 pass / 0 fail (was 202; 5 new). Driven frames in
+the browser pane at 1280 and 375, both themes, confirmed the wipe visually
+(slowed transition to 8s to catch it mid-flight — top portion of a tile
+revealed, bottom still clipped, hairline drawing in with the image). No
+console errors, no horizontal overflow at 375.
+
+**Live artifact not republished** — this is a code-only motion change; the
+collage placeholder hold (`assets/collage/PLACEHOLDERS.md`) still applies
+regardless, and won't lift until the Stage 6 photo pass.
