@@ -16,15 +16,24 @@ stand-in) and every `<img alt>` is empty on purpose.
 `climb-06-wide` are all photographs Igor supplied; the sixth climbing
 stand-in, `climb-03-feet`, was **dropped** (the group now ships 5, which
 `collage-shotlist.md` allows). Details:
-- `climb-01-board` — seated at the foot of an indoor bouldering wall, first
-  climbing 4:5 slot (crop-to-4:5 + gentle autocontrast, no colour). The frame
-  differs from this slot's shot-list intent (a mid-move board shot).
+- `climb-01-board` — **re-edited 2026-09-12** (Stage 6 partial,
+  `feature/collage-climb-highres-reedit`). Originally a seated, between-
+  attempts frame; replaced with a higher-res dynamic mid-move shot on the
+  same indoor wall — the frame Stage 3's original note above wished for
+  ("differs from this slot's shot-list intent, a mid-move board shot" — no
+  longer true). Source `climb-01-board_edited_highres.jpg` (3670×4587,
+  already near-exact 4:5) — centre-cropped to exact 4:5, `autocontrast
+  (cutoff=0.5)`, no colour, delivered 900×1125 / 450×563. Caption changed to
+  "Reaching for the next hold." / «Тянется к следующей зацепке.» (the old
+  "At the foot of the wall, between attempts." no longer matched the frame).
 - `climb-06-wide` — mid-move on a steep overhanging wall, shot from the floor.
-  From `IMG_8681.CR2` (Canon RAW, 5472×3648), autocontrast + a small
-  exposure/contrast lift (the gym frame was underexposed), no colour.
-  **Right zone of the paired bottom row** (see below): centred **3:2** crop
-  (near-native), delivered 1200×800 / 600×400. Caption unchanged ("The board,
-  from the floor.").
+  Originally from `IMG_8681.CR2` (Canon RAW, 5472×3648), autocontrast + a
+  small exposure/contrast lift (the gym frame was underexposed), no colour.
+  **Re-edited 2026-09-12** (Stage 6 partial) from a sharper source,
+  `climb-06-wide_v2_edited_highres.jpg` (5496×3664) — same shot, same crop
+  logic, no caption change needed (the new frame still matches "The board,
+  from the floor."). **Right zone of the paired bottom row** (see below):
+  centred **3:2** crop (near-native), delivered 1200×800 / 600×400.
 - `climb-05-rest` — Igor at the foot of an **outdoor crag**, mid-gesture,
   two partners nearby (backs to camera, not identifiable). From a low-res
   phone photo (`climbingl.jpg`, 960×1280); 1:1 crop on Igor, gentle level,
