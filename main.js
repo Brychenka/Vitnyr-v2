@@ -747,6 +747,11 @@
     var title = document.getElementById('collage-title');
     var backBtn = view.querySelector('.view__back');
     var opener = document.querySelector('[data-collage-open]');
+    // The view's own "Photographs" label — always the first .label in
+    // view__body, always in the viewport the moment the view opens — is the
+    // door's morph target (S7 Stage 2). The group labels further down share
+    // the class but sit later in document order, so the first match is this one.
+    var doorLabel = view.querySelector('.label');
     var canInert = 'inert' in HTMLElement.prototype;
     // everything that is NOT the view — made inert while it is open so focus
     // can't wander behind it and the skip link can't jump into inert content
@@ -768,15 +773,35 @@
       else window.scrollTo(0, y);
     }
 
+    // Stage 2 pitfall: a warm open's own click also lands #collage in the URL,
+    // and the browser's native scroll-to-fragment for it turns out not to be
+    // pushState-exempt after all — it still runs, just on a delayed task
+    // (invisible before Stage 2, whose warm opens always ran applyOpen() in
+    // the very same tick as the click, before that task got a turn). Wrapping
+    // the open in a View Transition gives it a real gap to land in, so the
+    // scroll/focus snapshot has to be taken here — synchronously, before
+    // withTransition() ever schedules the deferred half — not inside
+    // applyOpen() itself, which now sometimes runs a frame or more later.
+    var openCaptured = false;
+    function captureOpenState(cold) {
+      returnFocus = (document.activeElement && document.activeElement !== document.body)
+        ? document.activeElement : opener;
+      savedScroll = cold ? 0 : bgScroll();
+      openCaptured = true;
+    }
+
     function applyOpen(cold) {
       if (applied) return;
       applied = true;
-      returnFocus = (document.activeElement && document.activeElement !== document.body)
-        ? document.activeElement : opener;
-      // A deep link makes the browser scroll the document toward the #collage
-      // element (last in the DOM); a cold open therefore returns to the top,
-      // a warm one returns exactly where the reader was.
-      savedScroll = cold ? 0 : bgScroll();
+      if (!openCaptured) {
+        // A deep link makes the browser scroll the document toward the
+        // #collage element (last in the DOM); a cold open therefore returns
+        // to the top, a warm one returns exactly where the reader was.
+        returnFocus = (document.activeElement && document.activeElement !== document.body)
+          ? document.activeElement : opener;
+        savedScroll = cold ? 0 : bgScroll();
+      }
+      openCaptured = false;
       root.classList.add('collage-open');        // CSS flips the view visible synchronously
       setBehindInert(true);
       if (lenis) lenis.stop();
@@ -823,30 +848,76 @@
 
     function sync(cold) { (location.hash === '#collage') ? applyOpen(cold) : applyClose(); }
 
-    /* S7 move 04 — animate the route with a View Transition, on the CLOSE
-       direction only. location.hash stays the single source of truth; this
-       just wraps the same sync() the router already calls so leaving the
-       view cross-fades back to the page. Deliberately not the open paths:
-       applyOpen (and the masthead jump) focus a heading synchronously and
-       the collage tests assert that with no wait, but startViewTransition
-       defers its update callback ~1 frame — which would strand that focus,
-       a bug this view has shipped once already. Closing returns focus to
-       the opener button and every close test settles first, so it is safe
-       to hand over. No API, reduced motion, or a hidden tab (where the
-       deferred callback might never run) all fall through to the direct
-       call, unchanged. */
-    function routeAfterHashChange() {
-      // Only the close direction takes the transition, and only when the view
-      // is actually open — otherwise sync() is a no-op and wrapping a no-op
-      // update in startViewTransition just fires an invisible cross-fade on
-      // every unrelated in-page hash (the specimen permalinks, #top, #method).
-      var vt = applied
-        && (location.hash !== '#collage')
-        && typeof document.startViewTransition === 'function'
-        && !reduce
+    /* S7 move 04, extended at Stage 2 — animate the route with a View
+       Transition on BOTH directions. Closing already proved this safe: focus
+       returns to the opener and every close test settles first. Opening used
+       to be excluded because applyOpen() focuses the heading synchronously
+       and startViewTransition defers its update callback ~1 frame — a
+       deferred focus is a focus that might never land, a bug this view has
+       shipped once already (see BUILD-NOTES). Stage 2's fix isn't to avoid
+       the callback, it's to keep living inside it: applyOpen()'s class flip
+       and focus move are two lines apart and both run synchronously *within*
+       whichever call fires them, VT callback or not, so the one thing that
+       changes is which frame that pair happens on — never whether they stay
+       adjacent to each other. withTransition()'s failsafe below covers the
+       one real risk (the callback never running at all). */
+    function canTransition() {
+      return typeof document.startViewTransition === 'function' && !reduce
         && document.visibilityState === 'visible';
-      if (vt) document.startViewTransition(function () { sync(false); });
+    }
+    // Shared by every VT-eligible route. `mutate` is always one of sync()'s
+    // two idempotent halves (applyOpen/applyClose each guard on `applied`),
+    // so if startViewTransition's update callback is merely slow rather than
+    // lost, racing a direct call after a short failsafe costs nothing — the
+    // real call either already ran (the direct call is a no-op) or is about
+    // to (the deferred callback's own call becomes the no-op instead).
+    function withTransition(mutate) {
+      if (!canTransition()) { mutate(); return null; }
+      var t = document.startViewTransition(mutate);
+      var settled = false;
+      var mark = function () { settled = true; };
+      t.updateCallbackDone.then(mark, mark);
+      setTimeout(function () { if (!settled) mutate(); }, 100);
+      return t;
+    }
+    function routeAfterHashChange() {
+      // Only an actual open<->closed flip takes the transition — otherwise
+      // sync() is a no-op and wrapping a no-op update in startViewTransition
+      // just fires an invisible cross-fade on every unrelated in-page hash
+      // (the specimen permalinks, #top, #method).
+      var opening = !applied && location.hash === '#collage';
+      var closing = applied && location.hash !== '#collage';
+      if (opening) captureOpenState(false);   // before the transition's own delay, see applyOpen
+      if (opening || closing) withTransition(function () { sync(false); });
       else sync(false);
+    }
+
+    /* The door: "See the work" morphs into the view's own "Photographs"
+       label, so the way in reads as one element moving and growing rather
+       than a swap-and-fade — the shared-element move Stage 2 adds on top of
+       the plain cross-fade every other route gets. Both ends carry the same
+       view-transition-name only for the life of one transition: the source
+       before the call (tagging its pre-transition snapshot), the destination
+       inside the callback (tagging its post-transition snapshot), cleared
+       again once the transition settles so neither element carries a stale
+       name into some later, unrelated transition. Only this one entry point
+       gets the named morph — the masthead glyph jumps keep their existing
+       smooth scroll and plain cross-fade (their destinations sit off-screen
+       at capture time; see BUILD-NOTES for why that morph doesn't work). */
+    var DOOR_NAME = 'collage-door';
+    function openWithDoorMorph() {
+      if (!canTransition() || !opener || !doorLabel) { sync(false); return; }
+      captureOpenState(false);   // before the transition's own delay, see applyOpen
+      opener.style.viewTransitionName = DOOR_NAME;
+      var t = withTransition(function () {
+        sync(false);
+        opener.style.viewTransitionName = '';
+        doorLabel.style.viewTransitionName = DOOR_NAME;
+      });
+      if (t) {
+        var release = function () { doorLabel.style.viewTransitionName = ''; };
+        t.finished.then(release, release);
+      }
     }
 
     function leave() {
@@ -863,7 +934,7 @@
       e.preventDefault();
       if (history.pushState) history.pushState(null, '', '#collage');
       else location.hash = 'collage';
-      sync(false);
+      openWithDoorMorph();
     });
 
     /* The masthead glyph icons (chess / carabiner / book) are shortcuts into
