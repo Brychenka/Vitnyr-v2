@@ -3236,3 +3236,64 @@ Stage 3 wasn't disturbed.
 **Live artifact not republished** — code-only; the collage placeholder hold
 still applies. Plan's Stage 5 (bar wayfinding) stays deferred per its own
 recommendation; Stage 6 (real photos) is next and is what lifts the hold.
+
+## Collage Stage 6, partial — two climbing frames get sharper sources (2026-09-12)
+
+Branch `feature/collage-climb-highres-reedit`. Files: `assets/collage/
+climb-01-board.jpg`/`@2x`, `climb-06-wide.jpg`/`@2x`, `index.html`,
+`assets/collage/PLACEHOLDERS.md`.
+
+**Not the full Stage 6** — the plan's Stage 6 swaps in the real EN shoot and
+lifts the artifact hold; that material hasn't landed. This is the one piece
+of Stage 6 that was ready independent of it: two higher-resolution re-edits
+of already-real climbing photos (`Claude outputs/climb-01-board_edited_
+highres.jpg`, `climb-06-wide_v2_edited_highres.jpg`) were sitting untracked
+in the repo. **The artifact hold is unaffected** — EN is still stock, so the
+live "Vitnyr Signature" link stays stale regardless of this pass.
+
+**climb-06-wide**: a straightforward upgrade. The new source
+(5496×3664) is the same shot — mid-move on a steep overhang, from the
+floor — just sharper; centre-cropped to exact 3:2 (the source was already
+0.1% off target, negligible), `autocontrast(cutoff=0.5)`, no colour,
+delivered at the same 1200×800 / 600×400 the slot already used. No caption
+or alt change — the new frame still matches "The board, from the floor."
+
+**climb-01-board: the source photo changed, not just its resolution.** The
+new file isn't a sharper version of the old seated/between-attempts frame —
+it's a different moment entirely, a dynamic reach mid-route on the same
+indoor wall. Caught before landing it silently: the old caption ("At the
+foot of the wall, between attempts.") and alt text would have flatly
+misdescribed the new photo, which the real-material rule doesn't allow to
+slide by unnoticed. Confirmed with Igor which way to take it — land the new
+photo and write it a caption that matches, rather than keep the old frame or
+guess at new copy unprompted. New copy: "Reaching for the next hold." /
+«Тянется к следующей зацепке.» (alt: "Igor Shatsev mid-move on an indoor
+bouldering wall, reaching for the next hold."). Processed the same way as
+climb-06: source (3670×4587, already near-exact 4:5) centre-cropped to exact
+4:5, `autocontrast(cutoff=0.5)`, no colour, delivered at the slot's existing
+900×1125 / 450×563 — the `--45` ratio class and the slot's box didn't need
+to change, only the pixels and the words describing them.
+
+**Sizes land in line with the existing real-photo pattern**, not the plan's
+future WebP budget: `climb-01-board@2x` came out to 194 KB, `climb-06-wide
+@2x` to 154 KB — both larger than the plan's eventual ≤120 KB/`@2x` target,
+but that target is explicitly for the `<picture>`+WebP delivery half of
+Stage 6 (still outstanding), not today's plain JPEGs. Every other real
+climbing `@2x` already runs 220–236 KB, so these two are actually smaller
+than their siblings.
+
+**Raw sources stay untracked, matching every prior real-photo landing** —
+only the processed `assets/collage/*.jpg` derivatives are committed; the
+6–8.5 MB originals in `Claude outputs/` are left exactly where they were,
+neither added to git nor deleted.
+
+**Verified**: `tests/test_collage.py`, `test_content.py`, `test_a11y.py`
+green (69 tests; no test hardcoded the old climb-01 caption). Full suite
+green after. Driven live in the browser pane on a hand-started fresh port
+(the port-caching gotcha from Stage 4's entry above recurred once here too —
+same fix, a new port) — both themes, both languages, 375px with no
+horizontal overflow, no console errors; both new photos read correctly
+against their (one changed, one unchanged) captions.
+
+**Live artifact not republished** — the hold is about the EN group, still
+stock; this pass didn't touch it.
