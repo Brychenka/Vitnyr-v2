@@ -3006,3 +3006,140 @@ reliable here than trying to toggle it live in the browser pane).
 
 **Live artifact not republished** — code-only; the collage placeholder hold
 still applies.
+
+## Collage Stage 3 — the lightbox (2026-09-11)
+
+Branch `feature/collage-lightbox`. Files: `main.js` (new `initCollageLightbox`,
+called from `applyOpen`; the router's Escape handler in `initCollageView`),
+`style.css`, new `tests/test_collage_lightbox.py`.
+
+**Reverses Stage 5's "add nothing to the tiles" ruling on purpose** — the
+plan's own point in raising the collage's ceiling: a tile becomes a real
+control (click-to-enlarge), so a hover scale or a focus ring (Stage 4) stop
+being false affordances and start being earned ones. Everything is built at
+runtime, the same way `initSpecimenReveal()` builds its "+ Show the common
+mistake" control: with this file absent, the no-JS document keeps 15 plain
+`<figure>`s and ships zero dead buttons — `.collage__trigger` and `.lightbox`
+never exist without JS.
+
+**Routing stays outside `location.hash` on purpose**, per the plan: making
+`#collage/en-01` a nested route would put 21 existing tests and the
+render-blocking pre-paint gate (`index.html`) at risk for a deep-linkable-
+photo nicety nobody asked for. So the lightbox is a layer on top of the view,
+tracked by a plain `lightboxOpen` flag: Escape closes just the lightbox and
+returns focus to the tile that opened it; browser Back still closes the
+whole `#collage` view underneath it, untouched. The router's own Escape
+handler checks `lightboxOpen` and no-ops while it's set, rather than fighting
+the lightbox's own handler over event phase/propagation — one layer closes
+at a time.
+
+**Focus trap reuses the view's own `inert` idea** instead of a hand-rolled
+one: `.view__bar` and `.view__body` go `inert` while the lightbox is open
+(the same mechanism `initCollageView` already uses on `#app`/`.masthead`),
+so Tab can only reach the lightbox's own controls. A side effect, confirmed
+by a new test: neither language switch is reachable while a photo is
+enlarged — the masthead's copy is already inert from the view being open,
+and the view bar's copy joins it. Switching language has to happen before
+opening a photo; `render()` still picks up whichever language was active at
+that point.
+
+**Tiles**: `initCollageLightbox` enumerates `view.querySelectorAll('.collage
+figure')` — one flat, document-order list that already includes the climbing
+group's `.collage__pair__fig` pair (a plain `<figure>`, just a different
+class), so prev/next crosses it for free with no special-casing. Each
+figure's existing `.collage__slot` is wrapped in a real `<button
+class="collage__trigger">` (`style.css`'s reset strips only button chrome —
+background/border/padding/font — so the slot's own border/ratio/grayscale
+styling is untouched). Enter/Space open it for free (native `<button>`
+behaviour); no extra key handling needed for that half.
+
+**Accessible name comes straight off the existing `<figcaption>`** — each
+trigger's `aria-labelledby` points at the figure's own caption (given a
+stable id on first build). The lightbox's own caption element carries the
+same `data-en`/`data-ru` pair copied fresh on every `render()`, which means
+theme.js's existing `applyLang()` loop (`[data-en][data-ru]` →
+`textContent`) keeps it in sync on every future language switch for free —
+deliberately *not* the bespoke `vitnyr:langchange` handler the plan
+sketched, since the generic mechanism already does the job and CLAUDE.md's
+"don't invent a third i18n mechanism" applies just as much to runtime-built
+markup as to markup in `index.html`.
+
+**Icon-only controls** (close / prev / next) get a plain English `aria-label`
+— matching the masthead's own icon-nav (`data-collage-jump`, also
+English-only), not a new bilingual pattern.
+
+**Visual**: no third colour, no gradient, no shadow, no radius. The overlay
+is full-bleed solid `--bg` — the same "own full-screen takeover" language
+`#collage` itself already uses — rather than inventing a translucent
+backdrop the brand's flat-colour rule has no colour for. `z-index: 70`, above
+the view (60) and below the pointer dot (90). Grayscale (`--collage-filter`)
+stays on the enlarged photo too — Stage 5's grayscale->colour rejection holds
+at every size, plan's explicit call-out. `width/height: auto` + `max-width/
+max-height: 100%` on `.lightbox__img` caps display at the source's own native
+pixel size rather than upscaling a 900w/1200w file to fill the screen —
+`PLACEHOLDERS.md` already flags `climb-04-crimp` as soft at grid size, and a
+naive fill-the-viewport lightbox would only make that worse; Stage 6 is the
+real fix once high-res sources land. No entrance/exit animation was added
+(none was asked for) — `hidden` toggles instantly, which is also why
+"opens with no animation under reduced motion" is true by construction
+rather than needing its own CSS branch.
+
+**#collage's own scroll gets the same lock `body` already has** —
+`html.js.lightbox-open .view { overflow: hidden; }` — because `#collage` is
+itself the `overflow: auto` scroll container, not the document; without this
+a background scroll gesture over the enlarged photo would scroll the view
+behind it.
+
+**New tests** (`tests/test_collage_lightbox.py`, 16 new): no-JS document
+ships zero lightbox controls; tile count matches the real figure count;
+opens on click and on Enter/Space; the lightbox shows the tile that opened
+it (caption + a real "n / total" count, not asserted); content behind goes
+`inert`; Escape closes one layer and returns focus to the originating tile
+(the view itself stays open); prev/next move and wrap via both the on-screen
+arrows and `ArrowLeft`/`ArrowRight`; the paired climbing row's two figures
+are in the sequence; grayscale still applies inside the lightbox; opens
+immediately under reduced motion; the caption reflects whichever language
+was active when it opened; both language switches are confirmed unreachable
+(`inert`) while it's open; no console errors across an open/next/Escape
+cycle; no horizontal overflow at 375px.
+
+One timing note worth recording: a test that clicks a tile immediately after
+opening `#collage` can hit Stage 2's door-morph View Transition's own
+top-layer overlay instead of the tile underneath — Playwright reports the
+miss as `<html>` intercepting the click, since the transition's pseudo-
+element isn't part of the normal DOM tree and gets attributed to the
+document root. The transition genuinely holds that overlay for the full
+`var(--t)` (.6s) even though focus lands earlier, inside the deferred VT
+callback (Stage 2). `_open_collage()` now waits out that window once, so no
+individual test has to know about it.
+
+**Verified**: `test_collage_lightbox.py` green standalone. Driven in the
+browser pane at 1280 and 375, both themes, both languages — opened a tile,
+paged through the sequence with the arrow buttons and the keyboard, closed
+with Escape and with the close button, confirmed focus returns to the
+correct tile each time and the view itself never closes along with it. No
+console errors, no horizontal overflow. Full suite re-run twice clean:
+227 items collected (up from 226 pre-stage), all passed.
+
+**A bug the first pass missed**: manual QA at 375px found `.lightbox__prev`
+silently unclickable — a tap landed on the photo underneath it instead.
+`.lightbox__media` is a grid item (`grid-row: 1`), and in-flow grid/flex
+items paint in the same layer as absolutely-positioned descendants with
+`z-index: auto`, ordered by DOM position rather than by which element is
+"positioned". The buttons' DOM order is close, prev, media, next, so
+`.lightbox__prev` — coming before media — painted underneath any photo wide
+enough to reach the left edge (routine at phone widths, since the
+native-resolution cap barely shrinks these small sources), while
+`.lightbox__next` — coming after media — stayed on top by accident of
+markup order alone. Playwright's suite never caught it because its default
+viewport is wide enough that the images never reach the edge buttons.
+Fixed with an explicit `z-index: 1` on all three lightbox buttons, which
+takes them out of the DOM-order tie-break for good; confirmed with
+`document.elementFromPoint()` hit-testing (cosmetic inspection alone can
+miss this class of bug) at 375px, both themes, both languages. New
+regression test `test_prev_button_is_not_covered_by_the_photo_at_375`
+confirmed failing against the pre-fix CSS before the fix landed, per this
+series' testing convention.
+
+**Live artifact not republished** — code-only; the collage placeholder hold
+still applies.

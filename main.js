@@ -345,6 +345,180 @@
     armFailsafe();   // belt-and-braces: force-show any tile the observer misses
   }
 
+  /* ---------- collage lightbox (Stage 3) ----------
+     Reverses Stage 5's "add nothing to the tiles" ruling (BUILD-NOTES,
+     collage-plan.md) now that Igor has asked for click-to-enlarge: a tile
+     is a real control, so the affordance stops being a lie. Every bit of
+     it — the per-tile <button> and the dialog itself — is built here at
+     runtime, the same way initSpecimenReveal() builds its "+ Show the
+     common mistake" control: absent this file, the no-JS document keeps
+     15 plain <figure>s and ships zero dead buttons.
+
+     Routing stays outside location.hash on purpose (see the plan): Escape
+     closes the lightbox, closing it returns focus to the tile that opened
+     it, and browser Back still closes the whole #collage view — the
+     router's own keydown handler below checks the shared lightboxOpen
+     flag and no-ops while this is open, so Escape only ever closes one
+     layer at a time. The focus trap reuses the view's own inert idea
+     rather than a hand-rolled one: .view__bar and .view__body go inert
+     while the box is open, so Tab can only reach the lightbox's own
+     controls (main.js:750-758 already proved this pattern for #app).
+
+     Accessible name comes straight off the figure's own <figcaption> — the
+     dialog's aria-labelledby and the caption node both point at real
+     bilingual text that already carries data-en/data-ru, so theme.js's
+     existing applyLang() loop (`[data-en][data-ru]`) keeps every language
+     switch in sync for free; no bespoke vitnyr:langchange handler needed
+     here, which is the same "don't invent a third i18n mechanism" rule
+     CLAUDE.md states for markup applied to runtime-built markup instead. */
+  var lightboxOpen = false;
+  var lightboxArmed = false;
+  function initCollageLightbox(view) {
+    if (lightboxArmed) return;
+    lightboxArmed = true;
+
+    var figures = Array.prototype.slice.call(view.querySelectorAll('.collage figure'));
+    if (!figures.length) return;
+
+    var bar = view.querySelector('.view__bar');
+    var body = view.querySelector('.view__body');
+    var canInert = 'inert' in HTMLElement.prototype;
+
+    var box = document.createElement('div');
+    box.className = 'lightbox';
+    box.hidden = true;
+    box.tabIndex = -1;
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-labelledby', 'lightbox-caption');
+
+    var media = document.createElement('div');
+    media.className = 'lightbox__media';
+    var img = document.createElement('img');
+    img.className = 'lightbox__img';
+    img.decoding = 'async';
+    media.appendChild(img);
+
+    var caption = document.createElement('p');
+    caption.className = 'lightbox__caption';
+    caption.id = 'lightbox-caption';
+
+    var count = document.createElement('p');
+    count.className = 'lightbox__count';
+    count.setAttribute('aria-hidden', 'true');
+
+    // Icon-only controls: plain English aria-label, matching the masthead's
+    // own icon-nav (data-collage-jump), which is aria-label without a
+    // bilingual pair too — no new pattern introduced.
+    function iconButton(cls, label, path) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = cls;
+      b.setAttribute('aria-label', label);
+      b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + path + '</svg>';
+      return b;
+    }
+    var closeBtn = iconButton('lightbox__close', 'Close',
+      '<path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>');
+    var prevBtn = iconButton('lightbox__prev', 'Previous photograph',
+      '<path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>');
+    var nextBtn = iconButton('lightbox__next', 'Next photograph',
+      '<path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>');
+
+    box.appendChild(closeBtn);
+    box.appendChild(prevBtn);
+    box.appendChild(media);
+    box.appendChild(nextBtn);
+    box.appendChild(caption);
+    box.appendChild(count);
+    view.appendChild(box);
+
+    var index = 0;
+    var returnFocusTo = null;
+    function isRu() { return root.getAttribute('data-lang') === 'ru'; }
+
+    // Re-run on open and on every prev/next step. Language itself is left
+    // to theme.js's own applyLang() loop (see comment above) — this only
+    // ever sets the pair fresh for the newly-shown photo.
+    function render() {
+      var fig = figures[index];
+      var srcImg = fig.querySelector('img');
+      var cap = fig.querySelector('figcaption');
+      img.src = (srcImg && (srcImg.currentSrc || srcImg.src)) || '';
+      img.srcset = (srcImg && srcImg.srcset) || '';
+      img.sizes = '100vw';
+      img.alt = (srcImg && srcImg.alt) || '';
+      var en = cap ? (cap.getAttribute('data-en') || '') : '';
+      var ru = cap ? (cap.getAttribute('data-ru') || '') : '';
+      caption.setAttribute('data-en', en);
+      caption.setAttribute('data-ru', ru);
+      caption.textContent = isRu() ? ru : en;
+      count.textContent = (index + 1) + ' / ' + figures.length;
+    }
+
+    function open(i, opener) {
+      index = i;
+      returnFocusTo = opener;
+      lightboxOpen = true;
+      render();
+      box.hidden = false;
+      root.classList.add('lightbox-open');
+      if (canInert) {
+        if (bar) bar.inert = true;
+        if (body) body.inert = true;
+      }
+      box.focus({ preventScroll: true });
+    }
+    function close() {
+      if (!lightboxOpen) return;
+      lightboxOpen = false;
+      box.hidden = true;
+      root.classList.remove('lightbox-open');
+      if (canInert) {
+        if (bar) bar.inert = false;
+        if (body) body.inert = false;
+      }
+      if (returnFocusTo && returnFocusTo.focus) returnFocusTo.focus({ preventScroll: true });
+    }
+    function step(delta) {
+      index = (index + delta + figures.length) % figures.length;
+      render();
+    }
+
+    // Wraps each figure's existing .collage__slot in a real button — the
+    // slot's own border/ratio/grayscale styling is untouched, only now
+    // reachable by click and by Enter/Space (native <button> behaviour,
+    // no extra key handling needed for that half). Flat figure order
+    // (querySelectorAll above) already includes the climbing group's
+    // .collage__pair__fig pair, so prev/next crosses it for free.
+    figures.forEach(function (fig, i) {
+      var slot = fig.querySelector('.collage__slot');
+      var cap = fig.querySelector('figcaption');
+      if (!slot) return;
+      var trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'collage__trigger';
+      if (cap) {
+        if (!cap.id) cap.id = 'collage-cap-' + i;
+        trigger.setAttribute('aria-labelledby', cap.id);
+      }
+      fig.insertBefore(trigger, slot);
+      trigger.appendChild(slot);
+      trigger.addEventListener('click', function () { open(i, trigger); });
+    });
+
+    closeBtn.addEventListener('click', close);
+    prevBtn.addEventListener('click', function () { step(-1); });
+    nextBtn.addEventListener('click', function () { step(1); });
+
+    document.addEventListener('keydown', function (e) {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowLeft') { step(-1); }
+      else if (e.key === 'ArrowRight') { step(1); }
+    });
+  }
+
   /* ---------- measured numbers count up to their value ----------
      Back after Spark Order move 17 removed it — but no longer as one gauge.
      Move 17's objection was real: three numbers sweeping up together on one
@@ -808,6 +982,7 @@
       view.scrollTop = 0;
       promoteCollageImages(view);   // first open: let the 18 figures actually fetch
       armCollageReveals(view);   // first open: hand the tiles to their own observer
+      initCollageLightbox(view);   // first open: wrap the tiles in real controls
       // Synchronous: the view is visible the moment the class lands, and rAF
       // can be suspended in a background tab (see whenRendering above) — a
       // deferred focus move is a focus move that might never happen.
@@ -987,7 +1162,12 @@
     if (backBtn) backBtn.addEventListener('click', leave);
     window.addEventListener('hashchange', function () { routeAfterHashChange(); });
     document.addEventListener('keydown', function (e) {
-      if ((e.key === 'Escape' || e.key === 'Esc') && applied) { e.preventDefault(); leave(); }
+      // Stage 3: the lightbox is a layer on top of this view, with its own
+      // Escape handler (initCollageLightbox) — this one no-ops while that
+      // flag is set, so Escape closes one layer at a time rather than both.
+      if ((e.key === 'Escape' || e.key === 'Esc') && applied && !lightboxOpen) {
+        e.preventDefault(); leave();
+      }
     });
 
     sync(true);   // deep-link path; the <head> script already set .collage-open

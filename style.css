@@ -1126,6 +1126,18 @@ html.js .origin__panel-item.is-active { opacity: 1; }
   object-fit: cover;
   filter: var(--collage-filter);
 }
+/* Stage 3: main.js wraps every .collage__slot in a real <button> at
+   runtime (initCollageLightbox) — a no-JS reader never sees this class at
+   all. Reset to plain-block rather than `all: unset`, so only the button
+   chrome (background/border/padding/font) is stripped and .collage__slot's
+   own border/ratio/overflow stay exactly as they were, unaffected by the
+   extra wrapper. */
+.collage__trigger {
+  display: block; width: 100%;
+  background: none; border: 0; margin: 0; padding: 0;
+  font: inherit; color: inherit; text-align: inherit;
+  cursor: pointer;
+}
 /* Sans, not mono: mono on this page is quoted linguistic material, and a
    filename is neither. Placeholder only — deleted with the boxes in Stage 3. */
 .collage__wait {
@@ -1232,6 +1244,90 @@ html.js.collage-open, html.js.collage-open body { overflow: hidden; }
   animation-duration: var(--t);
   animation-timing-function: var(--e);
 }
+
+/* ---------- collage lightbox (Stage 3) ----------
+   A layer on top of the view, not a nested route (main.js's own note:
+   moving #collage/#collage-en into hash-prefix matching would put 21
+   existing tests and the render-blocking pre-paint gate at risk for a
+   deep-linkable-photo nicety that hasn't been asked for). Built and
+   appended entirely at runtime — see initCollageLightbox — so nothing
+   here ships to a no-JS reader.
+
+   Full-bleed solid --bg, the same visual language the view itself already
+   uses for its own full-screen takeover, rather than inventing a
+   translucent backdrop the brand's flat-colour rule doesn't have a
+   colour for. z-index sits between the view (60) and the pointer dot
+   (90) — above the photographs, below the cursor. */
+.lightbox {
+  position: fixed; inset: 0; z-index: 70;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-items: center;
+  padding: clamp(20px, 5vw, 60px);
+  background: var(--bg);
+}
+.lightbox[hidden] { display: none; }
+/* Programmatic focus target, not a control — same suppression as
+   .view__body > h1:focus(-visible) above, and for the same reason. */
+.lightbox:focus, .lightbox:focus-visible { outline: none; }
+
+.lightbox__media {
+  grid-row: 1;
+  width: 100%; height: 100%; min-height: 0;
+  display: grid; place-items: center;
+}
+/* width/height: auto with these two max-* is what caps display at the
+   image's own native pixel size instead of upscaling a 900w/1200w source
+   to fill the screen — PLACEHOLDERS.md already flags climb-04-crimp as
+   soft at grid size; a lightbox must not make that worse by stretching it
+   further. Grayscale stays on at every size — no colour reveal here, the
+   Stage 5 rejection of grayscale->colour holds at any zoom level. */
+.lightbox__img {
+  display: block;
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  filter: var(--collage-filter);
+}
+.lightbox__caption {
+  grid-row: 2;
+  margin-top: 16px;
+  font-size: 13px; color: var(--fg2); letter-spacing: .01em;
+  text-align: center; max-width: 60ch;
+}
+.lightbox__count {
+  position: absolute; top: clamp(20px, 5vw, 60px); left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sans); font-size: 11px; letter-spacing: .06em; color: var(--fg2);
+}
+.lightbox__close, .lightbox__prev, .lightbox__next {
+  -webkit-appearance: none; appearance: none;
+  position: absolute;
+  /* Grid items (.lightbox__media, .lightbox__caption) paint like
+     inline-blocks — the same visual layer as these absolutely-positioned
+     buttons — ordered by DOM position, not by which is "positioned". Media
+     sits after .lightbox__prev but before .lightbox__next in the markup,
+     so without this, prev silently painted *under* a photo wide enough to
+     reach the edges (any phone-width viewport, since the native-resolution
+     cap barely shrinks these small sources) while next stayed on top.
+     z-index takes both out of that DOM-order tie-break for good. */
+  z-index: 1;
+  background: none; border: 0; padding: 10px;
+  cursor: pointer; color: var(--fg2);
+  transition: color var(--t) var(--e);
+}
+.lightbox__close:hover, .lightbox__prev:hover, .lightbox__next:hover { color: var(--fg); }
+.lightbox__close svg, .lightbox__prev svg, .lightbox__next svg { width: 24px; height: 24px; display: block; }
+.lightbox__close { top: clamp(16px, 4vw, 36px); right: clamp(16px, 4vw, 36px); }
+.lightbox__prev { left: clamp(8px, 3vw, 28px); top: 50%; transform: translateY(-50%); }
+.lightbox__next { right: clamp(8px, 3vw, 28px); top: 50%; transform: translateY(-50%); }
+@media (pointer: coarse) {
+  .lightbox__close, .lightbox__prev, .lightbox__next { padding: 13px; }
+}
+
+/* #collage is itself the overflow:auto scroll container (not the
+   document), so it needs the same belt-and-braces lock html.collage-open
+   already puts on body while the lightbox sits on top of it. */
+html.js.lightbox-open .view { overflow: hidden; }
 
 /* no-JS fallback: a plain closing rule for the section */
 .view { border-top: 1px solid var(--rule); }
