@@ -19,6 +19,14 @@ def _is_open(page):
 def test_opener_routes_into_the_view(open_site):
     page, _ = open_site()
     page.locator("[data-collage-open]").click()
+    # Stage 2's door morph routes this open through a View Transition, so the
+    # class flip and focus move land inside its deferred update callback
+    # rather than synchronously with the click (main.js's withTransition()
+    # has a 100ms failsafe as the outer bound).
+    page.wait_for_function(
+        "document.activeElement && document.activeElement.id === 'collage-title'",
+        timeout=1000,
+    )
 
     assert page.evaluate("location.hash") == "#collage"
     assert _is_open(page)
@@ -355,24 +363,94 @@ def test_collage_images_have_noscript_fallback_in_markup(open_site):
     assert html.count('<noscript><img src="assets/collage/') == COLLAGE_IMAGES
 
 
-# --- S7 move 04: the route cross-fades on close, but never at the cost of the
-# synchronous focus move on open. ---
+# --- S7 move 04, extended at Stage 2: the route now takes a View Transition
+# on both directions, and the door ("See the work") morphs into the view's
+# own "Photographs" label on the way in. The old guarantee — a stray focus
+# never gets stranded behind a deferred update callback — is restated rather
+# than dropped: focus lands once the transition's update has actually run,
+# and lands synchronously on every path that cannot run one at all. ---
 
-def test_view_transition_does_not_delay_focus(open_site):
-    """Opening focuses #collage-title synchronously — not behind
-    startViewTransition's deferred update callback (the open path is left as a
-    direct call for exactly this reason). Closing does take the transition, and
-    focus still returns to the opener button."""
+def test_view_transition_focuses_once_the_update_has_run(open_site):
+    """Opening through the door takes a View Transition when one is available
+    (Chromium, motion allowed, tab visible), so focus is not guaranteed on the
+    same tick as the click any more — but it is guaranteed within the update
+    callback's own lifetime, with main.js's 100ms failsafe as the outer bound
+    if that callback is ever lost rather than merely slow. Closing still
+    returns focus to the opener button."""
     page, _ = open_site()
     page.locator("[data-collage-open]").click()
-    # no wait: focus must already be on the heading
-    assert page.evaluate("document.activeElement.id") == "collage-title"
-    assert page.evaluate("() => document.activeElement.id") == "collage-title"
+    page.wait_for_function(
+        "document.activeElement && document.activeElement.id === 'collage-title'",
+        timeout=1000,
+    )
+    assert _is_open(page)
 
     page.keyboard.press("Escape")
     page.wait_for_timeout(500)
     assert not _is_open(page)
     assert page.evaluate("() => document.activeElement.matches('[data-collage-open]')")
+
+
+def test_view_transition_open_is_synchronous_with_no_api(open_site):
+    """With startViewTransition absent, opening is the same direct call it has
+    always been — focus lands with no wait at all."""
+    page, _ = open_site()
+    page.evaluate("() => { document.startViewTransition = undefined; }")
+    page.locator("[data-collage-open]").click()
+    assert page.evaluate("document.activeElement.id") == "collage-title"
+
+
+def test_view_transition_open_is_synchronous_in_a_hidden_tab(open_site):
+    """canTransition() checks document.visibilityState itself rather than
+    trusting the API to handle backgrounding — a hidden tab is exactly where a
+    deferred update callback might never run, so it takes the direct path."""
+    page, _ = open_site()
+    page.evaluate(
+        "() => Object.defineProperty(document, 'visibilityState', "
+        "{ value: 'hidden', configurable: true })"
+    )
+    page.locator("[data-collage-open]").click()
+    assert page.evaluate("document.activeElement.id") == "collage-title"
+
+
+def test_view_transition_failsafe_opens_if_the_update_callback_never_runs(open_site):
+    """A startViewTransition that never invokes its callback and never settles
+    updateCallbackDone (lost, not just slow) still can't strand the open —
+    withTransition()'s failsafe calls the same idempotent mutation directly."""
+    page, _ = open_site()
+    page.evaluate("""() => {
+        document.startViewTransition = function () {
+            return {
+                updateCallbackDone: new Promise(function () {}),
+                ready: new Promise(function () {}),
+                finished: new Promise(function () {})
+            };
+        };
+    }""")
+    page.locator("[data-collage-open]").click()
+    page.wait_for_timeout(250)
+    assert _is_open(page)
+    assert page.evaluate("document.activeElement.id") == "collage-title"
+
+
+def test_door_morph_clears_its_view_transition_name_after_opening(open_site):
+    """The door and its destination only carry view-transition-name for the
+    life of one transition. Left behind, either name would collide with
+    whatever transition runs next on that element."""
+    page, _ = open_site()
+    opener = page.locator("[data-collage-open]")
+    opener.click()
+    page.wait_for_function(
+        "document.activeElement && document.activeElement.id === 'collage-title'",
+        timeout=1000,
+    )
+    # cleared inside the same synchronous mutate() that lands focus
+    assert opener.evaluate("el => el.style.viewTransitionName") in ("", None)
+    # cleared only once the transition's own `finished` promise settles,
+    # which takes the full route duration (--t, .6s)
+    page.wait_for_timeout(900)
+    door_label = page.locator("#collage .view__body > .label").first
+    assert door_label.evaluate("el => el.style.viewTransitionName") in ("", None)
 
 
 def test_view_transition_falls_back_cleanly_under_reduced_motion(open_site):

@@ -2908,3 +2908,101 @@ console errors, no horizontal overflow at 375.
 **Live artifact not republished** — this is a code-only motion change; the
 collage placeholder hold (`assets/collage/PLACEHOLDERS.md`) still applies
 regardless, and won't lift until the Stage 6 photo pass.
+
+## Collage Stage 2 — the door: shared-element morph into the view (2026-09-11)
+
+Branch `feature/collage-door-morph`. Files: `main.js` (`initCollageView`),
+`style.css`, `tests/test_collage.py`.
+
+**The route now takes a View Transition on both directions, not just close.**
+S7 move 04 had wrapped only the close path in `document.startViewTransition`,
+because `applyOpen()` focuses the heading synchronously and the API defers
+its update callback ~1 frame — a deferred focus is a focus that might never
+land, a bug this view had already shipped once. Stage 2's fix isn't to keep
+avoiding the callback, it's to keep living inside it: the class flip and the
+focus move are two adjacent lines inside `applyOpen()` and both still run
+synchronously *within* whichever call fires them, VT callback or not. The one
+thing that changes is which frame that pair lands on.
+
+- New `canTransition()` gate (no API, `reduce`, or a hidden tab all fall
+  through) and a shared `withTransition(mutate)` helper used by every
+  VT-eligible route. Its failsafe: a 100ms timer calls `mutate` directly if
+  `updateCallbackDone` hasn't settled by then. `mutate` is always one of
+  `sync()`'s two halves, and `applyOpen`/`applyClose` both already guard on
+  `applied`, so a call that lands twice (the failsafe *and* the real callback,
+  both eventually) is a no-op the second time.
+- `routeAfterHashChange()` generalised from "close only" to "either direction
+  actually flips open<->closed" — covers browser back/forward and any
+  hash-driven open, not just the opener.
+
+**The door itself**: `openWithDoorMorph()` gives "See the work" a named
+shared-element morph into the view's own "Photographs" label — the one
+destination that's always in the viewport at capture time, unlike the
+masthead glyph icons (rejected for the same reason Stage 2's plan called
+out: their destinations sit off-screen until a *smooth* scroll that hasn't
+run yet at capture time, so morphing them would mean giving up that smooth
+scroll — not this stage's call to make). `view-transition-name` is set on the
+source before the transition starts, moved to the destination inside the
+callback, and cleared from both once `t.finished` settles, so neither element
+carries a stale name into some later, unrelated transition. The masthead jump
+icons are untouched — still a direct `sync(false)`, no VT, same smooth scroll
+as before.
+
+**CSS**: added `::view-transition-group(root), ::view-transition-group
+(collage-door) { animation-duration: var(--t); animation-timing-function:
+var(--e); }`. Before this the close-direction crossfade (already shipped)
+was quietly running on the *browser's own default* timing — a second
+duration and a second curve that had gone unnoticed because nothing compared
+it against the token. Confirmed via `getComputedStyle(document
+.documentElement, '::view-transition-group(root)')` mid-transition that both
+pseudo-elements now genuinely resolve to `8s` when `--t` is overridden for a
+driven-frame check, `.6s` otherwise.
+
+**The bug this stage actually found**: a warm door-open's own click already
+puts `#collage` in the URL, and the browser's native scroll-to-fragment for
+it turns out not to be pushState-exempt after all — it still runs, just on a
+delayed task. Invisible before Stage 2, because every warm open ran
+`applyOpen()` in the same tick as the click, before that delayed task ever
+got a turn; captured `savedScroll` (1200, say) before anything could move it.
+Wrapping the open in a View Transition gives that delayed task a real gap to
+land in — `applyOpen()` now sometimes runs a frame or more later, by which
+point the page has already jumped to the native fragment target (near the
+very bottom, `#collage` being the last element in the DOM) and `savedScroll`
+captures *that* instead. Fix: `captureOpenState()` runs synchronously at the
+moment a route decides to open — before `withTransition()` ever schedules the
+deferred half — and `applyOpen()` consumes the pre-captured value instead of
+recomputing it. Cold opens and the masthead jump icons (always synchronous,
+never VT-wrapped) are unaffected; they keep capturing inline as before. Found
+by `test_scroll_position_restored_on_return`, which failed deterministically
+(not a flake) until this landed.
+
+**Tests reworked**: `test_view_transition_does_not_delay_focus` (zero-wait
+assertion) became `test_view_transition_focuses_once_the_update_has_run` —
+waits for focus via `wait_for_function` instead of asserting it on the same
+tick, since a real View Transition now defers that tick. `test_opener_routes
+_into_the_view` needed the same wait for the same reason. **New tests**:
+open is still synchronous with no API present, in a hidden tab, and — the
+sharpest one — when `startViewTransition` is mocked to never invoke its
+callback and never settle `updateCallbackDone` at all (not merely slow), the
+100ms failsafe still lands the open; the door's `view-transition-name` is
+confirmed cleared off both ends after opening. Left
+`test_view_transition_falls_back_cleanly_under_reduced_motion` as originally
+shipped rather than adding a zero-wait open-focus assertion to it — that
+assertion fails identically against the pre-Stage-2 `main.js`, confirmed by
+checking out `761e870`'s version and re-running it; a real, pre-existing
+timing quirk, out of this stage's scope, not something to paper over inside
+an unrelated test.
+
+**Verified**: full suite 211 pass / 0 fail (was 207; 5 new, 1 reworked/
+renamed), `test_collage.py` re-run 3x standalone with no flakes. Driven the
+actual door morph in the browser pane (slowed `--t` to 8s) — the class flip,
+DOM content swap and focus land correctly; confirmed via computed style on
+the live pseudo-elements (not just visual inspection) that both `root` and
+`collage-door` groups pick up the slowed duration and `--e`. Checked open/
+close/Escape round-trip, no console errors, no horizontal overflow, and the
+same cycle again at 375px in Charcoal/RU. Reduced-motion open/close covered
+by the pytest suite (context-level `prefers-reduced-motion: reduce`, more
+reliable here than trying to toggle it live in the browser pane).
+
+**Live artifact not republished** — code-only; the collage placeholder hold
+still applies.

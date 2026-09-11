@@ -1218,6 +1218,21 @@ html.js.collage-open .view {
    router isn't running. */
 html.js.collage-open, html.js.collage-open body { overflow: hidden; }
 
+/* Stage 2 — the route's View Transition (main.js: withTransition(),
+   S7 move 04 extended to the open direction) is left to the browser's own
+   default crossfade timing unless told otherwise, which is a second curve
+   and a second duration entering the system. Pin both the whole-page
+   crossfade (::view-transition-group(root), used by close and by any
+   hashchange-driven open) and the door's own named group to the one easing
+   curve and the same .6s this route's plain opacity fade already uses
+   above, so the API and the CSS agree regardless of which one a given
+   browser ends up painting. */
+::view-transition-group(root),
+::view-transition-group(collage-door) {
+  animation-duration: var(--t);
+  animation-timing-function: var(--e);
+}
+
 /* no-JS fallback: a plain closing rule for the section */
 .view { border-top: 1px solid var(--rule); }
 html.js .view { border-top: 0; }
