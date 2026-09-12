@@ -467,21 +467,89 @@ html.past-origin .progress__fill--target { opacity: 1; }
    the collage jumps with it: at 375px/EN the book icon sat 35px outside the
    viewport, at 320px two of the three were gone. Silent, and invisible to a
    scrollWidth check, which is why it outlived every other layout guard.
-   The caption yields first, for the reason the P20 note above already gives —
-   this row is a utility strip. Each icon keeps its own aria-label, so the
-   group is still named once the visible word goes. */
+   The caption yielded first, for the reason the P20 note above gives — this
+   row is a utility strip, and dropping it was the fastest way to stop three
+   44px targets running off-screen.
+
+   J4 (Jury Pass II, 2026-09-12): dropping it silenced the icons' one visible
+   label below 400px — a touch reader never sees aria-label or title, so on
+   the phone widths most readers actually carry, the three collage jumps had
+   no name at all. Measured (see BUILD-NOTES): there is no room to keep the
+   caption on this same dense line at any width down to 320 without reducing
+   a 44px touch target, which is not on the table. So it doesn't share the
+   line any more — .tools__group--util and .tools__group--nav each get a
+   full-width row of their own, which is room enough for the caption at any
+   width this breakpoint covers, EN or RU. That only holds before the reader
+   has scrolled, though: this is a "here's what these icons are" hint for
+   someone still finding their feet, not something worth a permanent second
+   row while they read. Once scrolled (html.is-scrolled, ~4px in), it
+   collapses straight back to the single dense nowrap row this breakpoint
+   has shipped since 2026-09-10 — same clip, same fit, caption included —
+   so the fix that must survive is untouched in that state. No JS, no
+   scroll tracking: html.is-scrolled never appears, so a no-JS reader keeps
+   the roomier always-labelled layout, which degrades safely in the
+   direction of showing more, not less. */
 @media (max-width: 400px) {
-  .tools__label { display: none; }
+  html:not(.is-scrolled) .tools {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  html:not(.is-scrolled) .tools__group--util,
+  html:not(.is-scrolled) .tools__group--nav {
+    flex-basis: 100%;
+    justify-content: flex-end;
+  }
+  html:not(.is-scrolled) .tools__rule { display: none; }
+  html.is-scrolled .tools__label { display: none; }
+
+  /* --head clears the masthead for the hero's own padding-top (see .hero),
+     which only ever matters before the reader has scrolled — after that the
+     hero is already off-screen. So it's sized for the taller, unscrolled,
+     three-row masthead this stage adds below 400px, not the scrolled
+     compact one. The 602px breakpoint's own +54px was calibrated to the
+     COARSE-pointer two-row height, with fine-pointer rows riding the same
+     constant a bit short of their real height — harmless there since the
+     gap was small (~11px). A flat +54 for this second row would repeat
+     that shortfall on top of itself and push fine-pointer clearance past
+     what P13's "hero copy starts well above a third of the viewport" test
+     allows. Measured separately instead, each keyed to its own pointer
+     type the same way .tool's own coarse-pointer padding already is:
+     +90px clears the real fine-pointer masthead height, +102px the real
+     coarse-pointer one, each with the same ~11px buffer the 602px
+     breakpoint's own constant carries. */
+  :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 86px); }
+}
+@media (max-width: 400px) and (pointer: coarse) {
+  :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 102px); }
 }
 /* At 320 with English labels, three 44px targets and a divider genuinely do
-   not fit; the divider goes too (with the caption gone, words-vs-glyphs
-   already separates the two clusters) and the gap drops to its tightest.
-   That width clears the edge by ~2px rather than the ~20px the wider phones
-   keep — the honest floor for 44px targets here, and still the difference
-   between a reachable control and one that is not on screen. */
+   not fit on the scrolled, single-row layout; the divider goes too (with the
+   caption gone there, words-vs-glyphs already separates the two clusters)
+   and the gap drops to its tightest. That width clears the edge by ~2px
+   rather than the ~20px the wider phones keep — the honest floor for 44px
+   targets here, and still the difference between a reachable control and
+   one that is not on screen. */
 @media (max-width: 340px) {
   .tools { gap: 12px; }
   .tools__rule { display: none; }
+}
+
+/* J4 (Jury Pass II, 2026-09-12): the sticky phone masthead held a permanent
+   127.6px — 16% of a 780px viewport — for controls that are not why anyone
+   scrolled here (theme, language, three collage jumps). Restoring the
+   caption above made the unscrolled header taller still, which is the
+   right trade at the top of the page but the wrong one to carry into
+   reading. So the reduction lands where the reader actually spends their
+   time: once scrolled, sticky, this breakpoint's own padding and row-gap
+   tighten below what they've ever been, on top of the caption already
+   collapsing away above. Touch targets are untouched — the saving comes
+   from the masthead's own frame, never from .tool/.tool--icon's padding,
+   which is what holds the 44px floor. */
+@media (max-width: 602px) {
+  html.is-scrolled .masthead {
+    padding-block: clamp(10px, 1.4vw, 16px);
+    row-gap: 6px;
+  }
 }
 
 /* ---------- in-copy emphasis ----------
@@ -642,8 +710,13 @@ html[data-lang="ru"] .breath__line { max-width: 26ch; letter-spacing: -.012em; }
     padding-top: calc(var(--head) + clamp(20px, 3vh, 40px));
   }
 }
+/* J4 (Jury Pass II, 2026-09-12): 42px was the floor before this — the
+   phone hero read as a modest blog header where the same clamp gives
+   desktop a 110px statement at 1280. Raised to 52px, still a floor only:
+   the 8.6vw middle of the curve and the 124px cap are unchanged, so nothing
+   above ~605px width (where 8.6vw first clears 52px) moves at all. */
 .hero__title {
-  font-size: clamp(42px, 8.6vw, 124px);
+  font-size: clamp(52px, 8.6vw, 124px);
   font-weight: 500;                  /* 600 fills Lora's serifs in at display size */
   line-height: 1;
   letter-spacing: -.025em;           /* -.035 collided serifs on adjacent stems */
