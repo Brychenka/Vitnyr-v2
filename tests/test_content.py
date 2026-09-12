@@ -36,12 +36,13 @@ def test_chess_rating_is_stated_without_fide(open_site):
 
 def test_climbing_grades_are_kept_distinct(open_site):
     page, _ = open_site()
-    # raw DOM text: .domain__meta is text-transform:uppercase, so compare
-    # case-insensitively. What matters is the two grades stay separate, not
-    # merged into one generic "7c".
-    text = page.evaluate("() => document.body.textContent").lower()
-    assert "7c redpoint" in text
-    assert "7c kilter" in text
+    # rendered text, not source: .domain__meta is text-transform:uppercase,
+    # and J2 (Jury Pass II) stopped that rule from flattening the domain
+    # stat's 7c/7C case. inner_text() reflects what the reader actually sees;
+    # text_content() would read the un-transformed source and miss a
+    # regression that brings the uppercase back.
+    stat = page.locator("article.domain").nth(2).locator(".domain__stat")
+    assert stat.inner_text() == "7c redpoint · 7C Kilter"
     # Spark Order S2 / move 18: in the facts row the two readings are two
     # separate elements now, not one run-on text node joined by a middle dot —
     # so a non-climber can see they are two different achievements.
@@ -50,6 +51,18 @@ def test_climbing_grades_are_kept_distinct(open_site):
         ".map(el => el.textContent.trim())"
     )
     assert readings == ["redpoint, indoor", "7C Kilter"]
+
+
+def test_domain_labels_stay_uppercase_while_stats_keep_their_case(open_site):
+    # The other half of J2: .domain__meta's uppercase must still apply to the
+    # ENGLISH/CHESS/CLIMBING label — only the stat span opts out.
+    page, _ = open_site()
+    labels = page.locator(".domain__meta > span:first-child")
+    assert [labels.nth(i).inner_text() for i in range(labels.count())] == [
+        "ENGLISH",
+        "CHESS",
+        "CLIMBING",
+    ]
 
 
 def test_the_three_measured_facts_are_exactly_these(open_site):
@@ -255,3 +268,17 @@ def test_specimen_permalink_updates_the_url_and_moves_focus(open_site):
     assert page.evaluate("location.hash") == ""
     assert page.evaluate("() => !document.body.classList.contains('collage-open') "
                          "&& !document.documentElement.classList.contains('collage-open')")
+
+
+def test_no_straight_apostrophes_in_visible_english_copy(open_site):
+    """J1 (Jury Pass II): prose apostrophes are typographic ('), not straight
+    ('). innerText mirrors what a reader sees — display:none RU text and any
+    JS/attribute-only strings (hrefs, data-prefill-*) never enter it, so this
+    can't be tripped by the things J1 was told not to touch."""
+    page, _ = open_site(lang="en")
+    assert "'" not in visible_text(page)
+
+    # The #collage view is a separate visible state, not reachable from the
+    # main-page innerText above — check it too.
+    page, _ = open_site(lang="en", hash="#collage")
+    assert "'" not in visible_text(page)

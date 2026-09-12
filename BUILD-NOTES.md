@@ -3363,3 +3363,70 @@ starts with the real shoot, alongside the deferred `<picture>`/WebP work.
 **Not verified by eye**: nothing — this pass was looking, not building.
 **Suite not re-run after this branch**: it touches only Markdown.
 **Live artifact not republished** — collage-placeholder hold, unchanged.
+
+## Jury Pass II — Stage J1, the typographic pass (2026-09-12)
+
+**J1 — straight quotes.** Swept all visible English copy in `index.html` for
+typewriter punctuation: `'` → `’` (35 of the 91 straight apostrophes the
+work order counted — the other 56 sit in HTML comments, the JSON-LD block,
+the `location.hash` JS literal, and `data-prefill-*` attributes, all
+correctly out of scope) and the two straight-quoted phrases —
+`"my English is bad"` in §02's breath block and `"I blundered"` in the chess
+domain card — to `“…”`. Left untouched, per the work order: `href`s
+and `data-href-*` deep links, `data-prefill-*` values (they feed those same
+percent-encoded URLs via `main.js`'s `initWhoRows()` clause-copy), the
+`location.hash` JS literal, HTML comments, the JSON-LD block, and the mono
+specimen "wrong"/"right" lines (changing their punctuation wasn't needed —
+none carried a straight mark). Russian copy already used « » and em dashes
+and was checked, not touched. `main.js`'s two JS-authored visible strings
+(`'Show the common mistake'` and its RU twin, the permalink status text)
+carried no apostrophes to begin with.
+
+First pass over the double-quote lines curly-converted every `"` on the
+line, including the `class="..."` / `data-l="..."` attribute delimiters
+sitting on the same line — caught by reading the diff, not by the suite
+(none of the 232 baseline tests parse quote characters inside attribute
+syntax). Fixed by hand on both affected lines before committing.
+
+Added `test_no_straight_apostrophes_in_visible_english_copy` to
+`test_content.py`: asserts `document.body.innerText` (rendered, so it
+already excludes hidden Russian and any JS/attribute-only string) contains
+no `'`, checked on both the main page and the `#collage` view. Regression-
+proven: fails against unmodified `main` (surfaces the straight marks),
+passes with the fix.
+
+**J2 — the 7c / 7C distinction.** `.domain__meta`'s `text-transform:
+uppercase` was inherited by its `.domain__stat` child, flattening `7c
+redpoint · 7C Kilter` to `7C REDPOINT · 7C KILTER` on screen. Fixed with one
+declaration — `.domain__stat { text-transform: none; }` — so the
+ENGLISH / CHESS / CLIMBING label keeps its caps (nothing overrides it) while
+the stat renders in its authored case. No markup change, no third colour, no
+transform-channel involvement.
+
+Replaced the `test_content.py:39–44` workaround (it lowercased
+`document.body.textContent` — source, not rendered — before asserting, so
+the uppercase bug could never fail it) with an assertion on
+`.domain__stat.inner_text()` for the climbing row, checked verbatim against
+`"7c redpoint · 7C Kilter"`. Added a second test,
+`test_domain_labels_stay_uppercase_while_stats_keep_their_case`, so the caps
+half of the same rule has its own guard rather than riding along
+unverified. Both regression-proven the same way as J1's test.
+
+**Verified**: both themes, both languages, 375 and 1280, `prefers-reduced-
+motion: reduce` — zero console errors, zero horizontal overflow at any
+combination (measured, not eyeballed). Screenshots taken of the hero, the
+§03 domains block in both themes and both widths, and the §02 breath block,
+confirming the curly quotes and the corrected grade casing render as
+intended. RU copy checked for regressions: guillemets and em dashes intact,
+no stray curly artifacts introduced.
+
+**Suite: 234 passed, 0 failed** (232 baseline + 2 new tests; no existing
+test was edited to make this pass).
+
+**Not done in this stage**: J3 (facts-row label case) — it's an "ask first"
+item gated on J0, which hasn't run yet, so it wasn't folded in per the work
+order's own instruction.
+
+**Live artifact not republished** — collage-placeholder hold from Jury Pass
+II's standing orders still applies; this stage didn't touch a photo either
+way.
