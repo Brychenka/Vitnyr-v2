@@ -144,7 +144,13 @@
    in every OS setting (Igor, 2026-09-07). Every value here is the charcoal
    counterpart of a token defined on :root above; nothing new is introduced. */
 :root[data-theme="dark"] {
-  --bg:     #14181A;
+  /* EXPERIMENT (feature/dark-theme-color-exploration, not merged): the old
+     #14181A is a neutral-cool near-black, while the cream pair's --bg
+     (#EFEBE3) is warm. Swapping to a warm near-black puts both theme pairs
+     in the same warmth family — same "paper", inverted — instead of reading
+     as a generic cool dark-mode invert. All contrast ratios re-checked
+     against this bg below; every pairing still clears its floor. */
+  --bg:     #171310;
   --green:  #4C7A52;
   --fg:     #F2EFE8;
   --fg2:    #A8ABA9;
