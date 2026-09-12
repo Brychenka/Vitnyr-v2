@@ -1080,13 +1080,22 @@ html.js .origin__panel-item.is-active { opacity: 1; }
   cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 .row__pick:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 4px; }
+/* J2 (Jury Pass II, 2026-09-12): the picked-state rule above used to be the
+   *only* visible state — at rest a row gave no hint it was clickable. Same
+   ::before, same -14px gutter, now also shown at rest in --rule's hairline
+   weight (the exact tone the row's own top/bottom borders already use), so
+   it reads as "this row has an edge" rather than a new device, then
+   brightens to full --ink-target on pick. Gated behind html.js: the overlay
+   button that makes rows clickable is also JS-only, so a no-JS reader must
+   not see a mark promising an interaction that isn't there. */
 .rows > li::before {
   content: ""; position: absolute; top: 0; bottom: 0;
   left: -14px; width: 2px;
   background: var(--ink-target);
-  opacity: 0; transition: opacity var(--t) var(--e);
+  opacity: 0; transition: opacity var(--t) var(--e), background-color var(--t) var(--e);
 }
-.rows > li.is-picked::before { opacity: 1; }
+html.js .rows > li::before { background: var(--rule); opacity: 1; }
+html.js .rows > li.is-picked::before { background: var(--ink-target); }
 
 /* ---------- collage composition ----------
    Lives inside the collage view (below), once per domain group (English,

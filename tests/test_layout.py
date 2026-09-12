@@ -333,3 +333,49 @@ def test_who_rows_are_plain_and_cta_static_without_js(open_site):
     assert page.locator(".row__pick").count() == 0
     cta = page.locator(_CTA)
     assert cta.get_attribute("href") == cta.get_attribute("data-href-en")
+
+
+# --- J2 (Jury Pass II): the rows above were selectable with no way to tell —
+# the only visible state was "picked". A resting mark now lives in the same
+# -14px gutter, at --rule's hairline weight, brightening to --ink-target on
+# pick; a one-line instruction sits under the section's h2. ---
+
+
+def _before_style(page, locator):
+    return page.evaluate(
+        "el => { const cs = getComputedStyle(el, '::before'); "
+        "return { opacity: cs.opacity, background: cs.backgroundColor }; }",
+        locator.element_handle(),
+    )
+
+
+def test_who_rows_show_a_quiet_resting_mark_that_brightens_when_picked(open_site):
+    page, _ = open_site()
+    row = page.locator(".rows > li").first
+    rest = _before_style(page, row)
+    assert rest["opacity"] == "1"
+
+    row.locator(".row__pick").click()
+    page.wait_for_timeout(700)   # the background-color transition is --t (.6s)
+    picked = _before_style(page, row)
+    assert picked["opacity"] == "1"
+    # Same device, brighter ink — not a repaint to the exact same color.
+    assert picked["background"] != rest["background"]
+
+
+def test_who_rows_resting_mark_is_absent_without_js(open_site):
+    """The overlay <button> that makes a row clickable is JS-only (see the
+    test above); the resting mark that promises "this does something" must
+    degrade with it, or a no-JS reader gets a mark for an interaction that
+    isn't there."""
+    page, _ = open_site(java_script_enabled=False)
+    row = page.locator(".rows > li").first
+    assert _before_style(page, row)["opacity"] == "0"
+
+
+def test_who_section_explains_what_picking_a_row_does(open_site):
+    for lang in ("en", "ru"):
+        page, _ = open_site(lang=lang)
+        lede = page.locator("#who .sec__lede")
+        assert lede.count() == 1
+        assert lede.inner_text().strip()
