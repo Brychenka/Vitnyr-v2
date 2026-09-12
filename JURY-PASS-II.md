@@ -51,7 +51,7 @@ and three of those were made by Igor personally.
 | J6 | §02 specimens hide the mistake at rest | **Decided 2026-09-12: keep the reveal, fix the spoiler (b)** | J5 |
 | J7 | The origin mark rests two-thirds dimmed | **Decided 2026-09-12: raise the dim floor** | J5 |
 | J8 | The three §01 mechanism rows have ragged left edges | **Withdrawn** | — |
-| J9 | Phone: headline scales down hard; sticky masthead eats 128px of 780px | **Build** | J4 |
+| J9 | Phone: headline scales down hard; sticky masthead eats 128px of 780px | **Build** — landed 2026-09-12 | J4 |
 | J10 | The photographs are the least-surfaced asset on the page | **Parked** | J6 |
 
 ### J1 — straight quotes (Build)
@@ -467,7 +467,7 @@ bilingual `alt` work. Unblocks the artifact republish at the same time.
 | J1 — typographic pass | J1, J2, (J3) | **landed** 2026-09-12, `6c58df6` — J3 resolved as "keep as is," no code needed |
 | J2 — make the answer visible | J4 | **landed** 2026-09-12, `0ba4f27` |
 | J3 — one loudest thing | J5 | hierarchy half **landed** 2026-09-12, `49426cd` — copy half still needs Igor's exact EN/RU CTA wording |
-| J4 — the phone | J9 | not started |
+| J4 — the phone | J9 | **landed** 2026-09-12, merge SHA pending |
 | J5 — the spoiler and the dim floor | J6(b), J7 | not started — no longer gated, both confirmed at J0 |
 | J6 — photographs | J10 | parked |
 

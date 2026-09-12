@@ -176,6 +176,29 @@ def test_desktop_hero_still_centres(open_site):
     assert justify == "center"
 
 
+# --- J4 (Jury Pass II, 2026-09-12): 42px read as a modest blog header next
+# to the same clamp's 110px desktop statement — raised the floor to 52px.
+# Only the floor moves; the 8.6vw middle of the curve and the 124px cap are
+# untouched, so this must hold at the narrow end and stop mattering well
+# before the width where 8.6vw overtakes 52px on its own (~605px). ---
+
+def test_hero_title_floor_is_raised_on_phone(open_site):
+    page, _ = open_site(viewport={"width": 375, "height": 780})
+    size = page.locator(".hero__title").evaluate("el => getComputedStyle(el).fontSize")
+    assert size == "52px"
+
+
+def test_hero_title_clamp_curve_is_unchanged_above_its_floor(open_site):
+    """Only the floor moved. Comfortably past where 8.6vw clears 52px on its
+    own, the rendered size must match the untouched vw formula, not some
+    new constant introduced alongside the floor bump."""
+    page, _ = open_site(viewport={"width": 900, "height": 780})
+    size = page.locator(".hero__title").evaluate(
+        "el => parseFloat(getComputedStyle(el).fontSize)"
+    )
+    assert size == pytest.approx(900 * 0.086, abs=1)
+
+
 # --- C9: the handle used to sit in its own grid column pinned to the far
 # right at 13px mono, up to 950px from the platform name it belongs to. ---
 

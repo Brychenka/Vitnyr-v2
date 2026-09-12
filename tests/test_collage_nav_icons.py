@@ -189,8 +189,18 @@ def test_tools_row_wraps_below_600px_single_row_above(open_site, width, wrapped)
     """.masthead has exactly two flex children — .lockup and .tools — so
     wrapping moves .tools (Cream, RU, divider and all three icons together)
     onto its own line below the wordmark. It does not split the icons onto a
-    separate line from Cream/RU: they're one flex item and move as a unit."""
+    separate line from Cream/RU: they're one flex item and move as a unit.
+
+    J4 (Jury Pass II, 2026-09-12): below 400px that single-line guarantee now
+    only holds once scrolled — .tools__group--nav gets its own line at rest
+    so the Photos/Фото caption has room (see test_collage_icon_caption_* in
+    test_layout.py). Scrolling first here keeps this test asserting the
+    original invariant for the state it actually has to hold in: sticky and
+    compact, mid-read, which is the state the 2026-09-10 fix this guards
+    was written for."""
     page, _ = open_site(viewport={"width": width, "height": 700})
+    if width <= 400:
+        page.evaluate("window.scrollTo(0, 50)")
     page.wait_for_timeout(200)
     assert not horizontal_overflow(page), f"{width}px overflows"
 
@@ -237,6 +247,67 @@ def test_nav_icons_stay_inside_the_viewport_on_a_phone(open_site, width, lang):
         )
         # the target itself must survive whatever tightening got it to fit
         assert box["width"] >= 43.5, f"icon {i} target shrank at {width}px/{lang}"
+
+
+# --- J4 (Jury Pass II, 2026-09-12): the 2026-09-10 fix above stopped the
+# nav row running off-screen by dropping its caption entirely below 400px —
+# which also meant a touch reader, who never sees aria-label or title, had
+# no name at all for the three icons on the phone widths most readers
+# carry. It's back at rest (util and nav each get a full-width line, so the
+# caption has room without repeating the overflow bug), and steps aside
+# again once scrolled — a first-glance hint, not a permanent second row
+# during actual reading. ---
+
+@pytest.mark.parametrize("width", [320, 375, 400])
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_collage_icon_caption_is_back_before_scrolling_on_phone(open_site, width, lang):
+    page, _ = open_site(viewport={"width": width, "height": 700}, has_touch=True, lang=lang)
+    page.wait_for_timeout(200)
+    label = page.locator(".tools__label")
+    assert label.evaluate("el => getComputedStyle(el).display") != "none"
+    assert label.inner_text().strip() != ""
+    assert not horizontal_overflow(page), f"{width}px/{lang} overflows with the caption showing"
+
+    # still one nowrap line per group — never a re-opened wrap inside a row
+    vw = page.evaluate("() => window.innerWidth")
+    for i in range(3):
+        box = _icon_buttons(page).nth(i).bounding_box()
+        assert box["x"] + box["width"] <= vw + 0.5, f"icon {i} clipped at {width}px/{lang}"
+
+
+@pytest.mark.parametrize("width", [320, 375, 400])
+def test_collage_icon_caption_hides_again_once_scrolled_on_phone(open_site, width):
+    page, _ = open_site(viewport={"width": width, "height": 700}, has_touch=True)
+    page.evaluate("window.scrollTo(0, 50)")
+    page.wait_for_timeout(200)
+    assert "is-scrolled" in page.locator("html").get_attribute("class")
+    label = page.locator(".tools__label")
+    assert label.evaluate("el => getComputedStyle(el).display") == "none"
+    assert not horizontal_overflow(page), f"{width}px overflows once scrolled"
+
+
+def test_collage_icon_caption_never_hides_without_js(open_site):
+    """No is-scrolled tracking without JS, so the caption — and the roomier
+    layout it needs — stays. Degrading toward showing more, not less."""
+    page, _ = open_site(viewport={"width": 375, "height": 700}, has_touch=True, java_script_enabled=False)
+    label = page.locator(".tools__label")
+    assert label.evaluate("el => getComputedStyle(el).display") != "none"
+
+
+def test_phone_masthead_is_shorter_once_scrolled(open_site):
+    """J9 measured the sticky phone masthead at a permanent 127.6px. Bringing
+    the caption back made the unscrolled header taller still, so the
+    reduction has to land in the state the reader actually reads in."""
+    page, _ = open_site(viewport={"width": 375, "height": 700}, has_touch=True)
+    page.wait_for_timeout(200)
+    unscrolled_height = page.locator(".masthead").bounding_box()["height"]
+
+    page.evaluate("window.scrollTo(0, 50)")
+    page.wait_for_timeout(200)
+    scrolled_height = page.locator(".masthead").bounding_box()["height"]
+
+    assert scrolled_height < unscrolled_height
+    assert scrolled_height < 130, f"scrolled masthead is {scrolled_height}px, no shorter than before J4"
 
 
 def test_wrapped_masthead_does_not_overlap_hero_content(open_site):

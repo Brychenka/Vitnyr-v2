@@ -3364,6 +3364,103 @@ starts with the real shoot, alongside the deferred `<picture>`/WebP work.
 **Suite not re-run after this branch**: it touches only Markdown.
 **Live artifact not republished** — collage-placeholder hold, unchanged.
 
+## Jury Pass II — Stage J4, the phone (2026-09-12)
+
+**J9 — measured at 375×780**: the hero headline clamped to a 42px floor
+(110px at 1280 — "a modest blog header" next to desktop's "statement"); the
+sticky phone masthead held a permanent 127.6px (16% of a 780px viewport) for
+theme/language/collage-jump controls, "none of which is why anyone came";
+and the Photos/Фото caption the 2026-09-10 fix dropped below 400px left the
+three collage-jump icons with no visible label at all on the phone widths
+most readers actually carry (aria-label and title never reach a touch
+reader). Three parts, in the order of confidence the work order gave them.
+
+**1. The caption is back.** Measured first, precisely, rather than guessed:
+at every width from 320 to 390, EN, restoring the caption to the existing
+single dense nowrap row overflows by 20–65px — there is no slack left to
+reclaim without shrinking a 44px touch target, which stays off the table.
+So `.tools__group--util` (Cream/RU) and `.tools__group--nav` (Photos +
+icons) each get a full-width row of their own below 400px — plenty of room
+for the caption at any width this breakpoint covers — but only **before the
+reader has scrolled** (`html:not(.is-scrolled)`). This is a first-glance
+"here's what these icons are" hint, not something worth a permanent second
+row during actual reading; past ~4px of scroll it collapses straight back
+to the exact single dense row the 2026-09-10 fix shipped — same nowrap,
+same overflow-clip, caption included — so that fix survives untouched in
+the state it actually has to hold in. No JS means no `is-scrolled`
+tracking, so a no-JS reader keeps the roomier, always-labelled layout:
+degrading toward showing more, not less.
+
+**2. The sticky masthead is shorter once scrolled.** Restoring the caption
+made the *unscrolled* header taller, which is the right trade at the top of
+the page (it overlays the transparent hero, nothing below it is competing
+for space yet) and the wrong one to carry into reading. So the reduction
+lands specifically in the scrolled/sticky state: `html.is-scrolled
+.masthead` tightens `padding-block` and `row-gap` below anything this
+breakpoint has ever used. The saving comes only from the masthead's own
+frame — `.tool`/`.tool--icon`'s own padding, which is what holds the 44px
+touch-target floor, is untouched. Measured at 375, touch: **139.6px →
+119.6px scrolled**, a real ~14% cut versus the pre-J4 baseline, not a wash
+against the taller unscrolled state.
+
+**3. Hero type floor raised 42px → 52px.** Only the floor: the clamp's
+8.6vw middle and 124px cap are unchanged, so nothing above ~605px width
+(where 8.6vw first clears 52px on its own) moves at all. Checked the
+longest line in both languages at 320–390 for actual overflow (not just
+`documentElement.scrollWidth`, which a `.line{overflow:hidden}` mask can
+hide): none clips or newly wraps — the one line that already wrapped inside
+its own mask (`English, chess, climbing.` / the RU equivalent, in `em` at
+`.78em`) wraps the same number of sub-lines it did at 42px, confirmed
+against unmodified `main`.
+
+**A `--head` miscalibration caught by an existing test, not by eye.** The
+602px breakpoint's own `+54px` constant (clearing one extra masthead row)
+turned out to already be calibrated to the COARSE-pointer row height, with
+fine-pointer silently riding a few px short of its own real height — small
+enough (~11px) that nothing had ever caught it. Doubling that same constant
+for the second row this stage adds doubled the shortfall too, and pushed
+fine-pointer's hero line down to y=279.9 at 390×844 — failing the existing
+`test_mobile_hero_copy_starts_well_above_a_third_of_the_viewport` (`top <
+260`). Fixed by measuring each pointer type's real masthead height
+separately and keying `--head`'s constant to it via `@media (pointer:
+coarse)`, the same way `.tool`'s own touch padding already is, rather than
+one flat number doing double duty for both.
+
+**Tests.** `test_collage_nav_icons.py`: `test_collage_icon_caption_is_
+back_before_scrolling_on_phone` (320/375/400 × EN/RU — caption visible,
+non-empty, no icon clipped), `test_collage_icon_caption_hides_again_once_
+scrolled_on_phone` (same widths, scrolled — caption hidden, no overflow),
+`test_collage_icon_caption_never_hides_without_js`, `test_phone_masthead_
+is_shorter_once_scrolled` (scrolled height < unscrolled, and < 130px).
+`test_layout.py`: `test_hero_title_floor_is_raised_on_phone` (computed
+52px at 375) and `test_hero_title_clamp_curve_is_unchanged_above_its_floor`
+(900px width still matches the untouched 8.6vw formula). All new tests
+regression-proven: fail against unmodified `main`, pass with the fix.
+
+**One existing test edited, not widened — disclosed per Standing Order 4.**
+`test_tools_row_wraps_below_600px_single_row_above` asserted Cream/RU and
+the icons always share one line below 600px; below 400px that's no longer
+true at rest, by design (point 1 above). Scrolled first for its two
+affected cases (375, 320) before measuring, so it now asserts the original
+invariant in the state it actually has to hold in — sticky and compact,
+which is what the 2026-09-10 fix it guards was written for — rather than
+asserting something this stage deliberately changes.
+
+**Verified**: both themes, both languages, 320/375/390 touch and non-touch,
+1280, `prefers-reduced-motion: reduce`, no JS. Screenshots confirm the
+3-row unscrolled phone masthead (lockup / Cream+RU / Photos+icons) in both
+themes and languages, the collapse to the single dense row within ~50px of
+scroll, and the larger hero type at 320/375/390 wrapping the same as before
+with zero horizontal overflow. Desktop (≥602px) masthead and hero
+untouched — confirmed by screenshot and by `test_hero_title_clamp_curve_
+is_unchanged_above_its_floor`.
+
+**Suite: 252 passed, 0 failed** (239 baseline + 13 new tests; the one
+existing test edited is disclosed above, not counted as new).
+
+**Live artifact not republished** — collage-placeholder hold from Jury Pass
+II's standing orders still applies.
+
 ## Jury Pass II — Stage J3, one loudest thing (hierarchy half) (2026-09-12)
 
 **J5 — the CTA didn't name the offer and looked like the three rows below
