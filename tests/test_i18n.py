@@ -265,7 +265,8 @@ def test_row_selection_and_language_compose(open_site):
     text = page.evaluate("h => decodeURIComponent((h.split('?text=')[1]) || '')", href)
     ru_clause = row.get_attribute("data-prefill-ru")
     assert ru_clause and ru_clause in text
-    assert "созвон" in text            # the RU base message
-    assert "intro call" not in text    # not a re-encoded English one
+    # 2026-09-12: base offer text updated to Igor's own CTA wording.
+    assert "скрининг" in text          # the RU base message
+    assert "screening" not in text     # not a re-encoded English one
     # the selection itself survived the switch
     assert row.locator(".row__pick").get_attribute("aria-pressed") == "true"
