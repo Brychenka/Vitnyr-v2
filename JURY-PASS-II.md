@@ -45,11 +45,11 @@ and three of those were made by Igor personally.
 |---|---|---|---|
 | J1 | English copy uses 91 straight apostrophes/quotes; Russian copy is set properly | **Build** — landed 2026-09-12, `6c58df6` | J1 |
 | J2 | `text-transform: uppercase` destroys the 7c / 7C grade distinction on screen | **Build** — landed 2026-09-12, `6c58df6` | J1 |
-| J3 | Facts-row labels are half lowercase, half uppercase | **Ask first** | J0 → J1 |
+| J3 | Facts-row labels are half lowercase, half uppercase | **Decided 2026-09-12: keep as is** — no code | — |
 | J4 | §05 rows are clickable with no resting affordance and no instruction | **Build** | J2 |
-| J5 | The one conversion link doesn't name the offer and looks like the three below it | **Ask first** | J0 → J3 |
-| J6 | §02 specimens hide the mistake at rest | **Reversal — probably don't** | J0 → J5 |
-| J7 | The origin mark rests two-thirds dimmed | **Reversal — probably don't** | J0 → J5 |
+| J5 | The one conversion link doesn't name the offer and looks like the three below it | **Decided 2026-09-12: name the offer** — wording pending from Igor | J3 |
+| J6 | §02 specimens hide the mistake at rest | **Decided 2026-09-12: keep the reveal, fix the spoiler (b)** | J5 |
+| J7 | The origin mark rests two-thirds dimmed | **Decided 2026-09-12: raise the dim floor** | J5 |
 | J8 | The three §01 mechanism rows have ragged left edges | **Withdrawn** | — |
 | J9 | Phone: headline scales down hard; sticky masthead eats 128px of 780px | **Build** | J4 |
 | J10 | The photographs are the least-surfaced asset on the page | **Parked** | J6 |
@@ -86,7 +86,7 @@ uppercase, without disturbing the ENGLISH / CHESS / CLIMBING labels beside
 it, which are correct as caps. Then add a test that reads **rendered** text,
 not source text.
 
-### J3 — facts-row label case (Ask first)
+### J3 — facts-row label case (Decided 2026-09-12: keep as is)
 
 Row reads: `years coaching` / `one-on-one clients` (lowercase) then
 `CHESS RATING` / `REDPOINT, INDOOR` (uppercase). This is deliberate — Spark
@@ -94,9 +94,9 @@ Order S2 move 18 made a tally, a scale and a grade look like three different
 instruments on purpose, and that reasoning is sound. But no reader decodes
 it; on screen it reads as an oversight.
 
-Question for Igor at J0. If he wants it unified, it is a two-line CSS change
-inside stage J1. If he wants the distinction kept, this is struck and the
-reasoning is already recorded — do not raise it a third time.
+**Igor's answer at J0: keep the current mixed styling.** The
+tally-vs-grade distinction stands. No code change. Struck — do not raise
+this a third time.
 
 ### J4 — §05's selectable rows are invisible (Build)
 
@@ -119,7 +119,7 @@ the page already speaks, at rest weight, going to full `--ink-target` on
 selection. Plus one line under the §05 `h2` saying what picking does. That
 line is new copy, so: EN drafted, **RU flagged for Igor**.
 
-### J5 — the CTA doesn't name the offer (Ask first)
+### J5 — the CTA doesn't name the offer (Decided 2026-09-12: name it — wording pending)
 
 §06's `.contact__cta` reads "Message me." It is a text link with an underline
 and a travelling arrow — and immediately below it sit Telegram, LinkedIn and
@@ -135,13 +135,15 @@ Two separable changes, and Igor should rule on the first:
 
 1. **Copy.** Put the offer in the big type. "Book the free intro call." is
    the obvious candidate but it is his voice, not a chat's — and the RU must
-   be his. Ask at J0.
+   be his. **Igor's answer at J0: yes, name the offer** — he has not yet
+   supplied the exact English or Russian wording. Stage J3 needs both before
+   it can implement the copy half; the hierarchy half does not wait on it.
 2. **Hierarchy.** Regardless of the wording, separate the CTA from the three
    channel rows so the page has one loudest thing. No new colour, no button
    chrome, no rounded corners — use space, rule weight, or dropping the three
    channels to a quieter tier.
 
-### J6 — §02 hides the mistake (Reversal — probably don't)
+### J6 — §02 hides the mistake (Decided 2026-09-12: keep the reveal, fix the spoiler)
 
 **Read this before proposing it.** The hide-until-hover behaviour is
 **Igor's own explicit request**, 2026-09-07, in his words: *"make it that the
@@ -166,9 +168,13 @@ deleted if it were reversed:
 `test_specimen_mistake_is_hidden_until_hover_or_tap`, and the no-JS case
 above them (`tests/test_a11y.py:296–375`).
 
-Default assumption: **the reveal stays.** Only J0 changes that.
+**Igor's answer at J0: option (b)** — keep the reveal, rewrite the three
+`.spec__why` explanation paragraphs so they describe the shape of each
+error without quoting the wrong sentence verbatim. Those four tests are
+untouched: the reveal behaviour they guard doesn't change, only the prose
+beside it. Lands in Stage J5.
 
-### J7 — the mark rests dimmed (Reversal — probably don't)
+### J7 — the mark rests dimmed (Decided 2026-09-12: raise the dim floor)
 
 §04's mark rests with the English arm lit and the other two at
 `--amber-dim`/`--green-dim`. The jury reading: the brand mark appears at a
@@ -189,6 +195,10 @@ strokes read as present-but-quiet rather than washed out. That keeps C6's
 argument and removes the "faded logo" reading. It is a token change
 (`--amber-dim` / `--green-dim`), not a behaviour change, and C5's "solid
 token, never opacity" rule still holds.
+
+**Igor's answer at J0: this middle option** — raise the dim floor, keep
+English as the lit stroke. C6 stands; no return to a neutral rest state.
+Lands in Stage J5.
 
 ### J8 — mechanism rows (Withdrawn)
 
@@ -291,11 +301,24 @@ deferred `<picture>`/WebP work.
 
 ## The stages
 
-### J0 — decisions (no code)
+### J0 — decisions (no code) — landed 2026-09-12
 
 **Purpose:** get four answers from Igor before any chat guesses, so nothing
 is re-litigated later. Mirrors Spark Order Stage 0. Output is an edit to this
 file plus a BUILD-NOTES entry. **No source files change.**
+
+**All four answered 2026-09-12** (full detail under each finding's own
+write-up above):
+
+1. **J6 — specimens:** option **(b)**, keep the hover reveal, fix the
+   spoiler paragraphs. Lands in Stage J5.
+2. **J5 — CTA copy:** yes, name the offer. **Exact English and Russian
+   wording still needed from Igor** before Stage J3's copy half can run;
+   the hierarchy half doesn't wait on it.
+3. **J7 — mark's rest state:** raise the dim floor; C6 stands. Lands in
+   Stage J5.
+4. **J3 — facts-row case:** keep the current mixed styling. No code —
+   struck, closed.
 
 Put these to him, in this order, with the context each one carries:
 
@@ -405,13 +428,28 @@ from letting the nav wrap or overflow again. Verify at 320, 360, 375 and 390
 with `has_touch=True`, comparing against `innerWidth` — `scrollWidth` cannot
 see a masthead clip (memory: `coarse-pointer-clipping-check`).
 
-### J5 — contingent
+### J5 — the spoiler and the dim floor
 
-**Branch:** name it for whatever J0 actually approved. **Items:** whichever of
-J6 / J7 Igor said yes to, or the J6(b) spoiler rewrite if he picked that.
+**Branch:** `feature/spoiler-and-mark-dim`. **Items:** J6(b), J7.
 
-If J0 approved nothing here, **this stage does not exist** and the order ends
-at J4. That is a legitimate outcome — record it and move on.
+Resolved by J0 (2026-09-12) — both items are confirmed, so this stage is no
+longer contingent. Two independent, unrelated fixes bundled because both are
+small copy/token edits with no shared code path:
+
+- **J6(b).** Rewrite the three `.spec__why` paragraphs (reflexive carried
+  across, adjective-for-verb, register) so each describes the *shape* of its
+  error without quoting the wrong sentence verbatim. The four hover-reveal
+  tests (`tests/test_a11y.py:296–375`) are not touched — the reveal
+  mechanism doesn't change, only the prose next to it. EN only; RU is
+  Igor's per Standing Order 9, so the RU `.spec__why` twins need his pass
+  too if the EN rewrite changes their meaning.
+- **J7.** Raise `--amber-dim` / `--green-dim` so the mark's two unlit
+  strokes read as quiet, not washed out, while English stays the lit
+  stroke. Token-only — C5's "solid token, never opacity" rule holds, C6's
+  rest-state test still describes the same *state*, just re-tuned values.
+  Check contrast doesn't newly clear 4.5:1 in a way that would make the dim
+  strokes look intentionally readable as text (they aren't text, but verify
+  the visual read stays "quiet accent," not "equal to English").
 
 ### J6 — parked behind the photo shoot
 
@@ -425,12 +463,12 @@ bilingual `alt` work. Unblocks the artifact republish at the same time.
 
 | Stage | Items | Status |
 |---|---|---|
-| J0 — decisions | J3, J5, J6, J7 | not started |
-| J1 — typographic pass | J1, J2, (J3) | **landed** 2026-09-12, `6c58df6` — J3 not included (gated on J0, not yet run) |
+| J0 — decisions | J3, J5, J6, J7 | **landed** 2026-09-12 — all four answered, no code |
+| J1 — typographic pass | J1, J2, (J3) | **landed** 2026-09-12, `6c58df6` — J3 resolved as "keep as is," no code needed |
 | J2 — make the answer visible | J4 | not started |
-| J3 — one loudest thing | J5 | not started |
+| J3 — one loudest thing | J5 | not started — copy half needs Igor's exact EN/RU CTA wording first |
 | J4 — the phone | J9 | not started |
-| J5 — contingent | J6 / J7 | gated on J0 |
+| J5 — the spoiler and the dim floor | J6(b), J7 | not started — no longer gated, both confirmed at J0 |
 | J6 — photographs | J10 | parked |
 
 Withdrawn: **J8**.
