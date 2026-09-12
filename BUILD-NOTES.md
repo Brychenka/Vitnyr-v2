@@ -3364,6 +3364,59 @@ starts with the real shoot, alongside the deferred `<picture>`/WebP work.
 **Suite not re-run after this branch**: it touches only Markdown.
 **Live artifact not republished** — collage-placeholder hold, unchanged.
 
+## Jury Pass II — Stage J2, make the answer visible (2026-09-12)
+
+**J4 — §05's selectable rows had no resting affordance.** Spark Order S5
+made each "which of these is you?" row clickable, but the only visible state
+was *picked* (a 2px `--ink-target` rule at `left: -14px`). At rest a row
+looked exactly like inert body copy — no marker, no hint, nothing telling a
+reader the rows do anything.
+
+Reused the existing `.rows > li::before` rule rather than adding a second
+device: it now also renders at rest, in `--rule`'s hairline weight — the
+same translucent tone the row's own top/bottom borders already use — then
+brightens to full `--ink-target` on pick. Same element, same gutter, no
+card, no fill, no hover lift. Gated behind `html.js`: the overlay `<button>`
+that makes a row clickable is JS-only (`main.js`'s `initWhoRows()`), so the
+resting mark has to disappear with it — a no-JS reader must not see a mark
+promising an interaction that isn't there. `html.js .rows > li::before`
+sets the rest color and opacity; `html.js .rows > li.is-picked::before`
+needed the same `html.js` prefix to out-specificity the rest rule, or the
+picked color never actually applied (caught by the new test below, not by
+eye — the picked-row screenshot looked identical to rest at first).
+
+Added one line under the §05 `h2`, in the section's existing `.sec__lede`
+pattern (already used by every other section): "Pick the one that's you. It
+writes the first line of your message below." EN ships as final; RU is a
+model's first pass, flagged in an HTML comment for Igor per Standing Order
+9, the same way `reference/collage-shotlist.md` and the §05 `h2` itself (C4)
+flag their draft copy.
+
+**Tests** (`test_layout.py`): `test_who_rows_show_a_quiet_resting_mark_that_brightens_when_picked`
+reads `getComputedStyle(row, '::before')` before and after picking and
+asserts the background actually changes (this is the test that caught the
+specificity bug above); `test_who_rows_resting_mark_is_absent_without_js`
+asserts the same pseudo-element's opacity is `0` with JS disabled;
+`test_who_section_explains_what_picking_a_row_does` checks the new
+`.sec__lede` line renders, non-empty, in both languages. All three
+regression-proven: fail against unmodified `main` (two of three — the
+no-JS guard test necessarily passes both ways, since it's asserting the
+*absence* the old code already had), pass with the fix.
+
+**Verified**: both themes, both languages, 375 and 1280, `prefers-reduced-
+motion: reduce`, no JS. Screenshots confirm the quiet rest mark is visible
+at every combination, brightens correctly on pick (checked in both themes),
+disappears entirely without JS, and shows its final (non-transitioning)
+state instantly under reduced motion. No layout shift — the mark is the
+same detached `::before` S5 already built off the transform channel; only
+its resting opacity/color changed, not its position.
+
+**Suite: 237 passed, 0 failed** (234 baseline + 3 new tests; no existing
+test was edited to make this pass).
+
+**Live artifact not republished** — collage-placeholder hold from Jury Pass
+II's standing orders still applies.
+
 ## Jury Pass II — Stage J1, the typographic pass (2026-09-12)
 
 **J1 — straight quotes.** Swept all visible English copy in `index.html` for
