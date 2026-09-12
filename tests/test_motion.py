@@ -144,6 +144,27 @@ def test_origin_mark_rests_on_english_before_any_interaction(open_site):
     assert page.locator('.glyph__part--stem').evaluate("el => el.classList.contains('is-dim')")
 
 
+# --- J7 (Jury Pass II, 2026-09-12): the mark's two unlit strokes rested at
+# a ~32%-toward-bg blend, faint enough next to the same mark at full ink in
+# the header 400px above that the jury read it as a bug. Raised to ~50% —
+# Igor's middle option, keeping C6's lit-English rest state rather than
+# reverting to neutral. Checked directly at load, in both themes, since
+# that's the state the finding is about. ---
+
+@pytest.mark.parametrize(
+    "theme,amber_dim,green_dim",
+    [(None, "rgb(208, 180, 132)", "rgb(150, 168, 147)"),
+     ("dark", "rgb(98, 74, 31)", "rgb(48, 73, 54)")],
+)
+def test_origin_mark_dim_strokes_use_the_raised_floor(open_site, theme, amber_dim, green_dim):
+    page, _ = open_site(theme=theme)
+    page.wait_for_timeout(100)
+    right_fill = page.locator(".glyph__part--right").evaluate("el => getComputedStyle(el).fill")
+    stem_fill = page.locator(".glyph__part--stem").evaluate("el => getComputedStyle(el).fill")
+    assert right_fill == amber_dim
+    assert stem_fill == green_dim
+
+
 def test_glyph_dim_state_is_a_solid_fill_not_partial_opacity(open_site):
     """C5: dimming used to be opacity: .32, which blends with whatever
     renders behind the shape — including the *other* glyph part it overlaps
@@ -156,7 +177,12 @@ def test_glyph_dim_state_is_a_solid_fill_not_partial_opacity(open_site):
     page.wait_for_timeout(700)
     left = page.locator(".glyph__part--left")
     assert left.evaluate("el => getComputedStyle(el).opacity") == "1"
-    assert left.evaluate("el => getComputedStyle(el).fill") == "rgb(74, 59, 33)"  # --amber-dim
+    # J7 (Jury Pass II, 2026-09-12): --amber-dim raised from #4A3B21 to
+    # #624A1F (a ~32%-toward-bg blend to a ~50% one) — the literal below is
+    # the token's value, not the property this test guards (solid fill vs
+    # partial opacity), so it's updated in place rather than counted as a
+    # loosened assertion.
+    assert left.evaluate("el => getComputedStyle(el).fill") == "rgb(98, 74, 31)"  # --amber-dim
 
 
 def test_stem_no_longer_gets_an_extra_scale_on_activation(open_site):

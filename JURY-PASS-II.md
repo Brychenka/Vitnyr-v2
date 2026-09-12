@@ -48,8 +48,8 @@ and three of those were made by Igor personally.
 | J3 | Facts-row labels are half lowercase, half uppercase | **Decided 2026-09-12: keep as is** — no code | — |
 | J4 | §05 rows are clickable with no resting affordance and no instruction | **Build** — landed 2026-09-12 | J2 |
 | J5 | The one conversion link doesn't name the offer and looks like the three below it | Hierarchy half **landed** 2026-09-12; copy half **decided: name the offer** — wording pending from Igor | J3 |
-| J6 | §02 specimens hide the mistake at rest | **Decided 2026-09-12: keep the reveal, fix the spoiler (b)** | J5 |
-| J7 | The origin mark rests two-thirds dimmed | **Decided 2026-09-12: raise the dim floor** | J5 |
+| J6 | §02 specimens hide the mistake at rest | **Decided 2026-09-12: keep the reveal, fix the spoiler (b)** — landed 2026-09-12 | J5 |
+| J7 | The origin mark rests two-thirds dimmed | **Decided 2026-09-12: raise the dim floor** — landed 2026-09-12 | J5 |
 | J8 | The three §01 mechanism rows have ragged left edges | **Withdrawn** | — |
 | J9 | Phone: headline scales down hard; sticky masthead eats 128px of 780px | **Build** — landed 2026-09-12 | J4 |
 | J10 | The photographs are the least-surfaced asset on the page | **Parked** | J6 |
@@ -468,7 +468,7 @@ bilingual `alt` work. Unblocks the artifact republish at the same time.
 | J2 — make the answer visible | J4 | **landed** 2026-09-12, `0ba4f27` |
 | J3 — one loudest thing | J5 | hierarchy half **landed** 2026-09-12, `49426cd` — copy half still needs Igor's exact EN/RU CTA wording |
 | J4 — the phone | J9 | **landed** 2026-09-12, `01679d3` |
-| J5 — the spoiler and the dim floor | J6(b), J7 | not started — no longer gated, both confirmed at J0 |
+| J5 — the spoiler and the dim floor | J6(b), J7 | **landed** 2026-09-12, merge SHA pending |
 | J6 — photographs | J10 | parked |
 
 Withdrawn: **J8**.

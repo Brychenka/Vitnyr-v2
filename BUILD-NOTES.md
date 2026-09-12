@@ -3364,6 +3364,82 @@ starts with the real shoot, alongside the deferred `<picture>`/WebP work.
 **Suite not re-run after this branch**: it touches only Markdown.
 **Live artifact not republished** — collage-placeholder hold, unchanged.
 
+## Jury Pass II — Stage J5, the spoiler and the dim floor (2026-09-12)
+
+Two independent, unrelated fixes bundled per the work order because both are
+small copy/token edits with no shared code path.
+
+**J6(b) — the specimen explanations spoiled their own reveal.** Each of
+§02's three specimens hides its "wrong" sentence behind a "Show the common
+mistake" button (Igor's own explicit request, 2026-09-07 — the reveal
+itself is not up for debate, see J6's write-up in this file). But the
+`.spec__why` paragraph beside it sits outside that reveal, always visible,
+and named the exact word or reconstructed the wrong sentence outright:
+specimen one said "the **myself** comes along for the ride… **feel
+myself** now means something else entirely" right next to a button whose
+whole point was to hide that. All three rewritten to describe the shape of
+the error instead: what's structurally different between Russian and
+English, and why the mistake survives, without quoting or naming the
+specific word. EN ships final; RU is a model's first pass, flagged in an
+HTML comment per Standing Order 9, the same way §05's `h2` (C4) and this
+stage's own predecessor (J2's `.sec__lede`) flag theirs. The reveal
+mechanism itself is untouched — same button, same `[hidden]` wrong line,
+same four accessibility tests (`test_a11y.py`) unmodified, since only the
+prose beside it changed.
+
+**J7 — the origin mark's two unlit strokes read as washed out.** §04's mark
+rests with English lit and chess/climbing at `--amber-dim`/`--green-dim`,
+a deliberate choice (C6, first jury pass): the rest state used to be
+neutral and was changed on purpose, because "English is the offer; chess
+and climbing are proof it transfers, not equal-weight alternatives." The
+new jury's read: at a ~32%-toward-`--bg` blend, the two dim strokes sat
+faint enough that the same mark rendering at full ink in the header 400px
+above looked like two different logos, or a loading state. Igor's answer
+at J0 was the middle option — keep English lit, raise the floor — so the
+two dim tokens move to a ~50% blend in both theme pairs: cream
+`--amber-dim` `#D9C6A3`→`#D0B484`, `--green-dim` `#B8C2B2`→`#96A893`;
+charcoal `--amber-dim` `#4A3B21`→`#624A1F`, `--green-dim`
+`#293D28`→`#304936`. Token-only: C5's "solid fill, never opacity" rule is
+untouched, and C6's rest-state test still describes the exact same state
+(English lit, the other two dim), just re-tuned values. Contrast checked
+against each pair's `--bg` rather than assumed: 1.68:1 / 2.12:1 (cream),
+2.14:1 / 1.81:1 (charcoal) — comfortably under both 4.5:1 and the full
+ink's own contrast (3.07:1 amber, 5.62:1 green), so the dim strokes still
+read as accent, not as text pretending to be readable.
+
+**Tests.** `test_content.py`: `test_specimen_why_no_longer_names_the_
+hidden_word` (parametrized per specimen — asserts the specific word each
+paragraph used to give away, "myself" / "agree" / "please", no longer
+appears in the visible `.spec__why`) and `test_specimen_why_paragraphs_
+are_not_empty_in_either_language` (the RU draft is still real prose, not a
+blank left by the edit). `test_motion.py`: `test_origin_mark_dim_strokes_
+use_the_raised_floor`, parametrized over both themes, reading the rest-state
+computed `fill` on `.glyph__part--right`/`--stem` directly against the new
+hex values. All new tests regression-proven: fail against unmodified
+`main`, pass with the fix.
+
+**One existing test's literal updated, not its assertion — disclosed per
+Standing Order 4.** `test_glyph_dim_state_is_a_solid_fill_not_partial_
+opacity` (C5) hardcoded the old charcoal `--amber-dim` as `rgb(74, 59,
+33)`; updated to the new `rgb(98, 74, 31)`. What it actually guards
+(`opacity === 1`, a solid fill rather than a blended one) is unchanged —
+only the token's own value moved, which is the point of this stage.
+
+**Verified**: both themes, both languages, specimens open and closed, no-JS
+(static wrong/right pair, new prose), `prefers-reduced-motion: reduce` (mark
+shows its finished state instantly, still English-lit with the raised dim
+floor on the other two), 1280 and 375. Screenshots confirm the rewritten
+explanations read naturally without giving away the click, and the mark's
+two dim strokes are visibly more present next to the lit English arm in
+both themes, without approaching it in weight.
+
+**Suite: 258 passed, 0 failed** (252 baseline + 6 new tests; the one
+existing test whose literal changed is disclosed above, not counted as
+new).
+
+**Live artifact not republished** — collage-placeholder hold from Jury Pass
+II's standing orders still applies.
+
 ## Jury Pass II — Stage J4, the phone (2026-09-12)
 
 **J9 — measured at 375×780**: the hero headline clamped to a 42px floor

@@ -315,8 +315,14 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I feel <del class="mark--specimen">myself</del> good today.</span></p>
         <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I feel good today.</span></p>
       </div>
-      <p class="spec__why" data-l="en">Russian «чувствовать себя» is reflexive, so the <em>myself</em> comes along for the ride. English doesn’t take it, and <em>feel myself</em> now means something else entirely, which is why the room reacts the way it does.</p>
-      <p class="spec__why" data-l="ru">В русском «чувствовать себя» возвратный, и <em>myself</em> едет следом. Английскому он не нужен, а <em>feel myself</em> сегодня значит совсем другое — отсюда и лица собеседников.</p>
+      <!-- J6(b) (Jury Pass II, 2026-09-12): the reveal above hides this
+           specimen's error until clicked, but the old paragraph named the
+           word and reconstructed the wrong phrase right here, spoiling it
+           before the click. Rewritten to describe the shape of the error
+           instead. EN final; RU is a model's first pass, flagged per
+           Standing Order 9, the same way §05's h2 (C4) flags its draft. -->
+      <p class="spec__why" data-l="en">Russian marks this feeling with a reflexive ending built into the verb itself. English carries no such ending, so the instinct is to bolt an equivalent back on by hand, onto a verb that was never missing it. The result lands as something else entirely, which is why the room reacts the way it does.</p>
+      <p class="spec__why" data-l="ru">В русском это ощущение помечено возвратным окончанием прямо в глаголе. В английском такого окончания нет, и рефлекс — добавить что-то похожее вручную, к глаголу, которому это было не нужно. Получается совсем другое, отсюда и лица собеседников.</p>
     </article>
 
     <article class="spec reveal" id="specimen-copula" data-op="delete">
@@ -325,8 +331,10 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I <del class="mark--specimen">am</del> agree with your point.</span></p>
         <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>I <ins class="mark--target">agree</ins> with your point.</span></p>
       </div>
-      <p class="spec__why" data-l="en">«Согласен» is an adjective, so Russian has to prop it up with a copula. <em>Agree</em> is a verb and already has everything it needs. The error survives for years because it never blocks understanding: nobody corrects it, and nothing else removes it.</p>
-      <p class="spec__why" data-l="ru">«Согласен» — прилагательное, его надо подпирать связкой. <em>Agree</em> — глагол, ему связка не нужна. Ошибка живёт годами именно потому, что не мешает понять: её никто не поправляет, а сама она не уходит.</p>
+      <!-- J6(b): same fix as specimen one — the old paragraph named the
+           correct word outright. EN final; RU flagged for Igor. -->
+      <p class="spec__why" data-l="en">The Russian word behind this one describes a state, not an action, so the sentence needs a separate helper verb to hold it up. Its English counterpart already carries the action by itself, no helper required. Add one anyway and nothing breaks, which is exactly why nobody catches it and the habit outlives the class it was learned in.</p>
+      <p class="spec__why" data-l="ru">Русское слово за этим описывает состояние, а не действие, поэтому фразе нужен отдельный глагол-связка, чтобы её удержать. Английский аналог уже сам несёт это действие, связка не нужна. Добавить её всё равно можно, ничего не сломается, поэтому ошибку никто не ловит, и она переживает тот курс, на котором её выучили.</p>
     </article>
 
     <article class="spec reveal" id="specimen-register" data-op="restructure">
@@ -343,8 +351,10 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <p class="line-spec wrong"><span class="vh" data-en="Reads as: " data-ru="Звучит как: ">Reads as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.3 4 C1.3 6.4 3.8 6.4 5 4.9 C6.2 3.4 8.7 3.4 8.7 5.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Send me the report today, <del class="mark--specimen">please</del>.</span></p>
         <p class="line-spec right"><span class="vh" data-en="Better as: " data-ru="Естественнее: ">Better as: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.3 4 C1.3 6.4 3.8 6.4 5 4.9 C6.2 3.4 8.7 3.4 8.7 5.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span><ins class="mark--target">Could you</ins> send me the report today?</span></p>
       </div>
-      <p class="spec__why" data-l="en">The first sentence is grammatically perfect and lands as an order. A Russian imperative plus «пожалуйста» is neutrally polite; the English imperative isn’t, and <em>please</em> doesn’t rescue it. Errors of this class never show up in a test score, and they’re the ones doing damage at work.</p>
-      <p class="spec__why" data-l="ru">Первая фраза грамматически безупречна — и звучит как распоряжение. Русский императив с «пожалуйста» нейтрально вежлив, английский — нет, и <em>please</em> его не спасает. Такие ошибки не видны ни в одном тесте, и именно они портят вам жизнь на работе.</p>
+      <!-- J6(b): same fix again — the old paragraph named the deleted word
+           outright. EN final; RU flagged for Igor. -->
+      <p class="spec__why" data-l="en">The sentence is grammatically perfect and still lands as an order. Russian softens a direct command with a single added word; English commands don’t soften the same way, no matter which word gets added. Errors of this class never show up in a test score, and they’re the ones doing damage at work.</p>
+      <p class="spec__why" data-l="ru">Фраза грамматически безупречна и всё равно звучит как приказ. В русском команду смягчает одно добавленное слово; в английском команды так не смягчаются, каким бы словом их ни снабдили. Такие ошибки не видны ни в одном тесте, и именно они портят вам жизнь на работе.</p>
     </article>
   </div>
 </section>
