@@ -252,6 +252,37 @@ def test_each_specimen_is_addressable_by_its_own_permalink(open_site):
     assert [p["href"] for p in pairs] == ["#" + i for i in SPECIMEN_IDS]
 
 
+# --- J6(b) (Jury Pass II, 2026-09-12): the reveal hides each specimen's
+# wrong/right pair until clicked, but the .spec__why paragraph beside it
+# sits outside that reveal — always visible — and used to name the exact
+# word or quote the corrected sentence, spoiling the click. Rewritten to
+# describe each error's shape instead; this pins the specific word each
+# paragraph used to give away so the fix can't quietly regress. ---
+
+SPOILED_WORDS = {
+    "specimen-reflexive": "myself",
+    "specimen-copula": "agree",
+    "specimen-register": "please",
+}
+
+
+@pytest.mark.parametrize("specimen_id,word", list(SPOILED_WORDS.items()))
+def test_specimen_why_no_longer_names_the_hidden_word(open_site, specimen_id, word):
+    page, _ = open_site()
+    why = page.locator(f"#{specimen_id} .spec__why:visible").inner_text().lower()
+    assert word not in why, f"{specimen_id}: '{word}' still appears in the visible explanation"
+
+
+def test_specimen_why_paragraphs_are_not_empty_in_either_language(open_site):
+    """The RU rewrites are a first pass (Standing Order 9) but must still be
+    real, non-empty prose, not a blank left behind by the edit."""
+    for lang in ("en", "ru"):
+        page, _ = open_site(lang=lang)
+        for specimen_id in SPOILED_WORDS:
+            text = page.locator(f"#{specimen_id} .spec__why:visible").inner_text().strip()
+            assert text, f"{specimen_id}/{lang}: .spec__why is empty"
+
+
 def test_specimen_permalink_updates_the_url_and_moves_focus(open_site):
     """Clicking a specimen's label writes that permalink to the address bar
     (so it can be copied and shared) and moves focus into the specimen, not

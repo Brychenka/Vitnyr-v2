@@ -79,8 +79,16 @@
      reads the same, but as a real colour that can't bleed
      into a neighbouring shape. These are the cream-pair blends (the default);
      the dark block below carries the charcoal ones. */
-  --amber-dim: #D9C6A3;
-  --green-dim: #B8C2B2;
+  /* J7 (Jury Pass II, 2026-09-12): raised from a ~32%-toward-bg blend to a
+     ~50% one — Igor's middle option at J0. C6 stands (English rests lit,
+     the other two rest dim, not neutral); this only moves how dim "dim"
+     is, so the two unlit strokes read as present-but-quiet next to the
+     lit one rather than washed out next to the same mark at full ink in
+     the header above. Contrast checked against --bg: 1.68/2.12 here, well
+     under the full ink's own 3.07/5.62 and nowhere near 4.5:1 — still
+     reads as accent, not text. */
+  --amber-dim: #D0B484;
+  --green-dim: #96A893;
 
   --serif: Lora, Georgia, "Times New Roman", serif;
   --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -143,8 +151,10 @@
   --rule:   rgba(242,239,232,0.235);   /* P12: tuned separately to land ~2:1 against this pair's bg */
   --amber-text: var(--amber);   /* ink amber already clears 4.5:1 as text on charcoal (4.9:1) */
   --green-text: #578C5E;         /* ink green fails 4.5:1 here (3.58:1); same hue lightened to exactly 4.5:1 */
-  --amber-dim: #4A3B21;
-  --green-dim: #293D28;
+  /* J7: same ~50% floor as the cream pair's dim tokens above, blended
+     against this pair's own --bg and --green. */
+  --amber-dim: #624A1F;
+  --green-dim: #304936;
   --collage-filter: grayscale(1) contrast(1.08) brightness(1.02);
   --cursor-active-ink: var(--ink-target);   /* C15: green over controls on charcoal */
 }
