@@ -1540,13 +1540,20 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    table with its middle column missing, and the piece a reader actually
    needs (the handle) was both the smallest thing here and the furthest
    from the label it belongs to. Rebuilt so the handle sits directly behind
-   the platform name as one unit, and the right edge — freed up — carries
-   the same travelling arrow .proof__link uses for its one other CTA. */
-.channels { margin-top: clamp(48px, 6vw, 80px); border-top: 1px solid var(--rule); }
+   the platform name as one unit.
+   J3 (Jury Pass II, 2026-09-12): C9 then gave this row .proof__link's
+   travelling arrow so "this row leads somewhere" read the same way twice —
+   but stacked directly under .contact__cta, which speaks the identical
+   device, three social links and the page's one conversion goal ended up
+   looking like four peers. The arrow is gone here (only .contact__cta and
+   .proof__link keep it) and the top rule is doubled in weight so this list
+   reads as a distinct, quieter tier below the CTA, not a continuation of
+   it — hover still draws in the underline under the platform name, so the
+   row keeps an affordance, just a smaller one. */
+.channels { margin-top: clamp(56px, 7vw, 96px); border-top: 2px solid var(--rule); }
 .channels li { border-bottom: 1px solid var(--rule); }
 .channels a {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 20px;
+  display: flex; align-items: center;
   padding-block: clamp(20px, 2.6vw, 32px);
 }
 .ch__text {
@@ -1556,6 +1563,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .channels .ch__k {
   font-family: var(--serif); font-size: clamp(22px, 3.4vw, 44px);
   font-weight: 600; letter-spacing: -.02em;
+  color: var(--fg2);
   position: relative;
 }
 .channels .ch__k::after {
@@ -1569,22 +1577,6 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .channels .ch__v {
   font-family: var(--mono); font-size: clamp(14px, 1.5vw, 17px); color: var(--fg2);
   letter-spacing: .02em;
-}
-/* Same two-copy travelling-arrow device as .proof__arrow (see comment
-   there) — one shared visual language for "this row leads somewhere",
-   not a second one invented for the channels list. */
-.ch__arrow { position: relative; width: 40px; height: 13px; flex: none; }
-.ch__arrow svg {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  color: var(--fg2);
-  transition: transform var(--t) var(--e), color var(--t) var(--e), opacity var(--t) var(--e);
-}
-.ch__arrow--echo { opacity: 0; }
-.channels a:hover .ch__arrow svg,
-.channels a:focus-visible .ch__arrow svg { color: var(--fg); transform: translateX(10px); }
-.channels a:hover .ch__arrow--echo,
-.channels a:focus-visible .ch__arrow--echo {
-  opacity: .3; transform: translateX(3px); transition-delay: .07s;
 }
 /* ---------- footer ---------- */
 .foot {

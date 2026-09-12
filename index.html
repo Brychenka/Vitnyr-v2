@@ -624,36 +624,27 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <!-- C9 (2026-09-06): the handle used to sit in its own grid column, pinned
        to the far right at 13px mono — the smallest, most distant thing in a
        row whose whole point is to hand the reader that exact string. Now it
-       sits right behind the platform name as one inline unit, and the
-       far-right position it gave up goes to the same travelling arrow
-       .proof__link already uses, so "this row leads somewhere" reads the
-       same way twice on the page. -->
+       sits right behind the platform name as one inline unit.
+       J3 (Jury Pass II, 2026-09-12): the far-right position used to carry
+       the same travelling arrow as .contact__cta and .proof__link — three
+       controls sharing one device right above each other read as one tier,
+       and one of the three is the whole page's conversion goal. The arrow
+       now belongs to .contact__cta alone; these rows drop to a quieter tier
+       (dimmed label, no arrow) so there is one loudest thing on the page. -->
   <ul class="channels">
     <li class="reveal">
       <a href="https://t.me/yngvil" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">Telegram</span><span class="ch__v">@yngvil</span></span>
-        <span class="ch__arrow" aria-hidden="true">
-          <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-          <svg aria-hidden="true" class="ch__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-        </span>
       </a>
     </li>
     <li class="reveal">
       <a href="https://www.linkedin.com/in/vitnyrcoach/" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">LinkedIn</span><span class="ch__v">/in/vitnyrcoach</span></span>
-        <span class="ch__arrow" aria-hidden="true">
-          <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-          <svg aria-hidden="true" class="ch__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-        </span>
       </a>
     </li>
     <li class="reveal">
       <a href="https://www.instagram.com/brychenka/" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">Instagram</span><span class="ch__v">@brychenka</span></span>
-        <span class="ch__arrow" aria-hidden="true">
-          <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-          <svg aria-hidden="true" class="ch__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
-        </span>
       </a>
     </li>
   </ul>

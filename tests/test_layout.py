@@ -188,12 +188,45 @@ def test_contact_handle_sits_close_behind_its_platform_name(open_site):
     assert 0 <= gap < 40, f"{gap}px between the platform name and its handle"
 
 
-def test_contact_row_carries_the_proof_style_arrow_at_its_right_edge(open_site):
+# --- J3 (Jury Pass II, 2026-09-12): C9 above gave the channels row the same
+# travelling arrow .contact__cta and .proof__link use, so three social links
+# stacked directly under the page's one conversion goal read as four peers
+# sharing a device. test_contact_row_carries_the_proof_style_arrow_at_its_
+# right_edge (the old C9 test encoding that arrow) is removed below, not
+# widened — the behavior it proved is the thing this stage reverses. The
+# channels list drops to a visibly quieter tier instead, so the CTA stays
+# the one loudest thing on the page. ---
+
+def test_channels_no_longer_carry_the_cta_style_arrow(open_site):
     page, _ = open_site(viewport=WIDE)
-    row = page.locator("#contact .channels a").first
-    row_box = row.bounding_box()
-    arrow_box = row.locator(".ch__arrow").bounding_box()
-    assert arrow_box["x"] + arrow_box["width"] > row_box["x"] + row_box["width"] - 5
+    assert page.locator("#contact .channels .ch__arrow").count() == 0
+    # the CTA and the collage entry link keep their own arrows — only the
+    # channels list lost the shared device
+    assert page.locator(".contact__cta-arrow").count() == 1
+    assert page.locator(".proof__arrow").count() == 1
+
+
+def test_channels_read_quieter_than_the_cta(open_site):
+    page, _ = open_site(viewport=WIDE)
+    channels = page.locator("#contact .channels").first
+    channel_key_color = channels.locator(".ch__k").first.evaluate("el => getComputedStyle(el).color")
+    channel_val_color = channels.locator(".ch__v").first.evaluate("el => getComputedStyle(el).color")
+    cta_color = page.locator(".contact__cta").evaluate("el => getComputedStyle(el).color")
+    # the platform name (ch__k) now reads at the same --fg2 weight as its own
+    # handle (ch__v) — one quiet tier, not the CTA's full-strength ink
+    assert channel_key_color == channel_val_color
+    assert channel_key_color != cta_color
+
+
+def test_channels_top_rule_is_heavier_than_its_own_row_dividers(open_site):
+    page, _ = open_site(viewport=WIDE)
+    channels = page.locator("#contact .channels")
+    top_width = channels.evaluate("el => getComputedStyle(el).borderTopWidth")
+    row_width = page.locator("#contact .channels li").first.evaluate(
+        "el => getComputedStyle(el).borderBottomWidth"
+    )
+    assert top_width == "2px"
+    assert row_width == "1px"
 
 
 # --- P9: "See the work" used to rest at --fg2 with its underline drawn in
