@@ -145,16 +145,21 @@
    counterpart of a token defined on :root above; nothing new is introduced. */
 :root[data-theme="dark"] {
   --bg:     #14181A;
-  --green:  #4C7A52;
+  /* EXPERIMENT (feature/dark-theme-color-exploration, not merged): the sage
+     #4C7A52 read muddy against this bg and needed a separately-lightened
+     --green-text to clear 4.5:1 (3.58:1 on its own). Swapped for a more
+     saturated emerald that clears 4.5:1 (5.19:1) at full saturation, so
+     --green-text can just reuse it instead of a second hand-tuned hex. */
+  --green:  #3E9B6B;
   --fg:     #F2EFE8;
   --fg2:    #A8ABA9;
   --rule:   rgba(242,239,232,0.235);   /* P12: tuned separately to land ~2:1 against this pair's bg */
   --amber-text: var(--amber);   /* ink amber already clears 4.5:1 as text on charcoal (4.9:1) */
-  --green-text: #578C5E;         /* ink green fails 4.5:1 here (3.58:1); same hue lightened to exactly 4.5:1 */
+  --green-text: var(--green);    /* clears 4.5:1 on its own now (5.19:1) — no lightened variant needed */
   /* J7: same ~50% floor as the cream pair's dim tokens above, blended
      against this pair's own --bg and --green. */
   --amber-dim: #624A1F;
-  --green-dim: #304936;
+  --green-dim: #2A5A43;
   --collage-filter: grayscale(1) contrast(1.08) brightness(1.02);
   --cursor-active-ink: var(--ink-target);   /* C15: green over controls on charcoal */
 }
