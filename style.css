@@ -867,7 +867,10 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
 }
-.domain__stat { color: var(--fg); }
+/* J2 (Jury Pass II, 2026-09-12): .domain__meta's uppercase is meant for the
+   ENGLISH/CHESS/CLIMBING label only. Left inherited, it also flattens the
+   climbing stat's 7c/7C case distinction CLAUDE.md says must stay legible. */
+.domain__stat { color: var(--fg); text-transform: none; }
 .domain h3 { font-size: clamp(22px, 2.6vw, 34px); line-height: 1.15; letter-spacing: -.015em; max-width: 20ch; }
 .domain p { color: var(--fg2); max-width: var(--measure); }
 @media (min-width: 900px) {

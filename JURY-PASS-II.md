@@ -43,8 +43,8 @@ and three of those were made by Igor personally.
 
 | ID | Finding | Verdict | Stage |
 |---|---|---|---|
-| J1 | English copy uses 91 straight apostrophes/quotes; Russian copy is set properly | **Build** | J1 |
-| J2 | `text-transform: uppercase` destroys the 7c / 7C grade distinction on screen | **Build** | J1 |
+| J1 | English copy uses 91 straight apostrophes/quotes; Russian copy is set properly | **Build** — landed 2026-09-12 | J1 |
+| J2 | `text-transform: uppercase` destroys the 7c / 7C grade distinction on screen | **Build** — landed 2026-09-12 | J1 |
 | J3 | Facts-row labels are half lowercase, half uppercase | **Ask first** | J0 → J1 |
 | J4 | §05 rows are clickable with no resting affordance and no instruction | **Build** | J2 |
 | J5 | The one conversion link doesn't name the offer and looks like the three below it | **Ask first** | J0 → J3 |
@@ -426,7 +426,7 @@ bilingual `alt` work. Unblocks the artifact republish at the same time.
 | Stage | Items | Status |
 |---|---|---|
 | J0 — decisions | J3, J5, J6, J7 | not started |
-| J1 — typographic pass | J1, J2, (J3) | not started |
+| J1 — typographic pass | J1, J2, (J3) | **landed** 2026-09-12 — J3 not included (gated on J0, not yet run) |
 | J2 — make the answer visible | J4 | not started |
 | J3 — one loudest thing | J5 | not started |
 | J4 — the phone | J9 | not started |
