@@ -3364,6 +3364,65 @@ starts with the real shoot, alongside the deferred `<picture>`/WebP work.
 **Suite not re-run after this branch**: it touches only Markdown.
 **Live artifact not republished** — collage-placeholder hold, unchanged.
 
+## Jury Pass II — Stage J3, one loudest thing (hierarchy half) (2026-09-12)
+
+**J5 — the CTA didn't name the offer and looked like the three rows below
+it.** Two separable changes; only the hierarchy half is unblocked (the copy
+half — putting the actual offer in the big type — waits on Igor's exact
+EN/RU wording, per Stage J0). This stage does the hierarchy half only.
+
+`.contact__cta`, `.channels a` and `.proof__link` all shared the same
+travelling-arrow device. Stacked directly under the page's one conversion
+goal, the three social channels speaking the identical device read as peers
+of it rather than a lesser tier below it. Fix, using only the tools the
+stage allows (space, rule weight, type scale — no new colour, no button
+chrome, no rounded corners):
+
+- Removed the arrow (`.ch__arrow` + its two SVGs) from all three `.channels`
+  rows in `index.html`/`style.css`. Only `.contact__cta` and `.proof__link`
+  keep the device now.
+- Dimmed `.channels .ch__k` (the platform name) from full `--fg` to `--fg2`
+  — the same tone its own handle (`.ch__v`) already used, so the row reads
+  as one quiet unit instead of a bold label plus a muted value.
+- Doubled `.channels`'s top border from 1px to 2px and increased the gap
+  above it (`clamp(48px,6vw,80px)` → `clamp(56px,7vw,96px)`), so the rule
+  separating the CTA block from the channels list reads as a tier boundary,
+  not just another row divider at the same weight as the 1px lines between
+  individual channels.
+
+The channel rows keep an affordance — the existing underline-draw-in on
+`.ch__k` still fires on hover/focus — they just don't restate the CTA's own
+device.
+
+**Tests** (`test_layout.py`): the old C9 test
+`test_contact_row_carries_the_proof_style_arrow_at_its_right_edge` encoded
+exactly the behavior this stage reverses, so it's removed, not widened — the
+reason is in a comment above where it stood. Three new tests added:
+`test_channels_no_longer_carry_the_cta_style_arrow` (channels have zero
+`.ch__arrow` elements; the CTA and `.proof__link` still have exactly one
+each), `test_channels_read_quieter_than_the_cta` (the platform name's
+computed color equals its own handle's, and differs from the CTA's),
+`test_channels_top_rule_is_heavier_than_its_own_row_dividers` (2px vs 1px).
+All three regression-proven: fail against unmodified source (the arrow-count
+test failed 3≠0, the color test failed comparing full-`--fg` against
+`--fg2`, the rule-weight test failed 1px≠2px), pass with the fix.
+
+**Verified**: both themes, both languages, 375 and 1280, `prefers-reduced-
+motion: reduce`, no JS. Screenshots confirm the CTA reads as the one loud
+element with its arrow intact in every combination, the three channel rows
+render as a visibly quieter list with no arrow, and the separation holds
+identically without JS (the whole change is CSS/HTML, nothing JS-gated).
+
+**Not done in this stage**: the copy half of J5 (naming the offer in the big
+type) — still waiting on Igor's exact wording, per the J0 decision.
+
+**Suite: 239 passed, 0 failed** (237 baseline + 3 new tests, 1 old test
+removed as obsolete — see above; no remaining test was edited to make this
+pass).
+
+**Live artifact not republished** — collage-placeholder hold from Jury Pass
+II's standing orders still applies.
+
 ## Jury Pass II — Stage J2, make the answer visible (2026-09-12)
 
 **J4 — §05's selectable rows had no resting affordance.** Spark Order S5
