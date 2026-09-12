@@ -466,7 +466,7 @@ bilingual `alt` work. Unblocks the artifact republish at the same time.
 | J0 — decisions | J3, J5, J6, J7 | **landed** 2026-09-12, `9cc6ac6` — all four answered, no code |
 | J1 — typographic pass | J1, J2, (J3) | **landed** 2026-09-12, `6c58df6` — J3 resolved as "keep as is," no code needed |
 | J2 — make the answer visible | J4 | **landed** 2026-09-12, `0ba4f27` |
-| J3 — one loudest thing | J5 | hierarchy half **landed** 2026-09-12, merge SHA pending — copy half still needs Igor's exact EN/RU CTA wording |
+| J3 — one loudest thing | J5 | hierarchy half **landed** 2026-09-12, `49426cd` — copy half still needs Igor's exact EN/RU CTA wording |
 | J4 — the phone | J9 | not started |
 | J5 — the spoiler and the dim floor | J6(b), J7 | not started — no longer gated, both confirmed at J0 |
 | J6 — photographs | J10 | parked |
