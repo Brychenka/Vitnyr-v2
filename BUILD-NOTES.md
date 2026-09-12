@@ -3364,6 +3364,74 @@ starts with the real shoot, alongside the deferred `<picture>`/WebP work.
 **Suite not re-run after this branch**: it touches only Markdown.
 **Live artifact not republished** — collage-placeholder hold, unchanged.
 
+## Section 05 rewritten for the full trifecta, and the CTA finally names the offer (2026-09-12)
+
+Branch `feature/who-rows-and-cta-copy`. Not a Jury Pass II stage — direct
+content from Igor, supplying two things the work order had been waiting on.
+
+**§05's four rows.** All four "which of these is you?" rows were English-
+specific pain points (comprehension vs. speech, written vs. spoken,
+register/junior perception). Igor rewrote all four to span the site's full
+trifecta instead — plateau, performance-under-stress, one skill carrying
+the rest, backing off when it's hard — each now naming English, chess and
+climbing examples side by side ("the crux, the speech, the move"). EN is
+his own final copy; RU is a model's first-pass translation of it, flagged
+in an HTML comment per Standing Order 9's convention (same pattern Jury
+Pass II has used throughout). `data-prefill-en/ru` on each row rewritten to
+match, restating the new heading in the first person for the section 06
+Telegram composition (Spark Order S5 / move 19) — still a first pass,
+flagged the same way.
+
+The old fourth row carried `.it-row`, the promotable IT-professional pain
+point CLAUDE.md's SWAPPABLE BLOCK note describes as part of a possible
+Framing A pivot. None of the four new rows are IT-specific, so `.it-row` is
+dropped rather than left on unrelated content. **Flagging this for Igor
+explicitly**: if a future Framing A pivot still wants a dedicated IT row,
+that needs a fresh decision — this change doesn't relocate the old marker,
+it removes it.
+
+**§06's CTA.** "Message me." never named the actual offer — the exact
+finding Jury Pass II's J5 raised (hierarchy fixed in Stage J3, wording
+always pending Igor's own words). It's now "Message me for a free
+screening and trial lesson.", his wording. The Telegram deep-link's
+pre-filled base text (`data-href-en/ru`) is updated to match — "Hi! I'd
+like to book the free screening and trial lesson." — so what the reader
+arrives saying mirrors what the button promised, rather than the button
+promising one thing and the message saying another. RU is a first-pass
+translation (`скрининг` is a loanword; flagged for Igor to confirm it
+reads naturally).
+
+**Not changed, and worth Igor's eye**: `.sec__lede` directly under the CTA
+still reads "We start with a call: it's free, and you owe me nothing after
+it" / Russian "Начнём с созвона…" — "a call" no longer matches "a screening
+and trial lesson." Left alone because only the CTA was in scope here, but
+it now visibly disagrees with the button above it. Worth a follow-up pass
+once Igor confirms whether the lede should say "screening and trial
+lesson" too, or whether "call" was intentionally kept general.
+
+**Tests.** Three existing literals updated to the new offer text, disclosed
+rather than silently widened: `test_contact_cta_prefill_text_is_localized`
+and `test_selecting_a_row_rewrites_the_cta_prefill`
+(`tests/test_layout.py`), `test_row_selection_and_language_compose`
+(`tests/test_i18n.py`). Each guards a mechanism (localization, composition)
+that is unchanged; only the token literal each asserts moved. Regression-
+proven the same way Jury Pass II's stages have: reverted to the old copy,
+confirmed all three fail, restored, confirmed they pass.
+
+**Verified**: both themes, both languages, 1280 and 375, no-JS (rows and
+CTA both degrade to plain content, no JS needed for the copy itself), a
+row pick through to the composed Telegram message (confirmed by decoding
+the actual `href`, not just reading the DOM). No layout or mechanism
+changes — copy only, same elements, same classes minus `.it-row`.
+
+**Suite: 258 passed, 0 failed** (unchanged from the J5 baseline — no new
+tests added, three existing literals updated as noted above).
+
+**Live artifact not republished** — collage-placeholder hold from Jury Pass
+II's standing orders still applies; this change is unrelated to the
+photographs but the hold covers the artifact generally, not just photo-
+related edits.
+
 ## Jury Pass II — Stage J5, the spoiler and the dim floor (2026-09-12)
 
 Two independent, unrelated fixes bundled per the work order because both are

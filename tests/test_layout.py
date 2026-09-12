@@ -272,7 +272,9 @@ def test_contact_cta_prefill_text_is_localized(open_site):
     page, _ = open_site(viewport=WIDE)
     cta = page.locator(".contact__big .contact__cta")
     en_href = cta.get_attribute("href")
-    assert "book%20the%20free%20intro%20call" in en_href
+    # 2026-09-12: base offer text updated to Igor's own CTA wording (a free
+    # screening plus a trial lesson, not a bare "intro call").
+    assert "book%20the%20free%20screening%20and%20trial%20lesson" in en_href
 
     page.locator(".masthead .langswitch").click()
     ru_href = cta.get_attribute("href")
@@ -341,7 +343,8 @@ def test_selecting_a_row_rewrites_the_cta_prefill(open_site):
     text = _decoded_text(page, href)
     clause = row.get_attribute("data-prefill-en")
     assert clause and clause in text
-    assert text.startswith("Hi! I'd like to book the free intro call. — ")
+    # 2026-09-12: base offer text updated, see test_contact_cta_prefill_text_is_localized
+    assert text.startswith("Hi! I'd like to book the free screening and trial lesson. — ")
 
 
 def test_deselecting_restores_the_default_prefill(open_site):
