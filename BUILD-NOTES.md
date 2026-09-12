@@ -3430,3 +3430,38 @@ order's own instruction.
 **Live artifact not republished** — collage-placeholder hold from Jury Pass
 II's standing orders still applies; this stage didn't touch a photo either
 way.
+
+## Jury Pass II — Stage J0, decisions (2026-09-12)
+
+No code. Put the four questions Stage J0 specified to Igor and recorded the
+answers in `JURY-PASS-II.md` (each finding's own write-up plus the stage map
+and findings table):
+
+- **J6 (§02 specimens hiding the mistake at rest):** keep the hover reveal —
+  it's Igor's own 7 Sep request and stays. But fix the spoiler: the
+  `.spec__why` paragraphs beside each specimen already give the error away
+  in words, so they get rewritten to describe the *shape* of the mistake
+  without quoting the wrong sentence. Copy-only, the four hover-reveal tests
+  in `test_a11y.py` are untouched. Lands in the new Stage J5.
+- **J5 (CTA copy):** the big §06 line will name the offer instead of reading
+  "Message me." — direction confirmed, **exact English and Russian wording
+  still outstanding from Igor**. The hierarchy half (separating the CTA
+  visually from the three channel rows below it) doesn't wait on the copy
+  and proceeds in Stage J3 either way.
+- **J7 (the origin mark resting two-thirds dimmed):** raise the
+  `--amber-dim`/`--green-dim` floor so the two unlit strokes read as quiet
+  rather than washed out. C6 (the mark's English-lit rest state) stands —
+  no return to the neutral rest state that C6 fixed. Token change only,
+  lands in Stage J5.
+- **J3 (facts-row label case, tally vs. grade):** keep the current mixed
+  lowercase/uppercase styling. The distinction was deliberate (Spark Order
+  S2 move 18) and Igor confirmed it should stay. No code change; closed.
+
+Stage J5 ("the spoiler and the dim floor," items J6(b) + J7) replaces the
+former placeholder "contingent" stage now that both are confirmed. Stage J3
+("one loudest thing") is unblocked to start on its hierarchy half; its copy
+half is blocked on Igor's wording.
+
+**Not verified by eye**: nothing — no source file changed.
+**Suite not re-run**: unchanged from Stage J1's 234 passed, 0 failed.
+**Live artifact not republished** — collage-placeholder hold, unchanged.
