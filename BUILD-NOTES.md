@@ -3297,3 +3297,69 @@ against their (one changed, one unchanged) captions.
 
 **Live artifact not republished** — the hold is about the EN group, still
 stock; this pass didn't touch it.
+
+## Jury Pass II — the work order, no code (2026-09-12)
+
+Branch `docs/jury-pass-ii`. A second Awwwards-jury-style review of the main
+page, six days after the first one (the C/P numbering in "Awwwards-jury
+review, Stages 1–6"). Reviewed in a real Chromium driven from
+`tests/.venv` — both themes, 1280 and 375, full scroll-through, measured
+contrast and console — not by reading source. **No source file changed in
+this branch**; the output is `JURY-PASS-II.md` plus this note and a pointer
+in `CLAUDE.md`.
+
+Ten findings, J1–J10, staged J0–J6, one stage per chat per the house
+workflow. The order and the standing orders live in `JURY-PASS-II.md`; it is
+a repo file rather than an artifact **on purpose** — the Spark Order lived
+only as an artifact and drifted several stages behind `main` because chats
+forgot to republish it.
+
+**Baseline recorded with the order**: `main` at `9ebfab8`, full suite **232
+passed / 0 failed** (~5 min). The three `test_collage_nav_icons.py` failures
+that older entries above describe as pre-existing are **fixed** — there are
+no known-failing tests, and a stage that doesn't open 232-green should stop
+and find out why. Body contrast measured 5.45:1 cream / 7.71:1 charcoal.
+
+**Four of the ten collide with decisions already made, and that is the most
+important thing in the order**, because a jury reading and a settled decision
+look identical from inside the code:
+
+- **J6 (§02 hides the mistake behind a reveal)** is Igor's own request of
+  2026-09-07, verbatim in the entry above. Default is that it stands. What
+  the review did surface as new: the explanation column beside each specimen
+  already quotes the error, so the reveal hides something the page has
+  already said. That spoiler is fixable as copy with no reversal, and is the
+  recommended option at J0.
+- **J7 (the mark rests two-thirds dimmed)** is C6, a first-pass fix that
+  replaced an *accidental* neutral rest state with a chosen one. Not offered
+  as a reversal; offered as a dim-floor token change that keeps C6's argument.
+- **J8 (the three §01 mechanism rows start at three different left edges)**
+  is **withdrawn** — that is P14's deliberate outcome, test-asserted, and
+  "fixing" it re-introduces the pool-of-empty-track defect P14 removed. Left
+  on the sheet as a pointer so a later chat doesn't rediscover it.
+- **J3 (facts-row label case)** is S2 move 18's tally/scale/grade
+  distinction. Sound reasoning, poor legibility; put to Igor rather than
+  overruled.
+
+Genuinely new and uncontested: **J1** (91 straight apostrophes in the EN copy
+against properly-set « » and em dashes in the RU — the English typography is
+measurably the weaker of the two), **J2** (`text-transform: uppercase` on
+`.domain__meta` renders `7c redpoint · 7C Kilter` as `7C REDPOINT · 7C
+KILTER`, merging the two grades `CLAUDE.md` says must stay distinct — and
+`test_content.py:39–44` lowercases the DOM before asserting, so the guard
+passes while the reader sees the wrong thing), **J4** (S5 built §05's
+selected state and no resting state, so the feature is undiscoverable),
+**J5** (the one conversion link doesn't name the free call and shares its
+face, size and travelling arrow with the three channel rows under it), and
+**J9** (phone: 42px hero against 110px desktop, and a 127.6px sticky masthead
+eating 16% of a 780px viewport, with P10's collage-icon caption absent at
+phone widths).
+
+**J10 (the photographs are the least-surfaced asset on the page) is parked,
+not rejected** — 15 of 18 collage frames are still stand-ins, and surfacing
+them harder while they are stock makes the placeholder problem worse. It
+starts with the real shoot, alongside the deferred `<picture>`/WebP work.
+
+**Not verified by eye**: nothing — this pass was looking, not building.
+**Suite not re-run after this branch**: it touches only Markdown.
+**Live artifact not republished** — collage-placeholder hold, unchanged.

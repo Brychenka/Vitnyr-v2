@@ -33,7 +33,12 @@ Igor runs each new feature or content change as its own chat, with this repo
 as the shared backbone between them. For that to work, a new chat should:
 
 1. Read this file first — it's loaded automatically — plus `BUILD-NOTES.md`
-   for the phase-by-phase build log and what's still outstanding.
+   for the phase-by-phase build log and what's still outstanding. If there
+   is an open work order, read it too: `JURY-PASS-II.md` (2026-09-12) holds
+   the current staged plan, its standing orders, and — importantly — the
+   findings that were **withdrawn or parked** because they collide with
+   decisions already made. Check it before proposing a change to the main
+   page, so a settled decision isn't re-opened as a fresh idea.
 2. Branch before changing anything: `git checkout -b feature/<name>` off an
    up-to-date `main`. Don't commit straight to `main`.
 3. Verify before calling it done: both themes, both languages, ~375px and
