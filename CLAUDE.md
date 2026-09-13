@@ -39,6 +39,14 @@ as the shared backbone between them. For that to work, a new chat should:
    findings that were **withdrawn or parked** because they collide with
    decisions already made. Check it before proposing a change to the main
    page, so a settled decision isn't re-opened as a fresh idea.
+   Three further orders were written 2026-09-13 and are **open at their
+   decision stage, waiting on Igor** — nothing in them is approved to build
+   yet: `TRIFECTA-A-SPECIMENS.md` (the §02 diagnostic format extended to
+   chess and climbing), `TRIFECTA-B-DOSSIERS.md` (three full discipline
+   sections; **this one proposes changing the positioning recorded below**,
+   so its Stage B0 must be answered before any of it starts), and
+   `TRIFECTA-C-MARK-NAV.md` (§04's mark as a navigator). They borrow
+   `JURY-PASS-II.md`'s standing orders rather than restating them.
 2. Branch before changing anything: `git checkout -b feature/<name>` off an
    up-to-date `main`. Don't commit straight to `main`.
 3. Verify before calling it done: both themes, both languages, ~375px and

@@ -3818,3 +3818,99 @@ half is blocked on Igor's wording.
 **Not verified by eye**: nothing — no source file changed.
 **Suite not re-run**: unchanged from Stage J1's 234 passed, 0 failed.
 **Live artifact not republished** — collage-placeholder hold, unchanged.
+
+## Three trifecta work orders, no code (2026-09-13)
+
+Igor's brief: chess and climbing don't get enough attention on the main page;
+overview the sections and propose how to showcase all three disciplines as
+separate offerings, in detail. Brainstorm only — nothing implemented.
+
+### What the review measured
+
+At 1280px (page 8,649px tall): §03's chess card is **227px / 42 words**, the
+climbing card **227px / 45 words**, against roughly 4,000px of dedicated
+English argument across the hero, §01 and §02. Above the fold, chess and
+climbing are two words of a 45-word hero. Two further gaps that are not about
+space at all:
+
+- §06 still reads *"Tell me what you need **English** for"*, so the one
+  conversion step accepts one discipline, even after §05 was broadened to the
+  full trifecta on 2026-09-12.
+- The JSON-LD (`"jobTitle": "English coach"`), the meta description, the
+  `og:` copy and `<title>` all assert a single service.
+
+Also measured: §02 is the page's most rigorous device — name the error, show
+the wrong line, show the fix — and it exists once, for one discipline.
+
+### The orders
+
+Seven ideas came out of the review; Igor picked three to write up as
+executable orders. Each is a repo file, for the reason `JURY-PASS-II.md`
+states about itself: the Spark Order lived only as an artifact and drifted
+several stages behind `main`.
+
+- **`TRIFECTA-A-SPECIMENS.md`** — the §02 format, three times. Stages A0
+  (material + four decisions), A1 (generalise the machinery — runnable today,
+  needs no decisions), A2 (the group frame), A3/A4 (chess, climbing), A5 (the
+  section frame).
+- **`TRIFECTA-B-DOSSIERS.md`** — three full discipline sections on one
+  five-slot template, retiring the domain cards. Stages B0–B5.
+- **`TRIFECTA-C-MARK-NAV.md`** — §04's mark becomes navigation, plus a
+  scroll indicator. Stages C0–C2.
+
+Not written up, recorded here so they aren't lost: the three-feedback-loops
+comparison block; a contents index once the page passes ~12,000px;
+per-discipline photographs (that last one is **J10**, parked behind the
+shoot).
+
+### What the orders flag rather than decide
+
+- **B collides with a settled decision.** `CLAUDE.md` records chess and
+  climbing as proof-of-method, *not services on offer*, and the trifecta
+  persuades because they are disinterested evidence. Igor's brief converts
+  proof into product. B0.1 puts that to him as a weighted-vs-equal choice and
+  recommends weighted; it is not assumed.
+- **There is no material for chess or climbing coaching.** 8 years and 100+
+  clients are English figures; 2100 and 7c/7C are Igor's own results, not
+  coaching results. Under Standing Order 8 every stage that needs a session
+  format, a student, or a named error is blocked on him, and the orders say
+  so per stage rather than leaving a chat to improvise.
+- **Idea 4's scroll-lighting half was wrong as pitched** and is corrected in
+  the order: §04 sits at depth ~6,100px, below everything it would indicate,
+  so the indicator has to live in the masthead — and it must *not* be the
+  logo's own three strokes, because dimming those is J7's "faded logo"
+  reading applied to the header. C2 proposes segmenting the existing
+  `.progress` hairline instead.
+
+### Machinery the orders pin down so a later chat doesn't rediscover it
+
+- `initSpecimenReveal()` (`main.js:1262`) and the pointer dot's specimen ink
+  (`main.js:759`) both hard-code `#specimen`; any specimen living elsewhere
+  is silently skipped. Order A Stage A1 re-points both at `.specs`.
+- `test_no_invented_count_beside_the_finite_list_claim` forbids **any digit**
+  in §02's headings, ledes, specimen labels and why-paragraphs. Chess
+  notation lives in `.line-spec`, which the test doesn't read, so the rule
+  holds — but a label mentioning a rating or a grade fails it, and the copy
+  changes, never the test.
+- `specimen-*` ids are a public contract (S9A permalinks) and survive every
+  restructure.
+- `measureOrigin()` / `.past-origin` keys the progress rule's ink switch to
+  `#origin`'s page offset; moving that section moves the switch point.
+- `.proof` is the collage door and carries the shared-element View
+  Transition, which is close-only because `startViewTransition` defers its
+  callback. Relocating it is not the same as re-engineering it.
+- `.facts` runs `countUp()` with per-number durations — Igor reversed a
+  simplification here once; it does not go back to one shared sweep.
+- `.domain__stat`'s exemption from `text-transform: uppercase` (J2) is what
+  keeps 7c and 7C distinct on screen; any new stat element needs the same
+  exemption and a rendered-text assertion.
+
+### Not done
+
+No source file touched — `index.html`, `style.css`, `main.js` and `theme.js`
+are unchanged, so the suite is untouched at its 232 baseline and was not
+re-run for this entry. The live artifact was **not republished**: it is on
+hold under Jury Pass II Standing Order 2 until real photographs of Igor
+replace the 15 remaining stand-ins, and nothing visible changed here anyway.
+`CLAUDE.md` gained a pointer to the three orders so the next chat finds them
+from `main`.
