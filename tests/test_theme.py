@@ -67,7 +67,7 @@ def test_background_actually_changes_between_pairs(open_site):
     dark_bg = page.evaluate("getComputedStyle(document.body).backgroundColor")
     assert dark_bg != light_bg
     assert light_bg == "rgb(239, 235, 227)"  # #EFEBE3
-    assert dark_bg == "rgb(20, 24, 26)"      # #14181A
+    assert dark_bg == "rgb(23, 19, 16)"      # #171310
 
 
 def test_theme_button_label_is_localised(open_site):

@@ -209,7 +209,7 @@ def test_glyph_parts_carry_a_bg_coloured_keyline(open_site):
     the seam clean."""
     page, _ = open_site(theme="dark")
     stroke = page.locator(".glyph__part--stem").evaluate("el => getComputedStyle(el).stroke")
-    assert stroke == "rgb(20, 24, 26)"  # --bg on charcoal
+    assert stroke == "rgb(23, 19, 16)"  # --bg on charcoal
 
 
 def test_numbers_count_up_to_their_values(open_site):
