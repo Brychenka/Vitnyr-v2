@@ -3914,3 +3914,28 @@ hold under Jury Pass II Standing Order 2 until real photographs of Igor
 replace the 15 remaining stand-ins, and nothing visible changed here anyway.
 `CLAUDE.md` gained a pointer to the three orders so the next chat finds them
 from `main`.
+
+## Stale --bg literals in two tests, corrected (2026-09-13)
+
+Standing Order 4 requires saying so, with the reason, whenever an existing
+test is edited to make a change pass rather than widened or added to — this
+is that note, though the edit here follows a source change, not a new one.
+
+`802aaff` ("Explore a warm near-black background for dark theme"), merged to
+`main` via `a012b4a` on 2026-09-12, changed `style.css:153`'s charcoal
+`--bg` from `#14181A` to `#171310` and kept it (the sibling emerald-accent
+experiment in the same branch was reverted; this one wasn't). Two tests
+still asserted the old computed color, so they were passing against a
+`--bg` value the source no longer had:
+
+- `test_theme.py::test_background_actually_changes_between_pairs` asserted
+  `dark_bg == "rgb(20, 24, 26)"` (`#14181A`).
+- `test_motion.py::test_glyph_parts_carry_a_bg_coloured_keyline` asserted
+  `stroke == "rgb(20, 24, 26)"` for `.glyph__part--stem`'s `--bg` keyline.
+
+Both now assert `rgb(23, 19, 16)` (`#171310`), matching current `--bg`. No
+source file touched — `index.html`, `style.css`, `main.js` and `theme.js`
+are unchanged. Full suite: **258 passed, 0 failed**
+(`tests/.venv/bin/python -m pytest -q`). The live artifact was not
+republished: nothing visible changed, and it remains on hold under Jury
+Pass II Standing Order 2 pending real photographs of Igor.
