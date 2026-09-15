@@ -227,7 +227,12 @@
     gsap.set(visible, { y: '110%' });
     heroTween = gsap.to(visible, {
       y: '0%', duration: D.hero, ease: EASE, stagger: 0.09, delay: 0.15,
-      onComplete: function () { root.classList.add('hero-done'); }
+      onComplete: function () {
+        root.classList.add('hero-done');
+        // D2.5: the §04 mark sequences its own draw-in after this, listening
+        // for the event rather than initOrigin() reaching into this tween.
+        document.dispatchEvent(new CustomEvent('vitnyr:heroin'));
+      }
     });
     armHeroGuard();
   }
@@ -242,6 +247,7 @@
     if (live.length) gsap.set(live, { y: '0%' });
     root.classList.add('hero-done');
     heroStarted = true;
+    document.dispatchEvent(new CustomEvent('vitnyr:heroin'));
   }
 
   /* ---------- the reveal rhythm ----------
@@ -295,7 +301,14 @@
     // heights). The hero gets its own observer against the true viewport;
     // -20% stays correct for everything below it.
     var hero = [], rest = [];
-    items.forEach(function (el) { (el.closest('.hero') ? hero : rest).push(el); });
+    items.forEach(function (el) {
+      // D2.5: the §04 mark is still in `items` above (so a no-IO browser
+      // still force-shows it via the fallback), but its own .is-in is
+      // sequenced after the hero by initOrigin() rather than fired on
+      // ordinary scroll visibility — leave it out of both queues here.
+      if (el.classList.contains('origin__mark')) return;
+      (el.closest('.hero') ? hero : rest).push(el);
+    });
 
     var io = new IntersectionObserver(function (entries) { fireReveals(entries, io); },
       { rootMargin: '0px 0px -20% 0px', threshold: 0 });
@@ -662,6 +675,10 @@
     // PREVIEW: ink only, never sticks, never touches aria-pressed.
     function preview(name) {
       engaged = true;
+      // D2.5: a real engagement shows the mark outright, regardless of
+      // whether the hero-gated draw sequence has started yet — a reader who
+      // tabs in during that wait must not land on an invisible control.
+      mark.classList.add('is-in');
       if (idleTl) { idleTl.kill(); idleTl = null; }
       paint(name);
     }
@@ -670,6 +687,7 @@
     // aria-pressed — which now means "committed", not "currently previewed".
     function commit(name) {
       engaged = true;
+      mark.classList.add('is-in');   // see preview() above
       if (idleTl) { idleTl.kill(); idleTl = null; }
       committed = name;
       paint(name);
@@ -720,21 +738,43 @@
     // CSS, keyed off .is-in). Hold the idle preview until that has finished
     // so the draw and the hint never drive the same strokes in one frame.
     var DRAW_HOLD = 1.0;
+    // D2.5: at position 1 the mark is on screen at load, same as the hero —
+    // racing its draw-in against the hero's line-mask reads as four timed
+    // systems firing in the same viewport. Sequence instead: hero lands,
+    // then the mark draws, then the hint walks. buildReveals() no longer
+    // queues .origin__mark (see there), so this is the only place that adds
+    // its .is-in. Never reach into playHero() itself — it already carries a
+    // NaN-transform-cache scar from an earlier coupling attempt — just listen
+    // for the completion event it emits, or fall back on a fixed wait if
+    // that event is somehow missed (e.g. the mark only becomes visible after
+    // a late scroll, once the one-time event has already fired).
+    var HERO_WAIT_MS = 1800;
+    function drawThenHint() {
+      if (engaged || mark.classList.contains('is-in')) return;
+      mark.classList.add('is-in');
+      if (engaged) return;   // a real interaction can land in the same tick
+      var order = ['english', 'chess', 'climbing'];
+      var tl = gsap.timeline({
+        delay: DRAW_HOLD,
+        repeat: 1,
+        onComplete: function () { if (!engaged) clearPaint(); idleTl = null; }
+      });
+      order.forEach(function (name) {
+        tl.call(function () { if (!engaged) paint(name); }).to({}, { duration: 1 });
+      });
+      idleTl = tl;
+    }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         io.unobserve(entry.target);
         if (engaged) return;
-        var order = ['english', 'chess', 'climbing'];
-        var tl = gsap.timeline({
-          delay: DRAW_HOLD,
-          repeat: 1,
-          onComplete: function () { if (!engaged) clearPaint(); idleTl = null; }
-        });
-        order.forEach(function (name) {
-          tl.call(function () { if (!engaged) paint(name); }).to({}, { duration: 1 });
-        });
-        idleTl = tl;
+        if (root.classList.contains('hero-done')) { drawThenHint(); return; }
+        var fallback = setTimeout(drawThenHint, HERO_WAIT_MS);
+        document.addEventListener('vitnyr:heroin', function () {
+          clearTimeout(fallback);
+          drawThenHint();
+        }, { once: true });
       });
     }, { threshold: 0.4 });
     io.observe(mark);

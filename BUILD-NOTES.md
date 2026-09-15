@@ -4141,3 +4141,92 @@ and company difference the order also named (C0.3(b): a wordmark lockup
 above vs. a standalone dial-with-readout below) does the rest of the work.
 No change made on the strength of this — the mark's dim floor (J7) and the
 masthead lockup (C0.3(c)) are both untouched, per the order.
+
+---
+
+## Trifecta Order D, Stage D2.5 — sequence the opening (2026-09-15)
+
+Branch `feature/mark-opening-sequence`'s work, built directly on top of D2 on
+`feature/mark-commits` (kept as one running branch through this order rather
+than opened separately, matching how D1/D2 were already staged together).
+
+**The problem.** At position 1 (post-D1), the §04 mark sits right under the
+hero. Previously the mark's reveal (`.origin__mark.is-in`, the S7 move 03
+draw) and its idle hint fired off their own scroll-visibility observer, same
+as any other `.reveal` element — which for a section immediately below a
+100svh hero means "almost the instant the reader scrolls a little, or
+instantly if the hero itself is short enough." That raced the hero's own
+line-mask entrance instead of sequencing after it: exactly the "four timed
+systems in one viewport" concern the order names.
+
+**The fix — three behaviours in a row, not a race:**
+
+1. `playHero()`'s tween `onComplete` and `showHeroNow()`'s instant-show path
+   (the stuck-tween guard and the failsafe's `!heroStarted` backstop) now
+   both dispatch a `vitnyr:heroin` event on `document` right after they set
+   `hero-done` — a plain completion signal, nothing coupled. Per the order's
+   explicit instruction, `initOrigin()` never reaches into `playHero()`
+   itself; it only listens.
+2. `buildReveals()` no longer queues `.origin__mark` into either of its own
+   observers (it stays in the plain `items` array, so a no-`IntersectionObserver`
+   browser's fallback still force-shows it) — ownership of *when* to add its
+   `.is-in` moves to `initOrigin()`, which is the only place now touching it.
+3. `initOrigin()`'s existing visibility observer (unchanged threshold) now
+   gates a `drawThenHint()` step behind the hero: if `hero-done` is already
+   set when the mark becomes visible, it runs immediately; otherwise it
+   waits on the `vitnyr:heroin` event **or** a fixed 1800ms fallback,
+   whichever comes first, so a hero that never fires for any reason can't
+   strand the mark undrawn. `drawThenHint()` adds `.is-in` (starts the CSS
+   draw) and only then arms the existing `DRAW_HOLD`-delayed idle-hint
+   timeline — the 1.0s gap between draw and hint is unchanged, just now
+   measured from a later, sequenced start rather than from load.
+
+**A real bug this introduced, and its fix.** Gating the mark's `.is-in`
+behind the hero opened a window (up to ~1.8s) where a reader could Tab or
+click into the `.origin__hit`/`.origin__panel-item` controls before the
+sequence had run — and the old code path only ever added `.is-in` from
+`drawThenHint()`, which bails out once `engaged` is true. Without a fix, an
+early keyboard interaction would light the correct stroke/row internally but
+leave the whole `.origin__mark` figure sitting at `opacity:0` (its plain
+`.reveal` hidden state) — a focused control with no visible feedback at all,
+recoverable only ~4s later by the page-wide `failsafe()` sweep. Fixed by
+having `preview()` and `commit()` add `.is-in` themselves, unconditionally,
+the moment a real engagement happens — the additive rule applied to the new
+gate, not just to no-JS/reduced-motion.
+
+**Standing Order 4 — tests edited, and why.** Two existing tests assumed the
+old timing (draw essentially complete within ~1.2–1.8s of scrolling the mark
+into view, because nothing gated it) and both failed once the draw was
+correctly delayed behind the hero:
+- `test_magnetic_pull_reaches_the_origin_mark` (`tests/test_motion.py`)
+  measured the reveal's settled `transform: none` after a flat 1200ms wait;
+  with the draw now sequenced, that wait could still land before the hero
+  had completed. Added a `wait_for_function` on `hero-done` (the same idiom
+  the hero tests already use) before the existing 1200ms settle wait.
+- `test_origin_mark_holds_still_for_the_hover_states` (`tests/test_motion.py`)
+  asserted the clip rects were already at full height after a flat 1800ms
+  wait, for the same reason. Same fix: wait for `hero-done` first.
+
+Neither test's actual assertions changed — only what they wait for before
+making them, which is the correct fix given the behaviour change is
+deliberate and plan-mandated, not a bug in the tests' original logic.
+
+**Judged on real frames, per the order's own gate.** Scrolled straight to
+`#origin` immediately on load (the fast-scroll case the order is about,
+since the hero itself is off-screen above by then) at both 1280px and
+375px: the readout panel is present and correct from the first frame (it
+was never gated), the mark itself stays blank for roughly a second, then
+draws its three strokes, then visibly walks English → chess → climbing
+before settling back on English. No overlap, no dead-feeling gap — the
+panel already being there and readable while the mark catches up is what
+keeps it from reading as a stall. Verdict: **reads as composed, not slow.**
+Not cut.
+
+Full suite: **259 passed, 1 failed** — the same
+`test_collage_icon_caption_is_back_before_scrolling_on_phone[chromium-ru-320]`
+failure already present and documented as pre-existing/out-of-scope in the
+D2 entry above; unaffected by this stage's changes (no overlap with
+`test_collage_nav_icons.py` or any collage file).
+
+Not republished (Standing Order 2, collage still on non-Igor stock). Not
+merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.

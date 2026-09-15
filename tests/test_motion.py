@@ -564,6 +564,11 @@ def test_magnetic_pull_reaches_the_origin_mark(open_site):
     page, _ = open_site()
     mark = page.locator(".origin__mark")
     mark.scroll_into_view_if_needed()
+    # D2.5: the mark's reveal is sequenced after the hero lands rather than
+    # fired on its own visibility — wait for that handoff first.
+    page.wait_for_function(
+        "document.documentElement.classList.contains('hero-done')", timeout=6000
+    )
     page.wait_for_timeout(1200)          # let the reveal rise + glyph draw settle
     # revealed and settled: transform is back to none before any hover
     tx, ty = _translate_xy(page, ".origin__mark")
@@ -821,6 +826,11 @@ def test_origin_mark_holds_still_for_the_hover_states(open_site):
     stroke without disturbing the (now full) clip geometry."""
     page, _ = open_site()
     page.locator("#origin").scroll_into_view_if_needed()
+    # D2.5: the draw only starts once the hero has landed (event, or the
+    # sequence's own fallback timeout) — wait for that handoff first.
+    page.wait_for_function(
+        "document.documentElement.classList.contains('hero-done')", timeout=6000
+    )
     page.wait_for_timeout(1800)   # draw done
     before = _clip_heights(page)
     page.locator('.origin__hit[data-discipline="chess"]').focus()
