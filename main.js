@@ -61,33 +61,42 @@
 
   /* The progress hairline (move 20) rides the SAME scroll source — no second
      listener. trackProgress scales .progress off document depth and, once the
-     reader reaches #origin, flips .past-origin so the rule's ink crossfades
-     from specimen to target (the CSS owns the crossfade; this only picks the
-     side). #origin's page offset is measured once and re-measured on resize
-     and language switch, not read on every scroll frame. */
+     reader crosses the ink switch, flips .past-origin so the rule's ink
+     crossfades from specimen to target (the CSS owns the crossfade; this only
+     picks the side). Trifecta Order D / Stage D1 (2026-09-15): the switch
+     used to anchor to #origin, which sat 4-of-6 down the page; #origin has
+     moved to position 1, so anchoring there would flip the gauge on arrival
+     and destroy the signal. Re-anchored to #disciplines, which inherits
+     #origin's old page depth (so the timing barely moves) and reads better:
+     the gauge now turns from specimen to target exactly where the page stops
+     examining errors (§03) and starts showing results in three fields. The
+     .past-origin class name is unchanged — renaming it would touch CSS and
+     tests for no behavioural gain. INK_SWITCH_EL's page offset is measured
+     once and re-measured on resize and language switch, not read on every
+     scroll frame. */
   var progressEl = document.querySelector('.progress');
-  var originEl = document.getElementById('origin');
-  var originY = 0;
+  var INK_SWITCH_EL = document.getElementById('disciplines');
+  var inkSwitchY = 0;
   function scrollPos() { return lenis ? lenis.scroll : (window.scrollY || 0); }
-  function measureOrigin() {
-    if (originEl) originY = originEl.getBoundingClientRect().top + scrollPos();
+  function measureInkSwitch() {
+    if (INK_SWITCH_EL) inkSwitchY = INK_SWITCH_EL.getBoundingClientRect().top + scrollPos();
   }
   function trackProgress(y) {
     if (!progressEl) return;
     var max = root.scrollHeight - window.innerHeight;
     var p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
     progressEl.style.setProperty('--progress', p.toFixed(4));
-    if (originEl) root.classList.toggle('past-origin', y + window.innerHeight * 0.5 >= originY);
+    if (INK_SWITCH_EL) root.classList.toggle('past-origin', y + window.innerHeight * 0.5 >= inkSwitchY);
   }
   function onScroll(y) { setStuck(y); trackProgress(y); }
 
   if (lenis) lenis.on('scroll', function (e) { onScroll(e.scroll); });
   else window.addEventListener('scroll', function () { onScroll(window.scrollY); }, { passive: true });
-  measureOrigin();
+  measureInkSwitch();
   onScroll(scrollPos());
-  window.addEventListener('resize', function () { measureOrigin(); onScroll(scrollPos()); }, { passive: true });
+  window.addEventListener('resize', function () { measureInkSwitch(); onScroll(scrollPos()); }, { passive: true });
   document.addEventListener('vitnyr:langchange', function () {
-    requestAnimationFrame(function () { measureOrigin(); onScroll(scrollPos()); });
+    requestAnimationFrame(function () { measureInkSwitch(); onScroll(scrollPos()); });
   });
 
   // In-page links go through Lenis so the easing stays consistent.

@@ -250,7 +250,10 @@ def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
     page, _ = open_site(theme="dark")
     dot = page.locator(".cursor")
     dot_dot = page.locator(".cursor__dot")
-    link = page.locator('a[href="#method"]')  # the scrollcue
+    # Trifecta Order D / Stage D1 (2026-09-15): the scrollcue used to point at
+    # #method; #origin moved to position 1 and the scrollcue was re-pointed to
+    # follow it (main.js/index.html), so this selector follows it too.
+    link = page.locator('a[href="#origin"]')  # the scrollcue
 
     page.mouse.move(400, 300)
     page.mouse.move(400, 760)   # plain text

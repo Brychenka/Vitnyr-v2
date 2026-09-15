@@ -206,6 +206,17 @@ def test_section_numbering_is_sequential(open_site):
     assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05", "06"]
 
 
+def test_origin_is_the_first_section_and_carries_01(open_site):
+    """Trifecta Order D / Stage D1 (2026-09-15): the mark's section moved from
+    position 4 to position 1, directly after the hero, so it can act as the
+    page's navigator. Cheap regression guard against a later stage silently
+    moving or renumbering it back."""
+    page, _ = open_site()
+    first_sec = page.locator(".sec").first
+    assert first_sec.get_attribute("id") == "origin"
+    assert first_sec.locator(".label .num").inner_text().strip() == "01"
+
+
 # --- Spark Order S9A / move 09: each specimen is addressable, and the claim it
 # sits under ("Your errors are a finite list") never gets a fabricated number
 # put beside it. S0 decided that line is the whole claim; no figure is invented. ---

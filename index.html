@@ -243,15 +243,107 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <div class="hero__foot">
     <p class="stand reveal" data-l="en">Eight years, 100+ one-on-one clients: standups, performance reviews, technical interviews, client calls, and the everyday conversation the rest of it sits on. Not grammar drills. Your grammar is usually already there.</p>
     <p class="stand reveal" data-l="ru">Восемь лет, больше ста учеников индивидуально: стендапы, performance review, технические интервью, созвоны с клиентами и обычный разговор, на котором держится остальное. Не зубрёжка грамматики: она у вас, скорее всего, уже есть.</p>
-    <a class="scrollcue reveal" href="#method" data-magnetic>
-      <span data-en="The method" data-ru="Метод">The method</span>
+    <a class="scrollcue reveal" href="#origin" data-magnetic>
+      <span data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span>
       <svg viewBox="0 0 12 24" aria-hidden="true"><path d="M6 0 V22 M1 17 L6 22 L11 17" fill="none" stroke="currentColor" stroke-width="1.25"/></svg>
     </a>
   </div>
 </section>
 
+<!-- The mark's OFFICIAL meaning (see reference/vitnyr-brand-identity.md) is
+     the fused V/Y of Vitnyr's own initials; Igor's own reading (three
+     strokes -> three disciplines he loves, practices and coaches) is stated
+     alongside it, not instead of it. 2026-09-12: Igor asked to lead with his
+     own reading and state the fused-initials origin second — reversed from
+     the original ordering, but both facts stay in the copy. The mark itself
+     is untouched, only this text explains it.
+     P6 (Stage 6, 2026-09-06): the vit + nýr etymology below was flagged as
+     unconfirmed and held for Igor's sign-off. Checked against the
+     Cleasby-Vigfusson Old Norse dictionary: vit = "consciousness, sense" /
+     "wit, understanding, reason"; nýr = "new, fresh, recent" — both match
+     the copy as written. Confirmed; this note can go once it's read once
+     more by whoever ships next.
+     Trifecta Order D / Stage D1 (2026-09-15): moved here from position
+     04 (after §03 Specimens) to position 01, directly after the hero, per
+     Igor's brief — the mark becomes the page's navigator. Nothing in this
+     section's own markup changes in this stage, only its place in the
+     document and its .num. -->
+<section class="sec" id="origin">
+  <p class="label reveal"><span class="num">01</span><span data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span></p>
+  <div class="sec__head">
+    <h2 class="reveal" data-l="en">What Vitnyr stands for.</h2>
+    <h2 class="reveal" data-l="ru">Что стоит за именем Vitnyr.</h2>
+    <div class="sec__lede">
+      <p class="reveal" data-l="en"><strong>Vitnyr</strong> is a coined word, built from two Old Norse roots: <strong class="mark">vit</strong>, meaning sense or understanding, and <strong class="mark">nýr</strong>, meaning new. Together: new understanding. Not a slogan added afterward. It’s what happens inside a correction, when a broken pattern gets replaced by one that holds.</p>
+      <p class="reveal" data-l="ru"><strong>Vitnyr</strong> — придуманное слово из двух древнескандинавских корней: <strong class="mark">vit</strong> — понимание, разумение — и <strong class="mark">nýr</strong> — новый. Вместе: новое понимание. Не слоган, приклеенный задним числом, а то же, что происходит внутри исправления: сломанный паттерн заменяется тем, который держится.</p>
+    </div>
+  </div>
+
+  <!-- The real mark, unmodified: the amber V-shape is defined once in <defs>
+       (identical d= to .lockup / .footmark — see header/footer; do not
+       regenerate or redraw it, per the CLAUDE.md note on the wordmark) and
+       referenced twice via <use>, each half clipped at x=50 — the shape's
+       verified exact symmetry axis — so the two arms can be dimmed/brightened
+       independently without ever touching the brand geometry. Hover, focus or
+       tap a stroke to see which discipline it stands for; see initOrigin()
+       in main.js. On first reveal the three strokes draw themselves in — two
+       for the V, then the stem — by growing the clip rects above; the mark's
+       own path data is never animated or redrawn (S7 move 03, style.css).
+       The three buttons are real <button> elements (not divs
+       with role=button) so keyboard Tab and touch tap both work natively —
+       mouse hover is layered on top only for fine-pointer devices. The panel
+       below is the single source of the three discipline/stat pairs: with
+       JS present only the active one shows (cross-fades); with JS absent or
+       failed, CSS shows all three at once, statically — see style.css. -->
+  <div class="origin__body">
+    <figure class="origin__mark reveal" data-magnetic>
+      <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
+        <defs>
+          <path id="glyphV" d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z"/>
+          <!-- The two half-clips also carry the S7 reveal draw: style.css grows
+               each rect from zero once, on the mark's .is-in, so the arms and
+               stem assemble in that order. The geometry above is untouched. -->
+          <clipPath id="glyphClipLeft" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="50" height="100"/></clipPath>
+          <clipPath id="glyphClipRight" clipPathUnits="userSpaceOnUse"><rect x="50" y="0" width="50" height="100"/></clipPath>
+          <clipPath id="glyphClipStem" clipPathUnits="userSpaceOnUse"><rect x="38" y="42" width="24" height="44"/></clipPath>
+        </defs>
+        <use class="glyph__part glyph__part--left" data-discipline="english" href="#glyphV" clip-path="url(#glyphClipLeft)" fill="var(--amber)"/>
+        <use class="glyph__part glyph__part--right" data-discipline="chess" href="#glyphV" clip-path="url(#glyphClipRight)" fill="var(--amber)"/>
+        <path class="glyph__part glyph__part--stem" data-discipline="climbing" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" clip-path="url(#glyphClipStem)" fill="var(--green)"/>
+      </svg>
+      <button class="origin__hit origin__hit--left" type="button" data-discipline="english" aria-pressed="false">
+        <span class="vh" data-en="English" data-ru="Английский">English</span>
+      </button>
+      <button class="origin__hit origin__hit--right" type="button" data-discipline="chess" aria-pressed="false">
+        <span class="vh" data-en="Chess" data-ru="Шахматы">Chess</span>
+      </button>
+      <button class="origin__hit origin__hit--stem" type="button" data-discipline="climbing" aria-pressed="false">
+        <span class="vh" data-en="Climbing" data-ru="Скалолазание">Climbing</span>
+      </button>
+    </figure>
+
+    <div class="origin__panel" aria-live="polite">
+      <p class="origin__panel-item" data-discipline="english">
+        <span data-en="English" data-ru="Английский">English</span>
+        <span class="origin__panel-stat">8&nbsp;/&nbsp;100+</span>
+      </p>
+      <p class="origin__panel-item" data-discipline="chess">
+        <span data-en="Chess" data-ru="Шахматы">Chess</span>
+        <span class="origin__panel-stat">2100</span>
+      </p>
+      <p class="origin__panel-item" data-discipline="climbing">
+        <span data-en="Climbing" data-ru="Скалолазание">Climbing</span>
+        <span class="origin__panel-stat" data-en="7c redpoint · 7C Kilter" data-ru="7c редпоинт · 7C Kilter">7c redpoint · 7C Kilter</span>
+      </p>
+    </div>
+  </div>
+
+  <p class="origin__note reveal" data-l="en">Three strokes stand for the three disciplines I love, practice and coach. The mark itself comes from merging Vitnyr’s initials, V and Y, into one shape.</p>
+  <p class="origin__note reveal" data-l="ru">Три штриха — это три направления, которые я люблю, практикую и преподаю. Сам знак — слияние инициалов Vitnyr, V и Y, в одну форму.</p>
+</section>
+
 <section class="sec" id="method">
-  <p class="label reveal"><span class="num">01</span><span data-en="The method" data-ru="Метод">The method</span></p>
+  <p class="label reveal"><span class="num">02</span><span data-en="The method" data-ru="Метод">The method</span></p>
   <div class="sec__head">
     <h2 class="reveal" data-l="en">Deliberate practice, pointed at the thing that’s actually broken.</h2>
     <h2 class="reveal" data-l="ru">Deliberate practice, направленная в то, что реально сломано.</h2>
@@ -289,7 +381,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 </section>
 
 <section class="sec" id="specimen">
-  <p class="label reveal"><span class="num">02</span><span data-en="Specimens" data-ru="Разбор ошибок">Specimens</span></p>
+  <p class="label reveal"><span class="num">03</span><span data-en="Specimens" data-ru="Разбор ошибок">Specimens</span></p>
   <div class="sec__head">
     <h2 class="reveal" data-l="en">Your errors are a finite list. Nobody ever shows you the list.</h2>
     <h2 class="reveal" data-l="ru">Ваши ошибки — конечный список. Только его вам никто не показывает.</h2>
@@ -372,7 +464,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 </div>
 
 <section class="sec" id="disciplines">
-  <p class="label reveal"><span class="num">03</span><span data-en="Three domains" data-ru="Три направления">Three domains</span></p>
+  <p class="label reveal"><span class="num">04</span><span data-en="Three domains" data-ru="Три направления">Three domains</span></p>
   <div class="sec__head">
     <h2 class="reveal" data-l="en">Chess and climbing aren’t hobbies on a CV.</h2>
     <h2 class="reveal" data-l="ru">Шахматы и скалолазание — не строчки в резюме.</h2>
@@ -450,93 +542,6 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </span>
     </a>
   </div>
-</section>
-
-<!-- The mark's OFFICIAL meaning (see reference/vitnyr-brand-identity.md) is
-     the fused V/Y of Vitnyr's own initials; Igor's own reading (three
-     strokes -> three disciplines he loves, practices and coaches) is stated
-     alongside it, not instead of it. 2026-09-12: Igor asked to lead with his
-     own reading and state the fused-initials origin second — reversed from
-     the original ordering, but both facts stay in the copy. The mark itself
-     is untouched, only this text explains it.
-     P6 (Stage 6, 2026-09-06): the vit + nýr etymology below was flagged as
-     unconfirmed and held for Igor's sign-off. Checked against the
-     Cleasby-Vigfusson Old Norse dictionary: vit = "consciousness, sense" /
-     "wit, understanding, reason"; nýr = "new, fresh, recent" — both match
-     the copy as written. Confirmed; this note can go once it's read once
-     more by whoever ships next. -->
-<section class="sec" id="origin">
-  <p class="label reveal"><span class="num">04</span><span data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span></p>
-  <div class="sec__head">
-    <h2 class="reveal" data-l="en">What Vitnyr stands for.</h2>
-    <h2 class="reveal" data-l="ru">Что стоит за именем Vitnyr.</h2>
-    <div class="sec__lede">
-      <p class="reveal" data-l="en"><strong>Vitnyr</strong> is a coined word, built from two Old Norse roots: <strong class="mark">vit</strong>, meaning sense or understanding, and <strong class="mark">nýr</strong>, meaning new. Together: new understanding. Not a slogan added afterward. It’s what happens inside a correction, when a broken pattern gets replaced by one that holds.</p>
-      <p class="reveal" data-l="ru"><strong>Vitnyr</strong> — придуманное слово из двух древнескандинавских корней: <strong class="mark">vit</strong> — понимание, разумение — и <strong class="mark">nýr</strong> — новый. Вместе: новое понимание. Не слоган, приклеенный задним числом, а то же, что происходит внутри исправления: сломанный паттерн заменяется тем, который держится.</p>
-    </div>
-  </div>
-
-  <!-- The real mark, unmodified: the amber V-shape is defined once in <defs>
-       (identical d= to .lockup / .footmark — see header/footer; do not
-       regenerate or redraw it, per the CLAUDE.md note on the wordmark) and
-       referenced twice via <use>, each half clipped at x=50 — the shape's
-       verified exact symmetry axis — so the two arms can be dimmed/brightened
-       independently without ever touching the brand geometry. Hover, focus or
-       tap a stroke to see which discipline it stands for; see initOrigin()
-       in main.js. On first reveal the three strokes draw themselves in — two
-       for the V, then the stem — by growing the clip rects above; the mark's
-       own path data is never animated or redrawn (S7 move 03, style.css).
-       The three buttons are real <button> elements (not divs
-       with role=button) so keyboard Tab and touch tap both work natively —
-       mouse hover is layered on top only for fine-pointer devices. The panel
-       below is the single source of the three discipline/stat pairs: with
-       JS present only the active one shows (cross-fades); with JS absent or
-       failed, CSS shows all three at once, statically — see style.css. -->
-  <div class="origin__body">
-    <figure class="origin__mark reveal" data-magnetic>
-      <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
-        <defs>
-          <path id="glyphV" d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z"/>
-          <!-- The two half-clips also carry the S7 reveal draw: style.css grows
-               each rect from zero once, on the mark's .is-in, so the arms and
-               stem assemble in that order. The geometry above is untouched. -->
-          <clipPath id="glyphClipLeft" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="50" height="100"/></clipPath>
-          <clipPath id="glyphClipRight" clipPathUnits="userSpaceOnUse"><rect x="50" y="0" width="50" height="100"/></clipPath>
-          <clipPath id="glyphClipStem" clipPathUnits="userSpaceOnUse"><rect x="38" y="42" width="24" height="44"/></clipPath>
-        </defs>
-        <use class="glyph__part glyph__part--left" data-discipline="english" href="#glyphV" clip-path="url(#glyphClipLeft)" fill="var(--amber)"/>
-        <use class="glyph__part glyph__part--right" data-discipline="chess" href="#glyphV" clip-path="url(#glyphClipRight)" fill="var(--amber)"/>
-        <path class="glyph__part glyph__part--stem" data-discipline="climbing" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" clip-path="url(#glyphClipStem)" fill="var(--green)"/>
-      </svg>
-      <button class="origin__hit origin__hit--left" type="button" data-discipline="english" aria-pressed="false">
-        <span class="vh" data-en="English" data-ru="Английский">English</span>
-      </button>
-      <button class="origin__hit origin__hit--right" type="button" data-discipline="chess" aria-pressed="false">
-        <span class="vh" data-en="Chess" data-ru="Шахматы">Chess</span>
-      </button>
-      <button class="origin__hit origin__hit--stem" type="button" data-discipline="climbing" aria-pressed="false">
-        <span class="vh" data-en="Climbing" data-ru="Скалолазание">Climbing</span>
-      </button>
-    </figure>
-
-    <div class="origin__panel" aria-live="polite">
-      <p class="origin__panel-item" data-discipline="english">
-        <span data-en="English" data-ru="Английский">English</span>
-        <span class="origin__panel-stat">8&nbsp;/&nbsp;100+</span>
-      </p>
-      <p class="origin__panel-item" data-discipline="chess">
-        <span data-en="Chess" data-ru="Шахматы">Chess</span>
-        <span class="origin__panel-stat">2100</span>
-      </p>
-      <p class="origin__panel-item" data-discipline="climbing">
-        <span data-en="Climbing" data-ru="Скалолазание">Climbing</span>
-        <span class="origin__panel-stat" data-en="7c redpoint · 7C Kilter" data-ru="7c редпоинт · 7C Kilter">7c redpoint · 7C Kilter</span>
-      </p>
-    </div>
-  </div>
-
-  <p class="origin__note reveal" data-l="en">Three strokes stand for the three disciplines I love, practice and coach. The mark itself comes from merging Vitnyr’s initials, V and Y, into one shape.</p>
-  <p class="origin__note reveal" data-l="ru">Три штриха — это три направления, которые я люблю, практикую и преподаю. Сам знак — слияние инициалов Vitnyr, V и Y, в одну форму.</p>
 </section>
 
 <!-- ================================================================

@@ -327,10 +327,17 @@ def test_progress_rule_tracks_scroll(open_site):
 
 @pytest.mark.parametrize("scheme", ["dark", "light"])
 def test_progress_rule_switches_ink_at_origin(open_site, scheme):
-    """S3 / move 20: above #origin the rule carries specimen ink; from #origin
-    down, target ink. The switch is an opacity crossfade between two fills that
-    each keep their own token — never an amber->green interpolation (a third
-    colour by the back door). Verified in both pairs."""
+    """S3 / move 20: above the ink switch the rule carries specimen ink; from
+    there down, target ink. The switch is an opacity crossfade between two
+    fills that each keep their own token — never an amber->green interpolation
+    (a third colour by the back door). Verified in both pairs.
+
+    Trifecta Order D / Stage D1 (2026-09-15): the switch used to anchor to
+    #origin (then 4-of-6 down the page). #origin moved to position 1, so
+    main.js re-anchored the switch to #disciplines, which inherits #origin's
+    old page depth. This test now scrolls to #disciplines rather than
+    #origin — the .past-origin class name itself is unchanged (see main.js).
+    """
     page, _ = open_site(theme=scheme)
     page.wait_for_timeout(300)
 
@@ -349,12 +356,12 @@ def test_progress_rule_switches_ink_at_origin(open_site, scheme):
     assert float(target.evaluate("el => getComputedStyle(el).opacity")) < 0.05
     assert "past-origin" not in (page.locator("html").get_attribute("class") or "")
 
-    # scrolled to #origin: .past-origin is set and the target ink is now shown
-    origin_y = page.evaluate(
-        "document.getElementById('origin').getBoundingClientRect().top"
+    # scrolled to #disciplines: .past-origin is set and the target ink shows
+    switch_y = page.evaluate(
+        "document.getElementById('disciplines').getBoundingClientRect().top"
         " + (window.__lenis ? window.__lenis.scroll : window.scrollY)"
     )
-    page.evaluate(f"window.scrollTo(0, {origin_y} + 8)")
+    page.evaluate(f"window.scrollTo(0, {switch_y} + 8)")
     page.wait_for_timeout(900)
     assert "past-origin" in (page.locator("html").get_attribute("class") or "")
     assert float(target.evaluate("el => getComputedStyle(el).opacity")) > 0.95

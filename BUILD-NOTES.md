@@ -3939,3 +3939,81 @@ are unchanged. Full suite: **258 passed, 0 failed**
 (`tests/.venv/bin/python -m pytest -q`). The live artifact was not
 republished: nothing visible changed, and it remains on hold under Jury
 Pass II Standing Order 2 pending real photographs of Igor.
+
+## Trifecta Order D, Stage D1 — the mark moves to the top (2026-09-15)
+
+`feature/mark-to-top`, off `main` at `2d0879e`. Pure relocation per
+`TRIFECTA-D-NAVIGATOR.md`'s Stage D1: no new behaviour, no new copy, no
+readout — that's D3. **Draft only**, per Igor's standing instruction: not
+merged to `main`, not pushed.
+
+1. **`#origin` moved from position 4 to position 1**, directly after the
+   hero and before `#method` — the mark becomes the second thing a reader
+   meets, so it can act as the page's navigator in a later stage. Its
+   preceding comment block (the mark's provenance note) moved with it, not
+   left orphaned. Nothing inside the section's own markup changed.
+2. **`.num` spans relabelled**: origin `04`→`01`, method `01`→`02`, specimen
+   `02`→`03`, disciplines `03`→`04`. `#who` and `#contact` keep `05`/`06`.
+   `.breath` did not move — it stays between `#specimen` and `#disciplines`,
+   unnumbered, only the numbers either side changed.
+3. **Hero's scroll cue re-pointed.** `<a class="scrollcue">` used to jump to
+   `#method`, labelled "The method" / «Метод» — now that it would skip past
+   the page's new opening section, it points at `#origin` instead, relabelled
+   "Name & mark" / «Имя и знак» to match §01's own label.
+4. **The ink-switch gauge re-anchored (D0.5).** `measureOrigin()` in
+   `main.js` read `#origin`'s page offset so `trackProgress()` could flip
+   `.past-origin` once the reader reached it, crossfading the masthead
+   hairline from specimen-amber to target-green. `#origin` only ever sat at
+   that offset because it happened to be 4-of-6 down the page; moved to
+   position 1, the flip would fire on arrival and the signal would be lost
+   entirely. Re-anchored to `#disciplines`, which inherits `#origin`'s old
+   page depth (timing barely moves) and reads better: the gauge now turns
+   from *examining errors* to *showing results* exactly where §03 ends and
+   §04 begins. Renamed `measureOrigin()` → `measureInkSwitch()`, hoisted the
+   id lookup to a named `INK_SWITCH_EL` constant with a comment explaining
+   why `#disciplines` and not `#origin`. The `.past-origin` CSS class name
+   itself is unchanged — the order only asked for the anchor and the
+   function name, and renaming the class would touch `style.css` and tests
+   for no behavioural gain.
+
+**Standing Order 4 — tests edited, and why:**
+
+- `test_progress_rule_switches_ink_at_origin` (`tests/test_motion.py`)
+  scrolled to `#origin`'s computed offset to assert `.past-origin` flips
+  there. Since the gauge now anchors to `#disciplines` (point 4 above), the
+  test scrolls to `#disciplines` instead. The assertions themselves (ink
+  tokens, crossfade behaviour) are unchanged — only the scroll target moved,
+  matching the source.
+- `test_dot_stays_one_size_and_only_recolours_over_hot_targets`
+  (`tests/test_a11y.py`) located the scrollcue via `a[href="#method"]`. That
+  selector went stale the moment the scrollcue was re-pointed (point 3
+  above) and the test timed out waiting for an element that no longer
+  exists. Updated to `a[href="#origin"]`; the test's actual assertions (dot
+  colour over a hot target) are unchanged.
+
+**New test:** `test_origin_is_the_first_section_and_carries_01`
+(`tests/test_content.py`) — the mark's section is the first `.sec` in the
+document and carries `01`. Cheap, and it's the thing a later stage could
+silently undo.
+
+**The aesthetic risk flagged in the order** — a two-thirds-dimmed mark now
+sitting directly under the full-ink masthead lockup, at the same viewport,
+which is J7's original "reads as a bug or a loading state" complaint with a
+screen less separation — was **not judged in this stage**, per the order:
+D1 ships behind D2, because the readout (D2) is what licenses the move. The
+mark currently rests dim-and-static at position 1 with no readout beside it
+yet.
+
+Full suite: `258 passed, 1 failed` on the first run — the one failure was
+the stale `#method` scrollcue selector above, in a test unrelated to this
+stage's own new test. Fixed and confirmed passing in isolation
+(`tests/test_a11y.py::test_dot_stays_one_size_and_only_recolours_over_hot_targets`,
+1 passed). A full-suite confirmation rerun was still in progress at the time
+of this commit — see the follow-up entry or `git log` on this branch if one
+was appended after.
+
+Not republished: the live artifact stays on hold under Jury Pass II
+Standing Order 2 (collage still on non-Igor stock) — unrelated to this
+change, but the rule is absolute regardless. Not merged, not pushed — draft
+only, per Igor's 2026-09-15 standing instruction in
+`TRIFECTA-D-NAVIGATOR.md`.
