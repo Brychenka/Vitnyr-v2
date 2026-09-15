@@ -149,6 +149,33 @@ def test_origin_mark_enter_commits_and_slides_the_marker(open_site):
     assert abs(marker["markerHeight"] - marker["itemHeight"]) < 1, marker
 
 
+def test_reading_only_swaps_on_commit_not_preview(open_site):
+    """Stage D3 (2026-09-15): D2's two-gesture split extends to the readout's
+    new four-row body — hover/focus previews ink only; only a commit "swaps
+    the readout" (D2's own words). Focusing chess must leave .reading on
+    English."""
+    page, _ = open_site()
+    page.locator('.origin__hit[data-discipline="chess"]').focus()
+    page.wait_for_timeout(200)
+    value = page.locator('.reading__row').first.locator('.reading__value[data-discipline="english"]')
+    assert value.evaluate("el => el.classList.contains('is-active')")
+    assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+
+
+def test_committing_chess_leaves_the_reading_on_english_until_d4(open_site):
+    """D3 builds the reading sheet on English only — "nothing about chess or
+    climbing is written here" (TRIFECTA-D-NAVIGATOR.md). Committing chess
+    must not blank the sheet: updateReading() in main.js leaves a row as-is
+    when it has no value for the newly-committed discipline, so the sheet
+    stays on English until Stage D4 gives every row a chess sibling."""
+    page, _ = open_site()
+    page.locator('.origin__panel-item[data-discipline="chess"]').click()
+    page.wait_for_timeout(700)
+    value = page.locator('.reading__row').first.locator('.reading__value[data-discipline="english"]')
+    assert value.evaluate("el => el.classList.contains('is-active')")
+    assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+
+
 def test_origin_mark_hover_previews_between_disciplines(open_site):
     """Unchanged behaviour, renamed and reworded for Stage D2 (2026-09-15):
     hover was already ink-only (it never touched aria-pressed), so it reads

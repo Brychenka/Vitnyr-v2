@@ -348,6 +348,47 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <span data-en="Climbing" data-ru="Скалолазание">Climbing</span>
         <span class="origin__panel-stat" data-en="7c redpoint · 7C Kilter" data-ru="7c редпоинт · 7C Kilter">7c redpoint · 7C Kilter</span>
       </button>
+
+      <!-- Trifecta Order D / Stage D3 (2026-09-15): the readout's body — one
+           spec sheet whose VALUES change, not three panels that swap. Four
+           rows, fixed order, hairline-ruled like the panel rows above; each
+           row's label never changes and never animates, only the value
+           beside it does. English is the only discipline with material
+           today, so each row carries exactly one .reading__value for now —
+           chess and climbing add their own .reading__value siblings in the
+           same row in Stage D4, with no markup change needed here. Content
+           is adapted from material the page already owns (the domains
+           section, the facts row, the named specimens), not invented — see
+           BUILD-NOTES. updateReading() in main.js keeps whichever value(s)
+           exist here in sync with the committed discipline; a commit of
+           chess or climbing before D4 lands simply leaves this sheet on
+           English, since nothing else exists to switch to yet. -->
+      <div class="reading">
+        <div class="reading__row" style="--i:0">
+          <span class="reading__label" data-en="Measured" data-ru="Измерено">Measured</span>
+          <span class="reading__values">
+            <span class="reading__value is-active" data-discipline="english" data-en="8 years · 100+" data-ru="8 лет · 100+">8 years · 100+</span>
+          </span>
+        </div>
+        <div class="reading__row" style="--i:1">
+          <span class="reading__label" data-en="Coaching since" data-ru="Стаж">Coaching since</span>
+          <span class="reading__values">
+            <span class="reading__value is-active" data-discipline="english" data-en="8 years" data-ru="8 лет">8 years</span>
+          </span>
+        </div>
+        <div class="reading__row" style="--i:2">
+          <span class="reading__label" data-en="Achieved" data-ru="Сделано">Achieved</span>
+          <span class="reading__values">
+            <span class="reading__value is-active" data-discipline="english" data-en="Standups · reviews · interviews · client calls" data-ru="Стендапы · ревью · интервью · созвоны">Standups · reviews · interviews · client calls</span>
+          </span>
+        </div>
+        <div class="reading__row" style="--i:3">
+          <span class="reading__label" data-en="Common mistakes" data-ru="Частые ошибки">Common mistakes</span>
+          <span class="reading__values">
+            <span class="reading__value is-active" data-discipline="english" data-en="Reflexive carried across · Adjective where English has a verb · Register, not grammar" data-ru="Возвратность, перенесённая из русского · Прилагательное там, где в английском глагол · Регистр, а не грамматика">Reflexive carried across · Adjective where English has a verb · Register, not grammar</span>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 

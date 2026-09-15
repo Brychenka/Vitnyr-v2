@@ -614,6 +614,12 @@
     var panel = document.querySelector('.origin__panel');
     var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : [];
     var marker = panel ? panel.querySelector('.origin__marker') : null;
+    // D3 (2026-09-15): the readout's body — see .reading in style.css and
+    // index.html. Queried once here rather than re-queried per commit; a
+    // row with no matching value for the newly-committed discipline (every
+    // row, until D4 adds chess/climbing) is simply left showing whatever it
+    // already had, which today is always English.
+    var readingValues = panel ? panel.querySelectorAll('.reading__value') : [];
     if (!hits.length) return;
 
     var idleTl = null;
@@ -649,6 +655,23 @@
 
     function clearPaint() {
       paint(committed);
+    }
+
+    // D3: swaps the readout's body — only ever called from commit(), never
+    // preview(), per D2's own split (hover is ink-only; a commit is what
+    // "swaps" the readout). A row with no value for `name` is left as-is:
+    // there is nothing to switch to for chess/climbing until D4 gives every
+    // row a sibling .reading__value for them.
+    function updateReading(name) {
+      var exists = false;
+      readingValues.forEach(function (el) { if (el.dataset.discipline === name) exists = true; });
+      if (!exists) return;
+      readingValues.forEach(function (el) {
+        var on = el.dataset.discipline === name;
+        el.classList.toggle('is-active', on);
+        el.setAttribute('aria-hidden', on ? 'false' : 'true');
+        el.inert = !on;
+      });
     }
 
     // Slides .origin__marker to sit against the named row. Measures the
@@ -691,6 +714,7 @@
       if (idleTl) { idleTl.kill(); idleTl = null; }
       committed = name;
       paint(name);
+      updateReading(name);
       positionMarker(name, true);
       hits.forEach(function (el) {
         el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
@@ -704,6 +728,7 @@
     // motion (the idle hint below never runs there) and the gap before the
     // hint's own IntersectionObserver fires.
     clearPaint();
+    updateReading(committed);
     positionMarker(committed, false);
 
     function wire(el) {

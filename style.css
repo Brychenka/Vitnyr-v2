@@ -1181,6 +1181,60 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
   transition: transform var(--t) var(--e), height var(--t) var(--e);
 }
 
+/* Stage D3 (2026-09-15): the readout's body. Same hairline-row idiom as
+   .origin__panel-item just above (label left, value right, border-top only,
+   no bleed — this sits inside the 360px-capped panel, not the section's own
+   edge, so it never joins the C12 full-bleed list at .mechanisms etc.), but
+   here the LABEL is what never changes; the VALUE is what switches. Base
+   rules (no html.js) put every .reading__value in normal flow, comma-dotted
+   apart by the sibling rule below — the no-JS/no-CSS-switch floor, where a
+   reader who never gets the JS-driven crossfade instead gets every
+   discipline's value read out in one line, which is a *better* result than
+   the JS state, not a fallback of it (see BUILD-NOTES). Only once html.js
+   confirms JS is present does .reading__values become a stacked grid cell
+   with the inactive value(s) faded and taken out of the tab/reading order —
+   updateReading() in main.js (called from commit(), not preview() — this is
+   the readout "swapping" D2 reserved for a commit, never a hover) is the
+   only thing that toggles .is-active here. */
+.reading { margin-top: 4px; }
+.reading__row {
+  display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding-block: 10px;
+  border-width: 0; border-top-width: 1px; border-style: solid; border-color: var(--rule);
+}
+@media (max-width: 899.98px) {
+  .reading__row { padding-block: 8px; }
+}
+/* Persistent. Never changes. Never animates — no transition property at
+   all, per the plan: that absence is what sells "same instrument, different
+   subject" rather than "new panel." */
+.reading__label {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+}
+.reading__values { text-align: right; }
+/* Defensive, not currently load-bearing: .reading__label's uppercase is
+   scoped to itself, not inherited by its .reading__values sibling. Kept
+   explicit anyway, matching J2's .domain__stat exemption, because the next
+   stage's climbing row (7c vs 7C) is exactly the case an accidental
+   ancestor rule would flatten, and this is cheaper fixed now than found
+   later — see the rendered-text test in tests/test_content.py. */
+.reading__value { font-family: var(--mono); font-size: 15px; color: var(--fg); text-transform: none; }
+.reading__value + .reading__value::before { content: " · "; }
+html.js .reading__values { position: relative; display: grid; justify-items: end; }
+html.js .reading__value {
+  grid-area: 1 / 1;
+  opacity: 0; visibility: hidden;
+  transition: opacity var(--t) var(--e) calc(var(--i, 0) * .06s),
+              visibility 0s calc(var(--t) + var(--i, 0) * .06s);
+}
+html.js .reading__value.is-active {
+  opacity: 1; visibility: visible;
+  transition: opacity var(--t) var(--e) calc(var(--i, 0) * .06s),
+              visibility 0s calc(var(--i, 0) * .06s);
+}
+html.js .reading__value + .reading__value::before { content: none; }
+
 .origin__note { color: var(--fg2); max-width: var(--measure); margin-top: clamp(32px, 5vw, 56px); }
 
 /* ---------- who ---------- */

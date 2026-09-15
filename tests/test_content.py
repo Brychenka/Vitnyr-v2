@@ -65,6 +65,52 @@ def test_domain_labels_stay_uppercase_while_stats_keep_their_case(open_site):
     ]
 
 
+def test_reading_rows_are_measured_coaching_achieved_mistakes(open_site):
+    """Trifecta Order D / Stage D3 (2026-09-15): the readout's body is one
+    spec sheet whose values change, not three panels that swap — four rows,
+    fixed order, per the plan's own table. Rendered text (inner_text), since
+    .reading__label is text-transform:uppercase."""
+    page, _ = open_site()
+    labels = page.locator(".reading__label").all_inner_texts()
+    assert labels == ["MEASURED", "COACHING SINCE", "ACHIEVED", "COMMON MISTAKES"]
+
+
+def test_reading_carries_only_confirmed_english_figures(open_site):
+    """D0.6: real numbers stay real. Stage D3 proves the readout on English,
+    the one discipline that already has all its material — the Measured row
+    must be built from the two confirmed figures, not a rounded substitute."""
+    page, _ = open_site()
+    measured = page.locator('.reading__row').nth(0).locator(
+        '.reading__value[data-discipline="english"]'
+    )
+    assert measured.inner_text() == "8 years · 100+"
+
+
+def test_reading_value_keeps_its_case_not_forced_uppercase(open_site):
+    """Same regression J2 fixed for .domain__stat (test above): a value must
+    not inherit any ancestor's uppercase transform. Asserts rendered text —
+    text_content() would read the source and miss a CSS regression that
+    brings uppercase back. Called out explicitly in TRIFECTA-D-NAVIGATOR.md's
+    Stage D3 as "the single easiest regression in the order"."""
+    page, _ = open_site()
+    achieved = page.locator('.reading__row').nth(2).locator(
+        '.reading__value[data-discipline="english"]'
+    )
+    assert achieved.inner_text() == "Standups · reviews · interviews · client calls"
+
+
+def test_reading_common_mistakes_names_real_specimens(open_site):
+    """Register: data, not prose (D0.7) — named mistakes, adapted from the
+    existing §03 specimens rather than invented for this row."""
+    page, _ = open_site()
+    mistakes = page.locator('.reading__row').nth(3).locator(
+        '.reading__value[data-discipline="english"]'
+    ).inner_text()
+    assert "Reflexive carried across" in mistakes
+    assert "Adjective where English has a verb" in mistakes
+    assert "Register, not grammar" in mistakes
+
+
 def test_the_three_measured_facts_are_exactly_these(open_site):
     page, _ = open_site()
     # S2 / move 18 split the climbing fact into two stacked .fact__reading

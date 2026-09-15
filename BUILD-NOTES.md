@@ -4230,3 +4230,131 @@ D2 entry above; unaffected by this stage's changes (no overlap with
 
 Not republished (Standing Order 2, collage still on non-Igor stock). Not
 merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.
+
+## Trifecta Order D, Stage D3 — the reading, built once, on English (2026-09-15)
+
+**Branch note:** committed on `feature/mark-commits`, continuing D1/D2/D2.5's
+own deviation from "one stage, one branch" (documented in the D2 entry
+above), not a new `feature/reading-english` branch.
+
+**What this stage is.** `.origin__panel`'s three rows (English/Chess/Climbing,
+wired in D2) are the *selector* — always all three visible, one committed.
+D3 gives the readout an actual *body*: a `.reading` block of four
+hairline-ruled rows — Measured, Coaching since, Achieved, Common mistakes —
+whose **labels are permanent and values switch**, per the plan's explicit
+"not three panels that swap" instruction. Built and proved on English only;
+"nothing about chess or climbing is written here" (the plan's own words) —
+that is Stage D4.
+
+**Where it sits, and why the apparent overlap with `.origin__panel-stat` is
+not a duplicate.** `.reading` was added *inside* `.origin__panel`, directly
+after the three existing selector buttons — it is the panel's body, not a
+replacement for its header. `.origin__panel-item`'s own one-line stat
+(`8 / 100+`, `2100`, `7c redpoint · 7C Kilter`) was left untouched rather
+than risking D2's already-passing, already-verified selector to avoid a
+narrow row-1/Measured-row overlap for English. This is the same kind of
+interim duplication D0.7 already tolerates between `.facts` and the readout
+(resolved later, at D6) — not a new unresolved question this stage owes an
+answer to.
+
+**Structure, exactly per the plan's skeleton:**
+```
+.reading
+  .reading__row (×4, --i:0..3 for the stagger)
+    .reading__label            ← never changes, no transition property at all
+    .reading__values
+      .reading__value[data-discipline="english"]   ← only one exists yet
+```
+CSS owns the switch, JS only picks the side (`updateReading()` in
+`initOrigin()`, `main.js`) — same division of labour D2 already used for the
+dial. Base rules put every `.reading__value` in normal flow with a `·`
+separator between siblings, so a no-JS reader gets every discipline's value
+read out on one line (better than the JS state, not a fallback of it —
+D3's own reasoning, though with only English present today there is nothing
+yet to compare it against). Only under `html.js` does `.reading__values`
+become a stacked grid cell with the inactive value(s) faded
+(`opacity`/`visibility`, plus `aria-hidden`/`inert`) and the stagger
+(`transition-delay: calc(var(--i) * .06s)`) applied.
+
+**The commit-only rule, extended.** D2 split hover (preview, ink only) from
+click (commit, "moves the marker + readout swaps"). `updateReading()` is
+called from `commit()` only, never from `paint()` (which both `preview()`
+and `commit()` share) — hovering or Tab-focusing chess lights its stroke and
+its selector row exactly as before, but `.reading` stays on whatever is
+committed. Guarded by `test_reading_only_swaps_on_commit_not_preview`
+(`tests/test_motion.py`).
+
+**The interim state between D3 and D4, made deliberate rather than left to
+chance.** Since only `.reading__value[data-discipline="english"]` exists per
+row, `updateReading(name)` first checks whether *any* row has a value for
+the newly-committed discipline before touching anything; if none do (true
+for chess and climbing until D4), every row is left exactly as it was. A
+reader who commits chess today keeps seeing English's reading sheet — not a
+blank one — while the selector above it, the mark, and the marker all still
+move correctly to chess. Guarded by
+`test_committing_chess_leaves_the_reading_on_english_until_d4`.
+
+**Content — adapted from material the page already owns, not invented (no
+placeholders needed; D0.6 governs D4's chess/climbing rows, not this one):**
+- **Measured** — `8 years · 100+`, the same two confirmed figures as
+  `.origin__panel-stat`'s English row and the `.facts` row, reformatted to
+  the plan's own quoted wording.
+- **Coaching since** — `8 years`, the same confirmed figure reframed as a
+  duration rather than a combined reading (English is the one discipline
+  where "years coaching" and "Measured" share a number — chess and
+  climbing will not, which is exactly why D0.6 flags those two rows as
+  placeholders in D4).
+- **Achieved** — `Standups · reviews · interviews · client calls`, adapted
+  from the domains section's English paragraph
+  ("standups, one-to-ones, performance reviews, written updates, technical
+  interviews, client calls"), shortened to the readout's data register
+  (D0.7) rather than quoted as prose.
+- **Common mistakes** — the three existing §03 specimen names verbatim
+  (`Reflexive carried across`, `Adjective where English has a verb`,
+  `Register, not grammar`) — real material already on the page, not new
+  copy.
+- RU values are direct translations/adaptations of the same source material,
+  written by this stage rather than left to Igor (Standing Order 9 is about
+  *new* copy Igor hasn't seen the English of yet; here the RU is a
+  same-session adaptation of already-approved RU text elsewhere on the page,
+  same as how `.origin__panel-stat`'s RU was handled in D2).
+
+**The uppercase-exemption regression the plan flagged in advance.**
+`.reading__value` was given `text-transform: none` even though nothing in
+`.reading__row`'s current structure would otherwise apply uppercase to it
+(unlike `.domain__meta`/`.domain__stat`'s ancestor relationship, `.reading__label`
+and `.reading__values` are siblings) — cheap insurance now, called out
+explicitly in `TRIFECTA-D-NAVIGATOR.md` as "the single easiest regression in
+the order" ahead of D4's `7c`/`7C` climbing row. Guarded by
+`test_reading_value_keeps_its_case_not_forced_uppercase`, reading rendered
+text (`inner_text()`) rather than source, matching J2's existing
+`.domain__stat` test.
+
+**Standing Order 4 — no existing test was edited.** All four new/behaviour
+guards this stage needed are new tests, added to `tests/test_content.py`,
+`tests/test_a11y.py`, and `tests/test_motion.py`. Nothing already in the
+suite had to change.
+
+**No new colour, no new curve, no new rhythm, no new label pattern.**
+`.reading__label` reuses `.origin__panel-item > span:first-child`'s exact
+type treatment; `.reading__value` reuses `.origin__panel-stat`'s; the
+stagger reuses `var(--t)`/`var(--e)`; the C12 hairline-bleed list
+(`style.css:694`) was left untouched — `.reading` sits inside the
+360px-capped `.origin__panel`, never at the section's own edge, same as the
+selector rows above it.
+
+**Verified:** both themes, both languages (EN/RU), 375px and 1280px, no
+console errors, no horizontal overflow at 375px (`scrollWidth - innerWidth`
+measured `0`). Real-frame check in the Browser pane: committing English,
+then chess, confirms the selector/marker/mark move correctly while
+`.reading` stays on English exactly as designed; RU labels and values render
+correctly (`Измерено`, `Стаж`, `Сделано`, `Частые ошибки`); no-JS floor shows
+all four rows with every value at full opacity.
+
+Targeted run (`-k "origin or reading"`): **25 passed**. Full suite:
+**266 passed, 1 failed** — the pre-existing, unrelated
+`test_collage_icon_caption_is_back_before_scrolling_on_phone[chromium-ru-320]`
+failure documented in every prior stage's entry; nothing D3 touches.
+
+Not republished (Standing Order 2, collage still on non-Igor stock). Not
+merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.

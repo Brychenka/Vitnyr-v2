@@ -149,6 +149,18 @@ def test_origin_mark_shows_all_disciplines_statically_without_js(open_site):
     assert "english" in text and "chess" in text and "climbing" in text
 
 
+def test_reading_shows_its_rows_statically_without_js(open_site):
+    """Stage D3's no-JS floor: with the commit/preview mechanism unavailable,
+    the readout's whole body (all four rows) must render, not hover-gated —
+    same requirement as .origin__panel above, extended to its new body."""
+    page, _ = open_site(java_script_enabled=False)
+    rows = page.locator(".reading__row")
+    assert rows.count() == 4
+    for i in range(4):
+        value = rows.nth(i).locator(".reading__value").first
+        assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+
+
 def test_origin_mark_still_interactive_under_reduced_motion(open_site):
     """Reduced motion removes the animation, not the interaction. Updated for
     Stage D2 (2026-09-15): focusing a hit-region is a preview (lights the
