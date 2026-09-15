@@ -4002,7 +4002,8 @@ which is J7's original "reads as a bug or a loading state" complaint with a
 screen less separation — was **not judged in this stage**, per the order:
 D1 ships behind D2, because the readout (D2) is what licenses the move. The
 mark currently rests dim-and-static at position 1 with no readout beside it
-yet.
+yet. **Judged after D2 landed — see that stage's entry below for the
+verdict.**
 
 Full suite: `258 passed, 1 failed` on the first run — the one failure was
 the stale `#method` scrollcue selector above, in a test unrelated to this
@@ -4119,3 +4120,24 @@ Not republished: the live artifact stays on hold under Jury Pass II Standing
 Order 2 (collage still on non-Igor stock) — unrelated to this change, but
 the rule is absolute regardless. Not merged, not pushed — draft only, per
 Igor's 2026-09-15 standing instruction in `TRIFECTA-D-NAVIGATOR.md`.
+
+**D1's deferred verdict, judged now that D2 licenses it.** Real frames, not
+a single screenshot: both themes, 1280 and 375, at scroll position 0 and
+scrolled to mid-block (the section in view together with the sticky
+masthead — the actual risk scenario, since J7 was specifically about the
+mark's small full-ink copy in the header sitting near its own large,
+mostly-dim self).
+
+**Verdict: reads as a choice, not as broken.** At scroll 0 the question
+doesn't arise — the mark isn't on screen yet. Scrolled to mid-block, in
+both Cream and Charcoal at both widths, the two dim strokes sit beside a
+three-row readout with one row plainly marked (the `--ink-target` rule
+against its leading edge): English named and lit, Chess and Climbing named
+and dim. That adjacency is what J7 didn't have — a bare dim/lit glyph with
+nothing beside it to explain the split — and it's enough on its own to read
+as "one of three, currently English" rather than "failed to load," even at
+375px with the small full-ink masthead mark directly above it. The scale
+and company difference the order also named (C0.3(b): a wordmark lockup
+above vs. a standalone dial-with-readout below) does the rest of the work.
+No change made on the strength of this — the mark's dim floor (J7) and the
+masthead lockup (C0.3(c)) are both untouched, per the order.
