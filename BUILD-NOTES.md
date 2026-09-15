@@ -4459,3 +4459,85 @@ entry; nothing D4 touches.
 
 Not republished (Standing Order 2, collage still on non-Igor stock). Not
 merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.
+
+---
+
+## Trifecta Order D, Stage D5 — deep links, keyboard, and the no-JS floor (2026-09-15)
+
+Branch note: continuing on `feature/mark-commits`, same deviation as
+D1–D4 in this lineage.
+
+**What shipped.** All the routing logic lives inside `initOrigin()`
+(`main.js`), the function already called before the reduced-motion return in
+both branches (line 141 under `reduce`, line 1486 otherwise) — no new call
+site needed, so "wire it before the reduced-motion return" is satisfied for
+free.
+
+- `#english`, `#chess`, `#climbing` — the ids Order B reserved for its
+  future dossier sections — now select that discipline on cold load,
+  *before* the resting default ever paints English, so there is no visible
+  drift from English to the deep-linked discipline. With no dossier
+  sections built yet (that's Order B, still open), these hashes act as a
+  plain selector rather than a scroll target with an element of its own.
+- A cold-load match scrolls to `#origin` (lenis when present, native
+  `scrollIntoView` under reduced motion/no-Lenis, matching
+  `initSpecimenPermalinks()`'s own fallback) and moves focus into
+  `.origin__panel` — `tabindex="-1"` added if absent, `focus({
+  preventScroll: true })` so it doesn't fight the scroll already under way.
+  Scroll alone is not navigation (the skip-link bug this project already
+  hit once, per CLAUDE.md's motion section).
+- Every commit (`origin__hit` click/Enter, `origin__panel-item` click) now
+  also calls `syncHash()`, which writes the discipline to the address bar
+  with `history.replaceState` — never `pushState`, and never a raw
+  `location.hash` assignment (that would fire `hashchange` and wake the
+  collage router's `routeAfterHashChange()` on every commit, per D5's own
+  warning). `replaceState` is a deliberate correction to
+  `TRIFECTA-C-MARK-NAV.md`'s C1 recommendation: C1 describes a *jump*
+  (`#collage`), where Back undoing the travel is correct; this is a
+  *selector*, and pushing an entry per commit would mean a reader who tried
+  all three disciplines needed three Backs to leave the page — the classic
+  tab-history bug. No second history listener was added; `nameFromHash()`
+  is read once, synchronously, at `initOrigin()`'s own start.
+- None of this is gated behind `reduce` — commit() already ran unconditionally
+  before D5, and `syncHash()`/`nameFromHash()` add no motion of their own, so
+  reduced motion still switches the hash and the reading exactly as before.
+
+**Standing Order 4 — no existing test edited.** D5 only adds behaviour
+(commit now also writes a hash; a matching cold-load hash now pre-selects a
+discipline); nothing it does contradicts an assertion an existing test was
+making, so none needed rewriting.
+
+**New tests in `tests/test_motion.py`:**
+`test_deep_link_selects_the_discipline_on_cold_load` (parametrized chess/
+climbing), `test_deep_link_focuses_the_readout_not_merely_scrolls_to_it`,
+`test_committing_a_discipline_writes_the_hash_via_replacestate`,
+`test_committing_a_discipline_never_fires_hashchange`,
+`test_committing_updates_the_hash_under_reduced_motion_too`,
+`test_browser_back_leaves_the_page_rather_than_cycling_disciplines` — the
+last confirms `history.length` is unchanged after two commits and that a
+single `go_back()` leaves `index.html` entirely (there is only ever the one
+navigation entry from `open_site`'s own `page.goto`, since neither commit
+pushed one).
+
+Regression-proved per Standing Order 5: `git stash push -u
+-m "d5-navigator-wip-2026-09-15"`, checked out only the new test file on top
+of the stashed-away main.js — 6 of the 7 new tests failed against the
+pre-D5 code (the 7th, the never-fires-hashchange test, trivially passed
+since nothing wrote a hash at all yet); `git stash apply` restored the real
+change, all 7 passed, then `git stash drop` (worktree caveat observed: no
+bare `git stash pop`, this worktree's stash stack is shared).
+
+Targeted run (`-k "origin or reading or collage"`, 127 tests): **126
+passed, 1 failed** — the same pre-existing
+`test_collage_icon_caption_is_back_before_scrolling_on_phone[chromium-ru-320]`
+overflow documented in every prior stage's entry; nothing D5 touches.
+Full suite: **1 failed, 276 passed** — the same failure, same test; nothing
+else regressed.
+
+**Deliberately not built this stage:** nothing — D5's scope (deep links,
+`replaceState`, focus-into-readout, reduced-motion parity) is fully
+self-contained and none of it was underspecified the way D4's three
+deferred items were.
+
+Not republished (Standing Order 2, collage still on non-Igor stock). Not
+merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.

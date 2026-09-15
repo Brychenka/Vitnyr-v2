@@ -883,3 +883,90 @@ def test_origin_mark_holds_still_for_the_hover_states(open_site):
     assert after == pytest.approx(before, abs=0.5), (before, after)
     assert page.locator('.glyph__part--right').evaluate(
         "el => el.classList.contains('is-active')") is True
+
+
+# ---------- D5: deep links, and Back leaving the page rather than cycling ----------
+
+@pytest.mark.parametrize("name", ["chess", "climbing"])
+def test_deep_link_selects_the_discipline_on_cold_load(open_site, name):
+    """D5: #english/#chess/#climbing are the ids Order B reserved for its
+    future dossier sections — with none built yet, they act here as a
+    selector, not a scroll target of their own. A cold load of #chess or
+    #climbing must select that discipline instead of drifting to it from the
+    English default in a second, visible step."""
+    page, _ = open_site(hash="#" + name)
+    item = page.locator(f'.origin__panel-item[data-discipline="{name}"]')
+    english_item = page.locator('.origin__panel-item[data-discipline="english"]')
+    assert item.get_attribute("aria-pressed") == "true"
+    assert english_item.get_attribute("aria-pressed") == "false"
+    row = page.locator(".reading__row").first
+    assert "is-active" in (
+        row.locator(f'.reading__value[data-discipline="{name}"]').get_attribute("class") or ""
+    )
+
+
+def test_deep_link_focuses_the_readout_not_merely_scrolls_to_it(open_site):
+    """Scroll alone is not navigation (see the skip-link bug in BUILD-NOTES):
+    the reader has to land *inside* the readout, tabindex="-1" added if it was
+    absent."""
+    page, _ = open_site(hash="#chess")
+    assert page.evaluate(
+        "() => document.activeElement.classList.contains('origin__panel')"
+    )
+    assert page.locator(".origin__panel").get_attribute("tabindex") == "-1"
+
+
+def test_committing_a_discipline_writes_the_hash_via_replacestate(open_site):
+    """The address bar stays shareable at all times, but a commit must never
+    push a new history entry — this is a selector, not a jump (a deliberate
+    correction to TRIFECTA-C-MARK-NAV.md's C1, which describes the #collage
+    jump, not this case)."""
+    page, _ = open_site()
+    before_length = page.evaluate("history.length")
+    page.locator('.origin__panel-item[data-discipline="chess"]').click()
+    assert page.evaluate("location.hash") == "#chess"
+    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
+    assert page.evaluate("location.hash") == "#climbing"
+    assert page.evaluate("history.length") == before_length
+
+
+def test_committing_a_discipline_never_fires_hashchange(open_site):
+    """Never assign location.hash directly for this — it would wake the
+    collage router's routeAfterHashChange() and trigger an unrelated View
+    Transition on every click. initOrigin() uses history.replaceState
+    instead, which — unlike a raw hash assignment — does not fire
+    hashchange."""
+    page, _ = open_site()
+    page.evaluate(
+        "() => { window.__hashchanges = 0; "
+        "window.addEventListener('hashchange', () => window.__hashchanges++); }"
+    )
+    page.locator('.origin__panel-item[data-discipline="chess"]').click()
+    page.wait_for_timeout(100)
+    assert page.evaluate("window.__hashchanges") == 0
+
+
+def test_committing_updates_the_hash_under_reduced_motion_too(open_site):
+    """This is navigation, not motion — wired before the reduced-motion
+    return in main.js, so the switch still works with only the animation
+    dropped."""
+    page, _ = open_site(reduced_motion=True)
+    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
+    assert page.evaluate("location.hash") == "#climbing"
+    row = page.locator(".reading__row").first
+    assert "is-active" in (
+        row.locator('.reading__value[data-discipline="climbing"]').get_attribute("class") or ""
+    )
+
+
+def test_browser_back_leaves_the_page_rather_than_cycling_disciplines(open_site):
+    """A reader who tries all three disciplines must need only one Back to
+    leave the page, not three — the classic tab-history bug replaceState is
+    chosen to avoid."""
+    page, _ = open_site()
+    page.locator('.origin__panel-item[data-discipline="chess"]').click()
+    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
+    assert page.evaluate("location.hash") == "#climbing"
+    page.go_back()
+    page.wait_for_timeout(300)
+    assert "index.html" not in (page.url or "")

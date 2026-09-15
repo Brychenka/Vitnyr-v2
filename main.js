@@ -706,6 +706,26 @@
       paint(name);
     }
 
+    // D5 (2026-09-15): #english/#chess/#climbing are the ids Order B reserved
+    // for its future dossier sections — with none built yet, they act here as
+    // a plain selector rather than a scroll target. Kept a selector, not a
+    // jump: syncHash uses replaceState so the address bar stays shareable
+    // without stacking history entries a reader would have to Back through
+    // one at a time. Never assign location.hash directly — that fires
+    // hashchange, which wakes the collage router's routeAfterHashChange()
+    // (main.js) on every commit; initSpecimenPermalinks() above is the
+    // pattern this copies, pushState swapped for replaceState because this is
+    // a selector, not a jump (a correction to what TRIFECTA-C-MARK-NAV.md's
+    // C1 recommends for the jump case).
+    var HASH_NAMES = ['english', 'chess', 'climbing'];
+    function nameFromHash() {
+      var id = (location.hash || '').slice(1);
+      return HASH_NAMES.indexOf(id) === -1 ? null : id;
+    }
+    function syncHash(name) {
+      if (window.history.replaceState) window.history.replaceState(null, '', '#' + name);
+    }
+
     // COMMIT: sticks, moves the marker, and is the only thing that writes
     // aria-pressed — which now means "committed", not "currently previewed".
     function commit(name) {
@@ -716,6 +736,7 @@
       paint(name);
       updateReading(name);
       positionMarker(name, true);
+      syncHash(name);
       hits.forEach(function (el) {
         el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
       });
@@ -724,12 +745,39 @@
       });
     }
 
+    // A cold load of #chess/#climbing selects that discipline before the
+    // resting default below ever paints English — so committed starts as the
+    // deep-linked discipline instead of drifting to it in a second, visible
+    // step.
+    var deepLinked = nameFromHash();
+    if (deepLinked) committed = deepLinked;
+
     // Establishes the resting default from the first frame — covers reduced
     // motion (the idle hint below never runs there) and the gap before the
     // hint's own IntersectionObserver fires.
     clearPaint();
     updateReading(committed);
     positionMarker(committed, false);
+    hits.forEach(function (el) {
+      el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
+    });
+    panelItems.forEach(function (el) {
+      el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
+    });
+
+    // The reader lands *inside* the readout, not merely near it — scroll
+    // alone is not navigation (see the skip-link bug in BUILD-NOTES).
+    // preventScroll because #origin is already the scroll target below;
+    // without it, focus() would fight that scroll with its own native jump.
+    if (deepLinked && panel) {
+      var origin = document.getElementById('origin');
+      if (origin) {
+        if (lenis) lenis.scrollTo(origin, { offset: 0, immediate: reduce });
+        else origin.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      }
+      if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '-1');
+      panel.focus({ preventScroll: true });
+    }
 
     function wire(el) {
       var name = el.dataset.discipline;
