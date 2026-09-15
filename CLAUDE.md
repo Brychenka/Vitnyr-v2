@@ -5,7 +5,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 Vitnyr — a one-page marketing site for Igor Shatsev, an English coach in
-Yerevan (chess + climbing used as proof-of-method, not services on offer).
+Yerevan who also coaches chess and climbing as real disciplines in their own
+right (English leads; chess and climbing are weighted secondary offers, not
+proof-of-method — see "Content and positioning decisions" below).
 Static HTML/CSS/JS, no build step, no framework, no package.json. Built
 against a design guide called `onesignaturemove.pdf` (not in this repo);
 `BUILD-NOTES.md` has the full phase-by-phase log, deviations from that guide,
@@ -39,14 +41,17 @@ as the shared backbone between them. For that to work, a new chat should:
    findings that were **withdrawn or parked** because they collide with
    decisions already made. Check it before proposing a change to the main
    page, so a settled decision isn't re-opened as a fresh idea.
-   Three further orders were written 2026-09-13 and are **open at their
-   decision stage, waiting on Igor** — nothing in them is approved to build
-   yet: `TRIFECTA-A-SPECIMENS.md` (the §02 diagnostic format extended to
-   chess and climbing), `TRIFECTA-B-DOSSIERS.md` (three full discipline
-   sections; **this one proposes changing the positioning recorded below**,
-   so its Stage B0 must be answered before any of it starts), and
-   `TRIFECTA-C-MARK-NAV.md` (§04's mark as a navigator). They borrow
-   `JURY-PASS-II.md`'s standing orders rather than restating them.
+   Three further orders came out of a 2026-09-13 trifecta brainstorm. Igor
+   dropped all three build plans 2026-09-15 — `TRIFECTA-A-SPECIMENS.md` and
+   `TRIFECTA-C-MARK-NAV.md` are deleted outright; nothing in either was ever
+   approved to build. `TRIFECTA-B-DOSSIERS.md` is kept, trimmed to its Stage
+   B0 only: the positioning question it forced (**answered 2026-09-13:
+   Weighted**, recorded below) and the still-open material-gap question
+   (does real chess/climbing coaching material exist, is it bookable) that
+   outlasts the retired order because any future chess/climbing feature runs
+   into the same gap. A fourth idea (the mark as the page's index) exists as
+   a draft on an unmerged branch (`feature/navigator-order`) — parked, not
+   part of the plan, not to be picked up without Igor saying so.
 2. Branch before changing anything: `git checkout -b feature/<name>` off an
    up-to-date `main`. Don't commit straight to `main`.
 3. Verify before calling it done: both themes, both languages, ~375px and
@@ -244,13 +249,28 @@ the brand file, so nothing in the code will tell a new chat about them:
   in `index.html` mark where Framing A would be a copy edit — the general
   "who this is for" rows plus the promotable `.it-row` — should positioning
   ever pivot, but that pivot hasn't happened and shouldn't be assumed.
-- **Funnel/structure: credibility-anchor, single page, unified.** v1 (now
-  gone, see above) tried separate pages per discipline; v2 followed
+- **Funnel/structure: single page, unified, trifecta in the hero headline.**
+  v1 (now gone, see above) tried separate pages per discipline; v2 followed
   `onesignaturemove.pdf`'s one-page structure instead, and Igor approved
   keeping the English/chess/climbing trifecta together in the hero headline
-  over a copywriter rewrite that would have led with English alone — the
-  trifecta *is* the credibility argument (chess and climbing as proof the
-  method transfers), not decoration.
+  over a copywriter rewrite that would have led with English alone.
+- **Positioning: chess and climbing are full disciplines, weighted behind
+  English — not proof-of-method** (decided 2026-09-13, superseding the
+  original credibility-anchor framing where the trifecta worked only as
+  proof the English method transfers). English still leads and stays
+  visibly the largest, first offer; chess and climbing are real, bookable,
+  secondary disciplines with their own material — not disinterested evidence
+  for someone else's coaching. This answers `TRIFECTA-B-DOSSIERS.md`'s Stage
+  B0.1 with its **Weighted** option, not **Equal** — so §04's mark still
+  rests with English (C6) and the raised dim floor (J7) both stay intact,
+  and nothing about the hero, the JSON-LD `jobTitle`, or existing metadata
+  changes on the strength of this decision alone (an "Equal" positioning
+  would have forced all three). What still has to be answered before any
+  future chess/climbing feature moves — see `TRIFECTA-B-DOSSIERS.md`'s
+  remaining B0.2 — is the actual session material for chess and climbing
+  coaching: does it exist yet, is it bookable today. Until that lands, this
+  is a documentation-only change: don't restructure `#disciplines`, rewrite
+  §06, or touch metadata on the strength of this decision alone.
 - **One *file*, even where there's more than one view.** Igor asked for the
   photo collage as a separate page (2026-09-04), which qualifies the rule
   above rather than reversing it. The constraint that decides the shape:
