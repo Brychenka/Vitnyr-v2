@@ -819,6 +819,14 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    rows, same shape as .rows in section 05: a hairline stack, the specimen
    itself (label + pair) in one column, the explanation beside it rather
    than stacked below, so the sentence pair can actually run at size. */
+/* Trifecta D follow-up (2026-09-15): §03 is one of three discipline-scoped
+   groups now (english/chess/climbing), swapped by main.js's updateSpecimens()
+   the same way updateReading() swaps the origin readout. .is-active is
+   hardcoded on the English group in the markup, not gated behind html.js, so
+   the no-JS/pre-init default is a real, fully-readable section rather than
+   nothing. */
+.specimens-group { display: none; }
+.specimens-group.is-active { display: block; }
 .specs { border-top: 1px solid var(--rule); }
 .spec {
   padding-block: clamp(32px, 4.5vw, 60px);

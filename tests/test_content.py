@@ -140,6 +140,59 @@ def test_reading_chess_and_climbing_placeholders_are_flagged(open_site):
     assert html.count("PLACEHOLDER (D0.6") == 6
 
 
+# --- Trifecta D follow-up (2026-09-15): §03 (Specimens) is now discipline-
+# scoped, the same way the origin readout is — English's three named
+# specimens are its own .specimens-group, and chess/climbing get their own
+# (currently placeholder) groups, swapped by the same commit() that drives
+# updateReading(). ---
+
+def test_english_specimens_are_the_default_before_any_commit(open_site):
+    page, _ = open_site()
+    groups = page.locator("#specimen .specimens-group")
+    assert groups.count() == 3
+    assert page.locator(
+        '#specimen .specimens-group[data-discipline-group="english"]'
+    ).is_visible()
+    for name in ("chess", "climbing"):
+        assert not page.locator(
+            f'#specimen .specimens-group[data-discipline-group="{name}"]'
+        ).is_visible()
+
+
+@pytest.mark.parametrize("name", ["chess", "climbing"])
+def test_committing_a_discipline_swaps_the_specimens_group(open_site, name):
+    page, _ = open_site()
+    page.locator(f'.origin__panel-item[data-discipline="{name}"]').click()
+    assert page.locator(
+        f'#specimen .specimens-group[data-discipline-group="{name}"]'
+    ).is_visible()
+    assert not page.locator(
+        '#specimen .specimens-group[data-discipline-group="english"]'
+    ).is_visible()
+
+
+def test_committing_back_to_english_restores_its_specimens_group(open_site):
+    page, _ = open_site()
+    page.locator('.origin__panel-item[data-discipline="chess"]').click()
+    page.locator('.origin__panel-item[data-discipline="english"]').click()
+    assert page.locator(
+        '#specimen .specimens-group[data-discipline-group="english"]'
+    ).is_visible()
+    assert not page.locator(
+        '#specimen .specimens-group[data-discipline-group="chess"]'
+    ).is_visible()
+
+
+def test_chess_and_climbing_specimen_placeholders_are_flagged(open_site):
+    """Same D0.6-style discipline as the readout's own placeholders (see
+    test_reading_chess_and_climbing_placeholders_are_flagged above): every
+    invented line here names what Igor replaces, findable by CLAUDE.md's
+    "search for PLACEHOLDER" convention."""
+    page, _ = open_site()
+    html = page.content()
+    assert html.count("PLACEHOLDER (2026-09-15, Trifecta D follow-up)") == 2
+
+
 def test_the_three_measured_facts_are_exactly_these(open_site):
     page, _ = open_site()
     # S2 / move 18 split the climbing fact into two stacked .fact__reading

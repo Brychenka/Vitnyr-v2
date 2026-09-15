@@ -620,6 +620,11 @@
     // row, until D4 adds chess/climbing) is simply left showing whatever it
     // already had, which today is always English.
     var readingValues = panel ? panel.querySelectorAll('.reading__value') : [];
+    // Trifecta D follow-up (2026-09-15): §03 (Specimens) is now one of three
+    // discipline-scoped groups, swapped the same way updateReading() swaps
+    // the readout's values. Queried once here, same reasoning as
+    // readingValues above.
+    var specimenGroups = document.querySelectorAll('#specimen .specimens-group');
     if (!hits.length) return;
 
     var idleTl = null;
@@ -671,6 +676,15 @@
         el.classList.toggle('is-active', on);
         el.setAttribute('aria-hidden', on ? 'false' : 'true');
         el.inert = !on;
+      });
+    }
+
+    // Swaps §03's discipline-scoped group. Unlike updateReading(), every
+    // discipline always has a group to switch to (no partial-rollout guard
+    // needed) — all three shipped together this stage.
+    function updateSpecimens(name) {
+      specimenGroups.forEach(function (el) {
+        el.classList.toggle('is-active', el.dataset.disciplineGroup === name);
       });
     }
 
@@ -735,6 +749,7 @@
       committed = name;
       paint(name);
       updateReading(name);
+      updateSpecimens(name);
       positionMarker(name, true);
       syncHash(name);
       hits.forEach(function (el) {
@@ -757,6 +772,7 @@
     // hint's own IntersectionObserver fires.
     clearPaint();
     updateReading(committed);
+    updateSpecimens(committed);
     positionMarker(committed, false);
     hits.forEach(function (el) {
       el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');

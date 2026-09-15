@@ -4541,3 +4541,83 @@ deferred items were.
 
 Not republished (Standing Order 2, collage still on non-Igor stock). Not
 merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.
+
+## Trifecta Order D follow-up — §03 becomes discipline-scoped (2026-09-15)
+
+Branch note: continuing on `feature/mark-commits`, per Igor's own direction
+("we are working on trifecta d... continue in this branch") rather than
+spinning this up as a separate piece of work, even though its content
+overlaps `TRIFECTA-A-SPECIMENS.md`'s still-open proposal.
+
+**Igor's brief:** §03 (Specimens) becomes part of the English discipline
+specifically — its three named specimens disappear when chess or climbing is
+selected — and chess/climbing get their own specimen sets rather than
+sharing English's. This closes a gap D4 had already flagged in the readout's
+row 4 ("no named chess specimens exist yet (§03 is English-only)",
+`main.js` `.reading__value[data-discipline="chess"]`).
+
+**What shipped.** §03 is now three `.specimens-group` blocks
+(`data-discipline-group="english"/"chess"/"climbing"`), each holding its own
+`.sec__head` (h2 + lede); English's also keeps the existing `.specs` with its
+three named wrong/right specimens untouched. A new `updateSpecimens(name)` in
+`initOrigin()` (`main.js`) toggles `.is-active` on whichever group matches
+`committed`, called from the same two places `updateReading()` already is:
+`commit()` and the boot default block (so a cold-load deep link to
+`#chess`/`#climbing` shows that discipline's group immediately, no visible
+drift). CSS (`style.css`): `.specimens-group { display: none; }
+.specimens-group.is-active { display: block; }` — English's group carries
+`.is-active` hardcoded in the markup, not gated behind `html.js`, so the
+no-JS/pre-init default is a real, fully-readable English section rather than
+nothing (same reasoning as `.reading__value`'s own default: the discipline
+selector needs JS to exist at all, so a static fallback has to pick one
+discipline rather than show all three groups at once).
+
+**Real material only — chess/climbing content is a "coming soon" placeholder,
+not invented specimens.** Per CLAUDE.md's real-material rule, specific
+chess/climbing mistakes aren't fabricated here; each new group's h2/lede says
+named specimens are coming "in the same wrong → right format as English
+above," mirroring the exact wording the readout's row 4 already shipped at
+D4. Two `<!-- PLACEHOLDER (2026-09-15, Trifecta D follow-up): ... -->`
+comments (one per discipline) name what Igor replaces, findable by
+CLAUDE.md's "search for PLACEHOLDER" convention — counted directly by a new
+test (see below). RU is a machine first pass, same D0.6/Standing Order 9
+discipline as every other placeholder this order shipped.
+
+**Standing Order 4 — no existing test edited.** Only new tests were added;
+nothing this change does contradicts an existing assertion (the section still
+carries exactly one `.label`/`.num` at 03, `.specs .spec` count is still
+3 since chess/climbing's placeholder groups don't add a `.specs` of their
+own, and the digit-free-prose test already walks the whole `#specimen`
+subtree regardless of which group is visible).
+
+**New tests in `tests/test_content.py`:**
+`test_english_specimens_are_the_default_before_any_commit`,
+`test_committing_a_discipline_swaps_the_specimens_group` (parametrized
+chess/climbing), `test_committing_back_to_english_restores_its_specimens_group`,
+`test_chess_and_climbing_specimen_placeholders_are_flagged`.
+
+Regression-proved per Standing Order 5: `git stash push -u
+-m "d-follow-up-specimen-groups-wip-2026-09-15"`, checked out only the new
+test-file changes on top of the stashed-away implementation — all 5 new
+tests failed against pre-change code; `git stash apply` restored the real
+change, all 5 passed, then `git stash drop` (worktree caveat observed again:
+no bare `git stash pop`; the unrelated stash entry parked by another
+session/chat, tagged "parked by nav-photo-cluster chat", was left untouched).
+
+Targeted run (`-k "specimen or origin or reading or content"`, 73 tests):
+**73 passed, 0 failed.** Full suite: **1 failed, 281 passed** — the same
+pre-existing `test_collage_icon_caption_is_back_before_scrolling_on_phone[chromium-ru-320]`
+overflow documented in every prior stage's entry; nothing this change
+touches.
+
+**Deliberately not built:** real chess/climbing specimen content (needs
+Igor's own named errors, same as the readout's row 4 gap it mirrors); the
+existing specimen permalink mechanism (`initSpecimenPermalinks()`) is
+unchanged and works identically for whichever group is visible, but a cold
+load of a chess/climbing specimen's own permalink (once real ones exist)
+won't auto-select that discipline the way `#chess`/`#climbing` do — same
+`nameFromHash()` gap that already exists for English's specimen permalinks
+today, not a new regression, and out of scope here.
+
+Not republished (Standing Order 2, collage still on non-Igor stock). Not
+merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.

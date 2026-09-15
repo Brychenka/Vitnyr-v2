@@ -459,6 +459,22 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 
 <section class="sec" id="specimen">
   <p class="label reveal"><span class="num">03</span><span data-en="Specimens" data-ru="Разбор ошибок">Specimens</span></p>
+
+  <!-- Trifecta Order D follow-up (2026-09-15): §03 used to be English-only
+       outright, with no mechanism to say so — the gap the readout's row 4
+       already flagged at D4 ("no named chess specimens exist yet (§03 is
+       English-only)", main.js .reading__value[data-discipline="chess"]).
+       Igor's brief: §03 becomes part of the English discipline specifically,
+       and chess/climbing get their own specimen sets rather than sharing
+       English's. Wired the same way as the readout's own per-discipline
+       swap (updateReading() in main.js) — a sibling updateSpecimens()
+       toggles .is-active on whichever .specimens-group matches committed.
+       Default (no JS, or before initOrigin runs) shows English only, via
+       .is-active being hardcoded here rather than gated behind html.js —
+       same reasoning as .reading__value's default: the discipline selector
+       itself needs JS to exist at all, so a static fallback has to pick one
+       default rather than show all three at once. -->
+  <div class="specimens-group is-active" data-discipline-group="english">
   <div class="sec__head">
     <h2 class="reveal" data-l="en">Your errors are a finite list. Nobody ever shows you the list.</h2>
     <h2 class="reveal" data-l="ru">Ваши ошибки — конечный список. Только его вам никто не показывает.</h2>
@@ -525,6 +541,39 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="spec__why" data-l="en">The sentence is grammatically perfect and still lands as an order. Russian softens a direct command with a single added word; English commands don’t soften the same way, no matter which word gets added. Errors of this class never show up in a test score, and they’re the ones doing damage at work.</p>
       <p class="spec__why" data-l="ru">Фраза грамматически безупречна и всё равно звучит как приказ. В русском команду смягчает одно добавленное слово; в английском команды так не смягчаются, каким бы словом их ни снабдили. Такие ошибки не видны ни в одном тесте, и именно они портят вам жизнь на работе.</p>
     </article>
+  </div>
+  </div>
+
+  <!-- PLACEHOLDER (2026-09-15, Trifecta D follow-up): no named chess
+       specimens exist yet, same gap D4 already flagged in the readout
+       (main.js .reading, row "Common mistakes", data-discipline="chess").
+       Igor replaces this whole group's head + lede with real wrong/right
+       specimens in the same format as English's three above, once named
+       chess errors exist. Framing kept generic on purpose — real material
+       only (CLAUDE.md): specific chess mistakes aren't invented here. -->
+  <div class="specimens-group" data-discipline-group="chess">
+  <div class="sec__head">
+    <h2 class="reveal" data-l="en">Chess has its own errors — trainable and fixable, once they’re named.</h2>
+    <h2 class="reveal" data-l="ru">В шахматах свои ошибки — их тоже можно тренировать и исправлять, если их назвать.</h2>
+    <div class="sec__lede">
+      <p class="reveal" data-l="en">Named chess specimens are coming, in the same wrong → right format as English above.</p>
+      <p class="reveal" data-l="ru">Разбор шахматных ошибок появится в этом же формате «неверно → верно», как и у английского выше.</p>
+    </div>
+  </div>
+  </div>
+
+  <!-- PLACEHOLDER (2026-09-15, Trifecta D follow-up): same gap as chess
+       above, for climbing (main.js .reading__value[data-discipline="climbing"]
+       carries the identical "coming soon" placeholder already). -->
+  <div class="specimens-group" data-discipline-group="climbing">
+  <div class="sec__head">
+    <h2 class="reveal" data-l="en">Climbing has its own errors — trainable and fixable, once they’re named.</h2>
+    <h2 class="reveal" data-l="ru">В скалолазании свои ошибки — их тоже можно тренировать и исправлять, если их назвать.</h2>
+    <div class="sec__lede">
+      <p class="reveal" data-l="en">Named climbing specimens are coming, in the same wrong → right format as English above.</p>
+      <p class="reveal" data-l="ru">Разбор ошибок в скалолазании появится в этом же формате «неверно → верно», как и у английского выше.</p>
+    </div>
+  </div>
   </div>
 </section>
 
