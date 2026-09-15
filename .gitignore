@@ -1,4 +1,5 @@
 .DS_Store
+.vscode/
 
 # QA suite (tests/) — local tooling only, never part of the site
 tests/.venv/
