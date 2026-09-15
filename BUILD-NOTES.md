@@ -4006,11 +4006,8 @@ yet.
 
 Full suite: `258 passed, 1 failed` on the first run — the one failure was
 the stale `#method` scrollcue selector above, in a test unrelated to this
-stage's own new test. Fixed and confirmed passing in isolation
-(`tests/test_a11y.py::test_dot_stays_one_size_and_only_recolours_over_hot_targets`,
-1 passed). A full-suite confirmation rerun was still in progress at the time
-of this commit — see the follow-up entry or `git log` on this branch if one
-was appended after.
+stage's own new test. Fixed, then confirmed with a full rerun:
+**259 passed, 0 failed** (`tests/.venv/bin/python -m pytest tests/ -q`).
 
 Not republished: the live artifact stays on hold under Jury Pass II
 Standing Order 2 (collage still on non-Igor stock) — unrelated to this
