@@ -3939,3 +3939,34 @@ are unchanged. Full suite: **258 passed, 0 failed**
 (`tests/.venv/bin/python -m pytest -q`). The live artifact was not
 republished: nothing visible changed, and it remains on hold under Jury
 Pass II Standing Order 2 pending real photographs of Igor.
+
+## Trifecta Orders A and C retired, B trimmed to Stage B0 (2026-09-15)
+
+Igor decided none of the three 2026-09-13 trifecta build plans (see "The
+orders" above) are going to be built. `TRIFECTA-A-SPECIMENS.md` and
+`TRIFECTA-C-MARK-NAV.md` are deleted outright — nothing in either had been
+approved past the decision stage. `TRIFECTA-B-DOSSIERS.md` is kept but
+trimmed to Stage B0 only: the positioning question (**Weighted**, already
+answered and recorded in `CLAUDE.md`) and Stage B0.2, the still-open
+material-gap question (no repo-recorded fact exists about chess or climbing
+*coaching*, as opposed to Igor's own 2100 rating / 7c-7C results). B0.2
+outlasts this order — any future feature describing a chess or climbing
+session hits the same gap. B0.3 (a 01–07 dossier-numbering scheme) and B0.4
+(what happens to the facts row and collage door) are not carried forward:
+both only made sense under B's now-dropped plan to retire `#disciplines`
+into three full sections.
+
+A fourth idea from the same brainstorm family — the mark on §04 becoming the
+page's clickable index, `TRIFECTA-D-NAVIGATOR.md` — was drafted 2026-09-15
+on branch `feature/navigator-order` in a separate worktree. It is explicitly
+draft-only by its own standing instruction and stays parked, unmerged, not
+part of the plan; noted here only so a future chat doesn't rediscover it
+from scratch or assume the trifecta idea is dead.
+
+No source file touched — `index.html`, `style.css`, `main.js` and `theme.js`
+are unchanged, so the suite is untouched at its 258 baseline and was not
+re-run for this entry. `CLAUDE.md` was updated to match (its pointer to the
+three orders now points at one trimmed file plus a note on the parked
+fourth). The live artifact was **not republished**: nothing visible
+changed, and it remains on hold under Jury Pass II Standing Order 2 pending
+real photographs of Igor.
