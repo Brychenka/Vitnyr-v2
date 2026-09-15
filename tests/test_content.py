@@ -111,6 +111,35 @@ def test_reading_common_mistakes_names_real_specimens(open_site):
     assert "Register, not grammar" in mistakes
 
 
+def test_reading_measured_carries_chess_and_climbing_confirmed_figures(open_site):
+    """Stage D4 (2026-09-15): chess and climbing ship together, row 1
+    (Measured) carrying only the real, confirmed figures — D0.6.1. Each
+    value is committed first — inner_text() reads rendered text and a
+    .reading__value not yet active is opacity:0/visibility:hidden, which
+    Playwright (correctly) reads as empty — case-preserving regression
+    guarded separately below."""
+    page, _ = open_site()
+    measured = page.locator('.reading__row').nth(0)
+
+    page.locator('.origin__panel-item[data-discipline="chess"]').click()
+    page.wait_for_timeout(700)
+    assert measured.locator('.reading__value[data-discipline="chess"]').inner_text() == "2100"
+
+    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
+    page.wait_for_timeout(700)
+    assert measured.locator('.reading__value[data-discipline="climbing"]').inner_text() == \
+        "7c redpoint indoor · 7C Kilter boulder"
+
+
+def test_reading_chess_and_climbing_placeholders_are_flagged(open_site):
+    """D0.6.2: every invented reading line carries a PLACEHOLDER comment
+    naming what Igor replaces. Rows 2-4 have no repo-recorded chess/climbing
+    STUDENT fact yet (D0.6.4), so both disciplines ship those rows flagged."""
+    page, _ = open_site()
+    html = page.content()
+    assert html.count("PLACEHOLDER (D0.6") == 6
+
+
 def test_the_three_measured_facts_are_exactly_these(open_site):
     page, _ = open_site()
     # S2 / move 18 split the climbing fact into two stacked .fact__reading

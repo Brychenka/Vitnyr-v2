@@ -4358,3 +4358,104 @@ failure documented in every prior stage's entry; nothing D3 touches.
 
 Not republished (Standing Order 2, collage still on non-Igor stock). Not
 merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.
+
+## Trifecta Order D, Stage D4 — chess and climbing (2026-09-15)
+
+Branch note: continuing on `feature/mark-commits`, same deviation from
+strict one-stage-one-branch as D1–D3 in this lineage, so the whole feature
+stays reviewable as one line of commits until Igor says otherwise.
+
+**What shipped.** Chess and climbing get their own `.reading__value`
+siblings in all four existing rows — no markup restructure, exactly as D3's
+own comment anticipated ("chess and climbing add their own .reading__value
+siblings in the same row in Stage D4, with no markup change needed here").
+Committing chess or climbing now switches `.reading` to that discipline's
+values instead of D3's interim "stay on English" behaviour.
+
+**Content, split by D0.6's real-vs-placeholder line:**
+- **Measured (real, both):** chess `2100` (no "FIDE", D0.6.1); climbing
+  `7c redpoint indoor · 7C Kilter boulder` (both grades kept distinct, case
+  preserved). These are the same two confirmed figures already on the page
+  (`.origin__panel-stat`, `.domain__stat`, `.facts`), reformatted to the
+  readout's own row.
+- **Coaching since / Achieved / Common mistakes (placeholder, both
+  disciplines — 6 lines total):** D0.6.4 is explicit that "years coaching
+  chess/climbing" is invented until Igor says otherwise — 2100 and 7c/7C are
+  **Igor's own results**, not coaching outcomes, so there is no repo-recorded
+  fact for any of these three rows for a chess or climbing *student*.
+  Every one of the six lines carries its own `<!-- PLACEHOLDER (D0.6...) -->`
+  comment in `index.html` naming what Igor replaces (D0.6.2), matching
+  `CLAUDE.md`'s "search for PLACEHOLDER" convention exactly (D0.6.5 — this
+  paragraph is that count: 6). EN is drafted plainly ("Ask Igor" /
+  "Student results — coming soon" / "Named errors — coming soon"); RU is a
+  same-session machine first pass, flagged in the same comments per Standing
+  Order 9 (`Уточняется` / `Результаты учеников — скоро` /
+  `Разбор ошибок — скоро`) — none of it is settled RU voice.
+- No metadata touched (D0.6.3) — `<title>`, `og:`, and the JSON-LD `Person`
+  block are unchanged; `test_person_json_ld_carries_only_confirmed_facts`
+  still passes unmodified.
+
+**Standing Order 4 — one existing test edited, with reason.**
+`test_committing_chess_leaves_the_reading_on_english_until_d4`
+(`tests/test_motion.py`) encoded D3's own interim safety net — its whole
+premise (no chess `.reading__value` exists yet) is what this stage removes.
+Renamed to `test_committing_chess_switches_the_reading_to_chess` and rewritten
+to assert the opposite: committing chess now activates chess's value and
+deactivates English's. A symmetric new test,
+`test_committing_climbing_switches_the_reading_to_climbing`, covers climbing
+the same way, since D4 ships both together by design ("splitting them buys
+nothing" — `TRIFECTA-D-NAVIGATOR.md`).
+
+**Two items in D4's own text, deliberately not built this stage — flagged
+rather than guessed:**
+1. **The checkerboard/carabiner glyphs.** The plan calls for these
+   (`TRIFECTA-D-NAVIGATOR.md` Stage D4: "checkerboard and carabiner glyphs,
+   `data-discipline="chess"` and `"climbing"`") but doesn't specify where they
+   attach or how — the existing glyph set only appears today as masthead
+   nav-icon-to-label echoes (`index.html:155–190`, `.label--glyph`), a
+   different kind of pairing than anything currently in `.origin__panel`.
+   Any of the placements I considered (icons on the three selector buttons,
+   a single swapping icon beside `.reading`) is a real visual decision on a
+   page whose author has been exacting about these exact icons (P20/P21's
+   checkerboard rework) — not one I judged safe to guess silently on a
+   draft that's otherwise ready to show. Left out entirely rather than
+   shipped wrong; the four-row content above does not depend on it.
+2. **The closing offer line.** D4's text: "must feed the existing CTA
+   machinery, not a second one" — `initWhoRows()`/`updateCta()`
+   (`main.js:1307`), which today only reads `.rows > li`'s
+   `data-prefill-en/-ru`. Wiring a second, per-discipline picker into that
+   single-selection state raises real interaction questions the plan doesn't
+   answer (does picking an origin offer line clear a `.rows` pick and vice
+   versa; what happens to a picked-but-now-uncommitted discipline's
+   selection): unlike D3's placement call, this touches the live
+   `.contact__cta` conversion path, not a self-contained display element.
+   Left out this stage; flagged for Igor/a follow-up rather than shipped as
+   an untested guess against the one real conversion control on the page.
+3. **The §06 lede.** Flagging per D4's own instruction, not fixing it here:
+   *"Tell me what you need **English** for and where it breaks now"*
+   (`#contact`) is now wrong the moment chess/climbing read as bookable
+   offers with readings of their own. D4 itself calls this "a copy edit
+   (Order B's B4.2); the RU is Igor's" — out of scope for this stage.
+
+**No new colour, curve, rhythm, or label pattern** beyond what D3 already
+established — chess/climbing values reuse `.reading__value` verbatim, same
+uppercase exemption, same stagger, same commit-only switch.
+
+**Verified:** both themes, both languages (EN/RU — RU screenshotted with
+climbing committed, renders correctly), 1280px and 375px (no horizontal
+overflow, `scrollWidth - innerWidth` measured `0`; climbing's longer
+Measured value wraps to two lines cleanly at phone width), no console
+errors. Real-frame check in the Browser pane: committing chess then
+climbing swaps every row correctly, marker and mark track the selection,
+English remains the default on load in both languages.
+
+Targeted run (`-k "reading or origin"`): **28 passed** — the four new/edited
+tests confirmed to fail against the pre-D4 code first (`git stash push -u`,
+run, `git stash apply` + `git stash drop`), per Standing Order 5.
+Full suite: **1 failed, 269 passed** —
+`test_collage_icon_caption_is_back_before_scrolling_on_phone[chromium-ru-320]`,
+the same pre-existing, unrelated failure documented in every prior stage's
+entry; nothing D4 touches.
+
+Not republished (Standing Order 2, collage still on non-Igor stock). Not
+merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.

@@ -162,18 +162,34 @@ def test_reading_only_swaps_on_commit_not_preview(open_site):
     assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 
 
-def test_committing_chess_leaves_the_reading_on_english_until_d4(open_site):
-    """D3 builds the reading sheet on English only — "nothing about chess or
-    climbing is written here" (TRIFECTA-D-NAVIGATOR.md). Committing chess
-    must not blank the sheet: updateReading() in main.js leaves a row as-is
-    when it has no value for the newly-committed discipline, so the sheet
-    stays on English until Stage D4 gives every row a chess sibling."""
+def test_committing_chess_switches_the_reading_to_chess(open_site):
+    """Stage D4 (2026-09-15) gives every row a chess sibling, retiring D3's
+    interim "stays on English" safety net (its own test, edited here per
+    Standing Order 4 — see BUILD-NOTES). Committing chess must now switch
+    .reading's first row to chess's value and deactivate English's."""
     page, _ = open_site()
     page.locator('.origin__panel-item[data-discipline="chess"]').click()
     page.wait_for_timeout(700)
-    value = page.locator('.reading__row').first.locator('.reading__value[data-discipline="english"]')
-    assert value.evaluate("el => el.classList.contains('is-active')")
-    assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    row = page.locator('.reading__row').first
+    chess = row.locator('.reading__value[data-discipline="chess"]')
+    english = row.locator('.reading__value[data-discipline="english"]')
+    assert chess.evaluate("el => el.classList.contains('is-active')")
+    assert chess.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    assert not english.evaluate("el => el.classList.contains('is-active')")
+
+
+def test_committing_climbing_switches_the_reading_to_climbing(open_site):
+    """Symmetric to the chess case above — D4 ships chess and climbing
+    together (TRIFECTA-D-NAVIGATOR.md Stage D4)."""
+    page, _ = open_site()
+    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
+    page.wait_for_timeout(700)
+    row = page.locator('.reading__row').first
+    climbing = row.locator('.reading__value[data-discipline="climbing"]')
+    english = row.locator('.reading__value[data-discipline="english"]')
+    assert climbing.evaluate("el => el.classList.contains('is-active')")
+    assert climbing.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    assert not english.evaluate("el => el.classList.contains('is-active')")
 
 
 def test_origin_mark_hover_previews_between_disciplines(open_site):

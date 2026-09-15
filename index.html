@@ -353,39 +353,62 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
            spec sheet whose VALUES change, not three panels that swap. Four
            rows, fixed order, hairline-ruled like the panel rows above; each
            row's label never changes and never animates, only the value
-           beside it does. English is the only discipline with material
-           today, so each row carries exactly one .reading__value for now —
-           chess and climbing add their own .reading__value siblings in the
-           same row in Stage D4, with no markup change needed here. Content
-           is adapted from material the page already owns (the domains
-           section, the facts row, the named specimens), not invented — see
-           BUILD-NOTES. updateReading() in main.js keeps whichever value(s)
-           exist here in sync with the committed discipline; a commit of
-           chess or climbing before D4 lands simply leaves this sheet on
-           English, since nothing else exists to switch to yet. -->
+           beside it does. Content is adapted from material the page already
+           owns (the domains section, the facts row, the named specimens),
+           not invented — see BUILD-NOTES. updateReading() in main.js keeps
+           whichever value(s) exist here in sync with the committed
+           discipline.
+
+           Stage D4 (2026-09-15) adds chess's and climbing's .reading__value
+           siblings to each row, per D0.6's placeholder policy: row 1
+           (Measured) carries each discipline's one confirmed figure
+           (CLAUDE.md's three facts); rows 2-4 have no repo-recorded fact for
+           a chess or climbing STUDENT (2100 and 7c/7C are Igor's own
+           results, not coaching outcomes) and so ship as flagged
+           placeholders, EN drafted, RU a machine first pass (Standing
+           Order 9) — every one individually marked below. -->
       <div class="reading">
         <div class="reading__row" style="--i:0">
           <span class="reading__label" data-en="Measured" data-ru="Измерено">Measured</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="8 years · 100+" data-ru="8 лет · 100+">8 years · 100+</span>
+            <span class="reading__value" data-discipline="chess">2100</span>
+            <span class="reading__value" data-discipline="climbing" data-en="7c redpoint indoor · 7C Kilter boulder" data-ru="7c редпоинт, зал · 7C Kilter">7c redpoint indoor · 7C Kilter boulder</span>
           </span>
         </div>
         <div class="reading__row" style="--i:1">
           <span class="reading__label" data-en="Coaching since" data-ru="Стаж">Coaching since</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="8 years" data-ru="8 лет">8 years</span>
+            <!-- PLACEHOLDER (D0.6.4): years coaching chess is not a repo-recorded
+                 fact — 2100 is Igor's own rating, not a coaching duration. Igor
+                 replaces with a real figure or removes the row's chess value. -->
+            <span class="reading__value" data-discipline="chess" data-en="Ask Igor" data-ru="Уточняется">Ask Igor</span>
+            <!-- PLACEHOLDER (D0.6.4): same as chess above — 7c/7C are Igor's own
+                 results, not a coaching duration. Igor replaces. -->
+            <span class="reading__value" data-discipline="climbing" data-en="Ask Igor" data-ru="Уточняется">Ask Igor</span>
           </span>
         </div>
         <div class="reading__row" style="--i:2">
           <span class="reading__label" data-en="Achieved" data-ru="Сделано">Achieved</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="Standups · reviews · interviews · client calls" data-ru="Стендапы · ревью · интервью · созвоны">Standups · reviews · interviews · client calls</span>
+            <!-- PLACEHOLDER (D0.6.4/5): no repo-recorded chess-student outcome
+                 exists yet. Igor replaces with a real one once there is one. -->
+            <span class="reading__value" data-discipline="chess" data-en="Student results — coming soon" data-ru="Результаты учеников — скоро">Student results — coming soon</span>
+            <!-- PLACEHOLDER (D0.6.4/5): same as chess above, for climbing. -->
+            <span class="reading__value" data-discipline="climbing" data-en="Student results — coming soon" data-ru="Результаты учеников — скоро">Student results — coming soon</span>
           </span>
         </div>
         <div class="reading__row" style="--i:3">
           <span class="reading__label" data-en="Common mistakes" data-ru="Частые ошибки">Common mistakes</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="Reflexive carried across · Adjective where English has a verb · Register, not grammar" data-ru="Возвратность, перенесённая из русского · Прилагательное там, где в английском глагол · Регистр, а не грамматика">Reflexive carried across · Adjective where English has a verb · Register, not grammar</span>
+            <!-- PLACEHOLDER (D0.6.2): no named chess specimens exist yet (§03 is
+                 English-only). Igor replaces with real named errors. -->
+            <span class="reading__value" data-discipline="chess" data-en="Named errors — coming soon" data-ru="Разбор ошибок — скоро">Named errors — coming soon</span>
+            <!-- PLACEHOLDER (D0.6.2): same as chess above, for climbing. -->
+            <span class="reading__value" data-discipline="climbing" data-en="Named errors — coming soon" data-ru="Разбор ошибок — скоро">Named errors — coming soon</span>
           </span>
         </div>
       </div>
