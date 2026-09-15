@@ -93,6 +93,11 @@
   --serif: Lora, Georgia, "Times New Roman", serif;
   --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* One-off marginalia voice for the §04 "choose a discipline" hint only —
+     not a fourth system typeface. Marck Script carries real Cyrillic
+     glyphs (unlike most script webfonts), so the RU string doesn't fall
+     back to a mismatched face. */
+  --hand:  "Marck Script", cursive;
 
   --e: cubic-bezier(.16, 1, .3, 1);
   --t: .6s;
@@ -1145,19 +1150,49 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
    own pattern: the readout is as clickable as the glyph, with a much larger
    target for touch. */
 .origin__panel { position: relative; width: min(100%, 360px); }
+/* Marginalia pointing at the three clickable rows below — a handwritten
+   nudge, not a heading, so it sits in its own script face (--hand, defined
+   above with the other type tokens) at a slight tilt, never straight.
+   --green-text (not the raw --green ink) because this IS text, just held
+   well above the 24px floor the colour system's "never as text under 24px"
+   rule sets — same safe-text alias .mark--target already uses, so it
+   clears 4.5:1 in both pairs instead of only the cream one. */
+.origin__hint {
+  margin: 0 0 10px;
+  font-family: var(--hand);
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1;
+  color: var(--green-text);
+  transform: rotate(-4deg);
+  transform-origin: left bottom;
+}
 .origin__panel-item {
   display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 16px;
-  padding-block: 10px;
+  padding-block: 14px;
   border-width: 0; border-top-width: 1px; border-style: solid; border-color: var(--rule);
   margin: 0; background: none; appearance: none;
   font: inherit; text-align: left; color: inherit; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--t) var(--e);
+}
+/* Closes the chooser as its own bounded group (top rule from the first
+   item's own border-top, bottom rule here) so the three rows read as one
+   control, distinct from the plain list of .reading__row below it. */
+.origin__panel-item:last-of-type { border-bottom: 1px solid var(--rule); }
+/* Fill is a tint of --fg itself, not a new hue — keeps the two-ink system
+   (CLAUDE.md) intact while giving the chooser a hover/active state that
+   reads as "these rows are buttons," which .origin__marker's 1px edge alone
+   didn't make obvious enough on its own. */
+.origin__panel-item:hover,
+.origin__panel-item:focus-visible,
+.origin__panel-item.is-active {
+  background: color-mix(in srgb, var(--fg) 6%, transparent);
 }
 /* Below 900px, tighten the rows' own padding slightly — not their type
    scale, per the plan's instruction — to reclaim the few px the two-column
    band above still needed to clear a 375x667 viewport in English. */
 @media (max-width: 899.98px) {
-  .origin__panel-item { padding-block: 8px; }
+  .origin__panel-item { padding-block: 10px; }
 }
 .origin__panel-item > span:first-child {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
@@ -1204,7 +1239,15 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
    updateReading() in main.js (called from commit(), not preview() — this is
    the readout "swapping" D2 reserved for a commit, never a hover) is the
    only thing that toggles .is-active here. */
-.reading { margin-top: 4px; }
+/* Frames the readout as the chooser's subordinate detail, not a fourth
+   peer row in the same list — spacing + a quiet eyebrow do the separating
+   the screenshot flagged as missing, without a second color or a box. */
+.reading__intro {
+  margin: clamp(36px, 5vw, 56px) 0 10px;
+  font-family: var(--sans); font-size: 11px; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--fg2);
+}
+.reading { margin-top: 0; }
 .reading__row {
   display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 16px;
   padding-block: 10px;
