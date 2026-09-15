@@ -3940,6 +3940,39 @@ are unchanged. Full suite: **258 passed, 0 failed**
 republished: nothing visible changed, and it remains on hold under Jury
 Pass II Standing Order 2 pending real photographs of Igor.
 
+## Trifecta Orders A and C retired, B trimmed to Stage B0 (2026-09-15)
+
+Igor decided none of the three 2026-09-13 trifecta build plans (see "The
+orders" above) are going to be built. `TRIFECTA-A-SPECIMENS.md` and
+`TRIFECTA-C-MARK-NAV.md` are deleted outright — nothing in either had been
+approved past the decision stage. `TRIFECTA-B-DOSSIERS.md` is kept but
+trimmed to Stage B0 only: the positioning question (**Weighted**, already
+answered and recorded in `CLAUDE.md`) and Stage B0.2, the still-open
+material-gap question (no repo-recorded fact exists about chess or climbing
+*coaching*, as opposed to Igor's own 2100 rating / 7c-7C results). B0.2
+outlasts this order — any future feature describing a chess or climbing
+session hits the same gap. B0.3 (a 01–07 dossier-numbering scheme) and B0.4
+(what happens to the facts row and collage door) are not carried forward:
+both only made sense under B's now-dropped plan to retire `#disciplines`
+into three full sections.
+
+A fourth idea from the same brainstorm family — the mark on §04 becoming the
+page's clickable index, `TRIFECTA-D-NAVIGATOR.md` — was drafted 2026-09-15
+on branch `feature/navigator-order` in a separate worktree, noted at the time
+as parked and unmerged. It did not stay parked: `feature/mark-commits` (a
+different worktree/chat) built the whole plan — Stages D1 through D5 plus a
+§03 discipline-scoping follow-up — and this entry's own merge into `main`
+is what lands it. See the stage-by-stage entries immediately below for what
+shipped.
+
+No source file touched by *this* entry — `index.html`, `style.css`,
+`main.js` and `theme.js` are unchanged by the retirement itself, so the
+suite was untouched at its 258 baseline and was not re-run for this entry
+alone. `CLAUDE.md` was updated to match (its pointer to the three orders now
+points at one trimmed file). The live artifact was **not republished** by
+this entry: nothing visible changed here, and it remains on hold under Jury
+Pass II Standing Order 2 pending real photographs of Igor.
+
 ## Trifecta Order D, Stage D1 — the mark moves to the top (2026-09-15)
 
 `feature/mark-to-top`, off `main` at `2d0879e`. Pure relocation per
@@ -4620,4 +4653,39 @@ won't auto-select that discipline the way `#chess`/`#climbing` do — same
 today, not a new regression, and out of scope here.
 
 Not republished (Standing Order 2, collage still on non-Igor stock). Not
-merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction.
+merged, not pushed — draft only, per Igor's 2026-09-15 standing instruction
+*at the time this entry was written* — see the merge entry immediately
+below, which lifts that hold for all of Trifecta Order D.
+
+## Trifecta Order D (all stages) merged to main (2026-09-15)
+
+Igor's instruction: `feature/mark-commits` — Stages D1 through D5 plus the
+§03 discipline-scoping follow-up above — merges to `main` and pushes, per
+CLAUDE.md's own "one chat per feature" workflow (branch, verify, commit,
+merge to `main`, push). This lifts every "draft only, not merged, not
+pushed" line in the Stage D1–D5 and follow-up entries above; they're left
+unedited as a record of each stage's state at the time it was written.
+
+`main` had moved on since this branch was cut (merge-base `2d0879e`): the
+"Trifecta Orders A and C retired, B trimmed to Stage B0" entry above landed
+on `main` from a separate chat/worktree (`feature/navigator-order`) after
+this branch was already deep into building the exact plan that entry
+describes as "parked, unmerged, not part of the plan." Flagged to Igor
+before merging; his answer was to merge and push anyway — that entry above
+is edited in place to reflect the outcome, not deleted, since it's still an
+accurate record of the A/C retirement and B trim themselves.
+
+Merge: `git merge origin/main` into `feature/mark-commits` hit exactly one
+conflict, in this file (both sides had appended entries at the same point).
+Resolved by keeping both — the "Trifecta Orders A and C retired" entry above
+(updated in place as described) followed by all of Trifecta D's own entries,
+unchanged. `CLAUDE.md`, `TRIFECTA-A-SPECIMENS.md` (deleted),
+`TRIFECTA-B-DOSSIERS.md` (trimmed) and `TRIFECTA-C-MARK-NAV.md` (deleted)
+merged cleanly with no conflict — Trifecta D never touched any of them.
+Pushed with `git push origin feature/mark-commits:main` (this worktree has
+`feature/mark-commits` checked out, not `main`, so the merge commit was
+built here and pushed directly to the remote `main` ref rather than via a
+local `main` checkout).
+
+Not republished: the collage view is still on non-Igor placeholder stock
+(Standing Order 2 / Jury Pass II), unaffected by anything in Trifecta D.
