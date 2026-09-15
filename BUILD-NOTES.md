@@ -4014,3 +4014,108 @@ Standing Order 2 (collage still on non-Igor stock) — unrelated to this
 change, but the rule is absolute regardless. Not merged, not pushed — draft
 only, per Igor's 2026-09-15 standing instruction in
 `TRIFECTA-D-NAVIGATOR.md`.
+
+## Trifecta Order D, Stage D2 — wire the dial to the readout (2026-09-15)
+
+`feature/mark-commits`, off `feature/mark-to-top` (D1 isn't on `main` yet, so
+this branches from where D1 actually lives). Before starting, pulled the
+canonical `TRIFECTA-D-NAVIGATOR.md` from `feature/navigator-order` — the copy
+this worktree had for D1 was a draft; the real plan had since been rewritten
+("the mark becomes the instrument") on that branch. Diffed the two: D1's own
+scope was unchanged, so nothing already built needed redoing. **Draft only**,
+same as D1: not merged to `main`, not pushed.
+
+Per Igor's brief, split "hover" from "click" into two feedback levels:
+
+1. **Removed the `html.js` overlay** that used to stack the three
+   `.origin__panel-item` rows absolutely and cross-fade all but the active
+   one (`style.css`). That overlay was hiding the better design underneath —
+   three permanently-visible, hairline-ruled rows — and removing it means the
+   no-JS floor and the JS state finally agree instead of one being a JS-only
+   illusion.
+2. **The three panel rows became real `<button>`s**, `data-discipline` and
+   all, matching `.origin__hit`'s own pattern — the readout is now as
+   clickable as the glyph, with a far larger target for touch. `.origin__hit`
+   and `.origin__panel-item` now share one `wire()`/`preview()`/`commit()` set
+   in `initOrigin()` (`main.js`) instead of the old single-purpose
+   `setActive()`.
+3. **Hover and keyboard focus are now PREVIEW, not commit.** They light the
+   stroke and the row's name (full `--fg`, not an accent ink — this text
+   sits under the 24px floor the colour system reserves for non-text use)
+   and revert to whichever discipline is *committed* the moment the pointer
+   leaves or focus moves on — never to a neutral state.
+4. **Click, Enter, Space, or tap COMMITS.** `aria-pressed` now means
+   *committed*, and only a commit writes it (on both the glyph hit and its
+   row). A commit also slides the new `.origin__marker` — a 1px
+   `--ink-target` rule, its own element with its own transform channel, never
+   `.origin__mark`'s — to sit against the committed row. `positionMarker()`
+   measures the row's real `offsetTop`/`offsetHeight` rather than assuming a
+   fixed height, and re-measures (without animating) on resize and on
+   `vitnyr:langchange`, since that height differs across EN/RU and across the
+   phone/desktop breakpoint below.
+5. **Phone fallback, applied.** The existing centred-column layout (the
+   pattern every other `.sec__head` block below 900px uses) put the mark
+   above the three-row readout instead of beside it; measured at 375×667 the
+   readout ran well off the bottom of the viewport before a reader saw a
+   single reading. Below 900px, `.origin__body` is now the same row layout
+   the ≥900px rule already used — mark on the left (`clamp(96px, 26vw,
+   170px)` instead of the desktop `clamp(180px, 22vw, 280px)`), readout
+   beside it — plus tighter row padding (`8px` instead of `10px`
+   block-padding). Not a smaller type scale, per the plan's own instruction.
+   Measured after: **English fits at 375×667** (block bottom ~612px, ~55px
+   to spare). **Russian does not** — it overflows the same benchmark by
+   ~41px. Traced this to the page's existing RU/EN length asymmetry (the RU
+   hero heading and lede already run longer than English, well outside this
+   stage's scope) compounded by climbing's reading being the longest string
+   in either language; it is not something the two-column band introduced,
+   and shrinking it further starts costing the fit this stage did win for
+   English. Flagging for Igor rather than guessing further: worth a
+   follow-up if pixel parity across languages at that specific historic
+   viewport size matters, but 667px is an old (iPhone SE-era) benchmark and
+   most phones in use today have meaningfully more vertical room.
+6. Hit targets re-checked at the new mobile mark size: all three regions
+   stay comfortably above the 44px minimum (measured ~57–68px on a side at
+   375px width).
+
+**Standing Order 4 — tests edited, and why:**
+
+- `test_origin_mark_keyboard_focus_reveals_its_panel`
+  (`tests/test_motion.py`) encoded the old model where focus alone counted
+  as a selection (`aria-pressed` true, panel opacity/`aria-hidden` flipped).
+  Replaced with `test_origin_mark_keyboard_focus_previews_without_committing`
+  (focus lights the stroke/row but leaves `aria-pressed` false) plus a new
+  `test_origin_mark_enter_commits_and_slides_the_marker` (Enter commits:
+  `aria-pressed` moves, `.origin__marker` slides to the row — checked by
+  reading its own inline `transform`/`height` against the row's measured
+  `offsetTop`/`offsetHeight`).
+- `test_origin_mark_hover_switches_between_disciplines`
+  (`tests/test_motion.py`) only ever asserted the glyph's `is-active`/`is-dim`
+  classes, never `aria-pressed` or panel visibility — so its assertions
+  didn't need to change, only what to call what they guard. Renamed to
+  `test_origin_mark_hover_previews_between_disciplines` with a docstring
+  saying so, rather than left to imply "switches" now means something it
+  doesn't.
+- `test_origin_mark_still_interactive_under_reduced_motion`
+  (`tests/test_a11y.py`) also encoded the old focus-commits model. Updated to
+  check focus previews (glyph `is-active`, `aria-pressed` still false) and
+  then that Enter commits (`aria-pressed` true on both the hit and its row) —
+  confirming reduced motion removes the marker's slide animation and the
+  idle hint, not the interaction itself.
+
+Full suite: **259 passed, 1 failed** (`tests/.venv/bin/python -m pytest
+tests/ -q`). The one failure —
+`test_collage_icon_caption_is_back_before_scrolling_on_phone[chromium-ru-320]`
+in `tests/test_collage_nav_icons.py` — is the `#collage` view's header nav
+caption overflowing at 320px/RU, nothing to do with `#origin`: confirmed by
+diffing this branch against `feature/mark-to-top` (zero overlap with
+`test_collage_nav_icons.py` or any collage file) and by reproducing the same
+failure in isolation. Pre-existing, out of this stage's scope; not fixed
+here. Every origin/a11y/content/layout test, including all origin-tagged
+ones, passes on its own
+(`tests/.venv/bin/python -m pytest tests/test_motion.py tests/test_a11y.py
+tests/test_content.py tests/test_layout.py -q` → all green).
+
+Not republished: the live artifact stays on hold under Jury Pass II Standing
+Order 2 (collage still on non-Igor stock) — unrelated to this change, but
+the rule is absolute regardless. Not merged, not pushed — draft only, per
+Igor's 2026-09-15 standing instruction in `TRIFECTA-D-NAVIGATOR.md`.

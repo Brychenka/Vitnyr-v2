@@ -96,23 +96,65 @@ def test_every_reveal_eventually_resolves_visible(open_site):
     assert stuck == 0
 
 
-def test_origin_mark_keyboard_focus_reveals_its_panel(open_site):
-    """Tab to the chess hit-region: no mouse involved, so this is the
-    keyboard-only path through the interactive mark."""
+def test_origin_mark_keyboard_focus_previews_without_committing(open_site):
+    """Trifecta Order D / Stage D2 (2026-09-15): focus is now a PREVIEW, not
+    a selection — Igor's brief split "hover" from "click" into two feedback
+    levels, so tabbing to a hit-region lights the stroke and the readout
+    row's name but must not move the marker or touch aria-pressed; only a
+    commit (see the Enter test below) does that. Replaces
+    test_origin_mark_keyboard_focus_reveals_its_panel, which encoded the old
+    model where focus alone counted as a selection."""
     page, _ = open_site()
     btn = page.locator('.origin__hit[data-discipline="chess"]')
     btn.focus()
+    page.wait_for_timeout(200)
+    assert btn.get_attribute("aria-pressed") == "false"
+    assert page.locator(".glyph__part--right").evaluate("el => el.classList.contains('is-active')")
+    item = page.locator('.origin__panel-item[data-discipline="chess"]')
+    assert item.evaluate("el => el.classList.contains('is-active')")
+    assert item.get_attribute("aria-pressed") == "false"
+
+
+def test_origin_mark_enter_commits_and_slides_the_marker(open_site):
+    """The commit half of D2's two-gesture model: Enter — a real <button>'s
+    native activation, no bespoke keydown handler needed — commits the
+    previewed discipline. aria-pressed moves to it on both the stroke and
+    its readout row, and .origin__marker slides to sit against that row."""
+    page, _ = open_site()
+    btn = page.locator('.origin__hit[data-discipline="chess"]')
+    btn.focus()
+    page.keyboard.press("Enter")
     page.wait_for_timeout(700)
     assert btn.get_attribute("aria-pressed") == "true"
     item = page.locator('.origin__panel-item[data-discipline="chess"]')
-    assert item.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
-    assert item.get_attribute("aria-hidden") == "false"
-    other = page.locator('.origin__panel-item[data-discipline="english"]')
-    assert other.evaluate("el => parseFloat(getComputedStyle(el).opacity)") < 0.05
-    assert other.get_attribute("aria-hidden") == "true"
+    assert item.get_attribute("aria-pressed") == "true"
+    english_item = page.locator('.origin__panel-item[data-discipline="english"]')
+    assert english_item.get_attribute("aria-pressed") == "false"
+
+    marker = page.evaluate(
+        """() => {
+            const marker = document.querySelector('.origin__marker');
+            const item = document.querySelector('.origin__panel-item[data-discipline="chess"]');
+            const m = marker.style.transform.match(/translateY\\(([-\\d.]+)px\\)/);
+            return {
+                markerY: m ? parseFloat(m[1]) : null,
+                itemTop: item.offsetTop,
+                markerHeight: parseFloat(marker.style.height),
+                itemHeight: item.offsetHeight,
+            };
+        }"""
+    )
+    assert marker["markerY"] is not None, marker
+    assert abs(marker["markerY"] - marker["itemTop"]) < 1, marker
+    assert abs(marker["markerHeight"] - marker["itemHeight"]) < 1, marker
 
 
-def test_origin_mark_hover_switches_between_disciplines(open_site):
+def test_origin_mark_hover_previews_between_disciplines(open_site):
+    """Unchanged behaviour, renamed and reworded for Stage D2 (2026-09-15):
+    hover was already ink-only (it never touched aria-pressed), so it reads
+    correctly today as a PREVIEW rather than a "switch" — this test's
+    assertions didn't need to change, only what to call what they're
+    guarding."""
     page, _ = open_site()
     english = page.locator('.origin__hit[data-discipline="english"]')
     english.scroll_into_view_if_needed()

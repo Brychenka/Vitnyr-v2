@@ -284,17 +284,25 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        regenerate or redraw it, per the CLAUDE.md note on the wordmark) and
        referenced twice via <use>, each half clipped at x=50 — the shape's
        verified exact symmetry axis — so the two arms can be dimmed/brightened
-       independently without ever touching the brand geometry. Hover, focus or
-       tap a stroke to see which discipline it stands for; see initOrigin()
-       in main.js. On first reveal the three strokes draw themselves in — two
-       for the V, then the stem — by growing the clip rects above; the mark's
-       own path data is never animated or redrawn (S7 move 03, style.css).
-       The three buttons are real <button> elements (not divs
-       with role=button) so keyboard Tab and touch tap both work natively —
-       mouse hover is layered on top only for fine-pointer devices. The panel
-       below is the single source of the three discipline/stat pairs: with
-       JS present only the active one shows (cross-fades); with JS absent or
-       failed, CSS shows all three at once, statically — see style.css. -->
+       independently without ever touching the brand geometry. On first
+       reveal the three strokes draw themselves in — two for the V, then the
+       stem — by growing the clip rects above; the mark's own path data is
+       never animated or redrawn (S7 move 03, style.css).
+       Trifecta Order D / Stage D2 (2026-09-15): the dial is wired to the
+       readout. Hover or keyboard-focus either a stroke or a readout row to
+       PREVIEW a discipline (ink only — the stroke lights, the row's name
+       lights); click/Enter/Space/tap either to COMMIT (the .origin__marker
+       rule below slides to that row and aria-pressed moves). Leaving a
+       preview without committing falls back to whichever discipline is
+       currently committed, not to a neutral state — see setActive()/commit()
+       in initOrigin(), main.js. The three glyph buttons and the three panel
+       rows are all real <button> elements (not divs with role=button) so
+       keyboard Tab and touch tap both work natively on every one of them,
+       and both sets share one handler. The panel is the single source of
+       the three discipline/stat pairs and is always fully visible in normal
+       flow — with JS present or absent alike, per CLAUDE.md's rule that
+       nothing animation-related may hide content (the html.js overlay that
+       used to cross-fade between rows was removed in this stage). -->
   <div class="origin__body">
     <figure class="origin__mark reveal" data-magnetic>
       <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
@@ -323,18 +331,23 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </figure>
 
     <div class="origin__panel" aria-live="polite">
-      <p class="origin__panel-item" data-discipline="english">
+      <!-- Positioned by initOrigin()'s positionMarker(): height/width:0 here
+           so a no-JS or JS-failed reader never sees a stray dash — nothing
+           to gate behind html.js, the element is simply invisible until JS
+           gives it a size. -->
+      <span class="origin__marker" aria-hidden="true"></span>
+      <button type="button" class="origin__panel-item" data-discipline="english" aria-pressed="true">
         <span data-en="English" data-ru="Английский">English</span>
         <span class="origin__panel-stat">8&nbsp;/&nbsp;100+</span>
-      </p>
-      <p class="origin__panel-item" data-discipline="chess">
+      </button>
+      <button type="button" class="origin__panel-item" data-discipline="chess" aria-pressed="false">
         <span data-en="Chess" data-ru="Шахматы">Chess</span>
         <span class="origin__panel-stat">2100</span>
-      </p>
-      <p class="origin__panel-item" data-discipline="climbing">
+      </button>
+      <button type="button" class="origin__panel-item" data-discipline="climbing" aria-pressed="false">
         <span data-en="Climbing" data-ru="Скалолазание">Climbing</span>
         <span class="origin__panel-stat" data-en="7c redpoint · 7C Kilter" data-ru="7c редпоинт · 7C Kilter">7c redpoint · 7C Kilter</span>
-      </p>
+      </button>
     </div>
   </div>
 

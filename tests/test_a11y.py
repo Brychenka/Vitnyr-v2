@@ -150,15 +150,21 @@ def test_origin_mark_shows_all_disciplines_statically_without_js(open_site):
 
 
 def test_origin_mark_still_interactive_under_reduced_motion(open_site):
-    """Reduced motion removes the animation, not the interaction: focusing a
-    hit-region must still switch the active discipline."""
+    """Reduced motion removes the animation, not the interaction. Updated for
+    Stage D2 (2026-09-15): focusing a hit-region is a preview (lights the
+    discipline, no aria-pressed yet); Enter commits it — both must still work
+    with the idle hint and the marker's slide transition unable to run."""
     page, _ = open_site(reduced_motion=True)
     btn = page.locator('.origin__hit[data-discipline="climbing"]')
     btn.focus()
     page.wait_for_timeout(100)
-    assert btn.get_attribute("aria-pressed") == "true"
+    assert btn.get_attribute("aria-pressed") == "false"
     item = page.locator('.origin__panel-item[data-discipline="climbing"]')
-    assert item.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+    assert item.evaluate("el => el.classList.contains('is-active')")
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(100)
+    assert btn.get_attribute("aria-pressed") == "true"
+    assert item.get_attribute("aria-pressed") == "true"
 
 
 def test_origin_mark_is_complete_under_reduced_motion(open_site):

@@ -1023,24 +1023,33 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .fact--grade .fact__reading + .fact__reading { margin-top: 3px; }
 
 /* ---------- origin (name & mark) ---------- */
+/* Trifecta Order D / Stage D2 (2026-09-15): the pre-agreed phone fallback
+   from the plan. A centred column (the pattern every other .sec__head block
+   below 900px uses — .mechanisms, .domains, .facts, .rows) put the mark
+   above the three-row readout instead of beside it, and measured at
+   375x667 the readout ran well off the bottom of the viewport before the
+   reader saw a single reading. Below 900px this is a compact two-column
+   band instead — mark on the left, readout beside it, same row layout the
+   ≥900px rule below already uses — not a smaller type scale, per the plan's
+   own instruction. */
 .origin__body {
-  display: flex; flex-direction: column; align-items: center;
-  gap: clamp(20px, 3vw, 32px);
+  display: flex; flex-direction: row; align-items: center;
+  gap: clamp(12px, 4vw, 32px);
 }
-/* Every other block below a .sec__head (.mechanisms, .domains, .facts, .rows)
-   fills the section width from the same 900px breakpoint; a lone centred
-   column here would be the odd one out. */
 @media (min-width: 900px) {
   .origin__body {
-    flex-direction: row; align-items: center; justify-content: flex-start;
+    justify-content: flex-start;
     gap: clamp(40px, 6vw, 90px);
   }
 }
 .origin__mark {
   position: relative;
-  width: clamp(180px, 22vw, 280px);
+  width: clamp(96px, 26vw, 170px);
   flex-shrink: 0;
   margin: 0;
+}
+@media (min-width: 900px) {
+  .origin__mark { width: clamp(180px, 22vw, 280px); }
 }
 .glyph { display: block; width: 100%; height: auto; overflow: visible; }
 /* Never scale the two arms: they're clipped halves of one shared path, and
@@ -1119,25 +1128,58 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
   outline: 2px solid var(--ink-target); outline-offset: 8px;
 }
 
-/* Single source of the three discipline/stat pairs. Default (no JS, or JS
-   failed): all three sit in normal flow, always visible — the no-JS floor.
-   Hidden-until-active state applies only under html.js, same principle as
-   .reveal, so nothing here is ever hover-only content. */
+/* Single source of the three discipline/stat pairs, always in normal flow.
+   Stage D2 (2026-09-15) removed the html.js overlay that used to stack these
+   absolutely and cross-fade all but the active one — that overlay was
+   hiding the better design, and removing it means the no-JS state and the
+   JS state finally agree instead of one being a JS-only illusion. Each row
+   is a real <button> (not a div with role=button), matching .origin__hit's
+   own pattern: the readout is as clickable as the glyph, with a much larger
+   target for touch. */
+.origin__panel { position: relative; width: min(100%, 360px); }
 .origin__panel-item {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  padding-block: 10px; border-top: 1px solid var(--rule);
+  display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 16px;
+  padding-block: 10px;
+  border-width: 0; border-top-width: 1px; border-style: solid; border-color: var(--rule);
+  margin: 0; background: none; appearance: none;
+  font: inherit; text-align: left; color: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Below 900px, tighten the rows' own padding slightly — not their type
+   scale, per the plan's instruction — to reclaim the few px the two-column
+   band above still needed to clear a 375x667 viewport in English. */
+@media (max-width: 899.98px) {
+  .origin__panel-item { padding-block: 8px; }
 }
 .origin__panel-item > span:first-child {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  transition: color var(--t) var(--e);
 }
+/* Preview lights the row's name with full --fg, not an accent ink — this
+   text sits under the 24px floor the colour system reserves for non-text
+   use (CLAUDE.md). is-active means "currently shown" (preview or commit
+   alike); .origin__marker below is what distinguishes an actual commit. */
+.origin__panel-item.is-active > span:first-child { color: var(--fg); }
+
 .origin__panel-stat { font-family: var(--mono); font-size: 15px; color: var(--fg); }
-html.js .origin__panel { position: relative; min-height: 3em; width: min(100%, 360px); }
-html.js .origin__panel-item {
-  position: absolute; inset: 0;
-  opacity: 0; transition: opacity var(--t) var(--e);
+
+/* The commit marker (Stage D2): a 1px rule that slides to the committed
+   row's leading edge. Its own element with its own transform channel — it
+   never touches .origin__mark's (the layout/transform rule in CLAUDE.md
+   is about one element's channel being shared between layout and
+   animation; this element carries no layout for anything else, so
+   animating its own transform is the decorative case the rule always
+   allowed). Positioned from main.js's positionMarker(), which measures the
+   real row it's pointing at rather than assuming a fixed row height, since
+   that height differs across the EN/RU languages and the two breakpoints
+   below. height:0 by default so a no-JS reader never sees a stray mark. */
+.origin__marker {
+  position: absolute; left: 0; top: 0; width: 1px; height: 0;
+  background: var(--ink-target);
+  transform: translateY(0);
+  transition: transform var(--t) var(--e), height var(--t) var(--e);
 }
-html.js .origin__panel-item.is-active { opacity: 1; }
 
 .origin__note { color: var(--fg2); max-width: var(--measure); margin-top: clamp(32px, 5vw, 56px); }
 

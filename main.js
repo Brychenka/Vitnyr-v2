@@ -575,46 +575,54 @@
   }
 
   /* ---------- origin: interactive mark ----------
-     Hover, focus, or tap one of the three real <button> hit-regions to light
-     up its stroke and reveal its discipline in the panel. One setActive()
-     drives every input mode so a hybrid device (touch + mouse) never gets
-     two handlers fighting over the same element: focus covers keyboard tab
-     and touch tap (tapping a button focuses it natively); pointerenter is
-     layered on top only for fine-pointer devices, so coarse pointers never
-     get a stuck-hover state.
-     aria-hidden on the panel items is set here, at runtime, rather than
-     baked into the HTML — that's what keeps the no-JS fallback (CLAUDE.md:
-     everything animation-related is additive) genuinely additive: a no-JS
-     reader never gets these attributes at all, so all three stay visible to
-     assistive tech exactly as they do visually.
-     The idle hint below borrows these same is-active/is-dim classes rather
-     than defining its own visual language — a real engagement and the hint
+     Trifecta Order D / Stage D2 (2026-09-15): the dial (the three strokes)
+     is wired to the readout (the three panel rows) with two distinct
+     gestures, per Igor's brief. Hover (fine pointer) or keyboard focus is a
+     PREVIEW: ink only — the stroke lights, the row's name lights — and it
+     reverts to the committed discipline the moment the pointer leaves or
+     focus moves on. Click, Enter, Space, or tap is a COMMIT: it moves
+     .origin__marker to that row and flips aria-pressed, and it sticks until
+     the next commit. Both the three glyph hit-buttons and the three panel
+     rows share one preview()/commit() pair, so a hybrid device never gets
+     two handlers fighting over the same element, and the mapping between a
+     stroke and its row is symmetric in both directions.
+     The panel rows used to be hidden-until-active under html.js (a
+     cross-fade overlay); Stage D2 removed that, so all three are now always
+     visible and aria-hidden is never touched here — there is nothing left
+     to hide.
+     The idle hint below shares paint() with preview()/commit() rather than
+     defining its own visual language — a real engagement and the hint
      produce identical-looking states, just triggered differently. */
   function initOrigin() {
     var mark = document.querySelector('.origin__mark');
     if (!mark) return;
     var hits = mark.querySelectorAll('.origin__hit');
     var parts = mark.querySelectorAll('.glyph__part');
-    var panelItems = document.querySelectorAll('.origin__panel-item');
+    var panel = document.querySelector('.origin__panel');
+    var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : [];
+    var marker = panel ? panel.querySelector('.origin__marker') : null;
     if (!hits.length) return;
 
-    panelItems.forEach(function (el) { el.setAttribute('aria-hidden', 'true'); });
-
     var idleTl = null;
-    // True the instant a real engagement happens, permanently. Checked by
-    // every idle-timeline step, rather than trusting .kill() alone to be
-    // synchronous: a step already queued on GSAP's ticker for the current
-    // frame can still fire after .kill() is called mid-frame, which without
-    // this guard could paint a stale idle discipline right over a real one
-    // landing in the same frame (e.g. a hover arriving as the hint starts).
+    // True the instant any real engagement happens (preview or commit),
+    // permanently. Checked by every idle-timeline step, rather than trusting
+    // .kill() alone to be synchronous: a step already queued on GSAP's
+    // ticker for the current frame can still fire after .kill() is called
+    // mid-frame, which without this guard could paint a stale idle
+    // discipline right over a real one landing in the same frame.
     var engaged = false;
 
+    // C6 (2026-09-06): rest state is English lit, not neutral — English is
+    // the offer, chess and climbing are proof it transfers, not equal-weight
+    // alternatives. committed tracks whichever discipline was last actually
+    // clicked/tapped/entered; it starts on 'english' to match the HTML's own
+    // default aria-pressed="true" on that row.
+    var committed = 'english';
+
     // The visual half of activation — glyph active/dim plus which panel
-    // item is opaque — shared by real engagement and the idle hint below, so
-    // the two can never drift into two different-looking "active" states.
-    // aria-hidden/aria-pressed are deliberately not touched here: the idle
-    // hint is a decorative preview, not a real selection, so it stays silent
-    // to assistive tech rather than announcing three unrequested changes.
+    // row's name is lit — shared by preview, commit, and the idle hint
+    // below, so none of the three can drift into a differently-styled
+    // "active" state.
     function paint(name) {
       parts.forEach(function (el) {
         var on = el.dataset.discipline === name;
@@ -625,40 +633,79 @@
         el.classList.toggle('is-active', el.dataset.discipline === name);
       });
     }
-    // C6 (2026-09-06): rest state is English lit, not neutral — English is
-    // the offer, chess and climbing are proof it transfers, not equal-weight
-    // alternatives. This used to strip every class instead, so the mark sat
-    // fully neutral (all three strokes equal weight, panel blank) until the
-    // idle hint below happened to run, or forever under reduced motion,
-    // where the hint never runs at all. Now it just re-asserts the default.
+
     function clearPaint() {
-      paint('english');
+      paint(committed);
     }
 
-    function setActive(name) {
+    // Slides .origin__marker to sit against the named row. Measures the
+    // row's real offsetTop/offsetHeight against the panel rather than
+    // assuming a fixed height, since that height differs across the EN/RU
+    // languages and the <900px stacked layout. animate=false is used for the
+    // initial placement and for resize/language reflows, so the marker
+    // never visibly slides for a reason the reader didn't cause.
+    function positionMarker(name, animate) {
+      if (!marker) return;
+      var item = null;
+      panelItems.forEach(function (el) { if (el.dataset.discipline === name) item = el; });
+      if (!item) return;
+      var prevTransition = marker.style.transition;
+      if (!animate) marker.style.transition = 'none';
+      marker.style.transform = 'translateY(' + item.offsetTop + 'px)';
+      marker.style.height = item.offsetHeight + 'px';
+      if (!animate) {
+        marker.offsetHeight; // force reflow before restoring the transition
+        marker.style.transition = prevTransition;
+      }
+    }
+
+    // PREVIEW: ink only, never sticks, never touches aria-pressed.
+    function preview(name) {
       engaged = true;
       if (idleTl) { idleTl.kill(); idleTl = null; }
       paint(name);
-      panelItems.forEach(function (el) {
-        el.setAttribute('aria-hidden', el.dataset.discipline === name ? 'false' : 'true');
-      });
+    }
+
+    // COMMIT: sticks, moves the marker, and is the only thing that writes
+    // aria-pressed — which now means "committed", not "currently previewed".
+    function commit(name) {
+      engaged = true;
+      if (idleTl) { idleTl.kill(); idleTl = null; }
+      committed = name;
+      paint(name);
+      positionMarker(name, true);
       hits.forEach(function (el) {
+        el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
+      });
+      panelItems.forEach(function (el) {
         el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
       });
     }
 
     // Establishes the resting default from the first frame — covers reduced
     // motion (the idle hint below never runs there) and the gap before the
-    // hint's own IntersectionObserver fires. paint()/clearPaint() carry no
-    // aria side effects (see the comment above paint()), so this is silent
-    // to assistive tech exactly like the hint is.
+    // hint's own IntersectionObserver fires.
     clearPaint();
+    positionMarker(committed, false);
 
-    hits.forEach(function (btn) {
-      var name = btn.dataset.discipline;
-      btn.addEventListener('focus', function () { setActive(name); });
-      if (finePointer) btn.addEventListener('pointerenter', function () { setActive(name); });
-    });
+    function wire(el) {
+      var name = el.dataset.discipline;
+      el.addEventListener('click', function () { commit(name); });
+      el.addEventListener('focus', function () { preview(name); });
+      el.addEventListener('blur', function () { preview(committed); });
+      if (finePointer) {
+        el.addEventListener('pointerenter', function () { preview(name); });
+        el.addEventListener('pointerleave', function () { preview(committed); });
+      }
+    }
+    hits.forEach(wire);
+    panelItems.forEach(wire);
+
+    // Row heights can change under the reader without a commit happening —
+    // a resize crossing the 900px breakpoint, or a language switch changing
+    // how far RU text wraps. Re-measure without animating either way.
+    window.addEventListener('resize', function () { positionMarker(committed, false); }, { passive: true });
+    document.addEventListener('vitnyr:langchange', function () { positionMarker(committed, false); });
 
     // One-shot hint, not a loop: previews all three discipline/stat pairs a
     // couple of times when the section first scrolls into view, then settles
@@ -666,8 +713,8 @@
     // panel too, not just the glyph — a shimmer with no text next to it
     // teaches nothing about what hovering actually does. Skipped outright
     // under reduced motion; the real interaction above still works either
-    // way, and paint()/clearPaint() carry no aria side effects, so this
-    // stays silent to assistive tech.
+    // way, and paint() carries no aria side effects, so this stays silent to
+    // assistive tech.
     if (reduce || !('IntersectionObserver' in window)) return;
     // S7 move 03: the mark draws its three strokes on the reveal (~0.9s of
     // CSS, keyed off .is-in). Hold the idle preview until that has finished
