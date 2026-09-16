@@ -383,7 +383,15 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
            a chess or climbing STUDENT (2100 and 7c/7C are Igor's own
            results, not coaching outcomes) and so ship as flagged
            placeholders, EN drafted, RU a machine first pass (Standing
-           Order 9) — every one individually marked below. -->
+           Order 9) — every one individually marked below.
+
+           Stage 5 (2026-09-16): Igor supplied real chess coaching figures
+           (3 years, 50 students to 1800+, named specimens below), so chess's
+           rows 2-4 are no longer placeholders. A same-day follow-up added
+           climbing's own coaching duration (2 years), so only climbing's
+           row 3 (a student-outcome figure) remains unconfirmed — row 4
+           (Common mistakes) is real for both, now that §03 has named
+           specimens for each. -->
       <p class="reading__intro" aria-hidden="true"><span data-en="In detail" data-ru="Подробнее">In detail</span></p>
       <div class="reading">
         <div class="reading__row" style="--i:0">
@@ -398,23 +406,22 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
           <span class="reading__label" data-en="Coaching since" data-ru="Стаж">Coaching since</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="8 years" data-ru="8 лет">8 years</span>
-            <!-- PLACEHOLDER (D0.6.4): years coaching chess is not a repo-recorded
-                 fact — 2100 is Igor's own rating, not a coaching duration. Igor
-                 replaces with a real figure or removes the row's chess value. -->
-            <span class="reading__value" data-discipline="chess" data-en="Ask Igor" data-ru="Уточняется">Ask Igor</span>
-            <!-- PLACEHOLDER (D0.6.4): same as chess above — 7c/7C are Igor's own
-                 results, not a coaching duration. Igor replaces. -->
-            <span class="reading__value" data-discipline="climbing" data-en="Ask Igor" data-ru="Уточняется">Ask Igor</span>
+            <!-- Stage 5 (2026-09-16): real figure from Igor, replacing the
+                 D0.6.4 placeholder. -->
+            <span class="reading__value" data-discipline="chess" data-en="3 years" data-ru="3 года">3 years</span>
+            <!-- Stage 5 follow-up (2026-09-16): real figure from Igor,
+                 replacing the D0.6.4 placeholder. -->
+            <span class="reading__value" data-discipline="climbing" data-en="2 years" data-ru="2 года">2 years</span>
           </span>
         </div>
         <div class="reading__row" style="--i:2">
           <span class="reading__label" data-en="Achieved" data-ru="Сделано">Achieved</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="Standups · reviews · interviews · client calls" data-ru="Стендапы · ревью · интервью · созвоны">Standups · reviews · interviews · client calls</span>
-            <!-- PLACEHOLDER (D0.6.4/5): no repo-recorded chess-student outcome
-                 exists yet. Igor replaces with a real one once there is one. -->
-            <span class="reading__value" data-discipline="chess" data-en="Student results — coming soon" data-ru="Результаты учеников — скоро">Student results — coming soon</span>
-            <!-- PLACEHOLDER (D0.6.4/5): same as chess above, for climbing. -->
+            <!-- Stage 5 (2026-09-16): real figure from Igor, replacing the
+                 D0.6.4/5 placeholder. -->
+            <span class="reading__value" data-discipline="chess" data-en="50 students to 1800+" data-ru="50 учеников до 1800+">50 students to 1800+</span>
+            <!-- PLACEHOLDER (D0.6.4/5): same as chess used to be, for climbing. -->
             <span class="reading__value" data-discipline="climbing" data-en="Student results — coming soon" data-ru="Результаты учеников — скоро">Student results — coming soon</span>
           </span>
         </div>
@@ -422,11 +429,12 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
           <span class="reading__label" data-en="Common mistakes" data-ru="Частые ошибки">Common mistakes</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="Reflexive carried across · Adjective where English has a verb · Register, not grammar" data-ru="Возвратность, перенесённая из русского · Прилагательное там, где в английском глагол · Регистр, а не грамматика">Reflexive carried across · Adjective where English has a verb · Register, not grammar</span>
-            <!-- PLACEHOLDER (D0.6.2): no named chess specimens exist yet (§03 is
-                 English-only). Igor replaces with real named errors. -->
-            <span class="reading__value" data-discipline="chess" data-en="Named errors — coming soon" data-ru="Разбор ошибок — скоро">Named errors — coming soon</span>
-            <!-- PLACEHOLDER (D0.6.2): same as chess above, for climbing. -->
-            <span class="reading__value" data-discipline="climbing" data-en="Named errors — coming soon" data-ru="Разбор ошибок — скоро">Named errors — coming soon</span>
+            <!-- Stage 5 (2026-09-16): §03 now has three real named chess
+                 specimens (see below); this mirrors their permalink labels,
+                 replacing the D0.6.2 placeholder. -->
+            <span class="reading__value" data-discipline="chess" data-en="Calculating only as far as the shot · Trusting memorized theory past its edge · Playing damage control after one mistake" data-ru="Считает только до самого удара · Доверяет теории дальше, чем помнит · Играет на подстраховке после одной ошибки">Calculating only as far as the shot · Trusting memorized theory past its edge · Playing damage control after one mistake</span>
+            <!-- Stage 5 (2026-09-16): same, for climbing's three new specimens. -->
+            <span class="reading__value" data-discipline="climbing" data-en="Over-gripping out of fear · Arms doing the legs’ work · Improvising the sequence mid-route" data-ru="Перехват из страха · Руки делают работу ног · Импровизирует последовательность на трассе">Over-gripping out of fear · Arms doing the legs’ work · Improvising the sequence mid-route</span>
           </span>
         </div>
       </div>
@@ -562,30 +570,100 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   </div>
   </div>
 
-  <!-- PLACEHOLDER (2026-09-15, Trifecta D follow-up): no named chess
-       specimens exist yet, same gap D4 already flagged in the readout
-       (main.js .reading, row "Common mistakes", data-discipline="chess").
-       Igor replaces this note with real wrong/right specimens in the same
-       format as English's three above, once named chess errors exist —
-       this div stays the hook: same wrapper, same data-discipline-group,
-       same updateSpecimens() toggle, only the inner markup changes when
-       real specimens land (Stage 4 ghostwriter pass, 2026-09-16: two
-       duplicate h2+lede blocks read as much as "this section broke" than
-       "more is coming," so collapsed to one line, lighter than a section
-       head). Framing kept generic on purpose — real material only
-       (CLAUDE.md): specific chess mistakes aren't invented here. -->
+  <!-- Stage 5 (2026-09-16): real chess specimens replace the Stage 4 note
+       (previously the Trifecta D follow-up placeholder). Same wrapper, same
+       data-discipline-group, same updateSpecimens() toggle — only the inner
+       markup changed. EN is Igor's own material, ghostwritten for flow; RU
+       is a model's first pass, flagged per Standing Order 9. Same
+       permalink/reveal/proofreading-mark machinery as English's specimens
+       (initSpecimenPermalinks/initSpecimenReveal in main.js query #specimen
+       generically, not per discipline, so no JS changes were needed). -->
   <div class="specimens-group" data-discipline-group="chess">
-    <p class="specimens-placeholder reveal" data-l="en">Chess specimens — named wrong → right examples, same format as English above — are coming once real errors are catalogued.</p>
-    <p class="specimens-placeholder reveal" data-l="ru">Разбор шахматных ошибок — в том же формате «неверно → верно», что и у английского выше — появится, как только реальные ошибки будут каталогизированы.</p>
+  <div class="sec__head">
+    <h2 class="reveal" data-l="en">A rating plateau usually has one of three names.</h2>
+    <h2 class="reveal" data-l="ru">У застоя в рейтинге почти всегда одно из трёх имён.</h2>
+    <div class="sec__lede">
+      <p class="reveal" data-l="en">Calculating only as far as the shot itself, trusting a memorized line past where memory actually holds, and playing scared for the rest of the game after one bad move — the same three patterns turn up across rating bands, named and drilled instead of just noted. Three common ones:</p>
+      <p class="reveal" data-l="ru">Считать только до самого удара, доверять заученному варианту дальше, чем реально хватает памяти, и доигрывать партию на нервах после одной ошибки — эти три паттерна повторяются на любом уровне: их называют и тренируют, а не просто отмечают. Три частых:</p>
+    </div>
   </div>
 
-  <!-- PLACEHOLDER (2026-09-15, Trifecta D follow-up): same gap as chess
-       above, for climbing (main.js .reading__value[data-discipline="climbing"]
-       carries the identical "coming soon" placeholder already). Same hook,
-       same Stage 4 lightening as chess above. -->
+  <div class="specs">
+    <article class="spec reveal" id="specimen-chess-calculation" data-op="delete">
+      <div class="spec__lines">
+        <p class="spec__label"><a class="spec__permalink" href="#specimen-chess-calculation" data-permalink><span class="spec__permalink-mark" aria-hidden="true">#</span><span class="spec__permalink-text" data-en="Calculating only as far as the shot" data-ru="Считает только до самого удара">Calculating only as far as the shot</span><span class="vh" data-en=", link to this specimen" data-ru=", ссылка на этот разбор">, link to this specimen</span></a><span class="spec__permalink-status" role="status" aria-live="polite" hidden><span data-l="en">Link copied</span><span data-l="ru">Ссылка скопирована</span></span></p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Sees the fork, plays it immediately, and <del class="mark--specimen">walks into the only move that saves the position</del>.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Sees the fork, and <ins class="mark--target">checks the opponent’s best reply first</ins> — then plays it.</span></p>
+      </div>
+      <p class="spec__why" data-l="en">Finding the tactic feels like the hard part, so it gets played the moment it’s spotted. What actually decides the position is checking for the opponent’s one resource before committing — and that check is the part getting skipped.</p>
+      <p class="spec__why" data-l="ru">Найти тактику кажется самым трудным, поэтому ход играют сразу, как только его увидели. Позицию решает не сам удар, а проверка, есть ли у соперника один спасающий ресурс — именно эту проверку и пропускают.</p>
+    </article>
+
+    <article class="spec reveal" id="specimen-chess-memory" data-op="delete">
+      <div class="spec__lines">
+        <p class="spec__label"><a class="spec__permalink" href="#specimen-chess-memory" data-permalink><span class="spec__permalink-mark" aria-hidden="true">#</span><span class="spec__permalink-text" data-en="Trusting memorized theory past its edge" data-ru="Доверяет теории дальше, чем помнит">Trusting memorized theory past its edge</span><span class="vh" data-en=", link to this specimen" data-ru=", ссылка на этот разбор">, link to this specimen</span></a><span class="spec__permalink-status" role="status" aria-live="polite" hidden><span data-l="en">Link copied</span><span data-l="ru">Ссылка скопирована</span></span></p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Keeps playing the memorized line <del class="mark--specimen">on autopilot, three moves past where memory actually holds</del>.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Plays the memorized line, then <ins class="mark--target">stops and evaluates the position on its own merits</ins>.</span></p>
+      </div>
+      <p class="spec__why" data-l="en">A memorized sequence feels like understanding, so it keeps running past the point either side actually prepared. The position a few moves later isn’t the book’s problem to solve anymore — it’s a new one, and it needs fresh calculation, not more recall.</p>
+      <p class="spec__why" data-l="ru">Заученная последовательность создаёт ощущение понимания, поэтому её продолжают играть и за пределами домашней подготовки. Позиция через несколько ходов — это уже не задача из книги, а новая, и её нужно считать заново, а не вспоминать.</p>
+    </article>
+
+    <article class="spec reveal" id="specimen-chess-tilt" data-op="delete">
+      <div class="spec__lines">
+        <p class="spec__label"><a class="spec__permalink" href="#specimen-chess-tilt" data-permalink><span class="spec__permalink-mark" aria-hidden="true">#</span><span class="spec__permalink-text" data-en="Playing damage control after one mistake" data-ru="Играет на подстраховке после одной ошибки">Playing damage control after one mistake</span><span class="vh" data-en=", link to this specimen" data-ru=", ссылка на этот разбор">, link to this specimen</span></a><span class="spec__permalink-status" role="status" aria-live="polite" hidden><span data-l="en">Link copied</span><span data-l="ru">Ссылка скопирована</span></span></p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Drops a pawn, then spends twenty moves <del class="mark--specimen">playing not to lose instead of playing the position</del>.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Drops a pawn, and <ins class="mark--target">re-evaluates the position on the next move</ins>, same as any other.</span></p>
+      </div>
+      <p class="spec__why" data-l="en">One bad move doesn’t change what’s actually on the board — it changes how the game feels. What costs the second half of the game is treating every move after the mistake as cleanup, instead of just reading the position in front of you like any other.</p>
+      <p class="spec__why" data-l="ru">Одна ошибка не меняет то, что реально происходит на доске — она меняет то, как воспринимается партия. Вторую половину партии губит не сама ошибка, а привычка после неё разбирать каждый ход как аварийный, вместо того чтобы просто читать позицию, как любую другую.</p>
+    </article>
+  </div>
+  </div>
+
+  <!-- Stage 5 (2026-09-16): real climbing specimens, same treatment as
+       chess above. -->
   <div class="specimens-group" data-discipline-group="climbing">
-    <p class="specimens-placeholder reveal" data-l="en">Climbing specimens — named wrong → right examples, same format as English above — are coming once real errors are catalogued.</p>
-    <p class="specimens-placeholder reveal" data-l="ru">Разбор ошибок в скалолазании — в том же формате «неверно → верно», что и у английского выше — появится, как только реальные ошибки будут каталогизированы.</p>
+  <div class="sec__head">
+    <h2 class="reveal" data-l="en">Most plateaus are one of three habits, not a strength problem.</h2>
+    <h2 class="reveal" data-l="ru">Большинство плато — это одна из трёх привычек, а не проблема силы.</h2>
+    <div class="sec__lede">
+      <p class="reveal" data-l="en">Over-gripping out of fear, arms doing work the legs should carry, and improvising the sequence mid-route — three habits that show up at almost every grade, and that strength training alone doesn’t touch. Three common ones:</p>
+      <p class="reveal" data-l="ru">Перехват из страха, руки, которые тянут то, что должны нести ноги, и импровизация трассы прямо на стене — три привычки, которые встречаются почти на любом уровне и которые силовые тренировки сами по себе не лечат. Три частых:</p>
+    </div>
+  </div>
+
+  <div class="specs">
+    <article class="spec reveal" id="specimen-climbing-grip" data-op="delete">
+      <div class="spec__lines">
+        <p class="spec__label"><a class="spec__permalink" href="#specimen-climbing-grip" data-permalink><span class="spec__permalink-mark" aria-hidden="true">#</span><span class="spec__permalink-text" data-en="Over-gripping out of fear" data-ru="Перехват из страха">Over-gripping out of fear</span><span class="vh" data-en=", link to this specimen" data-ru=", ссылка на этот разбор">, link to this specimen</span></a><span class="spec__permalink-status" role="status" aria-live="polite" hidden><span data-l="en">Link copied</span><span data-l="ru">Ссылка скопирована</span></span></p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Grips the crimp <del class="mark--specimen">as hard as the fear of falling wants, not as hard as the hold needs</del>.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Grips the crimp <ins class="mark--target">exactly as hard as it needs, and releases the instant it’s safe to</ins>.</span></p>
+      </div>
+      <p class="spec__why" data-l="en">The question being answered isn’t “what does this hold need” — it’s “what if I fall.” Fear has an easy, wrong answer: grip harder, longer. Three moves later the forearm is the reason for the fall, not the hold.</p>
+      <p class="spec__why" data-l="ru">Отвечают не на вопрос «что нужно этому хвату», а на вопрос «что если я упаду». У страха есть простой и неверный ответ: держать крепче и дольше. Через три движения падают не из-за хвата, а из-за предплечья.</p>
+    </article>
+
+    <article class="spec reveal" id="specimen-climbing-legs" data-op="delete">
+      <div class="spec__lines">
+        <p class="spec__label"><a class="spec__permalink" href="#specimen-climbing-legs" data-permalink><span class="spec__permalink-mark" aria-hidden="true">#</span><span class="spec__permalink-text" data-en="Arms doing the legs’ work" data-ru="Руки делают работу ног">Arms doing the legs’ work</span><span class="vh" data-en=", link to this specimen" data-ru=", ссылка на этот разбор">, link to this specimen</span></a><span class="spec__permalink-status" role="status" aria-live="polite" hidden><span data-l="en">Link copied</span><span data-l="ru">Ссылка скопирована</span></span></p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Pulls through <del class="mark--specimen">on straight arms, hips away from the wall</del>.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Pushes through <ins class="mark--target">the legs, hips to the wall, arms just for balance</ins>.</span></p>
+      </div>
+      <p class="spec__why" data-l="en">Arms are the visible effort, so they’re where the strength goes first. The legs doing the real work is quieter and easy to skip — and it’s the difference between climbing that lasts a route and climbing that lasts three moves.</p>
+      <p class="spec__why" data-l="ru">Руки — это видимое усилие, поэтому силу вкладывают именно в них. Ноги, которые на самом деле тянут вес, работают незаметно, и про них легко забыть — а именно в этом разница между лазанием, которого хватает на трассу, и лазанием, которого хватает на три движения.</p>
+    </article>
+
+    <article class="spec reveal" id="specimen-climbing-beta" data-op="delete">
+      <div class="spec__lines">
+        <p class="spec__label"><a class="spec__permalink" href="#specimen-climbing-beta" data-permalink><span class="spec__permalink-mark" aria-hidden="true">#</span><span class="spec__permalink-text" data-en="Improvising the sequence mid-route" data-ru="Импровизирует последовательность на трассе">Improvising the sequence mid-route</span><span class="vh" data-en=", link to this specimen" data-ru=", ссылка на этот разбор">, link to this specimen</span></a><span class="spec__permalink-status" role="status" aria-live="polite" hidden><span data-l="en">Link copied</span><span data-l="ru">Ссылка скопирована</span></span></p>
+        <p class="line-spec wrong"><span class="vh" data-en="Incorrect: " data-ru="Неверно: ">Incorrect: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Gets on the wall and <del class="mark--specimen">works out the sequence move by move, live</del>.</span></p>
+        <p class="line-spec right"><span class="vh" data-en="Correct: " data-ru="Верно: ">Correct: </span><span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Reads the route from the ground <ins class="mark--target">and rehearses the sequence before touching the wall</ins>.</span></p>
+      </div>
+      <p class="spec__why" data-l="en">Improvising feels like climbing — it’s active, it’s in the moment. What it actually removes is the one chance to catch a bad sequence before committing to it mid-route, where fixing it costs far more than a minute on the ground would have.</p>
+      <p class="spec__why" data-l="ru">Импровизация похожа на само лазание — она активна, она «здесь и сейчас». Но она убирает единственный шанс заметить неудачную последовательность до того, как трасса началась — там исправлять её выходит куда дороже, чем минута на земле до старта.</p>
+    </article>
+  </div>
   </div>
 </section>
 
@@ -625,16 +703,16 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="domain__meta"><span data-en="Chess" data-ru="Шахматы">Chess</span><span class="domain__stat">2100</span></p>
       <h3 data-l="en">Where the feedback loop is a scoreboard.</h3>
       <h3 data-l="ru">Где обратная связь — это турнирная таблица.</h3>
-      <p data-l="en">For players under 1800 who’ve plateaued — shaky intuition, thin opening prep, or a middlegame that falls apart. “I blundered” isn’t a diagnosis: a blunder has a cause, and a specific cause is what training actually targets. Coaching runs now, online or in Yerevan.</p>
-      <p data-l="ru">Для игроков с рейтингом до 1800, которые упёрлись в плато — интуиция барахлит, дебютная подготовка слабая, или миттельшпиль разваливается. «Зевнул» — не диагноз: у зевка есть причина, и именно конкретную причину нарабатывают на тренировках. Занятия идут уже сейчас, онлайн или в Ереване.</p>
+      <p data-l="en">For players under 1800 who’ve plateaued — shaky intuition, thin opening prep, or a middlegame that falls apart. “I blundered” isn’t a diagnosis: a blunder has a cause, and a specific cause is what training actually targets. Sessions run 60 minutes, one-to-one, over Lichess or Chess.com plus a call — reviewing two or three recent games against patterns drawn from 5,000+ analyzed, then drilling whichever one keeps recurring. Coaching runs now, online or in Yerevan.</p>
+      <p data-l="ru">Для игроков с рейтингом до 1800, которые упёрлись в плато — интуиция барахлит, дебютная подготовка слабая, или миттельшпиль разваливается. «Зевнул» — не диагноз: у зевка есть причина, и именно конкретную причину нарабатывают на тренировках. Занятие — 60 минут, один на один, через Lichess или Chess.com плюс звонок: разбор двух-трёх последних партий на фоне более 5000 разобранных, с упором на повторяющийся паттерн. Занятия идут уже сейчас, онлайн или в Ереване.</p>
     </article>
 
     <article class="domain reveal">
       <p class="domain__meta"><span data-en="Climbing" data-ru="Скалолазание">Climbing</span><span class="domain__stat">7c redpoint · 7C Kilter</span></p>
       <h3 data-l="en">Where load management stops being a metaphor.</h3>
       <h3 data-l="ru">Где дозирование нагрузки перестаёт быть метафорой.</h3>
-      <p data-l="en">For climbers under 7a working through a plateau — injuries, bad technique, weak fingers, or routes they can’t read. Training too hard elsewhere costs motivation; here it costs a tendon, and the bill comes months later. Coaching runs now, online or in Yerevan.</p>
-      <p data-l="ru">Для скалолазов, которые лезут ниже 7a и упёрлись в плато — травмы, техника хромает, пальцы слабые, маршрут не читается. Во всём остальном перебор с нагрузкой стоит мотивации. Здесь — связок, и счёт приходит через несколько месяцев. Занятия идут уже сейчас, онлайн или в Ереване.</p>
+      <p data-l="en">For climbers under 7a working through a plateau — injuries, bad technique, weak fingers, or routes they can’t read. Training too hard elsewhere costs motivation; here it costs a tendon, and the bill comes months later. Sessions run one-to-one, in the gym or over video, on whichever is actually costing the grade: technique, route-reading, or the mental side of leading. Igor’s own bar for it: 7a within a year. Coaching runs now, online or in Yerevan.</p>
+      <p data-l="ru">Для скалолазов, которые лезут ниже 7a и упёрлись в плато — травмы, техника хромает, пальцы слабые, маршрут не читается. Во всём остальном перебор с нагрузкой стоит мотивации. Здесь — связок, и счёт приходит через несколько месяцев. Занятия — один на один, в зале или по видео, разбор того, что реально стоит категории: техника, читка маршрута или психология лида. Собственный ориентир Игоря: 7a за год. Занятия идут уже сейчас, онлайн или в Ереване.</p>
     </article>
   </div>
 
@@ -727,8 +805,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         data-prefill-en="I've plateaued and can't see a way out."
         data-prefill-ru="Я застрял на плато и не вижу выхода.">
       <h3 data-en="You plateaued and can’t see a way out" data-ru="Вы застряли на плато и не видите выхода">You plateaued and can’t see a way out</h3>
-      <p data-l="en">Years of apps, courses, climbing sessions, and chess matches, and you’re still in the same place. None of it tells you <strong class="mark">what’s actually stuck</strong>.</p>
-      <p data-l="ru">Годы приложений, курсов, скалолазания и шахматных партий — а вы всё там же. Ничто из этого не говорит, <strong class="mark">что именно вас блокирует</strong>.</p>
+      <p data-l="en">Years of grammar drills, gym sessions, and rated games — the English still freezes under pressure, the grade hasn’t moved, the rating’s flat. None of it tells you <strong class="mark">what’s actually stuck</strong>.</p>
+      <p data-l="ru">Годы грамматических упражнений, тренировок в зале и рейтинговых партий — а английский всё равно виснет под давлением, категория не растёт, рейтинг стоит на месте. Ничто из этого не говорит, <strong class="mark">что именно вас блокирует</strong>.</p>
     </li>
     <li class="reveal"
         data-prefill-en="I understand what to do, but stress ruins the performance."
@@ -748,8 +826,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         data-prefill-en="I back off the second it gets hard."
         data-prefill-ru="Я отступаю, как только становится трудно.">
       <h3 data-en="You back off the second it gets hard" data-ru="Вы отступаете, как только становится трудно">You back off the second it gets hard</h3>
-      <p data-l="en">When things get tough, you <strong class="mark">give up or cut down on practice time</strong>. That’s not the way.</p>
-      <p data-l="ru">Когда становится тяжело, вы <strong class="mark">сдаётесь или сокращаете практику</strong>. Это не выход.</p>
+      <p data-l="en">The conversation gets hard and you switch back to Russian; the position gets sharp and you head for a safe trade; the move gets scary and you climb down. <strong class="mark">Same reflex, three different words for it</strong>.</p>
+      <p data-l="ru">Разговор становится трудным — и вы переходите на русский. Позиция острая — и вы уходите в размен от греха. Ход страшный — и вы слезаете со стены. <strong class="mark">Один и тот же рефлекс, просто три разных слова для него</strong>.</p>
     </li>
   </ul>
 </section>

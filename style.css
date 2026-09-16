@@ -832,17 +832,6 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    nothing. */
 .specimens-group { display: none; }
 .specimens-group.is-active { display: block; }
-/* Stage 4 ghostwriter pass (2026-09-16): chess/climbing have no real
-   specimens yet (see the PLACEHOLDER comments above each group), and a
-   full .sec__head h2+lede pair at full section-heading scale read as "this
-   section broke" rather than "more is coming." One quiet, hairline-ruled
-   row instead — same rhythm as .spec below, none of its scale. */
-.specimens-placeholder {
-  border-top: 1px solid var(--rule);
-  padding-block: clamp(32px, 4.5vw, 60px);
-  max-width: var(--measure);
-  color: var(--fg2);
-}
 .specs { border-top: 1px solid var(--rule); }
 .spec {
   padding-block: clamp(32px, 4.5vw, 60px);

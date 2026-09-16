@@ -94,10 +94,13 @@ def test_specimen_rows_have_text_equivalent_for_correctness(open_site):
     """correct/incorrect is carried by a visually-hidden label, not colour +
     glyph alone. The register specimen (P5) isn't a grammar error — its wrong
     line is grammatically fine, just badly pitched — so it carries its own
-    "Reads as" / "Better as" pair instead of overstating it as "Incorrect"."""
+    "Reads as" / "Better as" pair instead of overstating it as "Incorrect".
+    Stage 5 (2026-09-16) added six more real specimens (chess + climbing),
+    all "Incorrect"/"Correct" pairs like English's first two — 9 specimens
+    total, 2 labels each."""
     page, _ = open_site()
     vh = page.locator(".line-spec .vh")
-    assert vh.count() == 6
+    assert vh.count() == 18
     # text_contents, not inner_texts: under JS the .wrong line is [hidden] (the
     # error moved behind the reveal button), so its label renders nothing — but
     # the equivalent is still in the DOM for the no-JS render and for AT once
@@ -309,8 +312,12 @@ def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
 # are real proofreading marks. ---
 
 def _spec_pair_readable(page):
+    # Scoped to English: it's the only group visible by default (no JS to
+    # commit a discipline), even though chess/climbing now carry their own
+    # real specimens too (Stage 5, 2026-09-16) further down the same DOM.
+    english = '#specimen .specimens-group[data-discipline-group="english"] '
     for cls in (".wrong", ".right"):
-        loc = page.locator(f"#specimen .line-spec{cls}")
+        loc = page.locator(f"{english}.line-spec{cls}")
         assert loc.count() == 3
         for i in range(3):
             assert loc.nth(i).is_visible()
@@ -322,7 +329,9 @@ def test_specimen_static_pair_survives_without_js(open_site):
     _spec_pair_readable(page)
     # nothing was built: no prompt button, the three real <del> pairs are it
     assert page.locator(".spec__prompt").count() == 0
-    assert page.locator("#specimen .line-spec del").count() == 3
+    assert page.locator(
+        '#specimen .specimens-group[data-discipline-group="english"] .line-spec del'
+    ).count() == 3
 
 
 def test_specimen_reveal_is_an_accessible_disclosure(open_site):
@@ -331,8 +340,13 @@ def test_specimen_reveal_is_an_accessible_disclosure(open_site):
     static .wrong line is [hidden] (out of the a11y tree) until the button is
     activated, and activating it toggles the state back and forth."""
     page, _ = open_site()
-    prompts = page.locator("#specimen .spec__prompt")
-    rights = page.locator("#specimen .line-spec.right")
+    # Scoped to English: initSpecimenReveal() builds a prompt for every
+    # .spec under #specimen regardless of group visibility (Stage 5,
+    # 2026-09-16 added six more, chess + climbing), but this test's
+    # assertions (e.g. "myself") are specific to English's specimens.
+    english = '#specimen .specimens-group[data-discipline-group="english"] '
+    prompts = page.locator(f"{english}.spec__prompt")
+    rights = page.locator(f"{english}.line-spec.right")
     assert prompts.count() == 3
     for i in range(3):
         btn = prompts.nth(i)
@@ -397,11 +411,14 @@ def test_specimen_mistake_is_hidden_until_hover_or_tap(open_site):
 def test_specimen_marks_are_proofreading_notation(open_site):
     """move 06: the ✕/✓ pair (path 'M1 1 L9 9 ...') is replaced by a dele
     loop / caret / transpose hook. The register specimen restructures, so its
-    mark differs from the two deletion specimens'."""
+    mark differs from the two deletion specimens'. Stage 5 (2026-09-16) added
+    six more real (all-delete) specimens after English's three, reusing the
+    same two marks — English's own comparison below is unaffected since its
+    specimens are still first in document order."""
     page, _ = open_site()
     ds = page.eval_on_selector_all(
         "#specimen .line-spec .sig svg path", "els => els.map(e => e.getAttribute('d'))")
-    assert len(ds) == 6
+    assert len(ds) == 18
     assert not any("M1 1 L9 9" in d for d in ds), "old ✕ glyph still present"
     # specimen 3 (restructure) uses a different mark than specimens 1-2 (delete)
     assert ds[0] != ds[4] and ds[1] != ds[5]

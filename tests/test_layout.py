@@ -114,8 +114,9 @@ def test_wrong_and_right_lines_have_a_visible_gap(open_site):
 # every hairline on the page is exactly one width. ---
 
 @pytest.mark.parametrize("container", [
-    "#method .mechanisms", "#specimen .specs", "#disciplines .domains",
-    "#who .rows", "#contact .channels", "#disciplines .proof",
+    "#method .mechanisms",
+    '#specimen .specimens-group[data-discipline-group="english"] .specs',
+    "#disciplines .domains", "#who .rows", "#contact .channels", "#disciplines .proof",
 ])
 def test_row_dividers_are_flush_with_their_sections_own_rule(open_site, container):
     page, _ = open_site(viewport=WIDE)

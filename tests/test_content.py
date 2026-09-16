@@ -133,11 +133,12 @@ def test_reading_measured_carries_chess_and_climbing_confirmed_figures(open_site
 
 def test_reading_chess_and_climbing_placeholders_are_flagged(open_site):
     """D0.6.2: every invented reading line carries a PLACEHOLDER comment
-    naming what Igor replaces. Rows 2-4 have no repo-recorded chess/climbing
-    STUDENT fact yet (D0.6.4), so both disciplines ship those rows flagged."""
+    naming what Igor replaces. Stage 5 (2026-09-16) and its same-day
+    follow-up landed real chess figures and climbing's coaching duration,
+    so only climbing's student-outcome row (Achieved) remains unconfirmed."""
     page, _ = open_site()
     html = page.content()
-    assert html.count("PLACEHOLDER (D0.6") == 6
+    assert html.count("PLACEHOLDER (D0.6") == 1
 
 
 # --- Trifecta D follow-up (2026-09-15): §03 (Specimens) is now discipline-
@@ -183,14 +184,15 @@ def test_committing_back_to_english_restores_its_specimens_group(open_site):
     ).is_visible()
 
 
-def test_chess_and_climbing_specimen_placeholders_are_flagged(open_site):
-    """Same D0.6-style discipline as the readout's own placeholders (see
-    test_reading_chess_and_climbing_placeholders_are_flagged above): every
-    invented line here names what Igor replaces, findable by CLAUDE.md's
-    "search for PLACEHOLDER" convention."""
+def test_chess_and_climbing_have_real_specimens(open_site):
+    """Stage 5 (2026-09-16) replaced the Trifecta D follow-up placeholders
+    with real named specimens, same format as English's three (wrong/right
+    pair + why, addressable by permalink)."""
     page, _ = open_site()
-    html = page.content()
-    assert html.count("PLACEHOLDER (2026-09-15, Trifecta D follow-up)") == 2
+    for name in ("chess", "climbing"):
+        group = page.locator(f'#specimen .specimens-group[data-discipline-group="{name}"]')
+        assert group.locator(".spec").count() == 3
+        assert group.locator(".spec__why").count() == 6  # en + ru per specimen
 
 
 def test_the_three_measured_facts_are_exactly_these(open_site):
@@ -349,7 +351,11 @@ def test_origin_is_the_first_section_and_carries_01(open_site):
 # sits under ("Your errors are a finite list") never gets a fabricated number
 # put beside it. S0 decided that line is the whole claim; no figure is invented. ---
 
-SPECIMEN_IDS = ["specimen-reflexive", "specimen-copula", "specimen-register"]
+SPECIMEN_IDS = [
+    "specimen-reflexive", "specimen-copula", "specimen-register",
+    "specimen-chess-calculation", "specimen-chess-memory", "specimen-chess-tilt",
+    "specimen-climbing-grip", "specimen-climbing-legs", "specimen-climbing-beta",
+]
 
 
 def test_no_invented_count_beside_the_finite_list_claim(open_site):
