@@ -1208,6 +1208,12 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
   -webkit-tap-highlight-color: transparent;
   transition: background-color var(--t) var(--e);
 }
+/* appearance:none above strips the button's look but not the UA's own
+   inline padding (Chrome defaults a <button> to ~6px each side); that
+   leftover was never a deliberate design choice and only ever cost this
+   row's shrink budget, so it's zeroed here rather than left to be
+   rediscovered as "mystery" padding. */
+.origin__panel-item { padding-inline: 0; }
 /* Closes the chooser as its own bounded group (top rule from the first
    item's own border-top, bottom rule here) so the three rows read as one
    control, distinct from the plain list of .reading__row below it. */
@@ -1227,10 +1233,24 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
 @media (max-width: 899.98px) {
   .origin__panel-item { padding-block: 10px; }
 }
+/* RU's compound discipline nouns (СКАЛОЛАЗАНИЕ, АНГЛИЙСКИЙ) run wider than
+   their EN labels, and this row's automatic minimum size (browsers won't
+   shrink a flex item past its content's min-content without help) was
+   holding .origin__panel open past the viewport at 320px/RU — not silently
+   clipped, actually pushing document.documentElement past 320px. flex-wrap
+   lets label and value drop to their own line instead of being held to one;
+   it only ever engages once a row genuinely can't fit both on a line, so
+   EN and every width above ~350px keep the single-line row unchanged. */
+.origin__panel-item, .reading__row { flex-wrap: wrap; }
 .origin__panel-item > span:first-child {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
   transition: color var(--t) var(--e);
+  /* Same overflow fix as the flex-wrap above: a single long Cyrillic word
+     is otherwise one unbreakable token that can hold the row's minimum
+     width past the viewport. Only matters once nothing else is left to
+     give. */
+  overflow-wrap: anywhere;
 }
 /* Preview lights the row's name with full --fg, not an accent ink — this
    text sits under the 24px floor the colour system reserves for non-text
@@ -1295,6 +1315,8 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
 .reading__label {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  /* Same fix as .origin__panel-item's label above, same reason. */
+  overflow-wrap: anywhere;
 }
 /* left, not right: a single-line reading (all the Measured/Coaching-since
    values, most Achieved/Common-mistakes ones too) sits flush against the
