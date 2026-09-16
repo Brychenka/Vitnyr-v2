@@ -4689,3 +4689,63 @@ local `main` checkout).
 
 Not republished: the collage view is still on non-Igor placeholder stock
 (Standing Order 2 / Jury Pass II), unaffected by anything in Trifecta D.
+
+## §01 readout QA pass, post-Trifecta-D (2026-09-16)
+
+A design critique done from a screenshot alone flagged the mark/readout as
+inconsistent (dual selection states, panel not matching the "selected" row,
+mark not reacting). Reading `initOrigin()` and the D2/D3 CSS showed all three
+were the documented preview/commit split working exactly as built — the
+screenshot had simply caught a hover-preview frame (Climbing lit) over the
+committed row (English). No code issue; retracted rather than "fixed."
+
+Branch: `feature/origin-readout-qa`, off `main` at `980c974` (current
+`feature/origin-hint-reposition` has an unrelated, still-unmerged commit —
+left alone rather than folded in here).
+
+Verifying interaction and content for real (not from another screenshot),
+per this file's own standing instruction, surfaced two real bugs Trifecta D's
+own verification passes hadn't hit:
+
+1. **`.reading__values { text-align: right }` (style.css:1266).** Fine for
+   the single-line rows (Measured, Coaching since), but Achieved and Common
+   mistakes wrap to 2-3 lines even in English, more in RU, and right-aligning
+   a wrapped block staggers every line's start — hard to scan. Changed to
+   `text-align: left`. Single-line values are shrink-to-fit boxes already
+   flush against the row's right edge, so they render pixel-identical;
+   confirmed via `Range.getClientRects()` that wrapped lines now share one
+   left edge instead of one right edge, in both languages.
+2. **`.origin__body { align-items: center }` (style.css:1049), below 900px.**
+   The comment above it (a deliberate deviation from
+   `TRIFECTA-D-NAVIGATOR.md`'s Stage D2 "Phone" section — row layout instead
+   of the spec'd stacked column, because column ran the readout off-screen at
+   375×667) never accounted for what centering does once the readout — a
+   fixed ~97-170px mark next to a column that can run 700-800px tall once
+   Achieved/Common mistakes wrap — outgrows the mark by 6-8x: centering drags
+   the mark down to the row's vertical midpoint, landing it next to
+   "Coaching since" or "Achieved" instead of the discipline picker it
+   selects. Confirmed at 375px in both languages (worse in RU, but present in
+   English too — not a translation-length problem, a structural one). Fixed
+   with `align-items: flex-start` below 900px, keeping `center` in the
+   `≥900px` override where the readout is short enough that it doesn't
+   matter. Re-verified: mark now sits level with the picker's top row at
+   375px in both languages; ≥900px (1280px checked) unchanged.
+
+Both are pure layout fixes — no JS, no new color, no new easing, no test
+edited. Full suite run: 281 passed, 1 failed
+(`test_collage_icon_caption_is_back_before_scrolling_on_phone[chromium-ru-320]`,
+in `#collage`'s nav icons — confirmed failing identically on unmodified
+`main` via `git stash`, unrelated to this branch, not investigated further
+here).
+
+Keyboard commit (Enter/Space on a focused `.origin__hit`/`.origin__panel-item`)
+wasn't independently exercised end-to-end in this pass — the browser
+automation used here couldn't reliably deliver a synthetic Enter as a
+trusted key event to a remote tab, so the click-to-commit path was verified
+directly instead. The mechanism itself (`wire()`, `main.js:798`) is a plain
+`click` listener on a real `<button>`, which gets Enter/Space activation from
+the browser for free per the HTML spec — nothing about it changed here, and
+`tests/test_motion.py` covers it under Playwright's own keyboard input.
+
+Not merged, not pushed until this entry is written; see the commit right
+after it for the outcome.
