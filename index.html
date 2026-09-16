@@ -565,33 +565,27 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <!-- PLACEHOLDER (2026-09-15, Trifecta D follow-up): no named chess
        specimens exist yet, same gap D4 already flagged in the readout
        (main.js .reading, row "Common mistakes", data-discipline="chess").
-       Igor replaces this whole group's head + lede with real wrong/right
-       specimens in the same format as English's three above, once named
-       chess errors exist. Framing kept generic on purpose — real material
-       only (CLAUDE.md): specific chess mistakes aren't invented here. -->
+       Igor replaces this note with real wrong/right specimens in the same
+       format as English's three above, once named chess errors exist —
+       this div stays the hook: same wrapper, same data-discipline-group,
+       same updateSpecimens() toggle, only the inner markup changes when
+       real specimens land (Stage 4 ghostwriter pass, 2026-09-16: two
+       duplicate h2+lede blocks read as much as "this section broke" than
+       "more is coming," so collapsed to one line, lighter than a section
+       head). Framing kept generic on purpose — real material only
+       (CLAUDE.md): specific chess mistakes aren't invented here. -->
   <div class="specimens-group" data-discipline-group="chess">
-  <div class="sec__head">
-    <h2 class="reveal" data-l="en">Chess has its own errors — trainable and fixable, once they’re named.</h2>
-    <h2 class="reveal" data-l="ru">В шахматах свои ошибки — их тоже можно тренировать и исправлять, если их назвать.</h2>
-    <div class="sec__lede">
-      <p class="reveal" data-l="en">Named chess specimens are coming, in the same wrong → right format as English above.</p>
-      <p class="reveal" data-l="ru">Разбор шахматных ошибок появится в этом же формате «неверно → верно», как и у английского выше.</p>
-    </div>
-  </div>
+    <p class="specimens-placeholder reveal" data-l="en">Chess specimens — named wrong → right examples, same format as English above — are coming once real errors are catalogued.</p>
+    <p class="specimens-placeholder reveal" data-l="ru">Разбор шахматных ошибок — в том же формате «неверно → верно», что и у английского выше — появится, как только реальные ошибки будут каталогизированы.</p>
   </div>
 
   <!-- PLACEHOLDER (2026-09-15, Trifecta D follow-up): same gap as chess
        above, for climbing (main.js .reading__value[data-discipline="climbing"]
-       carries the identical "coming soon" placeholder already). -->
+       carries the identical "coming soon" placeholder already). Same hook,
+       same Stage 4 lightening as chess above. -->
   <div class="specimens-group" data-discipline-group="climbing">
-  <div class="sec__head">
-    <h2 class="reveal" data-l="en">Climbing has its own errors — trainable and fixable, once they’re named.</h2>
-    <h2 class="reveal" data-l="ru">В скалолазании свои ошибки — их тоже можно тренировать и исправлять, если их назвать.</h2>
-    <div class="sec__lede">
-      <p class="reveal" data-l="en">Named climbing specimens are coming, in the same wrong → right format as English above.</p>
-      <p class="reveal" data-l="ru">Разбор ошибок в скалолазании появится в этом же формате «неверно → верно», как и у английского выше.</p>
-    </div>
-  </div>
+    <p class="specimens-placeholder reveal" data-l="en">Climbing specimens — named wrong → right examples, same format as English above — are coming once real errors are catalogued.</p>
+    <p class="specimens-placeholder reveal" data-l="ru">Разбор ошибок в скалолазании — в том же формате «неверно → верно», что и у английского выше — появится, как только реальные ошибки будут каталогизированы.</p>
   </div>
 </section>
 
