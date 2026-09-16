@@ -303,6 +303,23 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        flow — with JS present or absent alike, per CLAUDE.md's rule that
        nothing animation-related may hide content (the html.js overlay that
        used to cross-fade between rows was removed in this stage). -->
+
+  <!-- Marginalia, not a heading: pulled up into the whitespace .sec__head's
+       own margin-bottom already reserves (negative margin-top below) and
+       pushed a bit further from the readout than that whitespace alone
+       gives it (its own margin-bottom), so it reads as a separate aside
+       gesturing at the interactive mark+panel below rather than a caption
+       glued to the table. margin-left: var(--mark-w) keeps it aligned over
+       the panel/mark gap at both breakpoints, from the same token
+       .origin__mark's width reads from — one number, not two kept in sync
+       by hand. Decorative only (aria-hidden): the three buttons below
+       already carry their own accessible names. Always visible, not a
+       .reveal target — a static label, not an animation. -->
+  <p class="origin__hint" aria-hidden="true">
+    <span data-en="Choose your discipline" data-ru="Выберите направление">Choose your discipline</span>
+    <svg class="origin__hint-arrow" viewBox="0 0 46 40" fill="none"><path d="M3 3c14 2 24 12 22 26M25 29l-8-3M25 29l3 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </p>
+
   <div class="origin__body">
     <figure class="origin__mark reveal" data-magnetic>
       <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
@@ -331,11 +348,6 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </figure>
 
     <div class="origin__panel" aria-live="polite">
-      <!-- Decorative marginalia only — the three buttons below already carry
-           their own accessible names, so this adds nothing a screen reader
-           needs. Always visible (not a .reveal target, no html.js gate): a
-           static label, not an animation. -->
-      <p class="origin__hint" aria-hidden="true"><span data-en="Choose your discipline" data-ru="Выберите направление">Choose your discipline</span></p>
       <!-- Positioned by initOrigin()'s positionMarker(): height/width:0 here
            so a no-JS or JS-failed reader never sees a stray dash — nothing
            to gate behind html.js, the element is simply invisible until JS

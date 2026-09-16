@@ -1045,6 +1045,16 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    band instead — mark on the left, readout beside it, same row layout the
    ≥900px rule below already uses — not a smaller type scale, per the plan's
    own instruction. */
+/* Single source for how far the mark's column reaches, set on the section
+   itself (not .origin__body) so .origin__hint — a sibling of .origin__body,
+   not a descendant — can still inherit it and land over the panel/mark gap
+   without a second hand-kept number. */
+#origin {
+  --mark-w: clamp(96px, 26vw, 170px);
+}
+@media (min-width: 900px) {
+  #origin { --mark-w: clamp(180px, 22vw, 280px); }
+}
 .origin__body {
   display: flex; flex-direction: row; align-items: flex-start;
   gap: clamp(12px, 4vw, 32px);
@@ -1065,12 +1075,9 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 }
 .origin__mark {
   position: relative;
-  width: clamp(96px, 26vw, 170px);
+  width: var(--mark-w);
   flex-shrink: 0;
   margin: 0;
-}
-@media (min-width: 900px) {
-  .origin__mark { width: clamp(180px, 22vw, 280px); }
 }
 .glyph { display: block; width: 100%; height: auto; overflow: visible; }
 /* Never scale the two arms: they're clipped halves of one shared path, and
@@ -1158,21 +1165,39 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
    own pattern: the readout is as clickable as the glyph, with a much larger
    target for touch. */
 .origin__panel { position: relative; width: min(100%, 360px); }
-/* Marginalia pointing at the three clickable rows below — a handwritten
-   nudge, not a heading, so it sits in its own script face (--hand, defined
-   above with the other type tokens) at a slight tilt, never straight.
-   --green-text (not the raw --green ink) because this IS text, just held
-   well above the 24px floor the colour system's "never as text under 24px"
-   rule sets — same safe-text alias .mark--target already uses, so it
-   clears 4.5:1 in both pairs instead of only the cream one. */
+/* Marginalia gesturing at the mark+panel below, not a caption sitting on
+   the table — a handwritten aside in its own script face (--hand, defined
+   above with the other type tokens), tilted, never straight. Pulled up
+   into the whitespace .sec__head's own margin-bottom already reserves
+   (negative margin-top) and pushed further from the readout with its own
+   margin-bottom, so there's real air between the note and what it's
+   annotating; the small swash below bridges that distance so it still
+   reads as one gesture instead of an orphaned label. margin-left:
+   var(--mark-w) (set on #origin, above) keeps it aligned over the
+   panel/mark gap at both breakpoints. --green-text (not the raw --green
+   ink) because this IS text, just held well above the 24px floor the
+   colour system's "never as text under 24px" rule sets — same safe-text
+   alias .mark--target already uses, so it clears 4.5:1 in both pairs
+   instead of only the cream one. */
 .origin__hint {
-  margin: 0 0 10px;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(6px, 1.2vw, 12px);
+  margin: -18px 0 clamp(28px, 4vw, 44px) var(--mark-w);
   font-family: var(--hand);
-  font-size: clamp(22px, 3vw, 28px);
+  font-size: clamp(26px, 3.6vw, 36px);
   line-height: 1;
   color: var(--green-text);
-  transform: rotate(-4deg);
+}
+.origin__hint span {
+  transform: rotate(-5deg);
   transform-origin: left bottom;
+}
+.origin__hint-arrow {
+  width: clamp(30px, 4vw, 40px);
+  height: auto;
+  flex-shrink: 0;
+  margin-bottom: 2px;
 }
 .origin__panel-item {
   display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 16px;
