@@ -1056,11 +1056,19 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   #origin { --mark-w: clamp(180px, 22vw, 280px); }
 }
 .origin__body {
-  display: flex; flex-direction: row; align-items: center;
+  display: flex; flex-direction: row; align-items: flex-start;
   gap: clamp(12px, 4vw, 32px);
 }
+/* flex-start, not center: below 900px the readout can run to 4+ wrapped
+   lines per row (worse in RU), making .origin__body several times taller
+   than the fixed-size mark. Centering a small mark in a tall row drags it
+   down to wherever the row's midpoint happens to land — next to "Coaching
+   since" or "Achieved" instead of the picker it's paired with. Pinning it
+   to the top keeps it beside "Choose your discipline" regardless of how
+   long that reading runs. */
 @media (min-width: 900px) {
   .origin__body {
+    align-items: center;
     justify-content: flex-start;
     gap: clamp(40px, 6vw, 90px);
   }
@@ -1288,7 +1296,12 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
 }
-.reading__values { text-align: right; }
+/* left, not right: a single-line reading (all the Measured/Coaching-since
+   values, most Achieved/Common-mistakes ones too) sits flush against the
+   row's right edge either way, since the box is shrink-to-fit — text-align
+   only matters once a value wraps, and a wrapped block should read with a
+   straight left edge, not a staircase of right-ragged line starts. */
+.reading__values { text-align: left; }
 /* Defensive, not currently load-bearing: .reading__label's uppercase is
    scoped to itself, not inherited by its .reading__values sibling. Kept
    explicit anyway, matching J2's .domain__stat exemption, because the next
