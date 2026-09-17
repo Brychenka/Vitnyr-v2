@@ -607,10 +607,18 @@
      defining its own visual language — a real engagement and the hint
      produce identical-looking states, just triggered differently. */
   function initOrigin() {
+    // `mark` stays the single §01 figure — it's the only one the S7 draw-in
+    // and the idle hint below key off (see drawThenHint()). `marks` is every
+    // instance of the control that exists (§01's, plus §03's specimen-switch
+    // mini added 2026-09-17, if present) — hits/parts/sigils are queried
+    // document-wide below so a single paint()/previewSigil()/sparkSigil()
+    // call updates whichever of these actually exist, in sync, without the
+    // mini needing its own copy of any of this logic.
     var mark = document.querySelector('.origin__mark');
     if (!mark) return;
-    var hits = mark.querySelectorAll('.origin__hit');
-    var parts = mark.querySelectorAll('.glyph__part');
+    var marks = document.querySelectorAll('.origin__mark');
+    var hits = document.querySelectorAll('.origin__hit');
+    var parts = document.querySelectorAll('.glyph__part');
     var panel = document.querySelector('.origin__panel');
     var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : [];
     var marker = panel ? panel.querySelector('.origin__marker') : null;
@@ -628,9 +636,9 @@
     if (!hits.length) return;
 
     // Specimen sigils (2026-09-17): the small masthead-icon copies at each
-    // stroke's tip (index.html). Queried once, same reasoning as the other
-    // NodeLists above.
-    var sigils = mark.querySelectorAll('.origin__sigil');
+    // stroke's tip (index.html), on every mark instance — see the `marks`
+    // comment above.
+    var sigils = document.querySelectorAll('.origin__sigil');
 
     var idleTl = null;
     // True the instant any real engagement happens (preview or commit),

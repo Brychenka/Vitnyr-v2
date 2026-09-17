@@ -838,6 +838,19 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    nothing. */
 .specimens-group { display: none; }
 .specimens-group.is-active { display: block; }
+
+/* Specimen switch (2026-09-17): label + mini mark, sitting above all three
+   .specimens-group (sibling to them, not inside one), so it stays visible
+   regardless of which discipline is currently active. Label styled like
+   .tools__label (masthead) — the site's existing small-uppercase-caption
+   pattern — rather than inventing a second one. */
+.specimen-switch {
+  display: flex; align-items: center; gap: 14px;
+  margin: 0 0 clamp(28px, 4vw, 44px);
+}
+.specimen-switch__label {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+}
 .specs { border-top: 1px solid var(--rule); }
 .spec {
   padding-block: clamp(32px, 4.5vw, 60px);
@@ -1086,6 +1099,13 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   margin: 0;
 }
 .glyph { display: block; width: 100%; height: auto; overflow: visible; }
+/* Specimen switch (2026-09-17): §03's own small instance of this mark, next
+   to the mistakes it switches. --mark-w isn't in scope outside #origin, so
+   this sets its own fixed size rather than inheriting an unset custom
+   property — deliberately smaller than even §01's own ≥900px-down minimum,
+   since this one sits inline with body copy, not as the section's own
+   figure. */
+.origin__mark--mini { width: clamp(44px, 9vw, 60px); flex-shrink: 0; margin: 0; }
 /* Never scale the two arms: they're clipped halves of one shared path, and
    scaling a clipped element scales its clip boundary with it, which would
    tear the seam away from the unmodified mark underneath. The stem used to
