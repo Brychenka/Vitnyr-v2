@@ -108,8 +108,7 @@
      this codebase either. */
   --spark-d: .5s;
   /* One deliberate turn of the footer mark on hover — well slower than --t so
-     the full rotation reads, not a snap. Lands on D.count's 1.2s (main.js),
-     the "measured, counting" register — a turn you're meant to watch finish. */
+     the full rotation reads, not a snap: a turn you're meant to watch finish. */
   --t-turn: 1.2s;
 
   --gut:  clamp(20px, 5vw, 80px);
@@ -1074,65 +1073,10 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   .domain__meta { grid-column: 1 / -1; margin-bottom: 6px; }
 }
 
-/* ---------- facts ---------- */
-.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 4vw, 48px); }
-@media (min-width: 760px) { .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-/* Measured, externally verifiable outcomes — the achieved target, in green.
-   The 30px floor keeps these inside WCAG large text, where 3:1 governs.
-   Do not lower it. */
-.facts .n {
-  display: block;
-  /* Mono, because these are falsifiable readings someone else assigned — a
-     rating, a grade, a count — not brand claims. 56px not 62: JetBrains Mono's
-     cap height is .730em against Lora's .700em, so it reads 4.3% larger.
-     The 30px floor is a WCAG large-text threshold in CSS px and does NOT
-     scale with the face swap. Do not lower it. */
-  font-family: var(--mono); font-weight: 400;
-  font-size: clamp(30px, 4.6vw, 56px); line-height: 1;
-  letter-spacing: -.04em;
-  color: var(--ink-target);
-  font-variant-numeric: tabular-nums;
-}
-.facts .k {
-  display: block; margin-top: 12px;
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
-}
-
-/* Spark Order S2 / move 18 — four facts, four units.
-   The differentiation is typographic only: no colour beyond the ink tokens
-   already in use, no new component, no approved string touched. Each .facts li
-   carries a modifier naming what kind of reading it is. */
-
-/* count — a plain tally. Its unit label drops the uppercase caption voice for
-   a mono annotation, so "8 years coaching" reads as a number and its unit
-   rather than a number and a heading. */
-.fact--count .k {
-  font-family: var(--mono); text-transform: none;
-  letter-spacing: .01em; font-size: 13px; font-weight: 400;
-}
-
-/* scale — a position on a continuum, not a count. Tabular figures (already the
-   row default; restated here as the intent) and a short hairline tick beneath
-   the numeral, a gauge mark. The tick is --rule, the sanctioned hairline ink,
-   so it stays a rule and not a third colour. */
-.fact--scale .n { position: relative; font-variant-numeric: tabular-nums; }
-.fact--scale .n::after {
-  content: ""; position: absolute; left: 0; bottom: -.16em;
-  width: .44em; height: 1px; background: var(--rule);
-}
-
-/* grade — two climbing readings under one numeral. "7c redpoint, indoor" and
-   "7C Kilter" were one run-on string joined by a middle dot, which reads as a
-   single fact to a non-climber; stacked and separately labelled, they read as
-   two. The 7c / 7C case difference is meaningful and is left exactly as is. */
-.fact--grade .fact__reading { display: block; }
-.fact--grade .fact__reading + .fact__reading { margin-top: 3px; }
-
 /* ---------- origin (name & mark) ---------- */
 /* Trifecta Order D / Stage D2 (2026-09-15): the pre-agreed phone fallback
    from the plan. A centred column (the pattern every other .sec__head block
-   below 900px uses — .mechanisms, .domains, .facts, .rows) put the mark
+   below 900px uses — .mechanisms, .domains, .rows) put the mark
    above the three-row readout instead of beside it, and measured at
    375x667 the readout ran well off the bottom of the viewport before the
    reader saw a single reading. Below 900px this is a compact two-column

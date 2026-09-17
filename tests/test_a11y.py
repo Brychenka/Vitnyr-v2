@@ -199,17 +199,6 @@ def test_origin_mark_is_complete_under_reduced_motion(open_site):
     assert heights[0] > 90 and heights[1] > 90 and heights[2] > 40, heights
 
 
-def test_reduced_motion_facts_row_shows_every_value(open_site):
-    """The reduced-motion branch in main.js returns early; the facts must still
-    read out in full. It calls countUp(true), which settles every number to its
-    final text with no tween — so reduced-motion readers get the values, never a
-    count. This guards both that settle and the early-return path itself."""
-    page, _ = open_site(reduced_motion=True)
-    page.wait_for_timeout(200)
-    values = page.locator(".facts .n").all_inner_texts()
-    assert [v.strip() for v in values] == ["8", "100+", "2100", "7c"]
-
-
 def test_focus_visible_ring_is_the_target_green(open_site):
     # theme="dark": the expected value below is --ink-target on charcoal.
     page, _ = open_site(theme="dark")
