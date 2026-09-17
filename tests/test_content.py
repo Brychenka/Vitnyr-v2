@@ -43,14 +43,6 @@ def test_climbing_grades_are_kept_distinct(open_site):
     # regression that brings the uppercase back.
     stat = page.locator("article.domain").nth(2).locator(".domain__stat")
     assert stat.inner_text() == "7c redpoint · 7C Kilter"
-    # Spark Order S2 / move 18: in the facts row the two readings are two
-    # separate elements now, not one run-on text node joined by a middle dot —
-    # so a non-climber can see they are two different achievements.
-    readings = page.evaluate(
-        "() => [...document.querySelectorAll('.fact--grade .fact__reading')]"
-        ".map(el => el.textContent.trim())"
-    )
-    assert readings == ["redpoint, indoor", "7C Kilter"]
 
 
 def test_domain_labels_stay_uppercase_while_stats_keep_their_case(open_site):
@@ -164,65 +156,6 @@ def test_chess_and_climbing_have_real_specimens(open_site):
         group = page.locator(f'#specimen .specimens-group[data-discipline-group="{name}"]')
         assert group.locator(".spec").count() == 3
         assert group.locator(".spec__why").count() == 6  # en + ru per specimen
-
-
-def test_the_three_measured_facts_are_exactly_these(open_site):
-    page, _ = open_site()
-    # S2 / move 18 split the climbing fact into two stacked .fact__reading
-    # elements; every asserted string is still present verbatim, including the
-    # meaningful 7c / 7C case difference. The three animated numbers are read
-    # from data-count(+suffix) so this stays stable whether or not the count-up
-    # (restored as "separate instruments") is mid-flight when the test runs.
-    facts = page.evaluate(
-        """() => [...document.querySelectorAll('.facts li')].map(li => {
-            const n = li.querySelector('.n');
-            return {
-                n: n.dataset.count ? n.dataset.count + (n.dataset.suffix || '')
-                                   : n.textContent.trim(),
-                unit: li.classList.contains('fact--grade')
-                    ? [...li.querySelectorAll('.fact__reading')].map(r => r.textContent.trim())
-                    : li.querySelector('.k').textContent.trim(),
-            };
-        })"""
-    )
-    assert facts == [
-        {"n": "8", "unit": "years coaching"},
-        {"n": "100+", "unit": "one-on-one clients"},
-        {"n": "2100", "unit": "chess rating"},
-        {"n": "7c", "unit": ["redpoint, indoor", "7C Kilter"]},
-    ]
-
-
-def test_facts_row_names_each_unit_type(open_site):
-    """Spark Order S2 / move 18: the four facts are readings off four unrelated
-    instruments and the row now says so structurally — each li carries a
-    modifier naming its unit type, which the typographic treatment hangs on. A
-    later change that flattens them back to one identical style fails here."""
-    page, _ = open_site()
-    kinds = page.evaluate(
-        """() => [...document.querySelectorAll('.facts li')].map(li =>
-            [...li.classList].find(c => c.startsWith('fact--')) || null)"""
-    )
-    assert kinds == ["fact--count", "fact--count", "fact--scale", "fact--grade"]
-
-
-def test_no_unapproved_statistics_in_the_facts_row(open_site):
-    """The facts row carries exactly the four confirmed figures and no more.
-    Guards "real material only": a fifth number — a fabricated statistic
-    slipping in — must fail this, whether it animates (a new data-count) or
-    sits static. The count-up was removed by move 17 and later restored as
-    "separate instruments"; this guard is indifferent to that."""
-    page, _ = open_site()
-    animated = page.evaluate(
-        "() => [...document.querySelectorAll('.facts .n[data-count]')].map(el => el.dataset.count)"
-    )
-    assert sorted(animated, key=int) == ["8", "100", "2100"]
-    labels = page.evaluate(
-        """() => [...document.querySelectorAll('.facts .n')].map(el =>
-            el.dataset.count ? el.dataset.count + (el.dataset.suffix || '')
-                             : el.textContent.trim())"""
-    )
-    assert labels == ["8", "100+", "2100", "7c"]
 
 
 def test_contact_handles_are_real(open_site):

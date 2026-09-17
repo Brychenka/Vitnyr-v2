@@ -34,7 +34,7 @@
                  length, scaled per number so each reads as its own instrument
        hero    — the single longest move on the page, used once
      The reveal's own 0.9s lives in the stylesheet, where the transition is. */
-  var D = { micro: 0.3, state: 0.6, follow: 0.45, correct: 0.8, count: 1.2, hero: 1.05 };
+  var D = { micro: 0.3, state: 0.6, follow: 0.45, correct: 0.8, hero: 1.05 };
   var STAGGER = 0.08;
 
   /* ---------- first-frame gate ----------
@@ -132,7 +132,6 @@
     document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
     gsap.set('.line__inner', { y: '0%' });
     root.classList.add('hero-done');
-    countUp(true);   // final values, no tween
     // Unlike cursor/magnetic (pure decoration, nothing lost by skipping
     // them), the origin panel is the only way — short of no-JS — to see
     // which stroke maps to which discipline. Reduced motion drops the
@@ -539,52 +538,6 @@
       else if (e.key === 'ArrowLeft') { step(-1); }
       else if (e.key === 'ArrowRight') { step(1); }
     });
-  }
-
-  /* ---------- measured numbers count up to their value ----------
-     Back after Spark Order move 17 removed it — but no longer as one gauge.
-     Move 17's objection was real: three numbers sweeping up together on one
-     shared duration read as a single instrument. So each number now counts
-     on its OWN length — counting rate is roughly fixed, so a bigger value
-     takes longer to arrive (log-compressed, or 2100 would be ~260x slower
-     than 8) — and each starts a STAGGER after the one before it. 8, 100+ and
-     2100 arrive as three separate readings. 7c isn't a number and has no
-     data-count, so it never counts. Same IntersectionObserver the reveals
-     use; failsafe/settle guarantees the final value even if a tween is cut. */
-  function countUp(instant) {
-    var nums = document.querySelectorAll('.facts .n[data-count]');
-    if (!nums.length) return;
-    function settle(el) {
-      el.textContent = el.dataset.count + (el.dataset.suffix || '');
-    }
-    if (instant || !window.gsap || !('IntersectionObserver' in window)) {
-      nums.forEach(settle);
-      return;
-    }
-    function run(el, i) {
-      var end = parseFloat(el.dataset.count);
-      var suf = el.dataset.suffix || '';
-      var dur = D.count * (0.6 + Math.log10(Math.max(1, end) + 1) / 4);
-      var obj = { v: 0 };
-      gsap.to(obj, {
-        v: end, duration: dur, delay: i * STAGGER, ease: EASE,
-        onUpdate: function () { el.textContent = Math.round(obj.v) + suf; },
-        onComplete: function () { settle(el); }
-      });
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        io.unobserve(entry.target);
-        var el = entry.target;
-        // Zero it the moment it's committed to counting, so the final value
-        // never flashes for a frame before the tween's first update.
-        el.textContent = '0' + (el.dataset.suffix || '');
-        var i = Array.prototype.indexOf.call(nums, el);
-        whenRendering(function () { run(el, i < 0 ? 0 : i); });
-      });
-    }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
-    nums.forEach(function (el) { io.observe(el); });
   }
 
   /* ---------- origin: interactive mark ----------
@@ -1596,7 +1549,6 @@
 
   /* ---------- go ---------- */
   buildReveals();
-  countUp(false);
   initOrigin();
   initLockmark();
   initCursor();

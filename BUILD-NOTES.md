@@ -4749,3 +4749,44 @@ the browser for free per the HTML spec — nothing about it changed here, and
 
 Not merged, not pushed until this entry is written; see the commit right
 after it for the outcome.
+
+## §04 facts row dropped (2026-09-18)
+
+A content review (repeatedness/inconsistency pass, not a design critique)
+flagged that the same core numbers — 10 years, 100+ clients, 2100 rating,
+7c/7C — were stated three times on the page: §01's interactive origin panel,
+each domain card's `.domain__stat` badge, and the `<ul class="facts">` strip
+directly under the domain cards in §04. The facts strip was the least
+contextual of the three (a bare number-plus-label, no explanation) and sat
+right after the domain cards already carry the same figure in-context, so it
+was the one cut. Igor confirmed; branch `feature/drop-facts-strip` off `main`.
+
+Removed: the `.facts` markup (index.html), `countUp()` and both its call
+sites plus the now-unused `D.count` entry (main.js), and the `.facts`/
+`.fact--*` CSS block (style.css) — the count-up animation ([[ticking-numbers-reversal]]
+in memory: Igor had asked for it back on 2026-09-06, as per-number durations,
+not a shared sweep) goes with it, since there's nothing left for it to
+animate. Two stale comments that referenced `.facts`/`D.count` in passing
+(the phone-fallback pattern list, `--t-turn`'s duration justification) were
+trimmed to stop pointing at removed things.
+
+Kept as-is: `.domain__stat` (in-context, stays) and §01's full interactive
+panel (the only place the numbers get explained, not just stated).
+
+**Test suite note:** running the suite before this change surfaced 26
+pre-existing failures unrelated to this edit (`tests/`, not mentioned
+anywhere in CLAUDE.md — it documents a real pytest/Playwright suite under
+`tests/.venv`, contradicting CLAUDE.md's "no test suite" line). Several
+`test_content.py`/`test_motion.py` tests already expected stale content —
+"8" years coaching instead of the current "10", a 3-row reading-panel
+("Coaching since"/"Achieved"/"Common mistakes") instead of the current
+4-row one, duplicate-selector strict-mode violations from the §03 specimen
+switch's mini mark. None of that is from this change; only the tests that
+existed solely to guard the now-removed facts strip
+(`test_the_three_measured_facts_are_exactly_these`,
+`test_facts_row_names_each_unit_type`, `test_no_unapproved_statistics_in_the_facts_row`,
+`test_reduced_motion_facts_row_shows_every_value`, `test_numbers_count_up_to_their_values`,
+`test_numbers_finish_at_different_times`, plus the facts-row assertion inside
+`test_climbing_grades_are_kept_distinct`) were removed here. The other 26
+failures are a pre-existing, separate problem — flagged, not fixed, in this
+pass.
