@@ -1291,8 +1291,9 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
    the screenshot flagged as missing, without a second color or a box. */
 .reading__intro {
   margin: clamp(36px, 5vw, 56px) 0 10px;
-  font-family: var(--sans); font-size: 11px; font-weight: 500;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--fg2);
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--fg2) 65%, var(--bg));
 }
 .reading { margin-top: 0; }
 .reading__row {
