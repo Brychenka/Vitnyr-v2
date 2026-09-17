@@ -853,9 +853,23 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    Igor's screenshot. Below 900px .sec__head drops to one stacked column,
    so this does too, in the same order fields already read top-to-bottom
    elsewhere on narrow layouts. */
+/* Vertical gap added (2026-09-17): this row had no bottom margin at all,
+   so the mark's own edge and "Your errors are..." touched with 0px between
+   them (confirmed by measuring both rects — .specimen-top's bottom equalled
+   .sec__head's top to the pixel). Same clamp shape as .sec__head's own
+   margin-bottom just below in this file, but with a lower ceiling: this
+   gap separates a kicker line from the headline it sits above, not a
+   headline from its body copy, so it reads as related-but-distinct rather
+   than a full section break. align-items: center (was end): the row's
+   height is set by the mark (the tallest item, ~65-92px), and bottom-
+   aligning a short text line against that made "03 Specimens" hang off the
+   row's floor with dead air above it; centering both items against the
+   mark's own height reads as one deliberate horizontal line instead of two
+   independently-anchored corners. */
 .specimen-top {
   display: grid; gap: clamp(24px, 4vw, 56px);
-  align-items: end;
+  align-items: center;
+  margin-bottom: clamp(48px, 7vw, 88px);
 }
 @media (min-width: 900px) {
   .specimen-top { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
@@ -865,11 +879,27 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   justify-self: start;
 }
 @media (min-width: 900px) {
+  /* Horizontal position re-checked (2026-09-17), kept as-is: measured this
+     against the masthead's own rightmost icon (the collage/pointer/reading
+     icon cluster in the header) and .sec__lede's own text-wrap edge below
+     it — both land on the exact same x-coordinate as this switch's right
+     edge. That's not a coincidence to undo; it's what makes the mark read
+     as anchored to the page's shared right margin rather than floating at
+     an arbitrary offset. Tried centering it in the column instead: it lost
+     that shared edge and looked like it was drifting in dead space above
+     the lede, so end stays. */
   .specimen-switch { justify-self: end; }
 }
 .specimen-switch__label {
   font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
 }
+/* .label's own margin-bottom (clamp(28px, 4vw, 56px), set globally for
+   every other .sec__head's kicker line) is dead weight here: this .label
+   isn't stacked directly above a heading any more, .specimen-top is — so
+   that margin was never producing real spacing in this instance, only
+   throwing off align-items: center by fattening the label's box on one
+   side. Zeroed so the label centers against the mark's actual height. */
+.specimen-top > .label { margin-bottom: 0; }
 .specs { border-top: 1px solid var(--rule); }
 .spec {
   padding-block: clamp(32px, 4.5vw, 60px);
