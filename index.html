@@ -335,6 +335,43 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <use class="glyph__part glyph__part--left" data-discipline="english" href="#glyphV" clip-path="url(#glyphClipLeft)" fill="var(--amber)"/>
         <use class="glyph__part glyph__part--right" data-discipline="chess" href="#glyphV" clip-path="url(#glyphClipRight)" fill="var(--amber)"/>
         <path class="glyph__part glyph__part--stem" data-discipline="climbing" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" clip-path="url(#glyphClipStem)" fill="var(--green)"/>
+
+        <!-- Specimen sigils (2026-09-17): independent small copies of the
+             masthead nav icons (data-collage-jump="en"/"chess"/"climb" in
+             the header), sitting at the open end of each stroke — English
+             top-left, chess top-right, climbing bottom. Not the same
+             element as the masthead copy, same precedent as .label__mark in
+             the #collage view: the path data echoes it, isn't locked to it.
+             Hidden at rest (style.css .origin__sigil), shown only on a real
+             hover/keyboard-focus preview and for a one-shot "spark" on
+             commit — see previewSigil()/sparkSigil() in initOrigin(),
+             main.js. Position (translate+scale, hand-tuned against this
+             glyph's actual stroke termini) lives on the OUTER <g> and is
+             never touched by the spark/preview animation on the inner one,
+             per the transform-channel rule in CLAUDE.md — a static
+             placement transform and an animated one never share a node. -->
+        <g transform="translate(6,4) scale(.5)">
+          <g class="origin__sigil" data-discipline="english" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"/>
+            <path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"/>
+          </g>
+        </g>
+        <g transform="translate(82,4) scale(.5)">
+          <g class="origin__sigil" data-discipline="chess" stroke-width="1.5">
+            <rect x="3.75" y="3.75" width="7.5" height="7.5" fill="currentColor"/>
+            <rect x="12.75" y="3.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="3.75" y="12.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="12.75" y="12.75" width="7.5" height="7.5" fill="currentColor"/>
+          </g>
+        </g>
+        <g transform="translate(44,90) scale(.5)">
+          <g class="origin__sigil" data-discipline="climbing" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"/>
+            <path d="M16.9 8.4 16.42 10"/>
+            <path d="M14.74 15.6 13.9 18.4"/>
+            <path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"/>
+          </g>
+        </g>
       </svg>
       <button class="origin__hit origin__hit--left" type="button" data-discipline="english" aria-pressed="false">
         <span class="vh" data-en="English" data-ru="Английский">English</span>

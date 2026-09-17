@@ -101,6 +101,12 @@
 
   --e: cubic-bezier(.16, 1, .3, 1);
   --t: .6s;
+  /* Specimen sigils' one-shot commit flourish (main.js sparkSigil()). Its
+     own duration, not --t: the sigil is a discrete pop-and-fade, not the
+     fade-only pattern --t times everywhere else. Kept in sync by hand with
+     SPARK_MS in main.js — no CSS-to-JS read-back exists anywhere else in
+     this codebase either. */
+  --spark-d: .5s;
   /* One deliberate turn of the footer mark on hover — well slower than --t so
      the full rotation reads, not a snap. Lands on D.count's 1.2s (main.js),
      the "measured, counting" register — a turn you're meant to watch finish. */
@@ -1110,6 +1116,43 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .glyph__part--right.is-dim { fill: var(--amber-dim); }
 .glyph__part--stem.is-dim { fill: var(--green-dim); }
 
+/* Specimen sigils (2026-09-17): three small copies of the masthead nav
+   icons at the open end of each stroke (index.html). Hidden at rest —
+   opacity only, never display/visibility, so the fade in initOrigin() has
+   something to animate. Coloured with the same two inks the strokes
+   themselves already use (amber for English/chess, green for climbing),
+   not a third colour. transform-box/-origin: the scale pop below pivots
+   around the icon's own centre, not the SVG's (0,0) corner; the placement
+   transform lives one level up, on the static outer <g> in index.html, so
+   this element's own transform is free for the spark alone (CLAUDE.md's
+   transform-channel rule — a layout transform and an animated one never
+   share a node). */
+.origin__sigil {
+  opacity: 0;
+  transition: opacity var(--t) var(--e);
+  transform-box: fill-box;
+  transform-origin: center;
+  pointer-events: none;
+}
+.origin__sigil[data-discipline="english"],
+.origin__sigil[data-discipline="chess"] { color: var(--amber); }
+.origin__sigil[data-discipline="climbing"] { color: var(--green); }
+/* Preview: hover/keyboard-focus on a stroke, ink only, reverts on leave —
+   never falls back to showing the committed discipline's sigil, unlike the
+   glyph's own paint(). See previewSigil() in main.js. */
+.origin__sigil.is-preview { opacity: 1; }
+/* Commit: a one-shot flourish, not a lit state — sparkSigil() in main.js
+   adds this class and removes it again after --spark-d, so a repeat commit
+   of the same discipline retriggers cleanly instead of being a no-op class
+   toggle. */
+.origin__sigil.is-spark { animation: sigil-spark var(--spark-d) var(--e); }
+@keyframes sigil-spark {
+  0%   { opacity: 0; transform: scale(.6); }
+  40%  { opacity: 1; transform: scale(1.2); }
+  70%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.9); }
+}
+
 /* S7 move 03 — the mark assembles from its three strokes on first reveal.
    Section 04's copy says "two for the V, one for the stem"; drawn in that
    order by growing each clip rect from zero: left arm top->vertex, right arm
@@ -2015,6 +2058,11 @@ html.js .collage .reveal.is-in .collage__slot {
   html.js .origin__mark #glyphClipLeft rect,
   html.js .origin__mark #glyphClipRight rect { y: 0 !important; height: 100px !important; animation: none !important; }
   html.js .origin__mark #glyphClipStem rect { height: 44px !important; animation: none !important; }
+  /* Specimen sigils: a straight visibility cut, no fade and no pop — JS
+     still toggles .is-preview/.is-spark on hover/commit, only the motion
+     drops, matching every other control in this block. */
+  .origin__sigil { transition: none !important; }
+  .origin__sigil.is-spark { animation: none !important; opacity: 1; transform: none; }
   /* P22: same for the masthead mark. initLockmark() sits past the
      reduced-motion return in main.js, so .is-drawing is never added here —
      without this the html.js base rule leaves the drawn-in mark clipped away.
