@@ -238,7 +238,7 @@ the brand file, so nothing in the code will tell a new chat about them:
   marked placeholder (see above). If a feature needs a proof point that
   doesn't exist yet, it gets a placeholder, not a plausible-sounding
   fabrication.
-- **The three confirmed facts, worded exactly this way:** 8 years coaching,
+- **The three confirmed facts, worded exactly this way:** 10 years coaching,
   100+ one-on-one clients, a **2100 chess rating stated without FIDE**
   (Igor's own correction — don't add "FIDE" back in), **7c redpoint indoor**
   and a **7C Kilter boulder** (climbing grades, not to be merged into one
