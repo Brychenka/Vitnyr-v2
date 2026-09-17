@@ -3,9 +3,12 @@
 **These are throwaway stand-ins, NOT photographs of Igor Shatsev.** They exist
 so the layout, grayscale treatment and motion stages have real pixels to run
 against while the actual shoot is pending. They are replaced by real photos of
-Igor — per `reference/collage-shotlist.md` — **before** the live "Vitnyr
-Signature" artifact is next republished. See `BUILD-NOTES.md` →
-"Collage placeholders" and `CLAUDE.md`'s note on the real-material rule.
+Igor per `reference/collage-shotlist.md` when the shoot happens. **2026-09-17:
+Igor lifted the hold on republishing the live "Vitnyr Signature" artifact
+while these stand-ins are still up** (no shoot scheduled yet, and he'd rather
+the artifact track `main`) — see `CLAUDE.md`'s collage note. The real-material
+rule (no fabricated claims) still applies; only the artifact-republish
+sequencing changed.
 
 Every file is grayscaled at display time by `--collage-filter`; none carries a
 caption claim (the `<figcaption>` describes the *intended* shot, not the
