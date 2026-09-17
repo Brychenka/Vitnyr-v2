@@ -367,42 +367,38 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </button>
 
       <!-- Trifecta Order D / Stage D3 (2026-09-15): the readout's body — one
-           spec sheet whose VALUES change, not three panels that swap. Four
-           rows, fixed order, hairline-ruled like the panel rows above; each
-           row's label never changes and never animates, only the value
-           beside it does. Content is adapted from material the page already
-           owns (the domains section, the facts row, the named specimens),
-           not invented — see BUILD-NOTES. updateReading() in main.js keeps
+           spec sheet whose VALUES change, not three panels that swap. Fixed
+           row order, hairline-ruled like the panel rows above; each row's
+           label never changes and never animates, only the value beside it
+           does. Content is adapted from material the page already owns (the
+           domains section, the facts row, the named specimens), not
+           invented — see BUILD-NOTES. updateReading() in main.js keeps
            whichever value(s) exist here in sync with the committed
            discipline.
 
            Stage D4 (2026-09-15) adds chess's and climbing's .reading__value
-           siblings to each row, per D0.6's placeholder policy: row 1
-           (Measured) carries each discipline's one confirmed figure
-           (CLAUDE.md's three facts); rows 2-4 have no repo-recorded fact for
-           a chess or climbing STUDENT (2100 and 7c/7C are Igor's own
-           results, not coaching outcomes) and so ship as flagged
+           siblings to each row, per D0.6's placeholder policy; chess/climbing
+           had no repo-recorded STUDENT fact (2100 and 7c/7C are Igor's own
+           results, not coaching outcomes) and so shipped as flagged
            placeholders, EN drafted, RU a machine first pass (Standing
            Order 9) — every one individually marked below.
 
            Stage 5 (2026-09-16): Igor supplied real chess coaching figures
            (3 years, 50 students to 1800+, named specimens below), so chess's
-           rows 2-4 are no longer placeholders. A same-day follow-up added
+           rows are no longer placeholders. A same-day follow-up added
            climbing's own coaching duration (2 years), so only climbing's
-           row 3 (a student-outcome figure) remains unconfirmed — row 4
-           (Common mistakes) is real for both, now that §03 has named
-           specimens for each. -->
+           Achieved row (a student-outcome figure) remains unconfirmed —
+           Common mistakes is real for both, now that §03 has named
+           specimens for each.
+
+           Stage 6 (2026-09-17): dropped the original opening row (Measured:
+           the 8yrs/100+, 2100, 7c/7C headline figures) — it only ever
+           repeated the .origin__panel-item stat directly above, inside the
+           same view, with no new information. Coaching since is now the
+           first row. -->
       <p class="reading__intro" aria-hidden="true"><span data-en="In detail" data-ru="Подробнее">In detail</span></p>
       <div class="reading">
         <div class="reading__row" style="--i:0">
-          <span class="reading__label" data-en="Measured" data-ru="Измерено">Measured</span>
-          <span class="reading__values">
-            <span class="reading__value is-active" data-discipline="english" data-en="8 years · 100+" data-ru="8 лет · 100+">8 years · 100+</span>
-            <span class="reading__value" data-discipline="chess">2100</span>
-            <span class="reading__value" data-discipline="climbing" data-en="7c redpoint indoor · 7C Kilter boulder" data-ru="7c редпоинт, зал · 7C Kilter">7c redpoint indoor · 7C Kilter boulder</span>
-          </span>
-        </div>
-        <div class="reading__row" style="--i:1">
           <span class="reading__label" data-en="Coaching since" data-ru="Стаж">Coaching since</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="8 years" data-ru="8 лет">8 years</span>
@@ -414,7 +410,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
             <span class="reading__value" data-discipline="climbing" data-en="2 years" data-ru="2 года">2 years</span>
           </span>
         </div>
-        <div class="reading__row" style="--i:2">
+        <div class="reading__row" style="--i:1">
           <span class="reading__label" data-en="Achieved" data-ru="Сделано">Achieved</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="Standups · reviews · interviews · client calls" data-ru="Стендапы · ревью · интервью · созвоны">Standups · reviews · interviews · client calls</span>
@@ -425,7 +421,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
             <span class="reading__value" data-discipline="climbing" data-en="Student results — coming soon" data-ru="Результаты учеников — скоро">Student results — coming soon</span>
           </span>
         </div>
-        <div class="reading__row" style="--i:3">
+        <div class="reading__row" style="--i:2">
           <span class="reading__label" data-en="Common mistakes" data-ru="Частые ошибки">Common mistakes</span>
           <span class="reading__values">
             <span class="reading__value is-active" data-discipline="english" data-en="Reflexive carried across · Adjective where English has a verb · Register, not grammar" data-ru="Возвратность, перенесённая из русского · Прилагательное там, где в английском глагол · Регистр, а не грамматика">Reflexive carried across · Adjective where English has a verb · Register, not grammar</span>

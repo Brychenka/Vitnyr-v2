@@ -154,12 +154,14 @@ def test_origin_mark_shows_all_disciplines_statically_without_js(open_site):
 
 def test_reading_shows_its_rows_statically_without_js(open_site):
     """Stage D3's no-JS floor: with the commit/preview mechanism unavailable,
-    the readout's whole body (all four rows) must render, not hover-gated —
-    same requirement as .origin__panel above, extended to its new body."""
+    the readout's whole body (all rows) must render, not hover-gated — same
+    requirement as .origin__panel above, extended to its new body. Stage 6
+    (2026-09-17) cut the redundant Measured row, dropping the count from
+    four to three."""
     page, _ = open_site(java_script_enabled=False)
     rows = page.locator(".reading__row")
-    assert rows.count() == 4
-    for i in range(4):
+    assert rows.count() == 3
+    for i in range(3):
         value = rows.nth(i).locator(".reading__value").first
         assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 

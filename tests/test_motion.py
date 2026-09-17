@@ -151,7 +151,7 @@ def test_origin_mark_enter_commits_and_slides_the_marker(open_site):
 
 def test_reading_only_swaps_on_commit_not_preview(open_site):
     """Stage D3 (2026-09-15): D2's two-gesture split extends to the readout's
-    new four-row body — hover/focus previews ink only; only a commit "swaps
+    multi-row body — hover/focus previews ink only; only a commit "swaps
     the readout" (D2's own words). Focusing chess must leave .reading on
     English."""
     page, _ = open_site()
