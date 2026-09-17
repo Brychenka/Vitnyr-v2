@@ -903,32 +903,28 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 
 /* Discoverability pulse (2026-09-17): Igor wants this control to
    occasionally call attention to itself — it's easy to land on §03 and
-   never notice the switch sits there. Kept off the label's actual fill:
-   .specimen-switch__label is 11px, and CLAUDE.md's color rule forbids
-   --amber/--green as text under 24px (fails 4.5:1 in one theme or the
-   other) — that's about text fill, not a shadow behind still-solid text,
-   so the glow lives in text-shadow/filter, never in `color`. The mark's
-   own arms are already --amber (english/chess) and --green (climbing) at
-   rest, so a drop-shadow in those same two inks reads as an extension of
-   the mark's existing language, not a new color introduced for the hint.
-   One soft pulse near the start of a 10s loop, one at the midpoint, so in
-   practice something glows roughly every 5s, alternating which ink — never
-   both at once, which would read as alarm rather than a nudge. 6px/5px
-   blur, brand's own --e easing (no second curve per the motion rules), and
+   never notice the switch sits there. Text only, not the mark (tried
+   glowing both — Igor asked the mark left alone). Kept off the label's
+   actual fill: .specimen-switch__label is 11px, and CLAUDE.md's color rule
+   forbids --amber/--green as text under 24px (fails 4.5:1 in one theme or
+   the other) — that's about text fill, not a shadow behind still-solid
+   text, so the glow lives in text-shadow, never in `color`. Amber and
+   green because those are already this control's two inks (the mark's own
+   arms), not a new color introduced for the hint.
+   Each glow holds for ~2s (fade in 0-1s, fade out 1-2s) rather than a
+   quick flash — Igor's call after the first pass read as too brief to
+   register. 10s loop, amber at the start, green at the midpoint, so in
+   practice something glows roughly every 5s, alternating which ink —
+   never both at once, which would read as alarm rather than a nudge.
+   Brand's own --e easing (no second curve per the motion rules), and
    killed entirely under reduced motion below rather than left to the
-   generic .01ms override, since a filter/text-shadow loop left spinning
-   at that speed would flicker rather than stop. */
-@keyframes specimen-mark-glow {
-  0%, 8%, 42%, 58%, 92%, 100% { filter: drop-shadow(0 0 0 transparent); }
-  4% { filter: drop-shadow(0 0 6px var(--ink-specimen)); }
-  50% { filter: drop-shadow(0 0 6px var(--ink-target)); }
-}
+   generic .01ms override, since an infinite text-shadow loop left
+   spinning at that speed would flicker rather than stop. */
 @keyframes specimen-label-glow {
-  0%, 8%, 42%, 58%, 92%, 100% { text-shadow: 0 0 0 transparent; }
-  4% { text-shadow: 0 0 5px var(--ink-specimen); }
-  50% { text-shadow: 0 0 5px var(--ink-target); }
+  0%, 20%, 50%, 70%, 100% { text-shadow: 0 0 0 transparent; }
+  10% { text-shadow: 0 0 5px var(--ink-specimen); }
+  60% { text-shadow: 0 0 5px var(--ink-target); }
 }
-.specimen-switch .glyph { animation: specimen-mark-glow 10s var(--e) infinite; }
 .specimen-switch__label { animation: specimen-label-glow 10s var(--e) infinite; }
 .specs { border-top: 1px solid var(--rule); }
 .spec {
@@ -2170,11 +2166,10 @@ html.js .collage .reveal.is-in .collage__slot {
   .origin__sigil { transition: none !important; }
   .origin__sigil.is-spark { animation: none !important; opacity: 1; transform: none; }
   /* Discoverability pulse, killed outright rather than left to the generic
-     .01ms override below: at that speed an infinite filter/text-shadow
-     loop wouldn't stop, it'd flicker every frame — exactly the kind of
-     motion this media query exists to prevent. */
-  .specimen-switch .glyph,
-  .specimen-switch__label { animation: none !important; filter: none !important; text-shadow: none !important; }
+     .01ms override below: at that speed an infinite text-shadow loop
+     wouldn't stop, it'd flicker every frame — exactly the kind of motion
+     this media query exists to prevent. */
+  .specimen-switch__label { animation: none !important; text-shadow: none !important; }
   /* P22: same for the masthead mark. initLockmark() sits past the
      reduced-motion return in main.js, so .is-drawing is never added here —
      without this the html.js base rule leaves the drawn-in mark clipped away.
