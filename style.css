@@ -1310,6 +1310,15 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
    own pattern: the readout is as clickable as the glyph, with a much larger
    target for touch. */
 .origin__panel { position: relative; width: min(100%, 360px); }
+/* tabindex="-1" (main.js) makes this a one-shot landing point for a
+   #chess/#climbing deep link on load, not a real Tab stop — so it never
+   earns the global :focus-visible ring (style.css above). Left undeclared,
+   that box wraps the whole panel with no offset, unlike every other
+   programmatic focus target on the page (.origin__hit redirects its ring to
+   .origin__mark; .view__group > h2 gets its own offset outline below). The
+   committed row's .is-active fill and .origin__marker bar already say which
+   discipline landed here, so suppressing the outline loses no signal. */
+.origin__panel:focus-visible { outline: none; }
 /* Marginalia gesturing at the mark+panel below, not a caption sitting on
    the table — a handwritten aside in its own script face (--hand, defined
    above with the other type tokens), tilted, never straight. Pulled up
