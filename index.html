@@ -529,26 +529,37 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 </section>
 
 <section class="sec" id="specimen">
-  <p class="label reveal"><span class="num">03</span><span data-en="Specimens" data-ru="Разбор ошибок">Specimens</span></p>
+  <!-- Specimen switch (2026-09-17, repositioned 2026-09-17): a small second
+       instance of the §01 origin mark, sitting right where the mistakes
+       start rather than one section up — a reader who lands on §03 without
+       ever touching §01 still sees that English/chess/climbing each have
+       their own list. Same real control as §01's mark, not a copy
+       pretending to be one: it shares initOrigin()'s single `committed`
+       state, so clicking it here moves the same aria-pressed rows and
+       .origin__marker back at §01, and clicking there updates this one
+       too. Only its glyph geometry is independent — own, unshared,
+       always-fully-open clipPaths (…LeftMini/RightMini/StemMini below)
+       rather than the S7 draw-in clips §01 animates, so this control's
+       visibility is never hostage to whether §01 has scrolled into view
+       yet. Not a .reveal target for the same reason .tool--icon isn't: a
+       persistent small utility, not a hero moment. Sigils: identical
+       markup/behaviour to §01's (see main.js), reusing the same masthead
+       icon paths a third time.
 
-  <!-- Specimen switch (2026-09-17): a small second instance of the §01
-       origin mark, sitting right where the mistakes start rather than one
-       section up — a reader who lands on §03 without ever touching §01
-       still sees that English/chess/climbing each have their own list.
-       Same real control as §01's mark, not a copy pretending to be one: it
-       shares initOrigin()'s single `committed` state, so clicking it here
-       moves the same aria-pressed rows and .origin__marker back at §01,
-       and clicking there updates this one too. Only its glyph geometry is
-       independent — own, unshared, always-fully-open clipPaths
-       (…LeftMini/RightMini/StemMini below) rather than the S7 draw-in
-       clips §01 animates, so this control's visibility is never hostage to
-       whether §01 has scrolled into view yet. Not a .reveal target for the
-       same reason .tool--icon isn't: a persistent small utility, not a
-       hero moment. Sigils: identical markup/behaviour to §01's (see
-       main.js), reusing the same masthead icon paths a third time. -->
-  <div class="specimen-switch">
-    <span class="specimen-switch__label" data-en="Switch discipline" data-ru="Сменить направление">Switch discipline</span>
-    <figure class="origin__mark origin__mark--mini" data-magnetic>
+       .specimen-top below shares .sec__head's own ≥900px column split
+       (same grid-template-columns/gap, see style.css — kept in sync by
+       comment, the way --mark-w is elsewhere) purely so the switch lands in
+       the SAME right-hand column as the lede text beneath it, without
+       being nested inside a specific .specimens-group's own .sec__head
+       (which would make it disappear whenever a different discipline's
+       group is active — it has to be a sibling of all three, not a child
+       of one). Below 900px there's no second column to align with, so it
+       just stacks like #origin's own mobile fallback. -->
+  <div class="specimen-top">
+    <p class="label reveal"><span class="num">03</span><span data-en="Specimens" data-ru="Разбор ошибок">Specimens</span></p>
+    <div class="specimen-switch">
+      <span class="specimen-switch__label" data-en="Switch discipline" data-ru="Сменить направление">Switch discipline</span>
+      <figure class="origin__mark origin__mark--mini" data-magnetic>
       <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
         <defs>
           <clipPath id="glyphClipLeftMini" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="50" height="100"/></clipPath>
@@ -592,6 +603,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <span class="vh" data-en="Climbing" data-ru="Скалолазание">Climbing</span>
       </button>
     </figure>
+    </div>
   </div>
 
   <!-- Trifecta Order D follow-up (2026-09-15): §03 used to be English-only

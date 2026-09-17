@@ -839,14 +839,33 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .specimens-group { display: none; }
 .specimens-group.is-active { display: block; }
 
-/* Specimen switch (2026-09-17): label + mini mark, sitting above all three
-   .specimens-group (sibling to them, not inside one), so it stays visible
-   regardless of which discipline is currently active. Label styled like
-   .tools__label (masthead) — the site's existing small-uppercase-caption
-   pattern — rather than inventing a second one. */
+/* Specimen switch, repositioned (2026-09-17): the label + mini mark used to
+   sit above all three .specimens-group as its own stacked line; Igor asked
+   for it beside the section label instead, over the lede column, bigger.
+   .specimen-top carries the "03 Specimens" label in its left column and
+   the switch in its right one — the SAME grid-template-columns/gap as
+   .sec__head below it (kept in sync by comment, not a shared variable,
+   same precedent as --mark-w), so the mark lines up with the lede text it
+   sits above rather than an independently-chosen offset that would drift
+   the moment either grid's own breakpoints change. justify-self: end
+   (not justify-content, since .specimen-top's children are grid items
+   here, not flex ones) pins the switch to the column's right edge, per
+   Igor's screenshot. Below 900px .sec__head drops to one stacked column,
+   so this does too, in the same order fields already read top-to-bottom
+   elsewhere on narrow layouts. */
+.specimen-top {
+  display: grid; gap: clamp(24px, 4vw, 56px);
+  align-items: end;
+}
+@media (min-width: 900px) {
+  .specimen-top { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
+}
 .specimen-switch {
-  display: flex; align-items: center; gap: 14px;
-  margin: 0 0 clamp(28px, 4vw, 44px);
+  display: flex; align-items: center; gap: 18px;
+  justify-self: start;
+}
+@media (min-width: 900px) {
+  .specimen-switch { justify-self: end; }
 }
 .specimen-switch__label {
   font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
@@ -1105,7 +1124,14 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    property — deliberately smaller than even §01's own ≥900px-down minimum,
    since this one sits inline with body copy, not as the section's own
    figure. */
-.origin__mark--mini { width: clamp(44px, 9vw, 60px); flex-shrink: 0; margin: 0; }
+/* Sized (2026-09-17) against the h2 it now sits beside (.sec__head h2:
+   clamp(27px, 3.6vw, 48px), two lines ~1.12 line-height): big enough to
+   read as a deliberate second appearance of the mark — not the "small
+   afterthought" scale it shipped at first — while staying visibly under
+   the heading's own footprint, since the headline stays the row's focal
+   point. Roughly the heading's own two-line height at each width, not its
+   font-size alone. */
+.origin__mark--mini { width: clamp(64px, 8vw, 92px); flex-shrink: 0; margin: 0; }
 /* Never scale the two arms: they're clipped halves of one shared path, and
    scaling a clipped element scales its clip boundary with it, which would
    tear the seam away from the unmodified mark underneath. The stem used to
