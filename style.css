@@ -101,6 +101,12 @@
 
   --e: cubic-bezier(.16, 1, .3, 1);
   --t: .6s;
+  /* Specimen sigils' one-shot commit flourish (main.js sparkSigil()). Its
+     own duration, not --t: the sigil is a discrete pop-and-fade, not the
+     fade-only pattern --t times everywhere else. Kept in sync by hand with
+     SPARK_MS in main.js — no CSS-to-JS read-back exists anywhere else in
+     this codebase either. */
+  --spark-d: .5s;
   /* One deliberate turn of the footer mark on hover — well slower than --t so
      the full rotation reads, not a snap. Lands on D.count's 1.2s (main.js),
      the "measured, counting" register — a turn you're meant to watch finish. */
@@ -832,6 +838,94 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
    nothing. */
 .specimens-group { display: none; }
 .specimens-group.is-active { display: block; }
+
+/* Specimen switch, repositioned (2026-09-17): the label + mini mark used to
+   sit above all three .specimens-group as its own stacked line; Igor asked
+   for it beside the section label instead, over the lede column, bigger.
+   .specimen-top carries the "03 Specimens" label in its left column and
+   the switch in its right one — the SAME grid-template-columns/gap as
+   .sec__head below it (kept in sync by comment, not a shared variable,
+   same precedent as --mark-w), so the mark lines up with the lede text it
+   sits above rather than an independently-chosen offset that would drift
+   the moment either grid's own breakpoints change. justify-self: end
+   (not justify-content, since .specimen-top's children are grid items
+   here, not flex ones) pins the switch to the column's right edge, per
+   Igor's screenshot. Below 900px .sec__head drops to one stacked column,
+   so this does too, in the same order fields already read top-to-bottom
+   elsewhere on narrow layouts. */
+/* Vertical gap added (2026-09-17): this row had no bottom margin at all,
+   so the mark's own edge and "Your errors are..." touched with 0px between
+   them (confirmed by measuring both rects — .specimen-top's bottom equalled
+   .sec__head's top to the pixel). Same clamp shape as .sec__head's own
+   margin-bottom just below in this file, but with a lower ceiling: this
+   gap separates a kicker line from the headline it sits above, not a
+   headline from its body copy, so it reads as related-but-distinct rather
+   than a full section break. align-items: center (was end): the row's
+   height is set by the mark (the tallest item, ~65-92px), and bottom-
+   aligning a short text line against that made "03 Specimens" hang off the
+   row's floor with dead air above it; centering both items against the
+   mark's own height reads as one deliberate horizontal line instead of two
+   independently-anchored corners. */
+.specimen-top {
+  display: grid; gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  margin-bottom: clamp(48px, 7vw, 88px);
+}
+@media (min-width: 900px) {
+  .specimen-top { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
+}
+.specimen-switch {
+  display: flex; align-items: center; gap: 18px;
+  justify-self: start;
+}
+@media (min-width: 900px) {
+  /* Horizontal position re-checked (2026-09-17), kept as-is: measured this
+     against the masthead's own rightmost icon (the collage/pointer/reading
+     icon cluster in the header) and .sec__lede's own text-wrap edge below
+     it — both land on the exact same x-coordinate as this switch's right
+     edge. That's not a coincidence to undo; it's what makes the mark read
+     as anchored to the page's shared right margin rather than floating at
+     an arbitrary offset. Tried centering it in the column instead: it lost
+     that shared edge and looked like it was drifting in dead space above
+     the lede, so end stays. */
+  .specimen-switch { justify-self: end; }
+}
+.specimen-switch__label {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+}
+/* .label's own margin-bottom (clamp(28px, 4vw, 56px), set globally for
+   every other .sec__head's kicker line) is dead weight here: this .label
+   isn't stacked directly above a heading any more, .specimen-top is — so
+   that margin was never producing real spacing in this instance, only
+   throwing off align-items: center by fattening the label's box on one
+   side. Zeroed so the label centers against the mark's actual height. */
+.specimen-top > .label { margin-bottom: 0; }
+
+/* Discoverability pulse (2026-09-17): Igor wants this control to
+   occasionally call attention to itself — it's easy to land on §03 and
+   never notice the switch sits there. Text only, not the mark (tried
+   glowing both — Igor asked the mark left alone). Kept off the label's
+   actual fill: .specimen-switch__label is 11px, and CLAUDE.md's color rule
+   forbids --amber/--green as text under 24px (fails 4.5:1 in one theme or
+   the other) — that's about text fill, not a shadow behind still-solid
+   text, so the glow lives in text-shadow, never in `color`. Amber and
+   green because those are already this control's two inks (the mark's own
+   arms), not a new color introduced for the hint.
+   Each glow holds for ~2s (fade in 0-1s, fade out 1-2s) rather than a
+   quick flash — Igor's call after the first pass read as too brief to
+   register. 10s loop, amber at the start, green at the midpoint, so in
+   practice something glows roughly every 5s, alternating which ink —
+   never both at once, which would read as alarm rather than a nudge.
+   Brand's own --e easing (no second curve per the motion rules), and
+   killed entirely under reduced motion below rather than left to the
+   generic .01ms override, since an infinite text-shadow loop left
+   spinning at that speed would flicker rather than stop. */
+@keyframes specimen-label-glow {
+  0%, 20%, 50%, 70%, 100% { text-shadow: 0 0 0 transparent; }
+  10% { text-shadow: 0 0 5px var(--ink-specimen); }
+  60% { text-shadow: 0 0 5px var(--ink-target); }
+}
+.specimen-switch__label { animation: specimen-label-glow 10s var(--e) infinite; }
 .specs { border-top: 1px solid var(--rule); }
 .spec {
   padding-block: clamp(32px, 4.5vw, 60px);
@@ -1080,6 +1174,20 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
   margin: 0;
 }
 .glyph { display: block; width: 100%; height: auto; overflow: visible; }
+/* Specimen switch (2026-09-17): §03's own small instance of this mark, next
+   to the mistakes it switches. --mark-w isn't in scope outside #origin, so
+   this sets its own fixed size rather than inheriting an unset custom
+   property — deliberately smaller than even §01's own ≥900px-down minimum,
+   since this one sits inline with body copy, not as the section's own
+   figure. */
+/* Sized (2026-09-17) against the h2 it now sits beside (.sec__head h2:
+   clamp(27px, 3.6vw, 48px), two lines ~1.12 line-height): big enough to
+   read as a deliberate second appearance of the mark — not the "small
+   afterthought" scale it shipped at first — while staying visibly under
+   the heading's own footprint, since the headline stays the row's focal
+   point. Roughly the heading's own two-line height at each width, not its
+   font-size alone. */
+.origin__mark--mini { width: clamp(64px, 8vw, 92px); flex-shrink: 0; margin: 0; }
 /* Never scale the two arms: they're clipped halves of one shared path, and
    scaling a clipped element scales its clip boundary with it, which would
    tear the seam away from the unmodified mark underneath. The stem used to
@@ -1109,6 +1217,43 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .glyph__part--left.is-dim,
 .glyph__part--right.is-dim { fill: var(--amber-dim); }
 .glyph__part--stem.is-dim { fill: var(--green-dim); }
+
+/* Specimen sigils (2026-09-17): three small copies of the masthead nav
+   icons at the open end of each stroke (index.html). Hidden at rest —
+   opacity only, never display/visibility, so the fade in initOrigin() has
+   something to animate. Coloured with the same two inks the strokes
+   themselves already use (amber for English/chess, green for climbing),
+   not a third colour. transform-box/-origin: the scale pop below pivots
+   around the icon's own centre, not the SVG's (0,0) corner; the placement
+   transform lives one level up, on the static outer <g> in index.html, so
+   this element's own transform is free for the spark alone (CLAUDE.md's
+   transform-channel rule — a layout transform and an animated one never
+   share a node). */
+.origin__sigil {
+  opacity: 0;
+  transition: opacity var(--t) var(--e);
+  transform-box: fill-box;
+  transform-origin: center;
+  pointer-events: none;
+}
+.origin__sigil[data-discipline="english"],
+.origin__sigil[data-discipline="chess"] { color: var(--amber); }
+.origin__sigil[data-discipline="climbing"] { color: var(--green); }
+/* Preview: hover/keyboard-focus on a stroke, ink only, reverts on leave —
+   never falls back to showing the committed discipline's sigil, unlike the
+   glyph's own paint(). See previewSigil() in main.js. */
+.origin__sigil.is-preview { opacity: 1; }
+/* Commit: a one-shot flourish, not a lit state — sparkSigil() in main.js
+   adds this class and removes it again after --spark-d, so a repeat commit
+   of the same discipline retriggers cleanly instead of being a no-op class
+   toggle. */
+.origin__sigil.is-spark { animation: sigil-spark var(--spark-d) var(--e); }
+@keyframes sigil-spark {
+  0%   { opacity: 0; transform: scale(.6); }
+  40%  { opacity: 1; transform: scale(1.2); }
+  70%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(.9); }
+}
 
 /* S7 move 03 — the mark assembles from its three strokes on first reveal.
    Section 04's copy says "two for the V, one for the stem"; drawn in that
@@ -2015,6 +2160,16 @@ html.js .collage .reveal.is-in .collage__slot {
   html.js .origin__mark #glyphClipLeft rect,
   html.js .origin__mark #glyphClipRight rect { y: 0 !important; height: 100px !important; animation: none !important; }
   html.js .origin__mark #glyphClipStem rect { height: 44px !important; animation: none !important; }
+  /* Specimen sigils: a straight visibility cut, no fade and no pop — JS
+     still toggles .is-preview/.is-spark on hover/commit, only the motion
+     drops, matching every other control in this block. */
+  .origin__sigil { transition: none !important; }
+  .origin__sigil.is-spark { animation: none !important; opacity: 1; transform: none; }
+  /* Discoverability pulse, killed outright rather than left to the generic
+     .01ms override below: at that speed an infinite text-shadow loop
+     wouldn't stop, it'd flicker every frame — exactly the kind of motion
+     this media query exists to prevent. */
+  .specimen-switch__label { animation: none !important; text-shadow: none !important; }
   /* P22: same for the masthead mark. initLockmark() sits past the
      reduced-motion return in main.js, so .is-drawing is never added here —
      without this the html.js base rule leaves the drawn-in mark clipped away.

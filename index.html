@@ -335,6 +335,43 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <use class="glyph__part glyph__part--left" data-discipline="english" href="#glyphV" clip-path="url(#glyphClipLeft)" fill="var(--amber)"/>
         <use class="glyph__part glyph__part--right" data-discipline="chess" href="#glyphV" clip-path="url(#glyphClipRight)" fill="var(--amber)"/>
         <path class="glyph__part glyph__part--stem" data-discipline="climbing" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" clip-path="url(#glyphClipStem)" fill="var(--green)"/>
+
+        <!-- Specimen sigils (2026-09-17): independent small copies of the
+             masthead nav icons (data-collage-jump="en"/"chess"/"climb" in
+             the header), sitting at the open end of each stroke — English
+             top-left, chess top-right, climbing bottom. Not the same
+             element as the masthead copy, same precedent as .label__mark in
+             the #collage view: the path data echoes it, isn't locked to it.
+             Hidden at rest (style.css .origin__sigil), shown only on a real
+             hover/keyboard-focus preview and for a one-shot "spark" on
+             commit — see previewSigil()/sparkSigil() in initOrigin(),
+             main.js. Position (translate+scale, hand-tuned against this
+             glyph's actual stroke termini) lives on the OUTER <g> and is
+             never touched by the spark/preview animation on the inner one,
+             per the transform-channel rule in CLAUDE.md — a static
+             placement transform and an animated one never share a node. -->
+        <g transform="translate(6,4) scale(.5)">
+          <g class="origin__sigil" data-discipline="english" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"/>
+            <path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"/>
+          </g>
+        </g>
+        <g transform="translate(82,4) scale(.5)">
+          <g class="origin__sigil" data-discipline="chess" stroke-width="1.5">
+            <rect x="3.75" y="3.75" width="7.5" height="7.5" fill="currentColor"/>
+            <rect x="12.75" y="3.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="3.75" y="12.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="12.75" y="12.75" width="7.5" height="7.5" fill="currentColor"/>
+          </g>
+        </g>
+        <g transform="translate(44,90) scale(.5)">
+          <g class="origin__sigil" data-discipline="climbing" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"/>
+            <path d="M16.9 8.4 16.42 10"/>
+            <path d="M14.74 15.6 13.9 18.4"/>
+            <path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"/>
+          </g>
+        </g>
       </svg>
       <button class="origin__hit origin__hit--left" type="button" data-discipline="english" aria-pressed="false">
         <span class="vh" data-en="English" data-ru="Английский">English</span>
@@ -492,7 +529,82 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 </section>
 
 <section class="sec" id="specimen">
-  <p class="label reveal"><span class="num">03</span><span data-en="Specimens" data-ru="Разбор ошибок">Specimens</span></p>
+  <!-- Specimen switch (2026-09-17, repositioned 2026-09-17): a small second
+       instance of the §01 origin mark, sitting right where the mistakes
+       start rather than one section up — a reader who lands on §03 without
+       ever touching §01 still sees that English/chess/climbing each have
+       their own list. Same real control as §01's mark, not a copy
+       pretending to be one: it shares initOrigin()'s single `committed`
+       state, so clicking it here moves the same aria-pressed rows and
+       .origin__marker back at §01, and clicking there updates this one
+       too. Only its glyph geometry is independent — own, unshared,
+       always-fully-open clipPaths (…LeftMini/RightMini/StemMini below)
+       rather than the S7 draw-in clips §01 animates, so this control's
+       visibility is never hostage to whether §01 has scrolled into view
+       yet. Not a .reveal target for the same reason .tool--icon isn't: a
+       persistent small utility, not a hero moment. Sigils: identical
+       markup/behaviour to §01's (see main.js), reusing the same masthead
+       icon paths a third time.
+
+       .specimen-top below shares .sec__head's own ≥900px column split
+       (same grid-template-columns/gap, see style.css — kept in sync by
+       comment, the way --mark-w is elsewhere) purely so the switch lands in
+       the SAME right-hand column as the lede text beneath it, without
+       being nested inside a specific .specimens-group's own .sec__head
+       (which would make it disappear whenever a different discipline's
+       group is active — it has to be a sibling of all three, not a child
+       of one). Below 900px there's no second column to align with, so it
+       just stacks like #origin's own mobile fallback. -->
+  <div class="specimen-top">
+    <p class="label reveal"><span class="num">03</span><span data-en="Specimens" data-ru="Разбор ошибок">Specimens</span></p>
+    <div class="specimen-switch">
+      <span class="specimen-switch__label" data-en="Switch discipline" data-ru="Сменить направление">Switch discipline</span>
+      <figure class="origin__mark origin__mark--mini" data-magnetic>
+      <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
+        <defs>
+          <clipPath id="glyphClipLeftMini" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="50" height="100"/></clipPath>
+          <clipPath id="glyphClipRightMini" clipPathUnits="userSpaceOnUse"><rect x="50" y="0" width="50" height="100"/></clipPath>
+          <clipPath id="glyphClipStemMini" clipPathUnits="userSpaceOnUse"><rect x="38" y="42" width="24" height="44"/></clipPath>
+        </defs>
+        <use class="glyph__part glyph__part--left" data-discipline="english" href="#glyphV" clip-path="url(#glyphClipLeftMini)" fill="var(--amber)"/>
+        <use class="glyph__part glyph__part--right" data-discipline="chess" href="#glyphV" clip-path="url(#glyphClipRightMini)" fill="var(--amber)"/>
+        <path class="glyph__part glyph__part--stem" data-discipline="climbing" d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" clip-path="url(#glyphClipStemMini)" fill="var(--green)"/>
+
+        <g transform="translate(6,4) scale(.5)">
+          <g class="origin__sigil" data-discipline="english" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"/>
+            <path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"/>
+          </g>
+        </g>
+        <g transform="translate(82,4) scale(.5)">
+          <g class="origin__sigil" data-discipline="chess" stroke-width="1.5">
+            <rect x="3.75" y="3.75" width="7.5" height="7.5" fill="currentColor"/>
+            <rect x="12.75" y="3.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="3.75" y="12.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="12.75" y="12.75" width="7.5" height="7.5" fill="currentColor"/>
+          </g>
+        </g>
+        <g transform="translate(44,90) scale(.5)">
+          <g class="origin__sigil" data-discipline="climbing" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"/>
+            <path d="M16.9 8.4 16.42 10"/>
+            <path d="M14.74 15.6 13.9 18.4"/>
+            <path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"/>
+          </g>
+        </g>
+      </svg>
+      <button class="origin__hit origin__hit--left" type="button" data-discipline="english" aria-pressed="false">
+        <span class="vh" data-en="English" data-ru="Английский">English</span>
+      </button>
+      <button class="origin__hit origin__hit--right" type="button" data-discipline="chess" aria-pressed="false">
+        <span class="vh" data-en="Chess" data-ru="Шахматы">Chess</span>
+      </button>
+      <button class="origin__hit origin__hit--stem" type="button" data-discipline="climbing" aria-pressed="false">
+        <span class="vh" data-en="Climbing" data-ru="Скалолазание">Climbing</span>
+      </button>
+    </figure>
+    </div>
+  </div>
 
   <!-- Trifecta Order D follow-up (2026-09-15): §03 used to be English-only
        outright, with no mechanism to say so — the gap the readout's row 4
@@ -682,9 +794,17 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      .label, and must stay out of test_section_numbering_is_sequential's count.
      Sized by content + padding — never 100vh, which pushes everything else out
      of frame on a short laptop. It reveals on the one shared .reveal rhythm. -->
+<!-- Rewritten 2026-09-17 (Igor): the old line ("Once an error has a name...")
+     only spoke to English, right before a section whose whole point is that
+     chess and climbing aren't there to vouch for English — the breath was
+     undercutting the section it introduces. New line states the actual
+     source of the method (his own words), staying domain-agnostic on
+     purpose — #disciplines' own lede right below already names English,
+     chess and climbing, so this doesn't need to repeat them (a first draft
+     did, and ended up centering English anyway by listing it first). -->
 <div class="breath reveal">
-  <p class="breath__line" data-l="en">Once an error has a name it stops being “my English is bad” and becomes one specific thing you can train.</p>
-  <p class="breath__line" data-l="ru">Названная ошибка перестаёт быть «у меня плохой английский» и становится одной конкретной вещью, которую можно тренировать.</p>
+  <p class="breath__line" data-l="en">I combine neuroscience, rehab principles and the psychology of learning to coach people in a way that sticks.</p>
+  <p class="breath__line" data-l="ru">Я соединяю нейронауку, принципы реабилитации и психологию обучения — и тренирую так, чтобы выученное действительно оставалось.</p>
 </div>
 
 <section class="sec" id="disciplines">

@@ -607,10 +607,18 @@
      defining its own visual language — a real engagement and the hint
      produce identical-looking states, just triggered differently. */
   function initOrigin() {
+    // `mark` stays the single §01 figure — it's the only one the S7 draw-in
+    // and the idle hint below key off (see drawThenHint()). `marks` is every
+    // instance of the control that exists (§01's, plus §03's specimen-switch
+    // mini added 2026-09-17, if present) — hits/parts/sigils are queried
+    // document-wide below so a single paint()/previewSigil()/sparkSigil()
+    // call updates whichever of these actually exist, in sync, without the
+    // mini needing its own copy of any of this logic.
     var mark = document.querySelector('.origin__mark');
     if (!mark) return;
-    var hits = mark.querySelectorAll('.origin__hit');
-    var parts = mark.querySelectorAll('.glyph__part');
+    var marks = document.querySelectorAll('.origin__mark');
+    var hits = document.querySelectorAll('.origin__hit');
+    var parts = document.querySelectorAll('.glyph__part');
     var panel = document.querySelector('.origin__panel');
     var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : [];
     var marker = panel ? panel.querySelector('.origin__marker') : null;
@@ -626,6 +634,11 @@
     // readingValues above.
     var specimenGroups = document.querySelectorAll('#specimen .specimens-group');
     if (!hits.length) return;
+
+    // Specimen sigils (2026-09-17): the small masthead-icon copies at each
+    // stroke's tip (index.html), on every mark instance — see the `marks`
+    // comment above.
+    var sigils = document.querySelectorAll('.origin__sigil');
 
     var idleTl = null;
     // True the instant any real engagement happens (preview or commit),
@@ -660,6 +673,42 @@
 
     function clearPaint() {
       paint(committed);
+    }
+
+    // Specimen sigils: deliberately NOT folded into paint() above. paint()
+    // runs on load and on every blur/pointerleave-back-to-committed, and a
+    // sigil must stay invisible through both of those — it only shows for
+    // an actual, current hover/keyboard-focus preview, never as a
+    // persistent "this is the committed one" indicator (the glyph's own
+    // dim/lit fill already carries that job). previewSigil(null) hides all
+    // three.
+    function previewSigil(name) {
+      sigils.forEach(function (el) {
+        el.classList.toggle('is-preview', el.dataset.discipline === name);
+      });
+    }
+
+    // One-shot flourish at the instant of commit, not a lit state — the
+    // class is removed again after SPARK_MS (kept in sync with --spark-d /
+    // the sigil-spark keyframes in style.css) so a repeat commit of the
+    // same discipline (e.g. re-clicking the already-committed stroke)
+    // retriggers the pop instead of being a no-op class toggle.
+    var SPARK_MS = 500;
+    var sparkTimers = {}; // keyed by discipline name — committing a second
+    // discipline before the first's timer fires must not leave the first
+    // sigil's class stuck; each name cleans up only its own timer.
+    function sparkSigil(name) {
+      sigils.forEach(function (el) {
+        if (el.dataset.discipline !== name) return;
+        if (sparkTimers[name]) clearTimeout(sparkTimers[name]);
+        el.classList.remove('is-spark');
+        el.offsetWidth; // restart the animation even on a repeat commit
+        el.classList.add('is-spark');
+        sparkTimers[name] = setTimeout(function () {
+          el.classList.remove('is-spark');
+          sparkTimers[name] = null;
+        }, SPARK_MS);
+      });
     }
 
     // D3: swaps the readout's body — only ever called from commit(), never
@@ -752,6 +801,7 @@
       updateSpecimens(name);
       positionMarker(name, true);
       syncHash(name);
+      sparkSigil(name);
       hits.forEach(function (el) {
         el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
       });
@@ -798,11 +848,11 @@
     function wire(el) {
       var name = el.dataset.discipline;
       el.addEventListener('click', function () { commit(name); });
-      el.addEventListener('focus', function () { preview(name); });
-      el.addEventListener('blur', function () { preview(committed); });
+      el.addEventListener('focus', function () { preview(name); previewSigil(name); });
+      el.addEventListener('blur', function () { preview(committed); previewSigil(null); });
       if (finePointer) {
-        el.addEventListener('pointerenter', function () { preview(name); });
-        el.addEventListener('pointerleave', function () { preview(committed); });
+        el.addEventListener('pointerenter', function () { preview(name); previewSigil(name); });
+        el.addEventListener('pointerleave', function () { preview(committed); previewSigil(null); });
       }
     }
     hits.forEach(wire);
