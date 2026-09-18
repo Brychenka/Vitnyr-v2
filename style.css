@@ -663,6 +663,16 @@ html.past-origin .progress__fill--target { opacity: 1; }
   .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
 
+/* §02 method (2026-09-18): centred single column, not the shared two-up
+   split above — Igor's call on this head specifically, not a change to
+   .sec__head itself, so every other section keeps the split. */
+#method .sec__head { text-align: center; }
+#method .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
+#method .sec__lede { margin-inline: auto; }
+@media (min-width: 900px) {
+  #method .sec__head { grid-template-columns: none; }
+}
+
 /* ---------- the breath (Spark Order S3 / move 08) ----------
    One sentence between #specimen and #who, alone with vertical air.
    Same shell box as .hero/.sec (max-width, centred, --gut padding-inline) and
