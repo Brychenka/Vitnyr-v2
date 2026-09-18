@@ -1867,11 +1867,17 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 
    P9 (2026-09-06): this used to rest at --fg2 with the underline drawn in
    only on hover — the most recessive large element on the page guarding
-   the only way through to real proof. Full --fg at rest, and the
-   underline already drawn in as a quiet --rule hairline rather than
-   hidden entirely, so the door reads as a door before anyone's pointer
-   finds it; hover still brightens the underline to full --ink-target
-   green as the extra prompt. */
+   the only way through to real proof. Full --fg at rest was kept from
+   that fix (the door still reads as a door at rest, from weight alone).
+
+   2026-09-18: the resting-state underline P9 added is dropped again —
+   not because the door-cue idea was wrong, but because .proof__link
+   fills .proof edge to edge, so its "underline" is really a full-bleed
+   rule indistinguishable from a section hairline, and it sits directly
+   above .breath's own border-top with nothing between them: two rules
+   reading as one doubled line. Full --fg text already carries the
+   at-rest affordance; the underline now only earns its keep as the
+   hover/focus prompt it always was on top of that. */
 .proof { margin-top: clamp(48px, 7vw, 88px); border-top: 1px solid var(--rule); }
 .proof__link {
   display: flex; align-items: center; justify-content: space-between;
@@ -1880,7 +1886,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 }
 .proof__link::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0;
-  height: 1px; background: var(--rule);
+  height: 1px; background: transparent;
   transition: background var(--t) var(--e);
 }
 .proof__link:hover::after, .proof__link:focus-visible::after { background: var(--ink-target); }
