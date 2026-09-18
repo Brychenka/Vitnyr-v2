@@ -501,29 +501,66 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </div>
   </div>
 
+  <!-- Foldable mechanisms (2026-09-18): each item is a heading-wrapped
+       <button> (WAI-ARIA disclosure pattern, same shape as #specimen's "Show
+       the common mistake" reveal) controlling a sibling .mech__panel. The
+       data-en/data-ru pair lives on the inner .mech__toggle-label, not the
+       h3 or the button, because theme.js's applyLang() does
+       `el.textContent = dataset[lang]` on any [data-en][data-ru] node — put
+       on an ancestor of the +/− mark, that swap would erase the mark on every
+       language switch. The collapse itself is gated behind html.js (see
+       initMechanismFold() in main.js): with JS absent every panel renders
+       open and unfoldable, same progressive-enhancement contract as .reveal. -->
   <ol class="mechanisms">
-    <li class="reveal">
-      <span class="mech__n">01</span>
-      <h3 data-en="Feedback loops" data-ru="Циклы обратной связи">Feedback loops</h3>
-      <p data-l="en">A correction has to catch the error while it’s still warm. A list of your mistakes at the end of the week teaches you a list. A correction inside the sentence you just said teaches you the sentence.</p>
-      <p data-l="ru">Исправление должно догнать ошибку, пока она ещё тёплая. Список ошибок в конце недели учит вас списку. Исправление внутри фразы, которую вы только что сказали, учит вас фразе.</p>
+    <li class="reveal mechanism">
+      <h3 class="mech__head">
+        <button type="button" class="mech__toggle" aria-controls="mech-panel-feedback-loops">
+          <span class="mech__n">01</span>
+          <span class="mech__toggle-label" data-en="Feedback loops" data-ru="Циклы обратной связи">Feedback loops</span>
+          <span class="mech__toggle-mark" aria-hidden="true">+</span>
+        </button>
+      </h3>
+      <div class="mech__panel" id="mech-panel-feedback-loops">
+        <div class="mech__panel-inner">
+          <p data-l="en">Correction only works while the error is still open. Say the wrong word and get corrected the next class, and you’ve learned a list. Say it wrong and get stopped mid-sentence, and you’ve learned the sentence. Same principle in chess — a blunder explained during the post-game review lands differently than one flagged three moves after you played it, when the position in your head has already moved on. And the same principle on a wall, where a bad foot placement corrected mid-attempt rewires the beta; corrected after you’re back on the ground, it’s just a note you’ll forget by next session. The error has to still be live when the fix arrives. That’s the whole card.</p>
+          <p data-l="ru">Исправление должно догнать ошибку, пока она ещё тёплая. Список ошибок в конце недели учит вас списку. Исправление внутри фразы, которую вы только что сказали, учит вас фразе.</p>
+        </div>
+      </div>
     </li>
-    <li class="reveal">
-      <span class="mech__n">02</span>
-      <h3 data-en="Error correction, not error counting" data-ru="Разбор ошибок, а не их подсчёт">Error correction, not error counting</h3>
-      <!-- Spark Order S3 / move 08: this paragraph used to close on "Once an
-           error has a name it stops being 'my English is bad'..." — that
-           sentence is now the breath block between #specimen and #who
-           (moved, not echoed, per Igor). Mechanism 02 ends on its previous
-           sentence. -->
-      <p data-l="en">Your mistakes aren’t random. They’re systematic: mostly Russian structure wearing English words, which makes them a finite set you can actually catalogue.</p>
-      <p data-l="ru">Ваши ошибки не случайны. Они системны: чаще всего это русская конструкция в английских словах, а значит, набор конечный — и его можно каталогизировать.</p>
+    <li class="reveal mechanism">
+      <h3 class="mech__head">
+        <button type="button" class="mech__toggle" aria-controls="mech-panel-error-correction">
+          <span class="mech__n">02</span>
+          <span class="mech__toggle-label" data-en="Error correction, not error counting" data-ru="Разбор ошибок, а не их подсчёт">Error correction, not error counting</span>
+          <span class="mech__toggle-mark" aria-hidden="true">+</span>
+        </button>
+      </h3>
+      <div class="mech__panel" id="mech-panel-error-correction">
+        <div class="mech__panel-inner">
+          <!-- Spark Order S3 / move 08: this paragraph used to close on "Once an
+               error has a name it stops being 'my English is bad'..." — that
+               sentence is now the breath block between #specimen and #who
+               (moved, not echoed, per Igor). Mechanism 02 ends on its previous
+               sentence. -->
+          <p data-l="en">Some mistakes are easy to prove are systematic. A Russian speaker dropping articles isn’t unlucky — it’s one habit misfiring in forty different sentences, and once you name the habit, you’ve solved forty problems instead of chasing forty separate ones. Chess blunders cluster the same way: most players don’t have a hundred weaknesses, they have three or four recurring blind spots wearing different disguises. Climbing is a little different — a movement fault under fatigue isn’t “wrong” the way a grammar error is wrong, it’s a compensation pattern the body defaults to when it’s tired or scared. Still traceable, still fixable, just diagnosed by feel instead of by rule. Point is: none of this is bad luck. It’s pattern-matching, and once you can name the pattern, you can train it out.</p>
+          <p data-l="ru">Ваши ошибки не случайны. Они системны: чаще всего это русская конструкция в английских словах, а значит, набор конечный — и его можно каталогизировать.</p>
+        </div>
+      </div>
     </li>
-    <li class="reveal">
-      <span class="mech__n">03</span>
-      <h3 data-en="Load management" data-ru="Дозирование нагрузки">Load management</h3>
-      <p data-l="en">Practice that’s too easy is entertainment. Practice that’s too hard is noise. The right load sits close enough to strain, far enough not to break, and it moves as you improve. A climber turns the same dial; reading it wrong there costs a tendon.</p>
-      <p data-l="ru">Слишком лёгкая практика — развлечение. Слишком тяжёлая — шум. Нужная нагрузка достаточно велика, чтобы напрягать, и достаточно умеренна, чтобы не сломать, и растёт вместе с вами. Скалолаз крутит ту же ручку, только он за ошибку платит связками.</p>
+    <li class="reveal mechanism">
+      <h3 class="mech__head">
+        <button type="button" class="mech__toggle" aria-controls="mech-panel-load-management">
+          <span class="mech__n">03</span>
+          <span class="mech__toggle-label" data-en="Load management" data-ru="Дозирование нагрузки">Load management</span>
+          <span class="mech__toggle-mark" aria-hidden="true">+</span>
+        </button>
+      </h3>
+      <div class="mech__panel" id="mech-panel-load-management">
+        <div class="mech__panel-inner">
+          <p data-l="en">Too easy and you’re not training, you’re performing. Too hard and nothing sticks — you’re just getting hit. The right level sits close enough to your edge that it costs you something, and moves the moment it stops costing you anything. A climber calls this the crux. A chess player calls it playing someone slightly above their rating. In English it doesn’t have a name, most people just call it “hard,” but it’s the same dial — and reading it wrong doesn’t just slow you down, on a wall it costs you a tendon, at a board it costs you a losing streak, and in a language it just costs you six more months of a plateau nobody explains to you.</p>
+          <p data-l="ru">Слишком лёгкая практика — развлечение. Слишком тяжёлая — шум. Нужная нагрузка достаточно велика, чтобы напрягать, и достаточно умеренна, чтобы не сломать, и растёт вместе с вами. Скалолаз крутит ту же ручку, только он за ошибку платит связками.</p>
+        </div>
+      </div>
     </li>
   </ol>
 </section>

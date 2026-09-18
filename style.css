@@ -805,30 +805,65 @@ html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
 html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 
 /* ---------- mechanisms ---------- */
+/* Foldable (2026-09-18, superseding P14's side-by-side desktop grid below):
+   each item is now a header row (the .mech__toggle button, holding the
+   number/title/mark) plus a collapsible .mech__panel — stacked at every
+   width, since a column can't "slide down" the way a row can. The 80px
+   number + 1fr title + auto mark grid lives on the button itself instead of
+   the <li>, so it no longer needs a breakpoint: it read fine narrow (headings
+   here are short) and dropping the media query removes a second layout to
+   keep in sync with the panel's own full-width row below it. */
 .mechanisms { display: grid; gap: 0; border-top: 1px solid var(--rule); }
-.mechanisms > li {
+.mechanisms > li { border-bottom: 1px solid var(--rule); }
+.mech__head { margin: 0; }
+.mech__toggle {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; margin: 0; border: 0; background: none;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+  display: grid; grid-template-columns: 80px 1fr auto; align-items: baseline;
+  gap: clamp(16px, 3vw, 32px);
   padding-block: clamp(26px, 3vw, 40px);
-  border-bottom: 1px solid var(--rule);
-  display: grid; gap: 10px;
 }
 .mech__n {
   font-family: var(--sans); font-size: 12px; font-weight: 500;
   letter-spacing: .1em; color: var(--fg2);
 }
-.mechanisms h3 { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.25; }
-.mechanisms p { color: var(--fg2); max-width: var(--measure); }
-/* P14 (2026-09-06): each <li> is its own grid, so the old middle track —
-   minmax(0, 1fr) — sized itself against the row's *paragraph* column, not
-   its own heading; "Load management" got the same ~470px as the longest
-   heading on the page and sat in a pool of empty track before the
-   paragraph started. fit-content(260px) is the track-sizing keyword built
-   for exactly this: size to the row's own heading, capped so a freak long
-   heading wraps instead of shoving the paragraph column out of the way. */
-@media (min-width: 900px) {
-  .mechanisms > li {
-    grid-template-columns: 80px fit-content(260px) 1fr;
-    gap: clamp(24px, 4vw, 64px); align-items: baseline;
-  }
+.mech__toggle-label { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.25; }
+.mech__toggle-mark {
+  font-family: var(--mono); font-size: 16px; line-height: 1.25;
+  color: var(--fg2);
+  transition: color var(--t) var(--e);
+}
+.mech__toggle:hover .mech__toggle-mark,
+.mech__toggle:focus-visible .mech__toggle-mark { color: var(--fg); }
+.mech__panel-inner p { color: var(--fg2); max-width: var(--measure); }
+.mech__panel-inner { padding-bottom: clamp(26px, 3vw, 40px); }
+/* Collapse only exists under html.js — same gate as .reveal (style.css,
+   "html.js .reveal { opacity: 0 ... }"): with JS absent or failed, .mech__panel
+   is a plain block, always in flow, every paragraph always visible. The
+   :has() read of the button's own aria-expanded (already used once, on
+   .origin__mark, above) means initMechanismFold() in main.js only has to
+   flip that one attribute — no class bookkeeping, no measuring. Animating
+   grid-template-rows (not transform) keeps this out of the reveal's
+   transform channel per the motion rules at the top of this file, and the
+   0fr/1fr pair plus overflow:hidden is the standard height-auto workaround —
+   but min-height:0 on the grid item only overrides its automatic *content*
+   minimum, not padding, which keeps contributing to the box regardless. The
+   inner's own padding-bottom has to collapse to 0 right alongside the row
+   track, or a collapsed panel still shows a padding-height sliver. */
+html.js .mech__panel {
+  display: grid; grid-template-rows: 0fr; overflow: hidden;
+  transition: grid-template-rows var(--t) var(--e);
+}
+html.js .mech__panel-inner {
+  min-height: 0; overflow: hidden; padding-bottom: 0;
+  transition: padding-bottom var(--t) var(--e);
+}
+html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel {
+  grid-template-rows: 1fr;
+}
+html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
+  padding-bottom: clamp(26px, 3vw, 40px);
 }
 
 /* ---------- specimens (the showpiece) ----------

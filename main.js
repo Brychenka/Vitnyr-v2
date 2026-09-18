@@ -130,6 +130,7 @@
   initWhoRows();
   initSpecimenPermalinks();
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
+  initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {
@@ -1518,6 +1519,28 @@
       });
 
       render();
+    });
+  }
+
+  /* ---------- mechanism fold (§02) ----------
+     Independent disclosures, not an exclusive accordion — opening one
+     doesn't close the others. All start collapsed (aria-expanded set here,
+     not in the HTML, so a no-JS reader never sees a "closed" attribute with
+     no script able to open it back up — style.css only clips .mech__panel
+     under html.js, so the un-set default renders fully open there). The
+     +/− swap mirrors initSpecimenReveal()'s mark; the panel's own open/close
+     is CSS alone, reading this same aria-expanded via :has(). */
+  function initMechanismFold() {
+    var toggles = document.querySelectorAll('.mech__toggle');
+    if (!toggles.length) return;
+    toggles.forEach(function (btn) {
+      btn.setAttribute('aria-expanded', 'false');
+      var mark = btn.querySelector('.mech__toggle-mark');
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+        if (mark) mark.textContent = open ? '+' : '−';
+      });
     });
   }
 
