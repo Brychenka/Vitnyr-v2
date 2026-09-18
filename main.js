@@ -66,16 +66,20 @@
      picks the side). Trifecta Order D / Stage D1 (2026-09-15): the switch
      used to anchor to #origin, which sat 4-of-6 down the page; #origin has
      moved to position 1, so anchoring there would flip the gauge on arrival
-     and destroy the signal. Re-anchored to #disciplines, which inherits
-     #origin's old page depth (so the timing barely moves) and reads better:
-     the gauge now turns from specimen to target exactly where the page stops
-     examining errors (§03) and starts showing results in three fields. The
-     .past-origin class name is unchanged — renaming it would touch CSS and
-     tests for no behavioural gain. INK_SWITCH_EL's page offset is measured
-     once and re-measured on resize and language switch, not read on every
-     scroll frame. */
+     and destroy the signal. Re-anchored to #disciplines, which inherited
+     #origin's old page depth and read well: the gauge turned from specimen
+     to target exactly where the page stopped examining errors (§03) and
+     started showing results in three fields. 2026-09-18: §04 "Three
+     domains" (the old #disciplines) was folded into §03 — see CLAUDE.md's
+     "Content and positioning decisions" — so the switch is re-anchored again,
+     to #who, the next section boundary after §03 now that specimen and
+     domains share one section; the reading stays the same, just shifted one
+     boundary later. The .past-origin class name is unchanged — renaming it
+     would touch CSS and tests for no behavioural gain. INK_SWITCH_EL's page
+     offset is measured once and re-measured on resize and language switch,
+     not read on every scroll frame. */
   var progressEl = document.querySelector('.progress');
-  var INK_SWITCH_EL = document.getElementById('disciplines');
+  var INK_SWITCH_EL = document.getElementById('who');
   var inkSwitchY = 0;
   function scrollPos() { return lenis ? lenis.scroll : (window.scrollY || 0); }
   function measureInkSwitch() {

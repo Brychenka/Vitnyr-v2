@@ -4790,3 +4790,54 @@ existed solely to guard the now-removed facts strip
 `test_climbing_grades_are_kept_distinct`) were removed here. The other 26
 failures are a pre-existing, separate problem — flagged, not fixed, in this
 pass.
+
+## §04 "Three domains" folded into §03 Specimens (2026-09-18)
+
+The board review that opened this session flagged the page's overall length
+as the main risk; Igor's own read was that §04 was the section most safely
+cut, since §01's origin mark and §03's specimens already establish English,
+chess and climbing as three separate, real disciplines — a fourth section
+re-arguing the same point was surplus length, not new information.
+
+Checked what §04 actually carried that nothing else on the page did before
+cutting it outright: English's card was fully redundant with the hero's
+`.stand` paragraph, but chess's and climbing's cards each carried three
+things unique to them — the eligibility bar ("for players under 1800," "for
+climbers under 7a"), the session format, and the "coaching runs now, online
+or in Yerevan" availability line (the direct answer to
+`TRIFECTA-B-DOSSIERS.md`'s still-open B0.2 material-gap question). So this
+was a merge, not a straight delete: chess and climbing's eligibility/
+format/availability paragraph moved verbatim (same EN/RU sentences, no new
+copy invented) into their own `.specimens-group` in §03, English's card was
+dropped as redundant, the `.proof` "See the work" link moved to the end of
+§03, and `#disciplines` — heading, lede, and all three `.domain` cards — was
+deleted. `#who` renumbered 05→04, `#contact` 06→05; six sections became
+five. The `.past-origin` ink-switch in `main.js` re-anchored a second time
+(see the Trifecta Order D / Stage D1 comment above it) from `#disciplines`
+to `#who`, the next section boundary now that §03 absorbs the old §04's
+depth. Dead `.domains`/`.domain*` CSS removed; a stale collage-view caption
+that pointed readers at "the domain card" for climbing grades was reworded
+to point at the origin readout instead, since that's where the figure
+actually still lives.
+
+**Test suite:** updated alongside the markup rather than left to rot —
+`test_content.py` dropped `test_domain_labels_stay_uppercase_while_stats_keep_their_case`
+(no `.domain__meta` left to guard) and re-pointed
+`test_climbing_grades_are_kept_distinct` at the origin readout's climbing
+row (committing the discipline first, since only the active one is
+visible); `test_section_numbering_is_sequential` now expects five. Fixing
+these two also surfaced that `test_chess_rating_is_stated_without_fide` had
+been passing only because §04's chess card kept "2100" visible by default —
+with that card gone the test now commits the chess discipline first, same
+fix. `test_layout.py`'s row-divider parametrize list dropped
+`#disciplines .domains`/`#disciplines .proof` and added `#specimen .proof`;
+its duplicate section-count assertion and section-05/06 comments were
+updated to match. `test_motion.py`'s `test_progress_rule_switches_ink_at_origin`
+now scrolls to `#who` instead of `#disciplines`. Ran the full suite before
+and after: the 22 pre-existing failures from the previous entry above are
+now 20 — `test_chess_rating_is_stated_without_fide` and
+`test_climbing_grades_are_kept_distinct` both turned out to depend on §04's
+now-removed cards keeping "2100"/"7c redpoint · 7C Kilter" visible without
+committing a discipline first, so cutting §04 broke them too; fixed here
+alongside the rest rather than left as new pre-existing failures. The
+remaining 20 are unrelated to this change (still flagged, not fixed).

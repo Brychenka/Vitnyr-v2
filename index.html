@@ -513,7 +513,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <h3 data-en="Error correction, not error counting" data-ru="Разбор ошибок, а не их подсчёт">Error correction, not error counting</h3>
       <!-- Spark Order S3 / move 08: this paragraph used to close on "Once an
            error has a name it stops being 'my English is bad'..." — that
-           sentence is now the breath block between #specimen and #disciplines
+           sentence is now the breath block between #specimen and #who
            (moved, not echoed, per Igor). Mechanism 02 ends on its previous
            sentence. -->
       <p data-l="en">Your mistakes aren’t random. They’re systematic: mostly Russian structure wearing English words, which makes them a finite set you can actually catalogue.</p>
@@ -651,7 +651,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
            word and reconstructed the wrong phrase right here, spoiling it
            before the click. Rewritten to describe the shape of the error
            instead. EN final; RU is a model's first pass, flagged per
-           Standing Order 9, the same way §05's h2 (C4) flags its draft. -->
+           Standing Order 9, the same way §04's h2 (C4) flags its draft. -->
       <p class="spec__why" data-l="en">Russian marks this feeling with a reflexive ending built into the verb itself. English carries no such ending, so the instinct is to bolt an equivalent back on by hand, onto a verb that was never missing it. The result lands as something else entirely, which is why the room reacts the way it does.</p>
       <p class="spec__why" data-l="ru">В русском это ощущение помечено возвратным окончанием прямо в глаголе. В английском такого окончания нет, и рефлекс — добавить что-то похожее вручную, к глаголу, которому это было не нужно. Получается совсем другое, отсюда и лица собеседников.</p>
     </article>
@@ -739,6 +739,13 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="spec__why" data-l="ru">Одна ошибка не меняет то, что реально происходит на доске — она меняет то, как воспринимается партия. Вторую половину партии губит не сама ошибка, а привычка после неё разбирать каждый ход как аварийный, вместо того чтобы просто читать позицию, как любую другую.</p>
     </article>
   </div>
+
+  <!-- Folded in from the former §04 "Three domains" chess card (2026-09-18):
+       eligibility bar, session format, and the "coaching runs now" line
+       don't exist anywhere else on the page, so they moved here rather
+       than being cut with the rest of §04. Same reused EN/RU sentences. -->
+  <p class="reveal" data-l="en">For players under 1800 who’ve plateaued — shaky intuition, thin opening prep, or a middlegame that falls apart. “I blundered” isn’t a diagnosis: a blunder has a cause, and a specific cause is what training actually targets. Sessions run 60 minutes, one-to-one, over Lichess or Chess.com plus a call — reviewing two or three recent games against patterns drawn from 5,000+ analyzed, then drilling whichever one keeps recurring. Coaching runs now, online or in Yerevan.</p>
+  <p class="reveal" data-l="ru">Для игроков с рейтингом до 1800, которые упёрлись в плато — интуиция барахлит, дебютная подготовка слабая, или миттельшпиль разваливается. «Зевнул» — не диагноз: у зевка есть причина, и именно конкретную причину нарабатывают на тренировках. Занятие — 60 минут, один на один, через Lichess или Chess.com плюс звонок: разбор двух-трёх последних партий на фоне более 5000 разобранных, с упором на повторяющийся паттерн. Занятия идут уже сейчас, онлайн или в Ереване.</p>
   </div>
 
   <!-- Stage 5 (2026-09-16): real climbing specimens, same treatment as
@@ -784,70 +791,18 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <p class="spec__why" data-l="ru">Импровизация похожа на само лазание — она активна, она «здесь и сейчас». Но она убирает единственный шанс заметить неудачную последовательность до того, как трасса началась — там исправлять её выходит куда дороже, чем минута на земле до старта.</p>
     </article>
   </div>
-  </div>
-</section>
 
-<!-- Spark Order S3 / move 08 — the breath. One sentence, set larger than any
-     body copy and smaller than the hero, alone with real vertical air. The
-     line already existed (it closed mechanism 02 of section 01) and is moved
-     here, not echoed. NOT a section: it carries no 01–06 number, takes no
-     .label, and must stay out of test_section_numbering_is_sequential's count.
-     Sized by content + padding — never 100vh, which pushes everything else out
-     of frame on a short laptop. It reveals on the one shared .reveal rhythm. -->
-<!-- Rewritten 2026-09-17 (Igor): the old line ("Once an error has a name...")
-     only spoke to English, right before a section whose whole point is that
-     chess and climbing aren't there to vouch for English — the breath was
-     undercutting the section it introduces. New line states the actual
-     source of the method (his own words), staying domain-agnostic on
-     purpose — #disciplines' own lede right below already names English,
-     chess and climbing, so this doesn't need to repeat them (a first draft
-     did, and ended up centering English anyway by listing it first). -->
-<div class="breath reveal">
-  <p class="breath__line" data-l="en">I combine neuroscience, rehab principles and the psychology of learning to coach people in a way that sticks.</p>
-  <p class="breath__line" data-l="ru">Я соединяю нейронауку, принципы реабилитации и психологию обучения — и тренирую так, чтобы выученное действительно оставалось.</p>
-</div>
-
-<section class="sec" id="disciplines">
-  <p class="label reveal"><span class="num">04</span><span data-en="Three domains" data-ru="Три направления">Three domains</span></p>
-  <div class="sec__head">
-    <h2 class="reveal" data-l="en">Chess and climbing aren’t hobbies on a CV.</h2>
-    <h2 class="reveal" data-l="ru">Шахматы и скалолазание — не строчки в резюме.</h2>
-    <div class="sec__lede">
-      <p class="reveal" data-l="en">Same method, three separate practices. English is the main one — chess and climbing aren’t there to vouch for it. Both are taught in their own right, and both are open for coaching now.</p>
-      <p class="reveal" data-l="ru">Метод один и тот же, но практик — три отдельных. Английский — основная; шахматы и скалолазание существуют не для того, чтобы её подтверждать. Обе дисциплины преподаются всерьёз и обе открыты для занятий уже сейчас.</p>
-    </div>
-  </div>
-
-  <div class="domains">
-    <article class="domain reveal">
-      <p class="domain__meta"><span data-en="English" data-ru="Английский">English</span><span class="domain__stat">10 <span data-en="years" data-ru="лет">years</span> / 100+</span></p>
-      <h3 data-l="en">The everyday conversation, and the interview you can’t afford to freeze in.</h3>
-      <h3 data-l="ru">Обычный разговор — и интервью, на котором зависать нельзя.</h3>
-      <p data-l="en">The main work: standups, one-to-ones, performance reviews, written updates, technical interviews, client calls. Usually a register problem, not a vocabulary one.</p>
-      <p data-l="ru">Основная работа: стендапы, one-to-one, performance review, письменные апдейты, технические интервью, созвоны с клиентами. Чаще это вопрос регистра, а не словаря.</p>
-    </article>
-
-    <article class="domain reveal">
-      <p class="domain__meta"><span data-en="Chess" data-ru="Шахматы">Chess</span><span class="domain__stat">2100</span></p>
-      <h3 data-l="en">Where the feedback loop is a scoreboard.</h3>
-      <h3 data-l="ru">Где обратная связь — это турнирная таблица.</h3>
-      <p data-l="en">For players under 1800 who’ve plateaued — shaky intuition, thin opening prep, or a middlegame that falls apart. “I blundered” isn’t a diagnosis: a blunder has a cause, and a specific cause is what training actually targets. Sessions run 60 minutes, one-to-one, over Lichess or Chess.com plus a call — reviewing two or three recent games against patterns drawn from 5,000+ analyzed, then drilling whichever one keeps recurring. Coaching runs now, online or in Yerevan.</p>
-      <p data-l="ru">Для игроков с рейтингом до 1800, которые упёрлись в плато — интуиция барахлит, дебютная подготовка слабая, или миттельшпиль разваливается. «Зевнул» — не диагноз: у зевка есть причина, и именно конкретную причину нарабатывают на тренировках. Занятие — 60 минут, один на один, через Lichess или Chess.com плюс звонок: разбор двух-трёх последних партий на фоне более 5000 разобранных, с упором на повторяющийся паттерн. Занятия идут уже сейчас, онлайн или в Ереване.</p>
-    </article>
-
-    <article class="domain reveal">
-      <p class="domain__meta"><span data-en="Climbing" data-ru="Скалолазание">Climbing</span><span class="domain__stat">7c redpoint · 7C Kilter</span></p>
-      <h3 data-l="en">Where load management stops being a metaphor.</h3>
-      <h3 data-l="ru">Где дозирование нагрузки перестаёт быть метафорой.</h3>
-      <p data-l="en">For climbers under 7a working through a plateau — injuries, bad technique, weak fingers, or routes they can’t read. Training too hard elsewhere costs motivation; here it costs a tendon, and the bill comes months later. Sessions run one-to-one, in the gym or over video, on whichever is actually costing the grade: technique, route-reading, or the mental side of leading. Igor’s own bar for it: 7a within a year. Coaching runs now, online or in Yerevan.</p>
-      <p data-l="ru">Для скалолазов, которые лезут ниже 7a и упёрлись в плато — травмы, техника хромает, пальцы слабые, маршрут не читается. Во всём остальном перебор с нагрузкой стоит мотивации. Здесь — связок, и счёт приходит через несколько месяцев. Занятия — один на один, в зале или по видео, разбор того, что реально стоит категории: техника, читка маршрута или психология лида. Собственный ориентир Игоря: 7a за год. Занятия идут уже сейчас, онлайн или в Ереване.</p>
-    </article>
+  <!-- Folded in from the former §04 "Three domains" climbing card
+       (2026-09-18) — see the equivalent comment in the chess group above. -->
+  <p class="reveal" data-l="en">For climbers under 7a working through a plateau — injuries, bad technique, weak fingers, or routes they can’t read. Training too hard elsewhere costs motivation; here it costs a tendon, and the bill comes months later. Sessions run one-to-one, in the gym or over video, on whichever is actually costing the grade: technique, route-reading, or the mental side of leading. Igor’s own bar for it: 7a within a year. Coaching runs now, online or in Yerevan.</p>
+  <p class="reveal" data-l="ru">Для скалолазов, которые лезут ниже 7a и упёрлись в плато — травмы, техника хромает, пальцы слабые, маршрут не читается. Во всём остальном перебор с нагрузкой стоит мотивации. Здесь — связок, и счёт приходит через несколько месяцев. Занятия — один на один, в зале или по видео, разбор того, что реально стоит категории: техника, читка маршрута или психология лида. Собственный ориентир Игоря: 7a за год. Занятия идут уже сейчас, онлайн или в Ереване.</p>
   </div>
 
   <!-- Entry to the collage view. A real anchor: with JS off it jumps to the
        #collage section at the end of the document; main.js intercepts it to
-       open the routed full-screen view instead. Placed here, under the three
-       domains, because that is where the trifecta has just been argued.
+       open the routed full-screen view instead. Moved here from the former
+       §04 (2026-09-18, folded into §03) — placed after all three specimen
+       groups, because that is where the trifecta has just been argued.
        data-magnetic marks it as an interactive target for the dot's colour
        signal, the same as every other control on the page (C14 retired the
        pointer-pull the attribute used to also carry). -->
@@ -862,12 +817,35 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   </div>
 </section>
 
+<!-- Spark Order S3 / move 08 — the breath. One sentence, set larger than any
+     body copy and smaller than the hero, alone with real vertical air. The
+     line already existed (it closed mechanism 02 of section 01) and is moved
+     here, not echoed. NOT a section: it carries no 01–05 number, takes no
+     .label, and must stay out of test_section_numbering_is_sequential's count.
+     Sized by content + padding — never 100vh, which pushes everything else out
+     of frame on a short laptop. It reveals on the one shared .reveal rhythm. -->
+<!-- Rewritten 2026-09-17 (Igor): the old line ("Once an error has a name...")
+     only spoke to English, right before a section whose whole point is that
+     chess and climbing aren't there to vouch for English — the breath was
+     undercutting the section it introduces. New line states the actual
+     source of the method (his own words), staying domain-agnostic on
+     purpose. -->
+<!-- 2026-09-18: §04 "Three domains" (which this breath used to introduce)
+     was folded into §03 Specimens — see CLAUDE.md's "Content and
+     positioning decisions." The breath now sits between §03 and §04 "Who
+     this is for," still domain-agnostic on its own merits, so it needed no
+     rewrite beyond this note. -->
+<div class="breath reveal">
+  <p class="breath__line" data-l="en">I combine neuroscience, rehab principles and the psychology of learning to coach people in a way that sticks.</p>
+  <p class="breath__line" data-l="ru">Я соединяю нейронауку, принципы реабилитации и психологию обучения — и тренирую так, чтобы выученное действительно оставалось.</p>
+</div>
+
 <!-- ================================================================
      SWAPPABLE BLOCK — WHO THIS IS FOR (general, Framing B)
      Under Framing A, delete the general rows and promote the IT row.
      ================================================================ -->
 <section class="sec" id="who">
-  <p class="label reveal"><span class="num">05</span><span data-en="Who this is for" data-ru="Для кого это">Who this is for</span></p>
+  <p class="label reveal"><span class="num">04</span><span data-en="Who this is for" data-ru="Для кого это">Who this is for</span></p>
   <!-- Every other .sec pairs its .label with a .sec__head h2; this one went
        straight to four h3 rows with nothing governing them, skipping a
        heading level and leaving the four answers with no question. The four
@@ -878,7 +856,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <!-- J2 (Jury Pass II, 2026-09-12): the rows below are clickable with no
          instruction saying so. This line is new copy — EN drafted, RU a
          model's first pass flagged for Igor to confirm, the same way
-         reference/collage-shotlist.md and the §05 h2 above (C4) flag theirs. -->
+         reference/collage-shotlist.md and the §04 h2 above (C4) flag theirs. -->
     <div class="sec__lede">
       <p class="reveal" data-l="en">Pick the one that’s you. It writes the first line of your message below.</p>
       <p class="reveal" data-l="ru">Выберите свой случай — он станет первой строкой сообщения ниже.</p>
@@ -886,12 +864,12 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   </div>
   <!-- Spark Order S5 / move 19: each row is selectable — main.js builds an
        invisible overlay <button> per row (so the no-JS row is unchanged) that
-       toggles a first-person clause onto the section 06 Telegram CTA, so the
+       toggles a first-person clause onto the section 05 Telegram CTA, so the
        reader answers "which of these is you?" without having to phrase it.
        The data-prefill-en/ru clauses are a model's first pass, restating each
        row's own approved heading in the first person — flagged for Igor to
        confirm, the same way reference/collage-shotlist.md flags its draft
-       copy and the §05 h2 above was flagged when C4 added it.
+       copy and the §04 h2 above was flagged when C4 added it.
 
        2026-09-12: Igor rewrote all four rows to span the site's full
        trifecta (English, chess, climbing) instead of English alone — EN is
@@ -935,7 +913,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 </section>
 
 <section class="sec sec--contact" id="contact">
-  <p class="label reveal"><span class="num">06</span><span data-en="How to start" data-ru="Как начать">How to start</span></p>
+  <p class="label reveal"><span class="num">05</span><span data-en="How to start" data-ru="Как начать">How to start</span></p>
   <!-- P8 (Stage 6, 2026-09-06): this used to be plain text — the page's one
        actual conversion goal (the free intro call) had no control on it
        anywhere, on a page whose settled channels are otherwise all social
@@ -1046,7 +1024,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      the "See the work" link above jumps to it — nothing is hidden.
      Three domain groups — English, chess, climbing, in that order —
      each its own labelled block. Headings are unnumbered: this view does
-     not continue the page's 01-06 count.
+     not continue the page's 01-05 count.
      Images are Stage-3 PLACEHOLDERS: CC0 / Flickr-CC stand-ins, NOT
      photographs of Igor Shatsev, carried so the layout and motion stages
      have real pixels to run against. They are replaced by the real shoot
@@ -1271,8 +1249,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <h2 id="collage-climb" tabindex="-1"
           data-en="Where the scoreboard is the grade, and gravity keeps it honest."
           data-ru="Где табло — это категория, а гравитация не даёт соврать.">Where the scoreboard is the grade, and gravity keeps it honest.</h2>
-      <p class="view__group-lede" data-l="en">The grades are on the domain card. What’s in the photo is the board they came from — the same adjustable rig, dialled in one notch at a time.</p>
-      <p class="view__group-lede" data-l="ru">Категории — на карточке дисциплины. На фото — доска, где они появились: та же регулируемая доска, отстроенная по одному щелчку за раз.</p>
+      <p class="view__group-lede" data-l="en">The grades are up top, in the readout. What’s in the photo is the board they came from — the same adjustable rig, dialled in one notch at a time.</p>
+      <p class="view__group-lede" data-l="ru">Категории — в панели наверху. На фото — доска, где они появились: та же регулируемая доска, отстроенная по одному щелчку за раз.</p>
       <div class="collage collage--group">
         <figure class="collage__fig collage__fig--45 reveal is-in">
           <div class="collage__slot">

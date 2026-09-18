@@ -664,7 +664,7 @@ html.past-origin .progress__fill--target { opacity: 1; }
 }
 
 /* ---------- the breath (Spark Order S3 / move 08) ----------
-   One sentence between #specimen and #disciplines, alone with vertical air.
+   One sentence between #specimen and #who, alone with vertical air.
    Same shell box as .hero/.sec (max-width, centred, --gut padding-inline) and
    the same hairline divider, so it sits in the page's rhythm without being a
    numbered section. Sized by content + padding: the block's height is the
@@ -694,14 +694,14 @@ html.past-origin .progress__fill--target { opacity: 1; }
 html[data-lang="ru"] .breath__line { max-width: 26ch; letter-spacing: -.012em; }
 
 /* C12 (2026-09-06): .sec's own top rule spans its full 1320px box, but
-   .mechanisms/.specs/.domains/.rows/.channels/.proof sit inside that box's
+   .mechanisms/.specs/.rows/.channels/.proof sit inside that box's
    padding-inline and so drew their own rules --gut narrower on each side —
    two rule widths with no stated relationship between them, off by however
-   much --gut happens to be at a given viewport. Bleeding these six back out
+   much --gut happens to be at a given viewport. Bleeding these back out
    to the section's own edge (and re-adding the same inset as padding, so
    the text inside them doesn't move) makes every horizontal rule on the
    page exactly one width, which is the actual point of a hairline system. */
-.mechanisms, .specs, .domains, .rows, .channels, .proof {
+.mechanisms, .specs, .rows, .channels, .proof {
   margin-inline: calc(var(--gut) * -1);
   padding-inline: var(--gut);
 }
@@ -793,7 +793,6 @@ html[data-lang="ru"] .hero__title    { letter-spacing: -.018em; }
 html[data-lang="ru"] .hero__title em { font-size: .58em; letter-spacing: -.010em; }
 html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
 html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
-html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 
 /* ---------- mechanisms ---------- */
 .mechanisms { display: grid; gap: 0; border-top: 1px solid var(--rule); }
@@ -1050,33 +1049,10 @@ html[data-lang="ru"] .domain h3      { letter-spacing: -.008em; }
 .spec__prompt-mistake .sig svg { display: block; width: .68em; height: .68em; }
 .spec__prompt-mistake del { text-decoration: none; color: var(--amber-text); }
 
-/* ---------- domains ---------- */
-.domains { border-top: 1px solid var(--rule); margin-bottom: clamp(56px, 8vw, 110px); }
-.domain {
-  padding-block: clamp(30px, 4vw, 54px);
-  border-bottom: 1px solid var(--rule);
-  display: grid; gap: 14px;
-}
-.domain__meta {
-  display: flex; justify-content: space-between; gap: 20px;
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
-}
-/* J2 (Jury Pass II, 2026-09-12): .domain__meta's uppercase is meant for the
-   ENGLISH/CHESS/CLIMBING label only. Left inherited, it also flattens the
-   climbing stat's 7c/7C case distinction CLAUDE.md says must stay legible. */
-.domain__stat { color: var(--fg); text-transform: none; }
-.domain h3 { font-size: clamp(22px, 2.6vw, 34px); line-height: 1.15; letter-spacing: -.015em; max-width: 20ch; }
-.domain p { color: var(--fg2); max-width: var(--measure); }
-@media (min-width: 900px) {
-  .domain { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); align-items: start; }
-  .domain__meta { grid-column: 1 / -1; margin-bottom: 6px; }
-}
-
 /* ---------- origin (name & mark) ---------- */
 /* Trifecta Order D / Stage D2 (2026-09-15): the pre-agreed phone fallback
    from the plan. A centred column (the pattern every other .sec__head block
-   below 900px uses — .mechanisms, .domains, .rows) put the mark
+   below 900px uses — .mechanisms, .rows) put the mark
    above the three-row readout instead of beside it, and measured at
    375x667 the readout ran well off the bottom of the viewport before the
    reader saw a single reading. Below 900px this is a compact two-column

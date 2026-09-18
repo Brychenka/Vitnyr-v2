@@ -108,7 +108,7 @@ def test_wrong_and_right_lines_have_a_visible_gap(open_site):
 
 
 # --- C12: .sec's own top rule spans its full 1320px box; the row dividers
-# inside a section (.mechanisms/.specs/.domains/.rows/.channels/.proof) used
+# inside a section (.mechanisms/.specs/.rows/.channels/.proof) used
 # to sit --gut narrower on each side, purely as a side effect of .sec's own
 # padding — two rule widths with no stated relationship. Bled back out so
 # every hairline on the page is exactly one width. ---
@@ -116,7 +116,7 @@ def test_wrong_and_right_lines_have_a_visible_gap(open_site):
 @pytest.mark.parametrize("container", [
     "#method .mechanisms",
     '#specimen .specimens-group[data-discipline-group="english"] .specs',
-    "#disciplines .domains", "#who .rows", "#contact .channels", "#disciplines .proof",
+    "#who .rows", "#contact .channels", "#specimen .proof",
 ])
 def test_row_dividers_are_flush_with_their_sections_own_rule(open_site, container):
     page, _ = open_site(viewport=WIDE)
@@ -297,7 +297,7 @@ def test_see_the_work_reads_at_full_foreground_and_underlined_at_rest(open_site)
 
 
 # --- Spark Order S3 / move 08: the "breath" block between #specimen and
-# #disciplines is sized by content + padding, never 100vh — a viewport-height
+# #who is sized by content + padding, never 100vh — a viewport-height
 # slab pushes the rest of the page out of frame on a short laptop. ---
 
 @pytest.mark.parametrize("lang", ["en", "ru"])
@@ -309,19 +309,19 @@ def test_breath_block_is_not_viewport_height(open_site, lang):
 
 
 def test_breath_block_takes_no_section_number(open_site):
-    """It is not a section: no .label, no 01–06 numeral, and the numbering
-    test still counts exactly six."""
+    """It is not a section: no .label, no 01–05 numeral, and the numbering
+    test still counts exactly five."""
     page, _ = open_site()
     assert page.locator(".breath").count() == 1
     assert page.locator(".breath .label").count() == 0
     assert page.locator(".breath .num").count() == 0
     nums = page.locator(".sec .label .num").all_inner_texts()
-    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05", "06"]
+    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05"]
 
 
-# --- Spark Order S5 / move 19: section 05's four "which of these is you?"
+# --- Spark Order S5 / move 19: section 04's four "which of these is you?"
 # rows are selectable — an invisible overlay <button> per row toggles a
-# first-person clause onto the section 06 Telegram CTA. Single-choice,
+# first-person clause onto the section 05 Telegram CTA. Single-choice,
 # toggleable, marked with a hairline rule, gone entirely without JS. ---
 
 _CTA = ".contact__cta"

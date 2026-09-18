@@ -354,9 +354,11 @@ def test_progress_rule_switches_ink_at_origin(open_site, scheme):
 
     Trifecta Order D / Stage D1 (2026-09-15): the switch used to anchor to
     #origin (then 4-of-6 down the page). #origin moved to position 1, so
-    main.js re-anchored the switch to #disciplines, which inherits #origin's
-    old page depth. This test now scrolls to #disciplines rather than
-    #origin — the .past-origin class name itself is unchanged (see main.js).
+    main.js re-anchored the switch to #disciplines, which inherited #origin's
+    old page depth. 2026-09-18: #disciplines (§04 "Three domains") was
+    folded into §03, so main.js re-anchored again, to #who — this test now
+    scrolls to #who rather than #origin or #disciplines — the .past-origin
+    class name itself is unchanged (see main.js).
     """
     page, _ = open_site(theme=scheme)
     page.wait_for_timeout(300)
@@ -376,9 +378,9 @@ def test_progress_rule_switches_ink_at_origin(open_site, scheme):
     assert float(target.evaluate("el => getComputedStyle(el).opacity")) < 0.05
     assert "past-origin" not in (page.locator("html").get_attribute("class") or "")
 
-    # scrolled to #disciplines: .past-origin is set and the target ink shows
+    # scrolled to #who: .past-origin is set and the target ink shows
     switch_y = page.evaluate(
-        "document.getElementById('disciplines').getBoundingClientRect().top"
+        "document.getElementById('who').getBoundingClientRect().top"
         " + (window.__lenis ? window.__lenis.scroll : window.scrollY)"
     )
     page.evaluate(f"window.scrollTo(0, {switch_y} + 8)")

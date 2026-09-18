@@ -274,7 +274,10 @@ the brand file, so nothing in the code will tell a new chat about them:
   remaining B0.2 — is the actual session material for chess and climbing
   coaching: does it exist yet, is it bookable today. Until that lands, this
   is a documentation-only change: don't restructure `#disciplines`, rewrite
-  §06, or touch metadata on the strength of this decision alone.
+  §06, or touch metadata on the strength of this decision alone. (B0.2 was
+  since answered by Stage 5's real chess/climbing specimens, landing before
+  the §04-into-§03 fold below — `#disciplines` no longer exists and contact
+  is now §05, so read those two sentences as history, not current structure.)
 - **One *file*, even where there's more than one view.** Igor asked for the
   photo collage as a separate page (2026-09-04), which qualifies the rule
   above rather than reversing it. The constraint that decides the shape:
@@ -289,7 +292,7 @@ the brand file, so nothing in the code will tell a new chat about them:
   page": ask what it does to the artifact before splitting a file. Inside
   that view, the photos are grouped into three domain sections —
   **English, then chess, then climbing** (2026-09-05), unnumbered so the
-  view doesn't continue the page's 01–06 count. See `BUILD-NOTES.md`'s
+  view doesn't continue the page's 01–05 count. See `BUILD-NOTES.md`'s
   "Collage → three domain groups" entry and `reference/collage-shotlist.md`
   (v2).
 - **Contact channels: Telegram, LinkedIn, Instagram, in that order** — Igor's
@@ -300,3 +303,15 @@ the brand file, so nothing in the code will tell a new chat about them:
   pattern to reuse for a future feature that touches several disciplines at
   once, but don't assume it needs repeating for a narrow, single-discipline
   change.
+- **§04 "Three domains" was folded into §03 Specimens, not deleted**
+  (2026-09-18, page-length concern from Igor). §01's origin mark and §03's
+  specimens already establish English/chess/climbing as three separate real
+  disciplines, so a standalone fourth section re-arguing the same point was
+  cut length rather than content — but chess's and climbing's eligibility
+  bar, session format, and "coaching runs now" availability line (the only
+  parts of §04 that weren't duplicated elsewhere) moved into their own
+  `.specimens-group` in §03 rather than being deleted with the rest. English
+  lost its §04 card outright since it duplicated the hero. See
+  `BUILD-NOTES.md`'s "§04 'Three domains' folded into §03 Specimens" entry
+  for the full before/after. Don't propose re-adding a standalone domains
+  section without knowing this was a deliberate merge, not an oversight.

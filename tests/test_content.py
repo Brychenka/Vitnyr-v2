@@ -26,35 +26,30 @@ def test_name_is_still_igor_shatsev_in_russian(open_site):
 
 def test_chess_rating_is_stated_without_fide(open_site):
     # Igor's explicit correction: the 2100 rating is stated without "FIDE".
-    # \b so this doesn't trip on "confidence".
+    # \b so this doesn't trip on "confidence". The rating used to be visible
+    # by default on §04's chess domain card; that card was folded into §03
+    # 2026-09-18, so the figure now lives only in the origin readout's chess
+    # row, which needs the chess discipline committed to become visible.
     for lang in ("en", "ru"):
         page, _ = open_site(lang=lang)
+        page.locator('.origin__panel-item[data-discipline="chess"]').click()
         text = visible_text(page)
         assert "2100" in text
         assert not re.search(r"\bFIDE\b", text, re.I), "'FIDE' must not appear"
 
 
 def test_climbing_grades_are_kept_distinct(open_site):
+    # rendered text, not source: J2 (Jury Pass II) established that a
+    # climbing grade's 7c/7C case must survive an uppercase ancestor rule.
+    # §04 "Three domains" (the original home of this check, .domain__stat)
+    # was folded into §03 2026-09-18; the same figures live on in the origin
+    # readout's climbing row, so the check moved with them. Only the
+    # committed discipline's .reading__value is visible, so commit climbing
+    # first — inner_text() of a non-active value reads as empty.
     page, _ = open_site()
-    # rendered text, not source: .domain__meta is text-transform:uppercase,
-    # and J2 (Jury Pass II) stopped that rule from flattening the domain
-    # stat's 7c/7C case. inner_text() reflects what the reader actually sees;
-    # text_content() would read the un-transformed source and miss a
-    # regression that brings the uppercase back.
-    stat = page.locator("article.domain").nth(2).locator(".domain__stat")
-    assert stat.inner_text() == "7c redpoint · 7C Kilter"
-
-
-def test_domain_labels_stay_uppercase_while_stats_keep_their_case(open_site):
-    # The other half of J2: .domain__meta's uppercase must still apply to the
-    # ENGLISH/CHESS/CLIMBING label — only the stat span opts out.
-    page, _ = open_site()
-    labels = page.locator(".domain__meta > span:first-child")
-    assert [labels.nth(i).inner_text() for i in range(labels.count())] == [
-        "ENGLISH",
-        "CHESS",
-        "CLIMBING",
-    ]
+    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
+    value = page.locator('.reading__value[data-discipline="climbing"]').first
+    assert value.inner_text() == "7c redpoint · 7C Kilter"
 
 
 def test_reading_rows_are_coaching_achieved_mistakes(open_site):
@@ -237,7 +232,7 @@ def test_person_json_ld_carries_only_confirmed_facts(open_site):
 def test_section_numbering_is_sequential(open_site):
     page, _ = open_site()
     nums = page.locator(".sec .label .num").all_inner_texts()
-    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05", "06"]
+    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05"]
 
 
 def test_origin_is_the_first_section_and_carries_01(open_site):
