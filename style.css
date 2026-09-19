@@ -701,13 +701,14 @@ html.past-origin .progress__fill--target { opacity: 1; }
 }
 .breath__line {
   max-width: 24ch;
-  margin: 0;
+  margin-inline: auto;
   font-family: var(--serif);
   font-weight: 500;
-  font-size: clamp(28px, 5.2vw, 60px);
+  font-size: clamp(24px, 4.2vw, 48px);
   line-height: 1.18;
   letter-spacing: -.02em;
   color: var(--fg);
+  text-align: center;
   text-wrap: balance;
 }
 html[data-lang="ru"] .breath__line { max-width: 26ch; letter-spacing: -.012em; }
