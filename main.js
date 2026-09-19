@@ -1484,11 +1484,20 @@
 
     specs.forEach(function (spec) {
       var lines = spec.querySelector('.spec__lines');
-      var wrong = spec.querySelector('.line-spec.wrong');
-      if (!lines || !wrong) return;
-      var sentence = wrong.children[wrong.children.length - 1];   // the visible sentence <span>
-      if (!sentence) return;
-      var sig = wrong.querySelector('.sig');
+      // Some specimens carry one .line-spec.wrong (English-only grammar
+      // examples); others carry two, one per data-l — pick whichever
+      // matches the live language so the hover preview never freezes on
+      // whichever language happened to be first in the DOM.
+      var wrongs = spec.querySelectorAll('.line-spec.wrong');
+      if (!lines || !wrongs.length) return;
+      function currentWrong() {
+        if (wrongs.length === 1) return wrongs[0];
+        var want = isRu() ? 'ru' : 'en';
+        for (var i = 0; i < wrongs.length; i++) {
+          if (wrongs[i].getAttribute('data-l') === want) return wrongs[i];
+        }
+        return wrongs[0];
+      }
 
       var wrap = document.createElement('div');
       wrap.className = 'spec__reveal';
@@ -1513,15 +1522,25 @@
       var reveal = document.createElement('span');
       reveal.className = 'spec__prompt-mistake';
       reveal.hidden = true;
-      if (sig) reveal.appendChild(sig.cloneNode(true));
-      reveal.appendChild(sentence.cloneNode(true));
+
+      function fillReveal() {
+        reveal.textContent = '';
+        var w = currentWrong();
+        var sentence = w.children[w.children.length - 1];   // the visible sentence <span>
+        var sig = w.querySelector('.sig');
+        if (sig) reveal.appendChild(sig.cloneNode(true));
+        if (sentence) reveal.appendChild(sentence.cloneNode(true));
+      }
+      fillReveal();
 
       btn.appendChild(mark);
       btn.appendChild(label);
       btn.appendChild(reveal);
       wrap.appendChild(btn);
-      lines.insertBefore(wrap, wrong);
-      wrong.hidden = true;   // JS-only: the static pair stays the no-JS source of truth
+      lines.insertBefore(wrap, wrongs[0]);
+      wrongs.forEach(function (w) { w.hidden = true; });   // JS-only: the static pair stays the no-JS source of truth
+
+      document.addEventListener('vitnyr:langchange', fillReveal);
 
       // hover previews it; a click/tap/Enter locks it open or shut. Keyboard
       // is the lock alone (Tab to the button, Enter) — no focus-preview, so a
