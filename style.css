@@ -673,6 +673,15 @@ html.past-origin .progress__fill--target { opacity: 1; }
   #method .sec__head { grid-template-columns: none; }
 }
 
+/* §04 who (2026-09-19): the lede explaining the rows were clickable is gone
+   (the rows' own first-person copy carries that now), so the head is just
+   the h2 — centred single column, same pattern as #method above. */
+#who .sec__head { text-align: center; }
+#who .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
+@media (min-width: 900px) {
+  #who .sec__head { grid-template-columns: none; }
+}
+
 /* ---------- the breath (Spark Order S3 / move 08) ----------
    One sentence between #specimen and #who, alone with vertical air.
    Same shell box as .hero/.sec (max-width, centred, --gut padding-inline) and
