@@ -466,6 +466,27 @@ html.past-origin .progress__fill--target { opacity: 1; }
    for the real case here (phones = coarse pointers = 44px targets + 10px
    row-gap); a mouse-narrowed desktop window lands a touch more generous, not
    tight, which is the safe side to be on. */
+/* ---------- masthead section quick-nav (2026-09-19) ----------
+   Numeral links into the page's own 01-05 sections, reusing .tool wholesale
+   (same 13px caps, same hover underline, same hover-pull via initMagnetic's
+   existing `.tool` selector) so this reads as one more control in the
+   existing bar, not a bolted-on addition. Desktop only: the phone masthead
+   below 900px is already at capacity (see the 602/400/340px rules below,
+   each the record of a real clipping bug), and this group's role — a
+   convenience for a reader who has already scrolled past the point a
+   sticky nav matters most on a short phone viewport — doesn't justify
+   re-opening that budget. */
+.tools__group--sections { gap: 10px; }
+/* The permanent version of .tool::after's hover line — same ink, same
+   rule, just left switched on rather than re-triggered by :hover, so the
+   current section reads as "already pointed at" without a second visual
+   language. Higher specificity than the bare .tool::after rule above, so
+   it wins whether or not the pointer happens to be over the link too. */
+.tool.is-active::after { transform: scaleX(1); }
+@media (max-width: 899.98px) {
+  .tools__rule--sections, .tools__group--sections { display: none; }
+}
+
 @media (max-width: 602px) {
   .masthead { flex-wrap: wrap; row-gap: 10px; }
   .tools { flex-basis: 100%; justify-content: flex-end; flex-wrap: nowrap; }

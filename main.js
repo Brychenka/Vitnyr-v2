@@ -131,6 +131,32 @@
   initSpecimenPermalinks();
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
+  initSectionNav();       // wayfinding, not motion — same reasoning as the three lines above
+
+  /* ---------- masthead section quick-nav: active-section tracking ----------
+     Scrollspy for the numeral links added in index.html. IntersectionObserver,
+     not the scroll-position math trackProgress() uses above — five zones read
+     more reliably off "which section is crossing a band near the middle of
+     the viewport" than off scroll-offset arithmetic, and it's the same tool
+     buildReveals() already uses elsewhere in this file. A thin band
+     (-45%/-50% margins collapse the viewport to a ~5% strip near its centre)
+     rather than the whole section, so the active link changes when a section
+     is actually in reading position, not the instant its top edge appears. */
+  function initSectionNav() {
+    var links = document.querySelectorAll('.tools__group--sections .tool[href^="#"]');
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var sections = Object.keys(map).map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    if (!sections.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = map[entry.target.id];
+        if (link) link.classList.toggle('is-active', entry.isIntersecting);
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    sections.forEach(function (el) { io.observe(el); });
+  }
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {
@@ -1458,11 +1484,20 @@
 
     specs.forEach(function (spec) {
       var lines = spec.querySelector('.spec__lines');
-      var wrong = spec.querySelector('.line-spec.wrong');
-      if (!lines || !wrong) return;
-      var sentence = wrong.children[wrong.children.length - 1];   // the visible sentence <span>
-      if (!sentence) return;
-      var sig = wrong.querySelector('.sig');
+      // Some specimens carry one .line-spec.wrong (English-only grammar
+      // examples); others carry two, one per data-l — pick whichever
+      // matches the live language so the hover preview never freezes on
+      // whichever language happened to be first in the DOM.
+      var wrongs = spec.querySelectorAll('.line-spec.wrong');
+      if (!lines || !wrongs.length) return;
+      function currentWrong() {
+        if (wrongs.length === 1) return wrongs[0];
+        var want = isRu() ? 'ru' : 'en';
+        for (var i = 0; i < wrongs.length; i++) {
+          if (wrongs[i].getAttribute('data-l') === want) return wrongs[i];
+        }
+        return wrongs[0];
+      }
 
       var wrap = document.createElement('div');
       wrap.className = 'spec__reveal';
@@ -1487,15 +1522,25 @@
       var reveal = document.createElement('span');
       reveal.className = 'spec__prompt-mistake';
       reveal.hidden = true;
-      if (sig) reveal.appendChild(sig.cloneNode(true));
-      reveal.appendChild(sentence.cloneNode(true));
+
+      function fillReveal() {
+        reveal.textContent = '';
+        var w = currentWrong();
+        var sentence = w.children[w.children.length - 1];   // the visible sentence <span>
+        var sig = w.querySelector('.sig');
+        if (sig) reveal.appendChild(sig.cloneNode(true));
+        if (sentence) reveal.appendChild(sentence.cloneNode(true));
+      }
+      fillReveal();
 
       btn.appendChild(mark);
       btn.appendChild(label);
       btn.appendChild(reveal);
       wrap.appendChild(btn);
-      lines.insertBefore(wrap, wrong);
-      wrong.hidden = true;   // JS-only: the static pair stays the no-JS source of truth
+      lines.insertBefore(wrap, wrongs[0]);
+      wrongs.forEach(function (w) { w.hidden = true; });   // JS-only: the static pair stays the no-JS source of truth
+
+      document.addEventListener('vitnyr:langchange', fillReveal);
 
       // hover previews it; a click/tap/Enter locks it open or shut. Keyboard
       // is the lock alone (Tab to the button, Enter) — no focus-preview, so a
