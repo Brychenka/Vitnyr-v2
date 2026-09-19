@@ -131,6 +131,32 @@
   initSpecimenPermalinks();
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
+  initSectionNav();       // wayfinding, not motion — same reasoning as the three lines above
+
+  /* ---------- masthead section quick-nav: active-section tracking ----------
+     Scrollspy for the numeral links added in index.html. IntersectionObserver,
+     not the scroll-position math trackProgress() uses above — five zones read
+     more reliably off "which section is crossing a band near the middle of
+     the viewport" than off scroll-offset arithmetic, and it's the same tool
+     buildReveals() already uses elsewhere in this file. A thin band
+     (-45%/-50% margins collapse the viewport to a ~5% strip near its centre)
+     rather than the whole section, so the active link changes when a section
+     is actually in reading position, not the instant its top edge appears. */
+  function initSectionNav() {
+    var links = document.querySelectorAll('.tools__group--sections .tool[href^="#"]');
+    if (!links.length || !('IntersectionObserver' in window)) return;
+    var map = {};
+    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    var sections = Object.keys(map).map(function (id) { return document.getElementById(id); }).filter(Boolean);
+    if (!sections.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = map[entry.target.id];
+        if (link) link.classList.toggle('is-active', entry.isIntersecting);
+      });
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+    sections.forEach(function (el) { io.observe(el); });
+  }
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {

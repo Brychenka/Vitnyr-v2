@@ -190,6 +190,28 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         </svg>
       </button>
     </div>
+    <!-- Section quick-nav (2026-09-19). Desktop only (>=900px, see style.css) —
+         the phone masthead is already at capacity (see the 400/602px comments
+         above this file's own note block) and has been the site of several
+         documented clipping fixes; rather than fight that budget again, this
+         group simply doesn't exist below the breakpoint where there's room.
+         Numerals only, matching the section headers' own 01-05 numbering, so
+         no new label copy is invented — each link's real name (reused
+         verbatim from that section's own <p class="label">) is carried in a
+         visually-hidden span for assistive tech. Plain <a href="#id">s: the
+         generic in-page-link handler in main.js already gives them Lenis
+         smooth-scroll and destination focus for free, and initMagnetic()
+         already covers any .tool. Active-section highlight is wired in
+         main.js (initSectionNav) via IntersectionObserver, not scroll
+         position, matching the reveal system's own convention. -->
+    <span class="tools__rule tools__rule--sections" aria-hidden="true"></span>
+    <div class="tools__group tools__group--sections">
+      <a class="tool" href="#origin" data-magnetic>01<span class="vh" data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span></a>
+      <a class="tool" href="#method" data-magnetic>02<span class="vh" data-en="The method" data-ru="Метод">The method</span></a>
+      <a class="tool" href="#specimen" data-magnetic>03<span class="vh" data-en="Specimens" data-ru="Частые проблемы">Specimens</span></a>
+      <a class="tool" href="#who" data-magnetic>04<span class="vh" data-en="Who this is for" data-ru="Для кого это">Who this is for</span></a>
+      <a class="tool" href="#contact" data-magnetic>05<span class="vh" data-en="How to start" data-ru="Как начать">How to start</span></a>
+    </div>
   </nav>
 
   <!-- Spark Order S3 / move 20 — the progress hairline. Decorative, aria-hidden:
