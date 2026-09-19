@@ -687,16 +687,17 @@ html.past-origin .progress__fill--target { opacity: 1; }
    Same shell box as .hero/.sec (max-width, centred, --gut padding-inline) and
    the same hairline divider, so it sits in the page's rhythm without being a
    numbered section. Sized by content + padding: the block's height is the
-   sentence plus ~18vh of air top and bottom, capped in px so it never turns
+   sentence plus ~11vh of air top and bottom, capped in px so it never turns
    into a viewport-height slab on a short laptop (100vh is banned here for
-   exactly that reason — test_breath_block_is_not_viewport_height). The line
-   is larger than the 17px body copy and smaller than the hero title at every
-   width. */
+   exactly that reason — test_breath_block_is_not_viewport_height; trimmed
+   2026-09-19 — the line now centres at a smaller size, so the old ~18vh
+   air read as too much empty space around it). The line is larger than
+   the 17px body copy and smaller than the hero title at every width. */
 .breath {
   max-width: var(--maxw);
   margin-inline: auto;
   padding-inline: var(--gut);
-  padding-block: clamp(100px, 18vh, 210px);
+  padding-block: clamp(64px, 11vh, 140px);
   border-top: 1px solid var(--rule);
 }
 .breath__line {
