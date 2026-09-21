@@ -519,6 +519,31 @@ html.past-origin .progress__fill--target { opacity: 1; }
 .tools__hint-arrow { width: 30px; height: auto; flex-shrink: 0; margin-bottom: 1px; }
 html.is-scrolled .tools__hint { opacity: 0; }
 
+/* Where there is room (>=1100px) the note sits to the RIGHT of 05, level with
+   the row, its swash turned to point back left at the numeral. The gutter alone
+   (--gut, 64px at 1280) is too narrow for it, so the sections group reserves the
+   width as a margin — the nav shifts left by that much and the note lives in
+   the space it left. It stays put on scroll here: it is part of the row, not
+   floating over the page, and animating a margin would make the nav slide. */
+@media (min-width: 1100px) {
+  /* One value for both languages, sized for the Russian note: the language
+     switch must not move the nav (test_language_switch_button_does_not_move). */
+  .tools__group--sections { margin-right: 176px; }
+  .tools__hint {
+    right: auto;
+    left: calc(100% + 12px);
+    bottom: auto;
+    top: 50%;
+    margin-top: -20px;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 8px;
+  }
+  .tools__hint-text { transform-origin: left center; }
+  .tools__hint-arrow { transform: scaleX(-1) rotate(-70deg); margin-bottom: 0; width: 26px; }
+  html.is-scrolled .tools__hint { opacity: 1; }
+}
+
 
 @media (max-width: 602px) {
   .masthead { flex-wrap: wrap; row-gap: 10px; }
