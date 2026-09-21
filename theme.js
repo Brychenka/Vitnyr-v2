@@ -4,6 +4,11 @@
 (function () {
   var LANG_KEY = 'vitnyr-lang', THEME_KEY = 'vitnyr-theme';
 
+  /* A refresh opens at the top, not wherever the reader had scrolled to: the
+     reveals and the hero entrance are built for a cold start from the top.
+     A #hash in the URL still scrolls to its section. */
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+
   /* Marks the document as script-driven. The reveal animations hide their
      elements only under this class, so if the scripts never arrive the page
      still renders complete. main.js removes it if GSAP failed to load. */
