@@ -527,7 +527,6 @@ html[data-theme="dark"] .themeswitch svg { transform: rotate(180deg); }
 .tools__hint-text { transform: rotate(5deg); transform-origin: right bottom; }
 .tools__hint-arrow { width: 30px; height: auto; flex-shrink: 0; margin-bottom: 1px; }
 html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, so the invisible note can't be clicked or tabbed to */
-.tools__hint:hover .tools__hint-text { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
 /* Where there is room (>=1100px) the note sits to the RIGHT of 05, level with
    the row, its swash turned to point back left at the numeral. The gutter alone
