@@ -31,7 +31,7 @@ LOCKUP_FLOOR = 176
 
 
 def _icon_buttons(page):
-    return page.locator(".tools .tool--icon")
+    return page.locator(".tools .tools__group--nav .tool--icon")
 
 
 def test_three_icon_buttons_after_a_divider(open_site):
@@ -65,7 +65,7 @@ def test_three_icon_buttons_after_a_divider(open_site):
             selector,
         )
 
-    assert group_order(".tools__group--util") == ["tool themeswitch", "tool langswitch"]
+    assert group_order(".tools__group--util") == ["icon", "tool langswitch"]  # theme is an icon now
     # P10: the shared "Photos" caption opens the nav cluster, right before
     # the icons it captions.
     assert group_order(".tools__group--nav") == ["label", "icon", "icon", "icon"]
@@ -146,7 +146,7 @@ def test_icon_buttons_jump_to_their_collage_group(open_site, jump_key, heading_i
     sticky .view__bar and near the top of the view. See BUILD-NOTES.md's
     "collage nav icons" entry."""
     page, _ = open_site()
-    btn = page.locator(f'.tools .tool--icon[data-collage-jump="{jump_key}"]')
+    btn = page.locator(f'.tools .tools__group--nav .tool--icon[data-collage-jump="{jump_key}"]')
     assert btn.count() == 1
 
     btn.click()
@@ -367,7 +367,7 @@ def test_icons_have_one_shared_visible_caption(open_site):
     assert page.evaluate(
         """() => {
             const label = document.querySelector('.tools__label');
-            const firstIcon = document.querySelector('.tools .tool--icon');
+            const firstIcon = document.querySelector('.tools .tools__group--nav .tool--icon');
             return label.closest('.tools__group--nav')
                 && (label.compareDocumentPosition(firstIcon) & Node.DOCUMENT_POSITION_FOLLOWING);
         }"""

@@ -37,12 +37,16 @@
     if (!btns.length) return;
     var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
     var lang = document.documentElement.getAttribute('data-lang') || 'en';
-    var words = { en: { light: 'Cream', dark: 'Charcoal' },
-                  ru: { light: 'Крем',  dark: 'Уголь' } };
+    /* The control is an icon now (a disc, half filled; it turns over when the
+       theme does — see .themeswitch in style.css), so there is no visible word
+       to swap: the name and the tooltip carry the language. */
+    var names = { en: { light: 'Switch to the light theme', dark: 'Switch to the dark theme' },
+                  ru: { light: 'Переключить на светлую тему', dark: 'Переключить на тёмную тему' } };
+    var titles = { en: { light: 'Cream', dark: 'Charcoal' },
+                   ru: { light: 'Крем',  dark: 'Уголь' } };
     for (var i = 0; i < btns.length; i++) {
-      btns[i].textContent = words[lang][next];
-      btns[i].setAttribute('aria-label',
-        lang === 'ru' ? 'Переключить оформление' : 'Switch to the ' + next + ' theme');
+      btns[i].setAttribute('aria-label', names[lang][next]);
+      btns[i].setAttribute('title', titles[lang][next]);
     }
   }
 

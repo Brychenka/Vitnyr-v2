@@ -25,14 +25,14 @@ def test_dark_system_pref_still_opens_cream(open_site):
     assert page.evaluate("getComputedStyle(document.body).backgroundColor") == (
         "rgb(239, 235, 227)"
     )
-    assert page.locator(".masthead .themeswitch").text_content().strip() == "Charcoal"
+    assert page.locator(".masthead .themeswitch").get_attribute("title") == "Charcoal"
 
 
 def test_light_system_pref_uses_cream_with_no_attribute(open_site):
     page, _ = open_site(color_scheme="light")
     assert page.locator("html").get_attribute("data-theme") is None
     assert meta_theme_color(page).upper() == CREAM
-    assert page.locator(".masthead .themeswitch").text_content().strip() == "Charcoal"
+    assert page.locator(".masthead .themeswitch").get_attribute("title") == "Charcoal"
 
 
 def test_toggle_from_the_cream_default_sets_dark(open_site):
@@ -43,7 +43,7 @@ def test_toggle_from_the_cream_default_sets_dark(open_site):
     assert page.locator("html").get_attribute("data-theme") == "dark"
     assert page.evaluate("localStorage.getItem('vitnyr-theme')") == "dark"
     assert meta_theme_color(page).upper() == CHARCOAL
-    assert page.locator(".masthead .themeswitch").text_content().strip() == "Cream"
+    assert page.locator(".masthead .themeswitch").get_attribute("title") == "Cream"
 
 
 def test_explicit_choice_overrides_system_pref(open_site):
@@ -73,9 +73,9 @@ def test_background_actually_changes_between_pairs(open_site):
 def test_theme_button_label_is_localised(open_site):
     page, _ = open_site()
     page.locator(".masthead .langswitch").click()  # -> RU, still cream
-    assert page.locator(".masthead .themeswitch").text_content().strip() == "Уголь"
+    assert page.locator(".masthead .themeswitch").get_attribute("title") == "Уголь"
     page.locator(".masthead .themeswitch").click()  # -> charcoal
-    assert page.locator(".masthead .themeswitch").text_content().strip() == "Крем"
+    assert page.locator(".masthead .themeswitch").get_attribute("title") == "Крем"
 
 
 # --- P12: the hairline used to measure ~1.47:1 (charcoal) / ~1.48:1 (cream)

@@ -428,6 +428,16 @@ html.past-origin .progress__fill--target { opacity: 1; }
    same as the toggles. */
 .tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
 .tool--icon svg { display: block; width: 24px; height: 24px; stroke-width: 1.5; }
+/* The theme control is an icon (Igor, 2026-09-21), drawn on the same 24px /
+   1.5-stroke grid as the collage jumps beside it: a ring with its left half
+   filled. It holds one drawing and turns it over — half a turn on the one
+   curve, --e — when the charcoal pair is on, so the filled side says which
+   pair you are in without a second glyph. The turn is a transform on the svg,
+   not on the button, so the magnetic pull (which owns the button's transform)
+   never fights it. */
+.themeswitch svg { transition: transform var(--t-turn) var(--e); }
+html[data-theme="dark"] .themeswitch svg { transform: rotate(180deg); }
+
 /* P17 (2026-09-07): the row is two clusters now — the theme/language toggles
    first, then .tools__rule, then .tools__group--nav (Photos caption + the
    three collage jumps); order and rationale in index.html. A uniform gap had
