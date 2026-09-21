@@ -99,7 +99,7 @@ def test_specimen_rows_have_text_equivalent_for_correctness(open_site):
     all "Incorrect"/"Correct" pairs like English's first two — 9 specimens
     total, 2 labels each."""
     page, _ = open_site()
-    vh = page.locator(".line-spec .vh")
+    vh = page.locator(".line-spec:not([data-l=\"ru\"]) .vh")
     assert vh.count() == 18
     # text_contents, not inner_texts: under JS the .wrong line is [hidden] (the
     # error moved behind the reveal button), so its label renders nothing — but
@@ -157,11 +157,11 @@ def test_reading_shows_its_rows_statically_without_js(open_site):
     the readout's whole body (all rows) must render, not hover-gated — same
     requirement as .origin__panel above, extended to its new body. Stage 6
     (2026-09-17) cut the redundant Measured row, dropping the count from
-    four to three."""
+    four to three; a Years coaching row has since brought it back to four."""
     page, _ = open_site(java_script_enabled=False)
     rows = page.locator(".reading__row")
-    assert rows.count() == 3
-    for i in range(3):
+    assert rows.count() == 4
+    for i in range(4):
         value = rows.nth(i).locator(".reading__value").first
         assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 
@@ -172,7 +172,7 @@ def test_origin_mark_still_interactive_under_reduced_motion(open_site):
     discipline, no aria-pressed yet); Enter commits it — both must still work
     with the idle hint and the marker's slide transition unable to run."""
     page, _ = open_site(reduced_motion=True)
-    btn = page.locator('.origin__hit[data-discipline="climbing"]')
+    btn = page.locator('#origin .origin__hit[data-discipline="climbing"]')
     btn.focus()
     page.wait_for_timeout(100)
     assert btn.get_attribute("aria-pressed") == "false"
@@ -217,17 +217,17 @@ def test_origin_mark_shows_a_focus_ring_on_the_visible_figure(open_site):
     change on the glyph to mark focus. The ring now lands on .origin__mark,
     the figure the reader actually sees, via :has(.origin__hit:focus-visible)."""
     page, _ = open_site(theme="dark")
-    mark = page.locator(".origin__mark")
+    mark = page.locator("#origin .origin__mark")
     assert mark.evaluate("el => getComputedStyle(el).outlineStyle") == "none"
 
-    page.locator('.origin__hit[data-discipline="chess"]').focus()
+    page.locator('#origin .origin__hit[data-discipline="chess"]').focus()
     style = mark.evaluate(
         "el => ({ style: getComputedStyle(el).outlineStyle, color: getComputedStyle(el).outlineColor })"
     )
     assert style["style"] == "solid"
     assert style["color"] == "rgb(76, 122, 82)"  # --ink-target on charcoal
     # the hit rectangle itself still carries no ring of its own
-    hit_outline = page.locator('.origin__hit[data-discipline="chess"]').evaluate(
+    hit_outline = page.locator('#origin .origin__hit[data-discipline="chess"]').evaluate(
         "el => getComputedStyle(el).outlineStyle"
     )
     assert hit_outline == "none"
@@ -265,7 +265,7 @@ def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
     # Trifecta Order D / Stage D1 (2026-09-15): the scrollcue used to point at
     # #method; #origin moved to position 1 and the scrollcue was re-pointed to
     # follow it (main.js/index.html), so this selector follows it too.
-    link = page.locator('a[href="#origin"]')  # the scrollcue
+    link = page.locator('a[href="#origin"]').first  # the scrollcue
 
     page.mouse.move(400, 300)
     page.mouse.move(400, 760)   # plain text
@@ -408,7 +408,7 @@ def test_specimen_marks_are_proofreading_notation(open_site):
     specimens are still first in document order."""
     page, _ = open_site()
     ds = page.eval_on_selector_all(
-        "#specimen .line-spec .sig svg path", "els => els.map(e => e.getAttribute('d'))")
+        "#specimen .line-spec:not([data-l=\"ru\"]) .sig svg path", "els => els.map(e => e.getAttribute('d'))")
     assert len(ds) == 18
     assert not any("M1 1 L9 9" in d for d in ds), "old ✕ glyph still present"
     # specimen 3 (restructure) uses a different mark than specimens 1-2 (delete)

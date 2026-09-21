@@ -16,11 +16,11 @@ import pytest
 from conftest import NARROW, WIDE, horizontal_overflow
 
 ICON_LABELS = [
+    "Jump to the English coaching photographs",
     "Jump to the chess photographs",
     "Jump to the climbing photographs",
-    "Jump to the English coaching photographs",
 ]
-ICON_TITLES = ["Chess", "Climbing", "English"]
+ICON_TITLES = ["English", "Chess", "Climbing"]
 
 # data-collage-jump key -> the group heading id it must land focus on
 JUMP_TARGETS = [("chess", "collage-chess"), ("climb", "collage-climb"), ("en", "collage-en")]
@@ -37,7 +37,9 @@ def _icon_buttons(page):
 def test_three_icon_buttons_after_a_divider(open_site):
     page, _ = open_site()
     tools = page.locator(".tools")
-    assert tools.locator(".tools__rule").count() == 1
+    # 2026-09-19: the section quick-nav added a second rule + group after the
+    # collage cluster (desktop only, display:none below 900px).
+    assert tools.locator(".tools__rule").count() == 2
     assert _icon_buttons(page).count() == 3
 
     # P17: .tools is two clusters with the divider at the seam — the util
@@ -49,9 +51,10 @@ def test_three_icon_buttons_after_a_divider(open_site):
             el.classList.contains('tools__group--util') ? 'util'
             : el.classList.contains('tools__rule') ? 'rule'
             : el.classList.contains('tools__group--nav') ? 'nav'
+            : el.classList.contains('tools__group--sections') ? 'sections'
             : el.className)"""
     )
-    assert top == ["util", "rule", "nav"]
+    assert top == ["util", "rule", "nav", "rule", "sections"]
 
     def group_order(selector):
         return page.evaluate(
@@ -88,17 +91,17 @@ def test_icon_glyphs_are_pasted_verbatim_from_the_handoff(open_site):
     page, _ = open_site()
     buttons = _icon_buttons(page)
 
-    chess_rects = buttons.nth(0).locator("svg rect")
+    chess_rects = buttons.nth(1).locator("svg rect")
     assert chess_rects.count() == 4
     fills = [chess_rects.nth(i).get_attribute("fill") for i in range(4)]
     assert fills == ["currentColor", "none", "none", "currentColor"]
 
-    climb_paths = buttons.nth(1).locator("svg path")
+    climb_paths = buttons.nth(2).locator("svg path")
     assert climb_paths.count() == 4
     assert climb_paths.nth(0).get_attribute("d").startswith("M16.9 8.4C17.7 5.7")
     assert climb_paths.nth(3).get_attribute("stroke-linejoin") == "miter"
 
-    book_paths = buttons.nth(2).locator("svg path")
+    book_paths = buttons.nth(0).locator("svg path")
     assert book_paths.count() == 2
     assert book_paths.nth(0).get_attribute("d") == "M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"
     assert book_paths.nth(1).get_attribute("d") == "M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"
