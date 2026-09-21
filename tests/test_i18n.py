@@ -266,7 +266,7 @@ def test_row_selection_and_language_compose(open_site):
     ru_clause = row.get_attribute("data-prefill-ru")
     assert ru_clause and ru_clause in text
     # 2026-09-12: base offer text updated to Igor's own CTA wording.
-    assert "скрининг" in text          # the RU base message
+    assert "бесплатное занятие" in text  # the RU base message (Igor's final wording, 5f2cbaf)
     assert "screening" not in text     # not a re-encoded English one
     # the selection itself survived the switch
     assert row.locator(".row__pick").get_attribute("aria-pressed") == "true"

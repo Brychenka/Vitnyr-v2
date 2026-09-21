@@ -139,23 +139,25 @@ def test_row_dividers_content_keeps_its_original_inset(open_site):
 # track sized itself against the *paragraph* column, not its own heading —
 # "Load management" got the same ~470px as the page's longest heading. ---
 
-def test_mechanisms_heading_column_sizes_to_its_own_heading(open_site):
+def test_mechanisms_are_stacked_accordion_rows_not_a_side_by_side_grid(open_site):
+    """Replaces the old "heading column sizes to its own heading" check.
+    2edc076 (2026-09-18) folded §02 into stacked accordion rows: the
+    .mech__toggle header spans the row and its paragraph opens *below* it, so
+    there is no heading column left to size. Asserts the new shape: opening a
+    row puts its paragraph under its header, not beside it."""
     page, _ = open_site(viewport=WIDE)
     rows = page.locator("#method .mechanisms > li")
-    widths = []
+    assert rows.count() >= 1
     for i in range(rows.count()):
-        h3 = rows.nth(i).locator("h3")
-        p = rows.nth(i).locator("p:visible")
-        h3_box = h3.bounding_box()
-        p_box = p.bounding_box()
-        widths.append(h3_box["width"])
-        # paragraph starts shortly after the heading column, not ~470px later
-        gap = p_box["x"] - (h3_box["x"] + h3_box["width"])
-        assert 0 <= gap < 100, f"row {i}: {gap}px between heading and paragraph"
-    # not every row given the same fixed width any more
-    assert len(set(round(w) for w in widths)) > 1, widths
-    # and none of them balloon past the declared cap
-    assert all(w <= 260 for w in widths), widths
+        row = rows.nth(i)
+        row.locator(".mech__toggle").click()
+        page.wait_for_timeout(1200)
+        head = row.locator(".mech__head").bounding_box()
+        para = row.locator("p:visible").bounding_box()
+        assert para["y"] >= head["y"] + head["height"] - 1, (
+            f"row {i}: paragraph starts above its header's bottom edge"
+        )
+
 
 
 # --- P13: at a short mobile viewport the header's own two-line height plus
@@ -283,7 +285,7 @@ def test_contact_cta_prefill_text_is_localized(open_site):
     assert ru_href.startswith("https://t.me/yngvil?text=")
     # decodes to Cyrillic, not a re-encoded copy of the English string
     decoded = page.evaluate("href => decodeURIComponent(href.split('?text=')[1])", ru_href)
-    assert "бесплатный" in decoded
+    assert "бесплатное занятие" in decoded  # Igor's final RU wording (5f2cbaf)
 
 
 def test_see_the_work_reads_at_full_foreground_and_underlined_at_rest(open_site):
@@ -433,9 +435,11 @@ def test_who_rows_resting_mark_is_absent_without_js(open_site):
     assert _before_style(page, row)["opacity"] == "0"
 
 
-def test_who_section_explains_what_picking_a_row_does(open_site):
+def test_who_section_has_no_lede_under_its_heading(open_site):
+    """Reversal recorded, not a regression: J2 added a line under the §04 heading
+    explaining that rows are clickable; 63792e0 removed it on purpose
+    (DESIGN-PASS-III.md, W6: "do not restore the line"). Guards it staying gone."""
     for lang in ("en", "ru"):
         page, _ = open_site(lang=lang)
-        lede = page.locator("#who .sec__lede")
-        assert lede.count() == 1
-        assert lede.inner_text().strip()
+        assert page.locator("#who .sec__lede").count() == 0
+
