@@ -488,6 +488,38 @@ html.past-origin .progress__fill--target { opacity: 1; }
   .tools__rule--sections, .tools__group--sections { display: none; }
 }
 
+/* "message me" — a handwritten aside above the last numeral, pointing down at
+   05 (the way into #contact). Same voice as .origin__hint (--hand, tilted,
+   a small hand-drawn swash) but turned the other way: clockwise, +5deg where
+   the §01 note leans -5. Sits above the row, out of flow (absolute), so it
+   adds nothing to the masthead's height and the row doesn't move. The tilt is a
+   transform on the inner text only — the box itself is placed with inset, never
+   translate, so nothing here takes the transform channel from another animation.
+   --green-text, not the ink hex: this IS text (see .origin__hint). It is an
+   invitation for a reader who has just arrived, so it steps aside as soon as
+   the page moves and returns at the top. */
+.tools__group--sections { position: relative; }
+.tools__hint {
+  position: absolute;
+  right: -6px;
+  bottom: calc(100% - 4px);
+  width: max-content;   /* else it shrink-wraps to the 132px group and the arrow spills out */
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  font-family: var(--hand);
+  font-size: 24px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--green-text);
+  pointer-events: none;
+  transition: opacity var(--t) var(--e);
+}
+.tools__hint-text { transform: rotate(5deg); transform-origin: right bottom; }
+.tools__hint-arrow { width: 30px; height: auto; flex-shrink: 0; margin-bottom: 1px; }
+html.is-scrolled .tools__hint { opacity: 0; }
+
+
 @media (max-width: 602px) {
   .masthead { flex-wrap: wrap; row-gap: 10px; }
   .tools { flex-basis: 100%; justify-content: flex-end; flex-wrap: nowrap; }
