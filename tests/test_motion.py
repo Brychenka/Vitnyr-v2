@@ -102,11 +102,11 @@ def test_origin_mark_keyboard_focus_previews_without_committing(open_site):
     test_origin_mark_keyboard_focus_reveals_its_panel, which encoded the old
     model where focus alone counted as a selection."""
     page, _ = open_site()
-    btn = page.locator('.origin__hit[data-discipline="chess"]')
+    btn = page.locator('#origin .origin__hit[data-discipline="chess"]')
     btn.focus()
     page.wait_for_timeout(200)
     assert btn.get_attribute("aria-pressed") == "false"
-    assert page.locator(".glyph__part--right").evaluate("el => el.classList.contains('is-active')")
+    assert page.locator("#origin .glyph__part--right").evaluate("el => el.classList.contains('is-active')")
     item = page.locator('.origin__panel-item[data-discipline="chess"]')
     assert item.evaluate("el => el.classList.contains('is-active')")
     assert item.get_attribute("aria-pressed") == "false"
@@ -118,7 +118,7 @@ def test_origin_mark_enter_commits_and_slides_the_marker(open_site):
     previewed discipline. aria-pressed moves to it on both the stroke and
     its readout row, and .origin__marker slides to sit against that row."""
     page, _ = open_site()
-    btn = page.locator('.origin__hit[data-discipline="chess"]')
+    btn = page.locator('#origin .origin__hit[data-discipline="chess"]')
     btn.focus()
     page.keyboard.press("Enter")
     page.wait_for_timeout(700)
@@ -152,7 +152,7 @@ def test_reading_only_swaps_on_commit_not_preview(open_site):
     the readout" (D2's own words). Focusing chess must leave .reading on
     English."""
     page, _ = open_site()
-    page.locator('.origin__hit[data-discipline="chess"]').focus()
+    page.locator('#origin .origin__hit[data-discipline="chess"]').focus()
     page.wait_for_timeout(200)
     value = page.locator('.reading__row').first.locator('.reading__value[data-discipline="english"]')
     assert value.evaluate("el => el.classList.contains('is-active')")
@@ -196,19 +196,19 @@ def test_origin_mark_hover_previews_between_disciplines(open_site):
     assertions didn't need to change, only what to call what they're
     guarding."""
     page, _ = open_site()
-    english = page.locator('.origin__hit[data-discipline="english"]')
+    english = page.locator('#origin .origin__hit[data-discipline="english"]')
     english.scroll_into_view_if_needed()
     page.wait_for_timeout(300)
     english.hover()
     page.wait_for_timeout(700)
-    assert page.locator('.glyph__part--left').evaluate("el => el.classList.contains('is-active')")
+    assert page.locator('#origin .glyph__part--left').evaluate("el => el.classList.contains('is-active')")
 
-    page.locator('.origin__hit[data-discipline="climbing"]').hover()
+    page.locator('#origin .origin__hit[data-discipline="climbing"]').hover()
     page.wait_for_timeout(700)
-    stem = page.locator('.glyph__part--stem')
+    stem = page.locator('#origin .glyph__part--stem')
     assert stem.evaluate("el => el.classList.contains('is-active')")
     assert not stem.evaluate("el => el.classList.contains('is-dim')")
-    left = page.locator('.glyph__part--left')
+    left = page.locator('#origin .glyph__part--left')
     assert left.evaluate("el => el.classList.contains('is-dim')")
 
 
@@ -221,9 +221,9 @@ def test_origin_mark_rests_on_english_before_any_interaction(open_site):
     view — this is the state before that's even possible)."""
     page, _ = open_site()
     page.wait_for_timeout(100)
-    assert page.locator('.glyph__part--left').evaluate("el => el.classList.contains('is-active')")
-    assert page.locator('.glyph__part--right').evaluate("el => el.classList.contains('is-dim')")
-    assert page.locator('.glyph__part--stem').evaluate("el => el.classList.contains('is-dim')")
+    assert page.locator('#origin .glyph__part--left').evaluate("el => el.classList.contains('is-active')")
+    assert page.locator('#origin .glyph__part--right').evaluate("el => el.classList.contains('is-dim')")
+    assert page.locator('#origin .glyph__part--stem').evaluate("el => el.classList.contains('is-dim')")
 
 
 # --- J7 (Jury Pass II, 2026-09-12): the mark's two unlit strokes rested at
@@ -241,8 +241,8 @@ def test_origin_mark_rests_on_english_before_any_interaction(open_site):
 def test_origin_mark_dim_strokes_use_the_raised_floor(open_site, theme, amber_dim, green_dim):
     page, _ = open_site(theme=theme)
     page.wait_for_timeout(100)
-    right_fill = page.locator(".glyph__part--right").evaluate("el => getComputedStyle(el).fill")
-    stem_fill = page.locator(".glyph__part--stem").evaluate("el => getComputedStyle(el).fill")
+    right_fill = page.locator("#origin .glyph__part--right").evaluate("el => getComputedStyle(el).fill")
+    stem_fill = page.locator("#origin .glyph__part--stem").evaluate("el => getComputedStyle(el).fill")
     assert right_fill == amber_dim
     assert stem_fill == green_dim
 
@@ -255,9 +255,9 @@ def test_glyph_dim_state_is_a_solid_fill_not_partial_opacity(open_site):
     a real colour that can't bleed into a neighbour."""
     page, _ = open_site(theme="dark")
     page.locator("#origin").scroll_into_view_if_needed()
-    page.locator('.origin__hit[data-discipline="climbing"]').hover()
+    page.locator('#origin .origin__hit[data-discipline="climbing"]').hover()
     page.wait_for_timeout(700)
-    left = page.locator(".glyph__part--left")
+    left = page.locator("#origin .glyph__part--left")
     assert left.evaluate("el => getComputedStyle(el).opacity") == "1"
     # J7 (Jury Pass II, 2026-09-12): --amber-dim raised from #4A3B21 to
     # #624A1F (a ~32%-toward-bg blend to a ~50% one) — the literal below is
@@ -275,9 +275,9 @@ def test_stem_no_longer_gets_an_extra_scale_on_activation(open_site):
     channel all three hit regions carry identically."""
     page, _ = open_site()
     page.locator("#origin").scroll_into_view_if_needed()
-    page.locator('.origin__hit[data-discipline="climbing"]').hover()
+    page.locator('#origin .origin__hit[data-discipline="climbing"]').hover()
     page.wait_for_timeout(700)
-    transform = page.locator(".glyph__part--stem").evaluate(
+    transform = page.locator("#origin .glyph__part--stem").evaluate(
         "el => getComputedStyle(el).transform"
     )
     assert transform in ("none", "matrix(1, 0, 0, 1, 0, 0)")
@@ -290,7 +290,7 @@ def test_glyph_parts_carry_a_bg_coloured_keyline(open_site):
     strokes. A thin --bg stroke, not a change to any path coordinate, keeps
     the seam clean."""
     page, _ = open_site(theme="dark")
-    stroke = page.locator(".glyph__part--stem").evaluate("el => getComputedStyle(el).stroke")
+    stroke = page.locator("#origin .glyph__part--stem").evaluate("el => getComputedStyle(el).stroke")
     assert stroke == "rgb(23, 19, 16)"  # --bg on charcoal
 
 
@@ -542,7 +542,7 @@ def test_magnetic_pull_reaches_the_origin_mark(open_site):
     its transition on the first enter and GSAP owns the channel: the mark eases
     toward the pointer and back to rest, and the lighting still works."""
     page, _ = open_site()
-    mark = page.locator(".origin__mark")
+    mark = page.locator("#origin .origin__mark")
     mark.scroll_into_view_if_needed()
     # D2.5: the mark's reveal is sequenced after the hero lands rather than
     # fired on its own visibility — wait for that handoff first.
@@ -551,7 +551,7 @@ def test_magnetic_pull_reaches_the_origin_mark(open_site):
     )
     page.wait_for_timeout(1200)          # let the reveal rise + glyph draw settle
     # revealed and settled: transform is back to none before any hover
-    tx, ty = _translate_xy(page, ".origin__mark")
+    tx, ty = _translate_xy(page, "#origin .origin__mark")
     assert abs(tx) < 0.5 and abs(ty) < 0.5
 
     box = mark.bounding_box()
@@ -559,14 +559,14 @@ def test_magnetic_pull_reaches_the_origin_mark(open_site):
     page.wait_for_timeout(150)
     page.mouse.move(box["x"] + box["width"] - 3, box["y"] + box["height"] / 2)
     page.wait_for_timeout(500)
-    tx, ty = _translate_xy(page, ".origin__mark")
+    tx, ty = _translate_xy(page, "#origin .origin__mark")
     assert tx > 1.5, f"the origin mark should be pulled toward the pointer (tx={tx})"
     # the transform channel was handed over — no `transform` left in the transition
-    assert page.locator(".origin__mark").evaluate(
+    assert page.locator("#origin .origin__mark").evaluate(
         "el => el.style.transitionProperty"
     ) == "opacity"
     # lighting still responds: hovering the chess stroke lights its panel line
-    page.locator(".origin__hit--right").hover()
+    page.locator("#origin .origin__hit--right").hover()
     page.wait_for_timeout(200)
     assert page.locator('.origin__panel-item[data-discipline="chess"]').evaluate(
         "el => el.classList.contains('is-active')"
@@ -574,7 +574,7 @@ def test_magnetic_pull_reaches_the_origin_mark(open_site):
 
     page.mouse.move(400, 300)
     page.wait_for_timeout(700)
-    tx, ty = _translate_xy(page, ".origin__mark")
+    tx, ty = _translate_xy(page, "#origin .origin__mark")
     assert abs(tx) < 0.5 and abs(ty) < 0.5, "the mark must settle back to rest"
 
 
@@ -813,12 +813,12 @@ def test_origin_mark_holds_still_for_the_hover_states(open_site):
     )
     page.wait_for_timeout(1800)   # draw done
     before = _clip_heights(page)
-    page.locator('.origin__hit[data-discipline="chess"]').focus()
+    page.locator('#origin .origin__hit[data-discipline="chess"]').focus()
     page.wait_for_timeout(200)
     after = _clip_heights(page)
     assert before[0] > 98 and before[1] > 98 and before[2] > 42, before
     assert after == pytest.approx(before, abs=0.5), (before, after)
-    assert page.locator('.glyph__part--right').evaluate(
+    assert page.locator('#origin .glyph__part--right').evaluate(
         "el => el.classList.contains('is-active')") is True
 
 
