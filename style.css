@@ -704,38 +704,6 @@ html.past-origin .progress__fill--target { opacity: 1; }
   #who .sec__head { grid-template-columns: none; }
 }
 
-/* ---------- the breath (Spark Order S3 / move 08) ----------
-   One sentence between #specimen and #who, alone with vertical air.
-   Same shell box as .hero/.sec (max-width, centred, --gut padding-inline) and
-   the same hairline divider, so it sits in the page's rhythm without being a
-   numbered section. Sized by content + padding: the block's height is the
-   sentence plus ~11vh of air top and bottom, capped in px so it never turns
-   into a viewport-height slab on a short laptop (100vh is banned here for
-   exactly that reason — test_breath_block_is_not_viewport_height; trimmed
-   2026-09-19 — the line now centres at a smaller size, so the old ~18vh
-   air read as too much empty space around it). The line is larger than
-   the 17px body copy and smaller than the hero title at every width. */
-.breath {
-  max-width: var(--maxw);
-  margin-inline: auto;
-  padding-inline: var(--gut);
-  padding-block: clamp(64px, 11vh, 140px);
-  border-top: 1px solid var(--rule);
-}
-.breath__line {
-  max-width: 24ch;
-  margin-inline: auto;
-  font-family: var(--serif);
-  font-weight: 500;
-  font-size: clamp(24px, 4.2vw, 48px);
-  line-height: 1.18;
-  letter-spacing: -.02em;
-  color: var(--fg);
-  text-align: center;
-  text-wrap: balance;
-}
-html[data-lang="ru"] .breath__line { max-width: 26ch; letter-spacing: -.012em; }
-
 /* C12 (2026-09-06): .sec's own top rule spans its full 1320px box, but
    .mechanisms/.specs/.rows/.channels/.proof sit inside that box's
    padding-inline and so drew their own rules --gut narrower on each side —
@@ -1907,7 +1875,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    not because the door-cue idea was wrong, but because .proof__link
    fills .proof edge to edge, so its "underline" is really a full-bleed
    rule indistinguishable from a section hairline, and it sits directly
-   above .breath's own border-top with nothing between them: two rules
+   above the next section's own border-top with nothing between them: two rules
    reading as one doubled line. Full --fg text already carries the
    at-rest affordance; the underline now only earns its keep as the
    hover/focus prompt it always was on top of that. */
