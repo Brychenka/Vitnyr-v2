@@ -257,11 +257,10 @@ deferred `<picture>`/WebP work.
 1. **Branch off an up-to-date `main`**: `git checkout -b <name>`. Never commit
    to `main` directly. Commit on the branch, merge to `main`, push, so the
    next chat starts from a `main` that has your stage in it.
-2. **Do not republish the live artifact.** "Vitnyr Signature" is held at its
-   pre-placeholder version until real photographs of Igor replace the 15
-   remaining stand-ins. This overrides `CLAUDE.md`'s normal
-   republish-after-any-visible-change rule. Say in your BUILD-NOTES entry
-   that you did not republish and why.
+2. **~~Do not republish the live artifact.~~ Lifted 2026-09-17.** Igor lifted
+   the hold (see `CLAUDE.md`); `CLAUDE.md`'s normal republish-after-any-visible-change
+   rule applies again. (Original text: "Vitnyr Signature" was held at its
+   pre-placeholder version until real photographs replaced the stand-ins.)
 3. **Verify before calling it done**: both themes, both languages, 375 and
    1280, `prefers-reduced-motion: reduce`, no console errors, no horizontal
    overflow. The preview pane repaints on demand — do not trust one
@@ -283,7 +282,7 @@ deferred `<picture>`/WebP work.
    the `D` table in `main.js` rather than inventing a second timing.
 8. **Real material only.** No invented clients, results, testimonials or
    numbers. The three confirmed facts are worded exactly as `CLAUDE.md` has
-   them — 8 years, 100+ one-on-one clients, a 2100 rating **without** FIDE,
+   them — 10 years, 100+ one-on-one clients, a 2100 rating **without** FIDE,
    7c redpoint indoor and a 7C Kilter boulder.
 9. **Russian copy is Igor's.** A chat may draft EN and may draft RU as a
    clearly-flagged first pass, in an HTML comment, the way

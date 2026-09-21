@@ -24,8 +24,10 @@
   var EASE = 'power4.out';
   if (window.CustomEase) { CustomEase.create('brand', '.16, 1, .3, 1'); EASE = 'brand'; }
 
-  /* Six durations, and nothing between them. Every timing on the page comes
-     from this table so the whole thing reads as one instrument.
+  /* Six durations, and nothing between them. Every ANIMATION timing on the
+     page comes from this table so the whole thing reads as one instrument.
+     Scrolling is separate: Lenis's own duration (1.1) and the two scrollTo
+     calls (1.2) are scroll physics, not animation, and live outside the table.
        micro   — a thing appearing or disappearing outright
        state   — a hover, a magnet, a theme settling (this is --t in the sheet)
        follow  — the pointer catching up: a lag, not a duration

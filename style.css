@@ -154,7 +154,8 @@
    in every OS setting (Igor, 2026-09-07). Every value here is the charcoal
    counterpart of a token defined on :root above; nothing new is introduced. */
 :root[data-theme="dark"] {
-  /* EXPERIMENT (feature/dark-theme-color-exploration, not merged): the old
+  /* Shipped (feature/dark-theme-color-exploration, merged — keep it; do not
+     revert as leftover experiment): the old
      #14181A is a neutral-cool near-black, while the cream pair's --bg
      (#EFEBE3) is warm. Swapping to a warm near-black puts both theme pairs
      in the same warmth family — same "paper", inverted — instead of reading

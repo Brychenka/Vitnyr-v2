@@ -11,8 +11,8 @@ proof-of-method — see "Content and positioning decisions" below).
 Static HTML/CSS/JS, no build step, no framework, no package.json. Built
 against a design guide called `onesignaturemove.pdf` (not in this repo);
 `BUILD-NOTES.md` has the full phase-by-phase log, deviations from that guide,
-and what's still outstanding (contact handles, `og:url`/`og:image`, a
-below-the-hero visual check in a real browser).
+and what's still outstanding (`og:url`/`og:image`/canonical still point at the
+placeholder `vitnyr.example`, a below-the-hero visual check in a real browser).
 
 Repo: https://github.com/Brychenka/Vitnyr-v2 (branch `main`). This
 `site-v2/` folder is the repo root — there is no v1 in this repo; an earlier
@@ -49,9 +49,10 @@ as the shared backbone between them. For that to work, a new chat should:
    Weighted**, recorded below) and the still-open material-gap question
    (does real chess/climbing coaching material exist, is it bookable) that
    outlasts the retired order because any future chess/climbing feature runs
-   into the same gap. A fourth idea (the mark as the page's index) exists as
-   a draft on an unmerged branch (`feature/navigator-order`) — parked, not
-   part of the plan, not to be picked up without Igor saying so.
+   into the same gap. A fourth idea (the mark as the page's index) was first
+   drafted on `feature/navigator-order`; that draft is superseded — Trifecta
+   Order D (`TRIFECTA-D-NAVIGATOR.md`) shipped all its stages to `main` on
+   2026-09-15 and the mark now sits at §01.
 2. Branch before changing anything: `git checkout -b feature/<name>` off an
    up-to-date `main`. Don't commit straight to `main`.
 3. Verify before calling it done: both themes, both languages, ~375px and
@@ -77,7 +78,7 @@ aren't clobbered.
 
 ## Running it
 
-No build/install/test commands exist. Serve the folder statically and open it:
+No build or install step exists. Serve the folder statically and open it:
 
 ```
 python3 -m http.server
@@ -87,7 +88,13 @@ Then visit `localhost:8000`. Opening `index.html` directly via `file://`
 mostly works but skips the Google Fonts preconnect timing and some relative
 paths are worth checking under an actual server.
 
-There is no linter and no test suite. Verification is manual: check both
+There is no linter, but there is a test suite: `tests/` holds Playwright
+tests (pytest), run with `tests/.venv/bin/pytest tests -q` (about 5 minutes; it
+starts its own static server). It was brought back to fully green on 2026-09-21
+(one known xfail, `specimen-register` naming "please" in its visible
+explanation — see the reason in `tests/test_content.py`). Run it before and
+after a change and read every failure rather than bulk-updating. Tests are no
+substitute for looking, so also check manually: both
 themes (Cream/Charcoal) and both languages (EN/RU), at both ~375px and
 ~1280px widths, with and without `prefers-reduced-motion: reduce`.
 
@@ -223,9 +230,10 @@ misalign in a fallback face.
 
 ## Outstanding / placeholder content
 
-Search for `PLACEHOLDER`, `fill in`, and `.ch__todo` — contact handles
-(Telegram/LinkedIn/Instagram), `og:url`, and `og:image` are all real
-placeholders, not committed real data. `BUILD-NOTES.md` lists these plus
+Search for `PLACEHOLDER`, `fill in`, and `.ch__todo`. The Telegram, LinkedIn
+and Instagram handles are live in `index.html`; `og:url`, `og:image`, the
+canonical/hreflang links, `sitemap.xml` and `robots.txt` still point at the
+placeholder `https://vitnyr.example/` until the real domain exists. `BUILD-NOTES.md` lists these plus
 what's been visually verified vs. only checked by measuring the DOM.
 
 ## Content and positioning decisions (already made — don't re-litigate)
