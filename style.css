@@ -512,12 +512,12 @@ html.past-origin .progress__fill--target { opacity: 1; }
   line-height: 1;
   white-space: nowrap;
   color: var(--green-text);
-  pointer-events: none;
-  transition: opacity var(--t) var(--e);
+  transition: opacity var(--t) var(--e), visibility var(--t) var(--e);
 }
 .tools__hint-text { transform: rotate(5deg); transform-origin: right bottom; }
 .tools__hint-arrow { width: 30px; height: auto; flex-shrink: 0; margin-bottom: 1px; }
-html.is-scrolled .tools__hint { opacity: 0; }
+html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, so the invisible note can't be clicked or tabbed to */
+.tools__hint:hover .tools__hint-text { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
 /* Where there is room (>=1100px) the note sits to the RIGHT of 05, level with
    the row, its swash turned to point back left at the numeral. The gutter alone
@@ -541,7 +541,7 @@ html.is-scrolled .tools__hint { opacity: 0; }
   }
   .tools__hint-text { transform-origin: left center; }
   .tools__hint-arrow { transform: scaleX(-1) rotate(-70deg); margin-bottom: 0; width: 26px; }
-  html.is-scrolled .tools__hint { opacity: 1; }
+  html.is-scrolled .tools__hint { opacity: 1; visibility: visible; }
 }
 
 
@@ -2068,7 +2068,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    hover state — so pointer-leave has no transition and the mark jumps
    360 -> 0 with no visible motion (360deg == 0deg) and no reverse spin. Each
    hover re-arms a clean single turn. CSS-only: with JS or GSAP absent the
-   mark is simply static, as before. Decorative — the mark is role=img, not a
+   mark is simply static, as before. the mark is role=img, not a
    control, so no :focus-visible path and no tab stop added.
 
    The hover target is the .footmark-spin WRAPPER, never the <svg>: a rotating

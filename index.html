@@ -213,13 +213,14 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <a class="tool" href="#contact" data-magnetic>05<span class="vh" data-en="How to start" data-ru="Как начать">How to start</span></a>
       <!-- Marginalia, same hand as the §01 "Choose your discipline" aside but
            tilted the other way (clockwise): an invitation to the last numeral,
-           which is the way into #contact. Decorative — 05 already carries its
-           own name — so aria-hidden and out of the pointer's way. Desktop only,
-           by living inside the sections group; fades once the page is scrolled. -->
-      <span class="tools__hint" aria-hidden="true">
+           and a real link to #contact — the section with the Telegram, LinkedIn
+           and Instagram links. Desktop only, by living inside the sections
+           group; at 1100px and up it sits right of 05 and stays, below that it
+           sits above the row and fades once the page is scrolled. -->
+      <a class="tools__hint" href="#contact" data-magnetic>
         <span class="tools__hint-text" data-en="message me" data-ru="напишите мне">message me</span>
         <svg class="tools__hint-arrow" aria-hidden="true" viewBox="0 0 46 40" fill="none"><path d="M3 3c14 2 24 12 22 26M25 29l-8-3M25 29l3 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </span>
+      </a>
     </div>
   </nav>
 
