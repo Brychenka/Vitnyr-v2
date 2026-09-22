@@ -627,7 +627,7 @@ nearly nine screens long — only becomes answerable once the height is known.
 | DP1 — copy corrections | DP1, DP13, DP2, DP3 | open, unblocked |
 | DP2 — reveal labels | DP4, DP5 | open, unblocked |
 | DP3 — readout as index | DP6 | open, unblocked |
-| DP4 — deep-link landing | DP7, DP8 | open, unblocked |
+| DP4 — deep-link landing | DP7, DP8 | **landed** 2026-09-22, `86f26e2` — scroll-margin-top on .sec/.spec plus a main.js headerHeight() offset for every Lenis-driven jump; specimen hashes now commit their discipline group before landing |
 | DP5 — launch blockers | DP9, Q9, Q10 | domain half unblocked; copy half blocked on DP0 |
 | DP6 — record and seams | DP10, DP11, DP12 | open, unblocked |
 | DP7 — the phone + DP0's outcomes | — | blocked on DP0 and on re-measurement |
