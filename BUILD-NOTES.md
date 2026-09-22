@@ -5026,3 +5026,107 @@ EN/RU, 375-1280px): the switcher jumps correctly between all three groups
 from inside the view, disappears cleanly below 400px with no overlap or
 overflow, and the lightbox still makes the whole bar inert. No console
 errors.
+
+## §02 loop mark — the pointer magnet (2026-09-22)
+
+Igor asked for the Vitnyr mark in §02 "The method", with its three strokes
+held apart and "some sort of circle in the centre magnetising them" — the
+method being the same one across English, chess and climbing. §02 made that
+argument entirely in prose until now (head, lede, five foldable mechanisms)
+and had no visual saying "three disciplines, one mechanism."
+
+What shipped is the pointer half of that idea and only that half: a fourth,
+**mute** instance of the mark, centred between the lede and
+`<ol class="mechanisms">`. It rests as the exact locked logo; on a fine
+pointer each of the three strokes leans toward the cursor dot and returns.
+**The dot is the magnet — no circle is drawn.** The only circle on the page
+is `.cursor__dot`, which CLAUDE.md already flags as a deliberate exception
+rather than a precedent, so drawing a second one to play the magnet would
+have spent that exception twice.
+
+**Two decisions taken with Igor before building:**
+
+- **Translation only, never rotation.** The first prototype rotated the
+  strokes as they scattered. `reference/vitnyr-brand-identity.md` lists "no
+  stretching, skewing, or rotating the mark or wordmark" as a hard rule, so
+  the lean became a straight-line offset with a 7px ceiling and the rest
+  state is always the locked geometry. `test_loopmark_never_rotates_the_strokes`
+  guards it: a/b/c/d stay identity at rest and under the pull alike.
+- **Mute, not clickable.** §01's `.origin__mark` is the page's index — three
+  real `<button>` hit regions that commit a discipline. A second
+  interactive-looking mark two sections later would compete with it, so this
+  one is `aria-hidden`, holds no focusable descendant, and deliberately
+  carries **no `data-magnetic`**: `initCursor`'s `HOT = 'a, button,
+  [data-magnetic]'` is what turns the pointer dot to accent ink, and that
+  colour change is the page's "this is a control" signal. Lighting it would
+  promise a click that doesn't exist.
+
+**Where it sits.** `#method .sec__head` is a centred single column —
+`style.css` deliberately overrides the shared two-up split for this section —
+so there is no right-hand column to hang a mark in. Centred between lede and
+mechanisms also makes it the hinge between "everything below is that loop"
+and the five parts of the loop. Radial symmetry for a radial interaction.
+Sized `clamp(84px, 12vw, 124px)`, deliberately under §01's
+`clamp(180px, 22vw, 280px)`: a footnote to the argument, not a second index.
+
+**Four collisions in existing code — the whole reason it gets fresh class
+names (`.loopmark` / `.loopmark__stroke`) instead of reusing `.origin__mark`:**
+
+1. `initOrigin()` queries `.glyph__part` and `.origin__sigil` **document-wide**,
+   deliberately, so §01 and §03 stay in sync on the committed discipline —
+   two strokes dimmed, one lit. Correct there; wrong here, where the point is
+   that all three read equal. Hence a new stroke class, no sigils, all three
+   at full `--amber`/`--green` always.
+2. `initMagnetic()` already pulls `.origin__mark` as a whole figure. Reusing
+   the class would have moved the figure *and* its strokes.
+3. The S7 draw-in clips are scoped `html.js .origin__mark #glyphClip* rect
+   { height: 0 }`. A shared class — or shared clip ids — would have collapsed
+   this mark until it scrolled into view. Hence `glyphClipLeftLoop` /
+   `glyphClipRightLoop`, and no stem clip at all (§01 only clips the stem to
+   animate the draw-in, which this mark doesn't do).
+4. The transform-channel rule: each stroke's `<g>` carries the pull and
+   nothing else — no static placement transform shares the node, the same
+   discipline §01's sigils already follow (outer `<g>` places, inner `<g>`
+   animates).
+
+`#glyphV` is referenced from §01's existing `<defs>`, not copied; the stem
+path is copied verbatim exactly as §03's mini already copies it. No geometry
+was regenerated.
+
+**`initLoopmark()`** (`main.js`, called beside `initCursor`/`initMagnetic`):
+one `mousemove` on the figure, `{ passive: true }`, box measured on enter
+rather than per move (same reason as `initMagnetic`'s `capture()` — no forced
+layout on every frame). `gsap.quickTo` per stroke on x/y with the existing
+`EASE` and `D.state`; no new curve, no new duration, no new reveal rhythm, no
+ScrollTrigger. Each stroke leans from its **own** notional centre in the
+viewBox (left arm `34,36`; right arm `66,36`; stem `50,64` — read off the
+shared geometry, because `getBBox` on a `<use>` of a clipped path reports the
+whole source path and would put both arms at the same point), so they
+separate instead of sliding as one logo. Linear falloff to zero at the rim so
+the field is continuous where it ends; the vector is scaled whole, never
+per-axis, so a diagonal can't exceed `PULL`. Gated on `finePointer` and wired
+past the reduced-motion return: a reduce reader, a touch screen or a coarse
+pointer gets the locked mark and no listener is ever attached, and the sheet
+pins `.loopmark__stroke { transform: none }` under reduce as belt-and-braces.
+Nothing in `initOrigin` or `initMagnetic` changed.
+
+**One thing the a11y sweep caught**: `test_decorative_svgs_are_hidden_from_a11y_tree`
+asks every `<svg>` on the page to be either `role="img"` with a label or
+explicitly `aria-hidden` — an inherited hidden state from the `<figure>`
+doesn't answer it. `aria-hidden` now sits on both, the same as §01's mark.
+
+**New tests**: three in `test_motion.py` (the three strokes rest at zero,
+lean independently toward the pointer under a 7px ceiling and settle back;
+no rotation at any pointer position; inert and fully visible under reduced
+motion) and one in `test_a11y.py` (aria-hidden, no `data-magnetic`, nothing
+focusable, and no borrowed `.glyph__part`/`.origin__sigil`/`.origin__hit`).
+
+**Verified**: `tests/.venv/bin/pytest tests -q` — 295 passed, 1 xfail
+(`specimen-register`, known), plus one pre-existing flake in the
+specimen-permalink cold-load test, reproduced against unmodified `main` in a
+clean worktree (it fails on chess or on climbing depending on the run, on
+`main` as well as here). Driven manually in the browser at `localhost:8010`
+with real pointer frames, not a single screenshot: the strokes lean and
+settle in both themes, the mark rests as the locked logo, 84px wide and
+centred at 375px with no horizontal overflow, no listeners on a coarse
+pointer, no console errors.

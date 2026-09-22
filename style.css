@@ -1275,6 +1275,29 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 .glyph__part--right.is-dim { fill: var(--amber-dim); }
 .glyph__part--stem.is-dim { fill: var(--green-dim); }
 
+/* §02 loop mark (2026-09-22) — the pointer magnet. A fourth instance of the
+   mark, mute: no hit regions, no sigils, no committed-discipline dimming, so
+   all three strokes read equal, which is the section's whole argument. Its
+   own class names because .origin__mark is already claimed by initOrigin's
+   document-wide paint, initMagnetic's whole-figure pull and the S7 draw-in
+   clips below — see the comment block above the figure in index.html. */
+.loopmark {
+  width: clamp(84px, 12vw, 124px);
+  margin: clamp(26px, 5vw, 44px) auto clamp(30px, 6vw, 52px);
+}
+/* Deliberately under §01's clamp(180px, 22vw, 280px): this is a footnote to
+   the argument, not a second index. The inner <g>s lean up to 7px, and .glyph
+   already sets overflow: visible, so the bleed is never clipped — the margins
+   above leave it room at 375px too. */
+.loopmark__stroke { will-change: auto; }
+.loopmark:hover .loopmark__stroke { will-change: transform; }
+/* Same --bg keyline the §01 strokes carry (.glyph__part above): the amber V
+   and the green stem meet at a shared vertex, and as they separate that seam
+   is exactly what has to stay legible. On the children, not the <g> — the <g>
+   is animation-only, per the transform-channel rule. */
+.loopmark__stroke > * { stroke: var(--bg); stroke-width: 1.25px; }
+
+
 /* Specimen sigils (2026-09-17): three small copies of the masthead nav
    icons at the open end of each stroke (index.html). Hidden at rest —
    opacity only, never display/visibility, so the fade in initOrigin() has
@@ -2281,6 +2304,11 @@ html.js .collage .reveal.is-in .collage__slot {
      .origin__mark is already covered by the .reveal transform reset above. */
   .tool:hover, .view__back:hover, .origin__mark:hover { will-change: auto !important; }
   .tool, .view__back { transform: none !important; }
+  /* §02 loop mark: initLoopmark() never runs under reduced motion (it sits
+     past the reduce return in main.js) — this pins the strokes flat and drops
+     the layer hint anyway, same belt-and-braces as the controls above. */
+  .loopmark:hover .loopmark__stroke { will-change: auto !important; }
+  .loopmark__stroke { transform: none !important; }
   /* Stage 4's hover scale is the same kind of hover-triggered transform as
      the magnetic pull above — dropped outright under reduced motion, not
      just made instant, matching that precedent. */
