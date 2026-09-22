@@ -4930,3 +4930,99 @@ rendering in colour on hover via canvas pixel sampling (R≠G≠B), not just a
 visual impression, since some source photos' tones read similarly at a
 glance in grayscale vs colour on a small screenshot. No console errors, no
 regressions to the grid's own still-grayscale-on-hover behaviour.
+
+## Collage view: intro trimmed, in-view domain switcher added (2026-09-22)
+
+Started from a design question: the `#collage` intro (label/h1/lede before
+the first domain group) reads as a lot of empty canvas. But the masthead's
+three `data-collage-jump` icons don't scroll a reader past that intro on the
+way in — `jumpToGroup()` opens the view and lands straight on the target
+group's label, skipping the intro entirely — and only the `.proof__link`
+door CTA actually shows it. So the intro isn't "lackluster," it's a vestibule
+roughly half of entrants never see, and worth trimming rather than
+decorating. The bigger problem sits one level down: once inside via either
+path, the masthead — those same three icons included — goes `inert`
+(`setBehindInert`, `main.js`), so there was no way to move between
+English/chess/climbing except manual scrolling. That's the thing actually
+worth fixing.
+
+**Intro trimmed.** `.view__body`'s top padding (`clamp(44px,7vw,100px)` ->
+`clamp(32px,5vw,72px)`) and `.view__lede`'s bottom margin
+(`clamp(48px,7vw,96px)` -> `clamp(32px,5vw,64px)`) pulled down; the clamp
+pattern is unchanged, just tighter numbers. `h1#collage-title` and its
+focus-on-open behaviour are untouched — it's the view's one required page-
+level landmark, not the part that read as empty.
+
+**In-view domain switcher.** Three buttons in `.view__bar`'s `.view__tools`,
+before the theme/lang/back cluster, separated by a `.tools__rule` divider —
+mirroring the masthead's own P17 nav/util split rather than inventing a new
+grouping convention. Wrapped in a `.tools__group` div (that class was
+already generic — `display:flex; gap:10px` — so no new CSS was needed for
+the cluster itself). Each button carries `data-collage-jump="en"/"chess"
+/"climb"` and the masthead's exact glyph SVGs (byte-identical path data).
+**No JS changes**: `main.js`'s `jumpers` selector already queries the whole
+document for `[data-collage-jump]`, and the click handler's
+`location.hash !== '#collage'` branch is simply skipped when a button like
+this is clicked from inside the already-open view, so it falls straight
+through to `jumpToGroup(key)` — exactly the wanted behaviour, for free.
+
+Small drive-by fix while touching this: the `#collage-chess` group's own
+`.label--glyph` icon (the "echo" copy next to "Chess" inside the chess
+`.view__group`) predated the masthead's P21 chess-glyph rework and still
+used the old 6.25-unit rects — updated to match the masthead's current
+7.5-unit geometry so the switcher and the group label read as the same
+glyph.
+
+**Mobile crowding — a real bug, not just a squeeze.** `.tools__group` (the
+wrapper div) has no `flex-shrink` override, unlike `.tool` itself
+(`flex-shrink:0` — "a touch target is a floor," see the comment on `.tool`).
+Once `.view__tools` ran out of room, flexbox shrank the *group's own box*
+below its content's width while its `flex-shrink:0` children held their
+size — at 375px this wasn't a cosmetic squeeze, the climbing icon's box
+measurably overlapped the theme toggle's box by ~39px (confirmed via
+`getBoundingClientRect()`, not just a screenshot). Clean down to ~430-500px;
+broken by 375px. Rather than force a fit (shrinking a 44px touch target
+below the WCAG floor was never on the table, same reasoning `.tool`'s own
+comment already gives), the switcher and its divider are hidden below
+400px — reusing the exact breakpoint the masthead nav already hit for the
+same reason, not a new magic number:
+
+```css
+@media (max-width: 400px) {
+  .view__bar .tools__group,
+  .view__bar .tools__rule { display: none; }
+}
+```
+
+Below 400px a reader still reaches every group by scrolling, same as
+before this stage — nothing regresses, the enhancement just isn't there yet
+at that width.
+
+**Inert/lightbox interaction**: no change needed. `.view__bar` already goes
+`inert` wholesale when the lightbox opens (existing behaviour, asserted in
+`test_collage_lightbox.py`); the new buttons inherit that as ordinary
+children of the same element — verified directly rather than assumed.
+
+**Scope guard**: no scroll-spy / active-group highlighting. This is a jump
+affordance only, matching what the masthead icons already do — adding an
+IntersectionObserver for a "currently viewing" state wasn't asked for and
+wasn't added.
+
+**New tests** (`tests/test_collage_view_switcher.py`): structure and order
+inside `.view__bar` (jump-group, divider, theme, lang, back); accessible
+names; the chess-glyph regression guard (switcher and group-label rects both
+now 7.5-unit); each button jumps to its group's heading from inside the
+already-open view (the actual fix, parametrized over all three); the bar
+stays `inert` with the lightbox open; the switcher is hidden below 400px
+and, at every width from 320-600px, no two bar controls overlap and the
+page never overflows horizontally.
+
+**Verified**: `tests/.venv/bin/pytest tests -q` — 2 pre-existing failures in
+`test_motion.py`'s specimen-permalink cold-load test unrelated to this
+change (confirmed by reproducing them against an unmodified `main` via `git
+stash`; flagged separately, not fixed here), otherwise green including the
+12 new tests above. Driven manually in the browser (Cream/Charcoal,
+EN/RU, 375-1280px): the switcher jumps correctly between all three groups
+from inside the view, disappears cleanly below 400px with no overlap or
+overflow, and the lightbox still makes the whole bar inert. No console
+errors.
