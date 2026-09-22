@@ -2055,6 +2055,49 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   font-family: var(--mono); font-size: clamp(14px, 1.5vw, 17px); color: var(--fg2);
   letter-spacing: .02em;
 }
+
+/* Per-channel handwritten aside — see the comment above the markup. Hidden
+   until the row is hovered/focused; li is the positioning context so the
+   note adds nothing to the row's own height. */
+.channels li { position: relative; }
+.ch__hint {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -11px;
+  width: max-content;
+  max-width: min(300px, calc(100vw - 40px));
+  text-align: right;
+  font-family: var(--hand);
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--green-text);
+  transform: rotate(-3deg);
+  transform-origin: right center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--t) var(--e), visibility var(--t) var(--e);
+}
+.channels li:hover .ch__hint,
+.channels li:focus-within .ch__hint { opacity: 1; visibility: visible; }
+
+/* Under 700px there's no hover to reveal it, so the note drops in flow below
+   the row instead of floating over the page — same width:max-content escape
+   .tools__hint needed, since it would otherwise shrink-wrap to the row. */
+@media (max-width: 699.98px) {
+  .ch__hint {
+    position: static;
+    display: block;
+    width: auto;
+    max-width: none;
+    text-align: left;
+    transform: none;
+    margin: -6px 0 clamp(14px, 4vw, 20px);
+    opacity: 1;
+    visibility: visible;
+  }
+}
 /* ---------- footer ---------- */
 .foot {
   display: flex; align-items: center; justify-content: space-between;

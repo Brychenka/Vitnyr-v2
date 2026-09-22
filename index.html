@@ -1036,21 +1036,33 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        and one of the three is the whole page's conversion goal. The arrow
        now belongs to .contact__cta alone; these rows drop to a quieter tier
        (dimmed label, no arrow) so there is one loudest thing on the page. -->
+  <!-- 2026-09-22: a handwritten aside per channel, same voice and family as
+       .tools__hint (Marck Script, --green-text — this IS text, see the note
+       above .tools__hint), telling a reader *why* that particular channel
+       over the other two rather than just repeating the handle. Sits to the
+       right of the row on desktop (out of flow, li is the positioning
+       context) and drops in flow below the row under 700px, where there's
+       no hover to reveal it anyway. Decorative: aria-hidden, not a link, no
+       tabindex — the row's own <a> already carries everything a screen
+       reader needs. -->
   <ul class="channels">
     <li class="reveal">
       <a href="https://t.me/yngvil" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">Telegram</span><span class="ch__v">@yngvil</span></span>
       </a>
+      <span class="ch__hint" aria-hidden="true" data-en="available 24/7" data-ru="на связи круглосуточно">available 24/7</span>
     </li>
     <li class="reveal">
       <a href="https://www.linkedin.com/in/vitnyrcoach/" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">LinkedIn</span><span class="ch__v">/in/vitnyrcoach</span></span>
       </a>
+      <span class="ch__hint" aria-hidden="true" data-en="I write about English here" data-ru="здесь я пишу про английский">I write about English here</span>
     </li>
     <li class="reveal">
       <a href="https://www.instagram.com/brychenka/" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">Instagram</span><span class="ch__v">@brychenka</span></span>
       </a>
+      <span class="ch__hint" aria-hidden="true" data-en="climbing + tendon/nerve rehab" data-ru="скалолазание и реабилитация связок и нервов">climbing + tendon/nerve rehab</span>
     </li>
   </ul>
 </section>
