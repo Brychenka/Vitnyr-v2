@@ -526,6 +526,17 @@
       count.textContent = (index + 1) + ' / ' + figures.length;
     }
 
+    // Open/close motion: additive only, same rule as every other animation
+    // in this file (see the reveal/motion comment block above buildReveals).
+    // With GSAP absent or prefers-reduced-motion, open() just flips `hidden`
+    // as before — nothing here is load-bearing for the dialog to work.
+    // canAnimate is re-checked on every call rather than cached once, and
+    // killBoxTween guards a rapid double-click from stacking two tweens on
+    // the same element, same pattern as langFadeTween above.
+    function canAnimate() { return !reduce && window.gsap; }
+    var boxTween = null;
+    function killBoxTween() { if (boxTween) { boxTween.kill(); boxTween = null; } }
+
     function open(i, opener) {
       index = i;
       returnFocusTo = opener;
@@ -538,10 +549,47 @@
         if (body) body.inert = true;
       }
       box.focus({ preventScroll: true });
+
+      if (canAnimate()) {
+        killBoxTween();
+        // The photo grows in from wherever the tile that opened it actually
+        // sat, not from a fixed centre — the one cheap trick that makes a
+        // "grow to full view" read as a photo *responding to the click*
+        // rather than a generic dialog. transform-origin is relative to
+        // media's own box, so the opener's rect has to be re-measured
+        // against media's rect *after* box.hidden flips (geometry is live
+        // synchronously the same frame, same assumption jumpToGroup makes
+        // above) rather than reused from any earlier read.
+        var mediaRect = media.getBoundingClientRect();
+        var openerRect = opener ? opener.getBoundingClientRect() : null;
+        if (openerRect && mediaRect.width && mediaRect.height) {
+          var ox = (openerRect.left + openerRect.width / 2) - mediaRect.left;
+          var oy = (openerRect.top + openerRect.height / 2) - mediaRect.top;
+          media.style.transformOrigin = ox + 'px ' + oy + 'px';
+        } else {
+          media.style.transformOrigin = '50% 50%';
+        }
+        gsap.set(box, { opacity: 0 });
+        gsap.set(media, { opacity: 0, scale: 0.88 });
+        boxTween = gsap.timeline({ onComplete: function () { boxTween = null; } })
+          .to(box, { opacity: 1, duration: D.micro, ease: EASE }, 0)
+          .to(media, { opacity: 1, scale: 1, duration: D.state, ease: EASE }, 0);
+      }
     }
+    // Close stays synchronous, unlike open() — Escape/close-button/prev-
+    // trigger-click all read .lightbox's `hidden` state and focus location
+    // back out immediately (test_escape_closes_only_the_lightbox_and_
+    // restores_focus_to_its_tile asserts this with no wait), and a
+    // keyboard user tabbing right after Escape has to land back on real,
+    // reachable content the instant this returns, not one tween later.
+    // The open-only motion still reads as intentional rather than
+    // lopsided: an entrance you watch happen invites a beat of attention; a
+    // dismissal doesn't need one, and instant-close is the normal feel for
+    // this exact interaction (most native image viewers close immediately).
     function close() {
       if (!lightboxOpen) return;
       lightboxOpen = false;
+      killBoxTween();
       box.hidden = true;
       root.classList.remove('lightbox-open');
       if (canInert) {
@@ -552,6 +600,9 @@
     }
     function step(delta) {
       index = (index + delta + figures.length) % figures.length;
+      if (canAnimate()) {
+        gsap.fromTo(img, { opacity: 0 }, { opacity: 1, duration: D.micro, ease: EASE });
+      }
       render();
     }
 

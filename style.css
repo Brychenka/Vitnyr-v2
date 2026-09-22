@@ -1782,8 +1782,18 @@ html.js.collage-open, html.js.collage-open body { overflow: hidden; }
 
 .lightbox__media {
   grid-row: 1;
-  width: 100%; height: 100%; min-height: 0;
-  display: grid; place-items: center;
+  width: 100%; height: 100%; min-height: 0; min-width: 0;
+  /* Flex, not grid, for this inner box: a grid item's percentage max-height
+     is resolved against its grid area, and Chromium (still true as of this
+     fix) treats that area as indefinite here even with an explicit 1fr row
+     on a definite-height grid — so a 900w+ square source rendered at full
+     native pixel size, sometimes taller than the viewport, ignoring
+     .lightbox__img's max-height:100% below entirely. A flex container's
+     cross-axis percentage resolution doesn't hit that circularity, so the
+     same img/max-* rules below now actually cap the photo. Fixed
+     2026-09-22: reported as photos opening "too big in the face" with no
+     way back to the whole image. */
+  display: flex; align-items: center; justify-content: center;
 }
 /* width/height: auto with these two max-* is what caps display at the
    image's own native pixel size instead of upscaling a 900w/1200w source
