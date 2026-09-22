@@ -4841,3 +4841,92 @@ now-removed cards keeping "2100"/"7c redpoint · 7C Kilter" visible without
 committing a discipline first, so cutting §04 broke them too; fixed here
 alongside the rest rather than left as new pre-existing failures. The
 remaining 20 are unrelated to this change (still flagged, not fixed).
+
+## Collage lightbox — colour reveal (2026-09-22)
+
+Branch `feature/lightbox-colour-reveal`. Files: `style.css`, `main.js`,
+`tests/test_collage_lightbox.py`.
+
+**Deliberately reverses Stage 5's "no grayscale→colour on hover" rejection**
+([BUILD-NOTES.md](#collage-stage-5--signature-move--polish-nothing-added-to-the-tiles),
+"Collage Stage 5"), a rule that was reaffirmed rather than reopened when the
+lightbox itself was built ("Grayscale stays on at every size... Stage 5's
+rejection holds at any zoom level," Collage Stage 3 entry above) and again
+when the tiles earned their hover/focus affordances (Collage Stage 4 entry
+above). Igor's call, prompted by his own idea: colour on hover on desktop,
+colour on tap on phone — asked for explicitly, not a default we chose.
+
+**Scope is deliberately narrow — the lightbox only, not the grid.** The
+original objection ("colour is a governed resource... reversing it on hover
+breaks that on the page's largest elements") is a page-wide claim, so
+scoping this to the lightbox doesn't make the objection disappear outright —
+but the lightbox is a different visual register from the grid: a full-
+screen, one-photo-at-a-time mode where nothing else on screen carries the
+amber/green semantic accents while it's open (the view bar and masthead go
+`inert` and are covered by the solid `--bg` overlay), unlike the 15 grid
+tiles sitting on the page next to the rest of the UI. The grid keeps the
+original ban exactly as it was — `test_tile_still_grayscale_on_hover` is
+untouched and still asserts hovering a grid tile never touches
+`--collage-filter`.
+
+**Desktop: pure CSS, no JS.** `.lightbox__img` already carried
+`filter: var(--collage-filter)`; added `transition: filter .6s var(--e)`
+(tracks `D.state` in `main.js` by hand, same convention Stage 4's hover-
+scale already uses for its own transition) and, gated the same way every
+other fine-pointer-only affordance on this page is gated
+(`@media (hover: hover) and (pointer: fine)`, matching `style.css`'s
+existing `@media (pointer: fine)`/`(pointer: coarse)` pairs elsewhere):
+`.lightbox__img:hover { filter: none; }`.
+
+**No `:focus-visible` pairing, on purpose — a departure from this page's
+usual hover/keyboard convention.** Every other earned hover cue on this page
+(`.proof__link`, `.collage__trigger`'s own hover-scale) pairs `:hover` with
+`:focus-visible` so keyboard users get the same cue. This one doesn't,
+because there's no natural focusable target to hang it on without adding a
+`tabindex` to a purely decorative image with no action behind it — exactly
+the "empty keyboard stop" Stage 5 already named and rejected once for the
+grid tiles before Stage 3 turned them into real buttons. Colour conveys no
+information here (same photo either way, fully legible in grayscale), so a
+keyboard user losing the bonus isn't a parity regression the way losing
+content or a control would be.
+
+**Touch has no hover, so `main.js` fires the reveal itself, once, as the
+photo opens** — `initCollageLightbox`'s `open()` adds `.is-colour` to the
+`.lightbox` element when `!finePointer` (the same fine-pointer flag every
+other pointer-gated flourish in this file already checks, `main.js:18`);
+`close()` removes it, so the reveal replays every time a photo is opened
+rather than only once per page load. `style.css` pairs this with
+`@media (pointer: coarse) { .lightbox.is-colour .lightbox__img { filter:
+none; } }` — belt-and-braces scoping so the class is inert on any device
+`finePointer`'s own check didn't intend it for. The reveal fires at the same
+moment as the existing open() scale-in tween, so on touch the photo scales
+up and gains its colour as one arrival gesture, rather than silently
+skipping the grayscale state — the "reveal" is still the point on mobile,
+not just a cheaper fallback.
+
+**Reduced motion needed no new CSS.** `filter` isn't a transform, so it
+doesn't get the "drop the effect outright" treatment Stage 4's hover-scale
+gets in the reduced-motion block (`.collage__trigger:hover img { transform:
+none !important; }`) — it just falls through to that block's existing
+blanket `* { transition-duration: .01ms !important }`, same as every other
+non-transform property change on the page. Colour still reveals under
+reduced motion; it's just instant rather than eased.
+
+**Stock placeholders:** the English group is still stock photography
+(`assets/collage/PLACEHOLDERS.md`) — this ships on top of that as-is, per
+Igor (stock photos will be replaced later; not a reason to hold this back).
+
+**New tests** (`tests/test_collage_lightbox.py`): hover reveals colour on
+the lightbox photo; colour reverts on unhover; a touch context
+(`has_touch=True`) opens straight into colour with no hover; the reveal
+still fires under `reduced_motion=True`. The stale Stage 4 section comment
+("Still no grayscale-to-colour reveal at any size") was corrected to say
+"on the GRID" — it was accurate when written, not after this stage.
+
+**Verified**: full suite green (pre-existing unrelated failures aside, see
+prior entries), driven manually in the browser at 1280 and 375px, both
+themes and both languages — confirmed the lightbox photo is genuinely
+rendering in colour on hover via canvas pixel sampling (R≠G≠B), not just a
+visual impression, since some source photos' tones read similarly at a
+glance in grayscale vs colour on a small screenshot. No console errors, no
+regressions to the grid's own still-grayscale-on-hover behaviour.

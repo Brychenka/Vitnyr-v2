@@ -248,7 +248,9 @@ def test_prev_button_is_not_covered_by_the_photo_at_375(open_site):
 # (never the grid item — .collage__slot's overflow:hidden, set in Stage 1,
 # contains it) plus the page's existing :focus-visible ring, which the tiles
 # pick up for free now that they're <button>s with no local override. Still
-# no grayscale-to-colour reveal at any size — the colour system governs. ---
+# no grayscale-to-colour reveal on the GRID at any size — the colour system
+# governs there. (The lightbox's own colour reveal, added later, is a
+# separate, narrower reversal — see the section below.) ---
 
 def test_tile_image_scales_on_hover(open_site):
     page, _ = open_site()
@@ -331,3 +333,70 @@ def test_tile_still_grayscale_on_hover(open_site):
     page.locator(".collage__trigger").first.hover()
     after = img.evaluate("el => getComputedStyle(el).filter")
     assert before == after and before != "none"
+
+
+# --- Lightbox colour reveal (2026-09-22): a deliberate, narrow reversal of
+# Stage 5's rejection (reaffirmed in this very file's Stage 4 section above,
+# and in style.css's Stage 3 lightbox comment) — Igor's call, scoped to the
+# lightbox only. The full-screen, one-photo mode has nothing else on screen
+# carrying the amber/green semantic colour, unlike the grid; the grid itself
+# keeps the original ban untouched (test above). Desktop reveals on hover;
+# touch has no hover, so it reveals once as the photo opens instead. ---
+
+def test_lightbox_photo_reveals_colour_on_hover(open_site):
+    page, _ = open_site()
+    _open_collage(page)
+    page.locator(".collage__trigger").first.click()
+
+    img = page.locator(".lightbox__img")
+    before = img.evaluate("el => getComputedStyle(el).filter")
+    assert before != "none"
+
+    img.hover()
+    after = img.evaluate("el => getComputedStyle(el).filter")
+    assert after == "none"
+
+
+def test_lightbox_photo_reverts_to_grayscale_on_unhover(open_site):
+    page, _ = open_site()
+    _open_collage(page)
+    page.locator(".collage__trigger").first.click()
+
+    img = page.locator(".lightbox__img")
+    img.hover()
+    assert img.evaluate("el => getComputedStyle(el).filter") == "none"
+
+    page.locator(".lightbox__caption").hover()
+    after = img.evaluate("el => getComputedStyle(el).filter")
+    assert after != "none"
+
+
+def test_lightbox_photo_opens_already_colour_on_touch(open_site):
+    """No hover on touch, so main.js fires the reveal itself as the photo
+    opens (box.classList.add('is-colour') in open()), gated on the same
+    finePointer check every other fine-pointer-only flourish in main.js
+    uses."""
+    page, _ = open_site(has_touch=True)
+    assert page.evaluate("matchMedia('(pointer: coarse)').matches")
+    _open_collage(page)
+    page.locator(".collage__trigger").first.click()
+
+    img = page.locator(".lightbox__img")
+    assert img.evaluate("el => getComputedStyle(el).filter") == "none"
+
+
+def test_lightbox_colour_reveal_still_fires_under_reduced_motion(open_site):
+    """Not a transform, so it doesn't get the "drop outright" treatment
+    Stage 4's hover-scale gets under reduced motion — it just falls through
+    to the page's existing blanket instant-transition override."""
+    page, _ = open_site(reduced_motion=True)
+    page.locator("[data-collage-open]").click()
+    page.wait_for_function(
+        "document.documentElement.classList.contains('collage-open')",
+        timeout=3000,
+    )
+
+    page.locator(".collage__trigger").first.click()
+    img = page.locator(".lightbox__img")
+    img.hover()
+    assert img.evaluate("el => getComputedStyle(el).filter") == "none"

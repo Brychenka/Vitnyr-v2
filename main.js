@@ -544,6 +544,11 @@
       render();
       box.hidden = false;
       root.classList.add('lightbox-open');
+      // No hover on touch, so the colour reveal (style.css) fires here
+      // instead, gated the same way every other fine-pointer-only flourish
+      // in this file is (see finePointer above). Set on open, cleared on
+      // close, so the reveal replays every time a photo opens.
+      if (!finePointer) box.classList.add('is-colour');
       if (canInert) {
         if (bar) bar.inert = true;
         if (body) body.inert = true;
@@ -591,6 +596,7 @@
       lightboxOpen = false;
       killBoxTween();
       box.hidden = true;
+      box.classList.remove('is-colour');
       root.classList.remove('lightbox-open');
       if (canInert) {
         if (bar) bar.inert = false;
