@@ -857,6 +857,13 @@ html.js:not(.hero-done) .line__inner { will-change: transform; }
   .hero__foot { grid-template-columns: minmax(0, 1fr) auto; }
 }
 .stand { max-width: var(--measure); color: var(--fg2); }
+/* The Russian intro sentence is longer than the English one and wraps to
+   5 lines at --measure's 62ch inside .hero__foot's ≥900px two-column squeeze
+   (English holds it in 4) — one more line of height English never carries.
+   68ch is the narrowest width that folds it back to 4 lines at this font
+   size; a language-specific override rather than widening --measure itself,
+   since --measure feeds unrelated body copy across the page. */
+html[data-lang="ru"] .stand { max-width: 68ch; }
 
 .scrollcue {
   display: inline-flex; align-items: center; gap: 12px;
@@ -875,7 +882,16 @@ html.js:not(.hero-done) .line__inner { will-change: transform; }
 /* Cyrillic tolerates less negative tracking than Latin, and Lora's ш is
    830/1000 em, so Russian display lines run long. */
 html[data-lang="ru"] .hero__title    { letter-spacing: -.018em; }
-html[data-lang="ru"] .hero__title em { font-size: .58em; letter-spacing: -.010em; }
+/* .58em (the pre-2026-09-22 value) fit "English, chess, climbing."'s Latin
+   letterforms but not the wider "Английский, шахматы, скалолазание." — past
+   ~1300px viewport width it silently wrapped onto a second line inside
+   .line's single-line reveal mask, adding ~47px the layout never accounted
+   for. Measured against the actual rendered width at 1024/1280/1440/1920
+   (a laptop's Chrome window is rarely maximized to full screen height, so
+   that extra height was enough to push .hero__foot's scroll cue below the
+   fold): the tightest fit needs .517em; .5em keeps a safety margin and
+   still reads clearly as the trifecta line under the two lines above it. */
+html[data-lang="ru"] .hero__title em { font-size: .5em; letter-spacing: -.010em; }
 html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
 html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 
