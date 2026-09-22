@@ -896,6 +896,66 @@ def test_committing_updates_the_hash_under_reduced_motion_too(open_site):
     )
 
 
+# ---------- DP7/DP8 (DESIGN-PASS-III.md): every jump clears the fixed masthead ----------
+
+def _masthead_height(page):
+    return page.locator(".masthead").bounding_box()["height"]
+
+
+@pytest.mark.parametrize("target_id", ["origin", "method", "specimen", "who", "contact"])
+def test_quick_nav_lands_each_section_clear_of_the_fixed_masthead(open_site, target_id):
+    """DP7: scroll-margin-top computed to 0 on every one of the five sections
+    against the fixed masthead, so a jump landed with the destination's own
+    heading hidden underneath it — 134px of it, in the review's own
+    measurement. Covers the Lenis-driven path (main.js's headerHeight()
+    offset) via the masthead's own 01-05 quick-nav, which is desktop-only,
+    hence the WIDE viewport."""
+    page, _ = open_site()
+    page.locator(f'.tools__group--sections a.tool[href="#{target_id}"]').click()
+    page.wait_for_timeout(1500)   # let the 1.2s Lenis tween settle
+    top = page.locator(f"#{target_id}").bounding_box()["y"]
+    head_h = _masthead_height(page)
+    assert top >= head_h - 2, f"#{target_id} lands at y={top}, under a {head_h}px masthead"
+
+
+def test_hero_scrollcue_lands_origin_clear_of_the_fixed_masthead(open_site):
+    """DP7, the hero's own instance: the scroll cue is the page's first jump
+    and shares the same generic in-page-link handler as the quick-nav."""
+    page, _ = open_site()
+    page.locator("a.scrollcue").click()
+    page.wait_for_timeout(1500)
+    top = page.locator("#origin").bounding_box()["y"]
+    head_h = _masthead_height(page)
+    assert top >= head_h - 2, f"#origin lands at y={top}, under a {head_h}px masthead"
+
+
+@pytest.mark.parametrize("specimen_id,discipline", [
+    ("specimen-chess-calculation", "chess"),
+    ("specimen-climbing-grip", "climbing"),
+])
+def test_specimen_permalink_cold_load_commits_its_discipline_and_lands_on_it(
+    open_site, specimen_id, discipline
+):
+    """DP8: all six chess/climbing specimen permalinks were dead on a cold
+    load — their .specimens-group is display:none until that discipline is
+    committed, so the browser had a 0x0 box to scroll to and landed mid-way
+    through the English list with no error. A specimen hash must now commit
+    its own discipline group first, exactly like a bare #chess/#climbing hash
+    already does (see test_deep_link_selects_the_discipline_on_cold_load)."""
+    page, _ = open_site(hash="#" + specimen_id)
+    item = page.locator(f'.origin__panel-item[data-discipline="{discipline}"]')
+    assert item.get_attribute("aria-pressed") == "true"
+    target = page.locator(f"#{specimen_id}")
+    assert target.is_visible(), "specimen's group never committed — still display:none"
+    box = target.bounding_box()
+    assert box["y"] <= 400, f"{specimen_id} lands at y={box['y']}, not near the top of the viewport"
+    head_h = _masthead_height(page)
+    assert box["y"] >= head_h - 2, f"{specimen_id} lands at y={box['y']}, under a {head_h}px masthead"
+    assert page.evaluate(f"document.activeElement.id === '{specimen_id}'"), (
+        "scroll alone is not navigation — the specimen itself must receive focus"
+    )
+
+
 def test_browser_back_leaves_the_page_rather_than_cycling_disciplines(open_site):
     """A reader who tries all three disciplines must need only one Back to
     leave the page, not three — the classic tab-history bug replaceState is

@@ -735,9 +735,17 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   margin-left: 14px;
 }
 
+/* DP7 (DESIGN-PASS-III.md): this computed to 0 on every section against the
+   fixed masthead, so any jump that lands here the BROWSER'S OWN way — a
+   typed #hash, Back/Forward, or scrollIntoView() when Lenis/GSAP is absent —
+   surfaced under it, hiding the section's own heading. Lenis-driven jumps
+   don't read this property at all (it has no notion of CSS scroll-margin),
+   so main.js's headerHeight() supplies the same clearance by hand for those;
+   this rule is the other half, for every path that isn't Lenis. */
 .sec {
   padding-block: clamp(90px, 13vh, 190px);
   border-top: 1px solid var(--rule);
+  scroll-margin-top: var(--head);
 }
 .sec__head {
   display: grid; gap: clamp(24px, 4vw, 56px);
@@ -1041,6 +1049,7 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
   padding-block: clamp(32px, 4.5vw, 60px);
   border-bottom: 1px solid var(--rule);
   display: grid; gap: clamp(18px, 2.4vw, 28px);
+  scroll-margin-top: var(--head);   /* DP8: same reasoning as .sec's own rule above */
 }
 @media (min-width: 900px) {
   .spec { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: start; }

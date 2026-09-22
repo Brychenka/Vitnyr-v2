@@ -105,6 +105,22 @@
     requestAnimationFrame(function () { measureInkSwitch(); onScroll(scrollPos()); });
   });
 
+  /* DP7 (DESIGN-PASS-III.md): every in-page destination needs to land clear
+     of the fixed masthead, not at its own top edge. `scroll-margin-top` on
+     .sec/.spec (style.css) covers the browser's OWN fragment navigation —
+     a typed #hash, Back/Forward, or the no-Lenis/no-JS fallback below — but
+     Lenis computes its target from getBoundingClientRect() and has no idea
+     CSS scroll-margin exists, so every Lenis-driven jump needs the same
+     clearance passed by hand as a negative offset. Measured live off the
+     masthead's own rendered height (same technique jumpToGroup() below uses
+     for the collage view's sticky bar) rather than read from --head, which
+     getComputedStyle can't resolve back into a used pixel value for a
+     custom property built out of calc()/clamp(). */
+  function headerHeight() {
+    var el = document.querySelector('.masthead');
+    return el ? el.getBoundingClientRect().height : 0;
+  }
+
   // In-page links go through Lenis so the easing stays consistent.
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     if (a.hasAttribute('data-collage-open')) return;   // the collage router owns this one
@@ -115,7 +131,7 @@
       var target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(target, { offset: 0, duration: 1.2 });
+      if (lenis) lenis.scrollTo(target, { offset: -headerHeight(), duration: 1.2 });
       else target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
       /* Scrolling is not navigating. preventDefault also cancels the focus move
          the browser would have made, which for the skip link is the entire
@@ -767,9 +783,23 @@
     // a selector, not a jump (a correction to what TRIFECTA-C-MARK-NAV.md's
     // C1 recommends for the jump case).
     var HASH_NAMES = ['english', 'chess', 'climbing'];
+    // DP8 (DESIGN-PASS-III.md): a specimen permalink's id names no discipline
+    // directly (`#specimen-chess-calculation`), but sits inside a
+    // .specimens-group that does. Cold-loading one of those six chess/climbing
+    // permalinks left `committed` at its English default, so the target group
+    // was still `display: none` — a 0×0 box the browser can't scroll to,
+    // which is why those six landed mid-English-list with no error. Resolving
+    // the id's own ancestor group here means a specimen hash commits that
+    // discipline exactly like a bare #chess/#climbing hash already did.
+    function groupFromSpecimenHash(id) {
+      var target = id && document.getElementById(id);
+      var group = target && target.closest('.specimens-group[data-discipline-group]');
+      return group ? group.dataset.disciplineGroup : null;
+    }
     function nameFromHash() {
       var id = (location.hash || '').slice(1);
-      return HASH_NAMES.indexOf(id) === -1 ? null : id;
+      if (HASH_NAMES.indexOf(id) !== -1) return id;
+      return groupFromSpecimenHash(id);
     }
     function syncHash(name) {
       if (window.history.replaceState) window.history.replaceState(null, '', '#' + name);
@@ -818,17 +848,33 @@
     });
 
     // The reader lands *inside* the readout, not merely near it — scroll
-    // alone is not navigation (see the skip-link bug in BUILD-NOTES).
-    // preventScroll because #origin is already the scroll target below;
-    // without it, focus() would fight that scroll with its own native jump.
-    if (deepLinked && panel) {
+    // alone is not navigation (see the skip-link bug in BUILD-NOTES). This
+    // only applies to a bare #english/#chess/#climbing hash: a specimen
+    // hash (DP8, below) has its own, more specific destination and must not
+    // also land here first. preventScroll because #origin is already the
+    // scroll target below; without it, focus() would fight that scroll with
+    // its own native jump. offset clears the fixed masthead (DP7) — see
+    // headerHeight() near the top of this file.
+    var hashId = (location.hash || '').slice(1);
+    if (HASH_NAMES.indexOf(hashId) !== -1 && panel) {
       var origin = document.getElementById('origin');
       if (origin) {
-        if (lenis) lenis.scrollTo(origin, { offset: 0, immediate: reduce });
+        if (lenis) lenis.scrollTo(origin, { offset: -headerHeight(), immediate: reduce });
         else origin.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
       }
       if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '-1');
       panel.focus({ preventScroll: true });
+    }
+
+    // DP8, continued: the group above is now committed and visible, so the
+    // specimen itself is a real, measurable target — land on it the same
+    // way the bare-hash case lands on the readout.
+    var deepLinkedSpecimen = HASH_NAMES.indexOf(hashId) === -1 ? document.getElementById(hashId) : null;
+    if (deepLinkedSpecimen && deepLinkedSpecimen.classList.contains('spec')) {
+      if (lenis) lenis.scrollTo(deepLinkedSpecimen, { offset: -headerHeight(), immediate: reduce });
+      else deepLinkedSpecimen.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      if (!deepLinkedSpecimen.hasAttribute('tabindex')) deepLinkedSpecimen.setAttribute('tabindex', '-1');
+      deepLinkedSpecimen.focus({ preventScroll: true });
     }
 
     function wire(el) {
@@ -1113,7 +1159,7 @@
            so the collage router's routeAfterHashChange stays out of it. */
         if (window.history.pushState) window.history.pushState(null, '', '#' + id);
         else location.hash = id;
-        if (lenis) lenis.scrollTo(target, { offset: 0, duration: 1.2 });
+        if (lenis) lenis.scrollTo(target, { offset: -headerHeight(), duration: 1.2 });
         else target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
         if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
         target.focus({ preventScroll: true });   // land inside the specimen, not just near it
