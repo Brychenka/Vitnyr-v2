@@ -1160,6 +1160,43 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </svg>
     </span>
     <div class="view__tools">
+      <!-- In-view domain switcher (2026-09-22): once a masthead icon jumps in
+           here, the masthead (icons included) goes inert (main.js
+           setBehindInert) and there is no way back to the other two domains
+           short of manual scrolling. These three reuse the masthead's exact
+           data-collage-jump wiring — main.js's jumpers query
+           (querySelectorAll('[data-collage-jump]')) picks up any matching
+           element, in or out of the view, so no JS change was needed. Glyphs
+           are byte-identical to the masthead's current (P21) versions, not
+           the older .view__group label echoes, so the two nav surfaces read
+           as the same three icons. -->
+      <div class="tools__group">
+        <button class="tool tool--icon" type="button" aria-label="Go to the English photographs" title="English" data-collage-jump="en" data-magnetic>
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"/>
+            <path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"/>
+          </svg>
+        </button>
+        <button class="tool tool--icon" type="button" aria-label="Go to the chess photographs" title="Chess" data-collage-jump="chess" data-magnetic>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.75" y="3.75" width="7.5" height="7.5" fill="currentColor"/>
+            <rect x="12.75" y="3.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="3.75" y="12.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+            <rect x="12.75" y="12.75" width="7.5" height="7.5" fill="currentColor"/>
+          </svg>
+        </button>
+        <button class="tool tool--icon" type="button" aria-label="Go to the climbing photographs" title="Climbing" data-collage-jump="climb" data-magnetic>
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"/>
+            <path d="M16.9 8.4 16.42 10"/>
+            <path d="M14.74 15.6 13.9 18.4"/>
+            <path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"/>
+          </svg>
+        </button>
+      </div>
+      <span class="tools__rule" aria-hidden="true"></span>
       <!-- Same theme + language switches as the masthead's. The open collage
            view sits above the masthead (z-index), so these are the only
            Cream/Charcoal and EN/RU controls reachable while it's open.
@@ -1192,8 +1229,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         data-en="The process, photographed: a call, a chess match, a climbing wall."
         data-ru="Процесс в кадре: созвон, шахматная партия, скалодром.">The process, photographed: a call, a chess match, a climbing wall.</h1>
     <div class="view__lede">
-      <p data-l="en">It’s me at work — English, chess, and climbing, each one real.</p>
-      <p data-l="ru">Это я за работой — английский, шахматы, скалолазание, и каждое по-настоящему.</p>
+      <p data-l="en">It’s me at work — English, chess, and climbing.</p>
+      <p data-l="ru">Это я за работой — английский, шахматы, скалолазание.</p>
     </div>
 
     <!-- ENGLISH — first of three equal-standing domain groups, English leads
@@ -1289,11 +1326,15 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <!-- CHESS — second domain group: a rating that doesn't negotiate. -->
     <section class="view__group" aria-labelledby="collage-chess">
       <p class="label label--glyph">
+        <!-- 2026-09-22: rect sizing/position updated to match the masthead's
+             post-P21 chess glyph (this copy predated that rework) — inline
+             stroke-width dropped since .label__mark's own CSS already forces
+             2.2 on the outline rects; see the masthead's P21 comment. -->
         <svg class="label__mark" viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="5" y="5" width="6.25" height="6.25" fill="currentColor"/>
-          <rect x="12.75" y="5" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.8"/>
-          <rect x="5" y="12.75" width="6.25" height="6.25" fill="none" stroke="currentColor" stroke-width="1.8"/>
-          <rect x="12.75" y="12.75" width="6.25" height="6.25" fill="currentColor"/>
+          <rect x="3.75" y="3.75" width="7.5" height="7.5" fill="currentColor"/>
+          <rect x="12.75" y="3.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+          <rect x="3.75" y="12.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
+          <rect x="12.75" y="12.75" width="7.5" height="7.5" fill="currentColor"/>
         </svg>
         <span data-en="Chess" data-ru="Шахматы">Chess</span>
       </p>

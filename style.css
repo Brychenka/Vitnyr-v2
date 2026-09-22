@@ -1906,6 +1906,21 @@ html.js .view__bar {
    the left). Mirrors the masthead's tools cluster. */
 .view__tools { display: flex; align-items: center; gap: clamp(16px, 3vw, 30px); }
 
+/* The in-view domain switcher's .tools__group has no flex-shrink override
+   (unlike .tool, which treats its 44px touch target as a floor — see the
+   comment on .tool above), so once .view__tools runs out of room it's the
+   one flexbox crushes: measured clean down to ~430-500px, but by 375px the
+   crushed group's children visibly overlap the theme toggle next to it —
+   not a cosmetic squeeze, an actual overlapping-buttons bug. Same crowding
+   the masthead nav already hit (see its own max-width:400px rule above);
+   hidden below that same threshold rather than force a cramped fit — the
+   masthead icons (when reachable) and manual scroll still get you to every
+   group. */
+@media (max-width: 400px) {
+  .view__bar .tools__group,
+  .view__bar .tools__rule { display: none; }
+}
+
 .view__back {
   -webkit-appearance: none; appearance: none;
   background: none; border: 0; margin: 0; padding: 8px 0;
@@ -1924,7 +1939,7 @@ html.js .view__bar {
 
 .view__body {
   max-width: var(--maxw); margin-inline: auto;
-  padding: clamp(44px, 7vw, 100px) var(--gut) clamp(80px, 12vh, 160px);
+  padding: clamp(32px, 5vw, 72px) var(--gut) clamp(80px, 12vh, 160px);
 }
 .view__body > .label { margin-bottom: clamp(20px, 3vw, 32px); }
 .view__body > h1 {
@@ -1942,7 +1957,7 @@ html[data-lang="ru"] .view__body > h1 { letter-spacing: -.01em; }
 .view__body > h1:focus-visible { outline: none; }
 .view__lede {
   max-width: var(--measure); color: var(--fg2);
-  margin: 0 0 clamp(48px, 7vw, 96px);
+  margin: 0 0 clamp(32px, 5vw, 64px);
 }
 
 /* ---------- collage domain groups ----------
