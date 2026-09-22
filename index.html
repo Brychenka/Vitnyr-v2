@@ -1152,13 +1152,20 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <div class="view__bar">
     <!-- F1: same one-turn-on-hover mark as the footer, same .footmark-spin
          wrapper as the hover target (never the rotating <svg>). See the footer
-         mark in this file, style.css, and BUILD-NOTES F1. -->
-    <span class="footmark-spin">
-      <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
-        <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
-        <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
-      </svg>
-    </span>
+         mark in this file, style.css, and BUILD-NOTES F1.
+         2026-09-22: wrapped in a link back to the main page (top of #top),
+         same "click the mark to go home" convention as the masthead's
+         .lockup — its own click handler lives in main.js's initCollageView
+         (not the generic #-anchor handler, which would just try to
+         Lenis-scroll to a hidden #top instead of closing this view). -->
+    <a class="footmark-home" href="#top" aria-label="Vitnyr — back to the main page">
+      <span class="footmark-spin">
+        <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
+          <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
+          <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
+        </svg>
+      </span>
+    </a>
     <div class="view__tools">
       <!-- In-view domain switcher (2026-09-22): once a masthead icon jumps in
            here, the masthead (icons included) goes inert (main.js

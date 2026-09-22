@@ -125,6 +125,7 @@
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     if (a.hasAttribute('data-collage-open')) return;   // the collage router owns this one
     if (a.hasAttribute('data-permalink')) return;      // initSpecimenPermalinks owns these
+    if (a.classList.contains('footmark-home')) return; // initCollageView owns this one too
     a.addEventListener('click', function (e) {
       var id = a.getAttribute('href');
       if (!id || id === '#') return;
@@ -1244,6 +1245,7 @@
     if (!view) return;
     var title = document.getElementById('collage-title');
     var backBtn = view.querySelector('.view__back');
+    var homeLink = view.querySelector('.footmark-home');
     var opener = document.querySelector('[data-collage-open]');
     // The view's own "Photographs" label — always the first .label in
     // view__body, always in the viewport the moment the view opens — is the
@@ -1484,6 +1486,24 @@
     });
 
     if (backBtn) backBtn.addEventListener('click', leave);
+    // The mark, unlike Back, always goes to the top of the main page rather
+    // than wherever the view was opened from — same "click the logo" contract
+    // as the masthead's own .lockup. A plain #top anchor click would fall
+    // into the generic #-anchor handler above (Lenis-scrolling to a #top
+    // that's still hidden behind this view without ever closing it), so this
+    // is handled here instead: park the URL at #top (pushState, not a raw
+    // hash write, so it doesn't fire hashchange and double-run the close),
+    // force the close to land at the very top rather than the saved scroll
+    // position applyClose() would otherwise restore, and let it run through
+    // the same view-transition path routeAfterHashChange uses.
+    if (homeLink) homeLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (history.pushState) history.pushState(null, '', '#top');
+      else location.hash = 'top';
+      savedScroll = 0;
+      returnFocus = null;
+      withTransition(applyClose);
+    });
     window.addEventListener('hashchange', function () { routeAfterHashChange(); });
     document.addEventListener('keydown', function (e) {
       // Stage 3: the lightbox is a layer on top of this view, with its own

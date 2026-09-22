@@ -1901,6 +1901,8 @@ html.js .view__bar {
   border-bottom: 1px solid var(--rule);
 }
 .view .footmark { width: 34px; height: 34px; flex: none; }
+.footmark-home { display: block; flex: none; border-radius: 4px; }
+.footmark-home:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
 
 /* Cream/Charcoal + Back, grouped at the right end of the bar (footmark holds
    the left). Mirrors the masthead's tools cluster. */
