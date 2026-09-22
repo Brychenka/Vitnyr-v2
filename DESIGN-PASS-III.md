@@ -624,15 +624,26 @@ nearly nine screens long — only becomes answerable once the height is known.
 | Stage | Items | Status |
 |---|---|---|
 | DP0 — decisions | Q1–Q11 | **open** — nothing below its dependents starts until answered |
-| DP1 — copy corrections | DP1, DP13, DP2, DP3 | open, unblocked |
-| DP2 — reveal labels | DP4, DP5 | open, unblocked |
-| DP3 — readout as index | DP6 | open, unblocked |
+| DP1 — copy corrections | DP1, DP13, DP2, DP3 | **landed**, `cd13a43` (DP1, DP3) / `399a9ac` (DP2) / `71249e5` (DP13, incidental to an unrelated test-suite fix) |
+| DP2 — reveal labels | DP4, DP5 | **open, unblocked** — Igor confirmed 2026-09-22 nothing else from this order is wanted right now; not withdrawn, just not next |
+| DP3 — readout as index | DP6 | **open, unblocked** — same as DP2 above |
 | DP4 — deep-link landing | DP7, DP8 | **landed** 2026-09-22, `86f26e2` — scroll-margin-top on .sec/.spec plus a main.js headerHeight() offset for every Lenis-driven jump; specimen hashes now commit their discipline group before landing |
 | DP5 — launch blockers | DP9, Q9, Q10 | domain half unblocked; copy half blocked on DP0 |
-| DP6 — record and seams | DP10, DP11, DP12 | open, unblocked |
+| DP6 — record and seams | DP10, DP11, DP12 | **landed**, `5e18276` |
 | DP7 — the phone + DP0's outcomes | — | blocked on DP0 and on re-measurement |
 
 Withdrawn: **W1–W6**. Do not build them and do not raise them again.
+
+**2026-09-22 close-out:** Igor asked to check standing status rather than build
+more — DP1, DP4 and DP6 turned out already landed (DP1 and DP6 incidentally,
+through other work; DP4 this session), verified against `main` line by line
+before recording. DP2 and DP3 are genuinely still open, verified the same way
+(the reveal label is still hardcoded to `'Show the common mistake'` in
+`main.js`'s `initSpecimenReveal()`, and §01's readout still disagrees with
+§03's real specimen titles). Igor said everything he wanted is done for now —
+**do not build DP2 or DP3 on the strength of this note alone**; they're
+unblocked and ready whenever a future chat is asked for them, not a queued
+next step.
 
 ---
 
