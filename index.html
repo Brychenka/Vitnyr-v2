@@ -152,7 +152,13 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
          behind scroll position, which would have meant a second reveal
          mechanism competing with the one .reveal already owns. -->
     <div class="tools__group tools__group--util">
-      <button class="tool themeswitch" type="button" data-magnetic>Cream</button>
+      <button class="tool tool--icon themeswitch" type="button" aria-label="Switch to the dark theme" title="Theme" data-magnetic>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="8.25"/>
+          <path d="M12 3.75a8.25 8.25 0 0 0 0 16.5z" fill="currentColor"/>
+        </svg>
+      </button>
       <button class="tool langswitch" type="button" data-magnetic>RU</button>
     </div>
     <span class="tools__rule" aria-hidden="true"></span>
@@ -256,7 +262,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <span class="sep">/</span>
     <span data-en="Yerevan" data-ru="Ереван">Yerevan</span>
     <span class="sep">/</span>
-    <span data-en="one-on-one" data-ru="индивидуально">one-on-one</span>
+    <span data-en="1-on-1 & groups" data-ru="1 на 1 и группы">1-on-1 & groups</span>
   </p>
 
   <h1 class="hero__title">
@@ -525,8 +531,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 <section class="sec" id="method">
   <p class="label reveal"><span class="num">02</span><span data-en="The method" data-ru="Метод">The method</span></p>
   <div class="sec__head">
-    <h2 class="reveal" data-l="en">Deliberate practice, pointed at the thing that’s broken.</h2>
-    <h2 class="reveal" data-l="ru">Deliberate practice, направленная в то, что сломано.</h2>
+    <h2 class="reveal" data-l="en">Deliberate practice, pointed at the weakest link.</h2>
+    <h2 class="reveal" data-l="ru">Deliberate practice, направленная на самое слабое звено.</h2>
     <div class="sec__lede">
       <div data-l="en">
         <p class="reveal">I combine neuroscience, rehab principles and the psychology of learning to coach people in a way that sticks.</p>
@@ -560,27 +566,23 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </h3>
       <div class="mech__panel" id="mech-panel-feedback-loops">
         <div class="mech__panel-inner">
-          <p data-l="en">Correction only works while the error is still open. Say the wrong word and get corrected the next class, and you’ve learned a list. Say it wrong and get stopped mid-sentence, and you’ve learned the sentence. Same principle in chess — a blunder explained during the post-game review lands differently than one flagged three moves after you played it, when the position in your head has already moved on. And the same principle on a wall, where a bad foot placement corrected mid-attempt rewires the beta; corrected after you’re back on the ground, it’s just a note you’ll forget by next session. The error has to still be live when the fix arrives. That’s the whole card.</p>
-          <p data-l="ru">Исправление должно догнать ошибку, пока она ещё тёплая. Список ошибок в конце недели учит вас списку. Исправление внутри фразы, которую вы только что сказали, учит вас фразе.</p>
+          <p data-l="en">A mistake is easiest to fix the second you make it. Corrected a week later, it sets roots. Tutoring software found the same thing — feedback right after the error beat feedback given later. In chess, a blunder caught the moment it happens lands harder than one you only hear about in the post-game review. On the wall, a foot placement fixed mid-attempt changes your next go. Fixed from the ground afterward, it’s a note you’ll forget by next session.</p>
+          <p data-l="ru">Ошибку проще всего исправить в ту секунду, когда вы её допустили. Поправят через неделю — и она успеет пустить корни. Обучающие программы показывают то же самое: обратная связь сразу после ошибки работает лучше отложенной. В шахматах зевок, пойманный в момент, когда вы его допустили, запоминается сильнее, чем тот, о котором вы узнаёте только на разборе партии. На стене нога, поправленная прямо во время попытки, меняет следующую попытку. Поправленная уже с земли — это просто заметка, которую забудете к следующему занятию.</p>
         </div>
       </div>
     </li>
     <li class="reveal mechanism">
       <h3 class="mech__head">
-        <button type="button" class="mech__toggle" aria-controls="mech-panel-error-correction">
+        <button type="button" class="mech__toggle" aria-controls="mech-panel-pattern-recognition">
           <span class="mech__n">02</span>
-          <span class="mech__toggle-label" data-en="Getting to the root of the mistake" data-ru="Погружение в корень ошибки">Getting to the root of the mistake</span>
+          <span class="mech__toggle-label" data-en="Pattern recognition" data-ru="Распознавание закономерностей">Pattern recognition</span>
           <span class="mech__toggle-mark" aria-hidden="true">+</span>
         </button>
       </h3>
-      <div class="mech__panel" id="mech-panel-error-correction">
+      <div class="mech__panel" id="mech-panel-pattern-recognition">
         <div class="mech__panel-inner">
-          <!-- Spark Order S3 / move 08: this paragraph used to close on "Once an
-               error has a name it stops being 'my English is bad'..." — that
-               sentence was later moved out to a standalone block, since removed.
-               Mechanism 02 ends on its previous sentence. -->
-          <p data-l="en">Some mistakes are easy to prove are systematic. A Russian speaker dropping articles isn’t unlucky — it’s one habit misfiring in forty different sentences, and once you name the habit, you’ve solved forty problems instead of chasing forty separate ones. Chess blunders cluster the same way: most players don’t have a hundred weaknesses, they have three or four recurring blind spots wearing different disguises. Climbing is a little different — a movement fault under fatigue isn’t “wrong” the way a grammar error is wrong, it’s a compensation pattern the body defaults to when it’s tired or scared. Still traceable, still fixable, just diagnosed by feel instead of by rule. Point is: none of this is bad luck. It’s pattern-matching, and once you can name the pattern, you can train it out.</p>
-          <p data-l="ru">Ваши ошибки не случайны. Они системны: чаще всего это русская конструкция в английских словах, а значит, набор конечный — и его можно каталогизировать.</p>
+          <p data-l="en">Mistakes aren’t random. A Russian speaker drops articles because Russian has none — the habit shows up in every sentence, carried straight over from the first language. Find that habit and you fix dozens of errors at once. In chess, most players don’t have a hundred weaknesses — they have three or four blind spots wearing different disguises, and the strongest players find those and drill them instead of just playing more games. In climbing, everything from your grip to the way you place your toes is muscle memory: see the pattern in the mistakes you repeat, and you see exactly what to fix.</p>
+          <p data-l="ru">Ошибки не случайны. Русскоговорящий теряет артикли потому что в русском их нет — такая привычка вылезает в каждой фразе, перенесённая прямо из родного языка. Найдёте эту привычку — и сразу исправите десятки ошибок. В шахматах у большинства игроков не сто слабостей, а три-четыре слепых пятна в разных нарядах, и сильнейшие игроки находят их и тренируют, а не просто играют больше партий. В скалолазании хват, постановка стопы — всё это мышечная память: увидьте закономерность в ошибках, которые повторяются, и вы увидите, что именно нужно исправить.</p>
         </div>
       </div>
     </li>
@@ -594,8 +596,38 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </h3>
       <div class="mech__panel" id="mech-panel-load-management">
         <div class="mech__panel-inner">
-          <p data-l="en">Too easy and you’re not training, you’re performing. Too hard and nothing sticks — you’re just getting hit. The right level sits close enough to your edge that it costs you something, and moves the moment it stops costing you anything. A climber calls this the crux. A chess player calls it playing someone slightly above their rating. In English it doesn’t have a name, most people just call it “hard,” but it’s the same dial — and reading it wrong doesn’t just slow you down, on a wall it costs you a tendon, at a board it costs you a losing streak, and in a language it just costs you six more months of a plateau nobody explains to you.</p>
-          <p data-l="ru">Слишком лёгкая практика — развлечение. Слишком тяжёлая — шум. Нужная нагрузка достаточно велика, чтобы напрягать, и достаточно умеренна, чтобы не сломать, и растёт вместе с вами. Скалолаз крутит ту же ручку, только он за ошибку платит связками.</p>
+          <p data-l="en">Too easy and you’re chilling, not learning. Too hard and you’re just struggling. The right level sits right at your edge. A climber calls it the crux. A chess player calls it playing someone 100 points stronger. In English, it could be speech faster than you’re used to, or an unfamiliar accent. Misjudge it and on a wall it costs you a tendon, at a board a losing streak, in a language six more months on a plateau.</p>
+          <p data-l="ru">Слишком легко — вы отдыхаете, а не учитесь. Слишком тяжело — вы просто мучаетесь. Нужный уровень лежит прямо на вашем пределе. Скалолаз назовёт это ключом. Шахматист — партией с соперником на 100 пунктов рейтинга сильнее. В английском это может быть просто речь быстрее той, к которой вы привыкли, или странный акцент. Промахнётесь мимо этого уровня — на стене заплатите связкой, за доской серией поражений, в языке ещё полугодом на плато.</p>
+        </div>
+      </div>
+    </li>
+    <li class="reveal mechanism">
+      <h3 class="mech__head">
+        <button type="button" class="mech__toggle" aria-controls="mech-panel-retrieval">
+          <span class="mech__n">04</span>
+          <span class="mech__toggle-label" data-en="Retrieval" data-ru="Активное вспоминание">Retrieval</span>
+          <span class="mech__toggle-mark" aria-hidden="true">+</span>
+        </button>
+      </h3>
+      <div class="mech__panel" id="mech-panel-retrieval">
+        <div class="mech__panel-inner">
+          <p data-l="en">Re-reading a mistake isn’t the same as recalling it. The brain doesn’t strengthen what it re-reads — it strengthens what it has to dig back up on its own, especially once the answer isn’t sitting on the surface anymore. An error corrected once and never revisited fades in days. Brought back cold a week later, it sticks. Chess works the same way — replaying a line you just saw is recognition, not memory; being asked the same position blind, three days on, is the real test. On the wall, a beta sequence drilled twice in one session means little if your body can’t find it again two sessions later without a reminder.</p>
+          <p data-l="ru">Перечитать ошибку — не то же самое, что вспомнить её. Мозг закрепляет не то, что перечитывает, а то, что приходится доставать из памяти самому — особенно когда ответ уже не лежит на поверхности. Ошибка, исправленная один раз и забытая, стирается за считаные дни. Та же ошибка, поднятая «с холода» через неделю, остаётся надолго. В шахматах так же: повторить только что увиденный вариант — это узнавание, а не память; настоящая проверка — та же позиция вслепую три дня спустя. На стене связка движений, отработанная дважды за одну тренировку, мало что значит, если тело не находит её снова через две тренировки без подсказки.</p>
+        </div>
+      </div>
+    </li>
+    <li class="reveal mechanism">
+      <h3 class="mech__head">
+        <button type="button" class="mech__toggle" aria-controls="mech-panel-interleaving">
+          <span class="mech__n">05</span>
+          <span class="mech__toggle-label" data-en="Interleaving" data-ru="Интерливинг">Interleaving</span>
+          <span class="mech__toggle-mark" aria-hidden="true">+</span>
+        </button>
+      </h3>
+      <div class="mech__panel" id="mech-panel-interleaving">
+        <div class="mech__panel-inner">
+          <p data-l="en">Ten present-perfect sentences in a row teach you to recognize a pattern you’re already expecting. Mix present perfect in with simple past, and you’re forced to actually decide which one a sentence needs — that decision is the real skill, and the ten-in-a-row version never trains it. Chess is the same: twenty pins in a row make you fast at spotting pins, but a mixed set of tactics trains the harder, more useful skill — noticing which tactic even applies. On the wall, a session of nothing but crimps builds one movement pattern. Mix in slopers and dynamic moves and the body has to choose its response instead of just running the one it rehearsed. It feels messier in the moment. But it simulates real-life challenges.</p>
+          <p data-l="ru">Десять предложений в Present Perfect подряд учат узнавать паттерн, который вы и так ждёте. Смешайте Present Perfect с Simple Past — и вам придётся по-настоящему решать, какое время нужно фразе; вот это решение и есть навык, а десяток однотипных примеров подряд его вообще не тренирует. В шахматах так же: двадцать связок подряд делают вас быстрым в поиске связки, но вперемешку разные тактические приёмы тренируют более сложный и нужный навык — замечать, какой приём вообще применим. На стене тренировка из одних зацепок закрепляет одно движение. Добавьте слоперы и динамичные движения — и телу придётся выбирать реакцию, а не просто выполнять заученную. В моменте это ощущается более хаотично. Зато так тренируется то, с чем вы столкнётесь в жизни.</p>
         </div>
       </div>
     </li>
@@ -1030,21 +1062,34 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        and one of the three is the whole page's conversion goal. The arrow
        now belongs to .contact__cta alone; these rows drop to a quieter tier
        (dimmed label, no arrow) so there is one loudest thing on the page. -->
+  <!-- 2026-09-22, restyled same day: one line per channel saying *why* that
+       platform over the other two. First pass used hover-revealed green
+       handwriting (.tools__hint's voice) — dropped: that device is the
+       page's one human-hand gesture (§01's origin note, the masthead's
+       "message me"), and spending it a third time on informational rather
+       than emotional copy, hidden behind a hover nothing signals exists,
+       meant almost nobody would ever read it. Now it's a real line in the
+       row's own quiet second tier (.ch__v's mono/fg2 treatment), always
+       visible, no interaction required, read by a screen reader right after
+       the link it describes. -->
   <ul class="channels">
     <li class="reveal">
       <a href="https://t.me/yngvil" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">Telegram</span><span class="ch__v">@yngvil</span></span>
       </a>
+      <span class="ch__hint" data-en="available 24/7" data-ru="на связи круглосуточно">available 24/7</span>
     </li>
     <li class="reveal">
       <a href="https://www.linkedin.com/in/vitnyrcoach/" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">LinkedIn</span><span class="ch__v">/in/vitnyrcoach</span></span>
       </a>
+      <span class="ch__hint" data-en="I write about English here" data-ru="здесь я пишу про английский">I write about English here</span>
     </li>
     <li class="reveal">
       <a href="https://www.instagram.com/brychenka/" data-magnetic target="_blank" rel="noopener">
         <span class="ch__text"><span class="ch__k">Instagram</span><span class="ch__v">@brychenka</span></span>
       </a>
+      <span class="ch__hint" data-en="climbing + tendon/nerve rehab" data-ru="скалолазание и реабилитация связок и нервов">climbing + tendon/nerve rehab</span>
     </li>
   </ul>
 </section>
@@ -1120,7 +1165,13 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
            Cream/Charcoal and EN/RU controls reachable while it's open.
            theme.js labels and wires every .themeswitch / .langswitch, so all
            copies of each stay in sync. -->
-      <button class="tool themeswitch" type="button" data-magnetic>Cream</button>
+      <button class="tool tool--icon themeswitch" type="button" aria-label="Switch to the dark theme" title="Theme" data-magnetic>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="8.25"/>
+          <path d="M12 3.75a8.25 8.25 0 0 0 0 16.5z" fill="currentColor"/>
+        </svg>
+      </button>
       <button class="tool langswitch" type="button" data-magnetic>RU</button>
       <button class="view__back" type="button">
         <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M26 4H3M7 1 3 4l4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>

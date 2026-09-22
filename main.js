@@ -1014,7 +1014,7 @@
   function initMagnetic() {
     if (!finePointer) return;
     var RADIUS = 60, PULL = 12;
-    document.querySelectorAll('.tool, .view__back, .origin__mark').forEach(function (el) {
+    document.querySelectorAll('.tool, .view__back, .origin__mark, .tools__hint').forEach(function (el) {
       var qx = gsap.quickTo(el, 'x', { duration: D.state, ease: EASE });
       var qy = gsap.quickTo(el, 'y', { duration: D.state, ease: EASE });
       var box = null;

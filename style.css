@@ -428,6 +428,16 @@ html.past-origin .progress__fill--target { opacity: 1; }
    same as the toggles. */
 .tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
 .tool--icon svg { display: block; width: 24px; height: 24px; stroke-width: 1.5; }
+/* The theme control is an icon (Igor, 2026-09-21), drawn on the same 24px /
+   1.5-stroke grid as the collage jumps beside it: a ring with its left half
+   filled. It holds one drawing and turns it over — half a turn on the one
+   curve, --e — when the charcoal pair is on, so the filled side says which
+   pair you are in without a second glyph. The turn is a transform on the svg,
+   not on the button, so the magnetic pull (which owns the button's transform)
+   never fights it. */
+.themeswitch svg { transition: transform var(--t-turn) var(--e); }
+html[data-theme="dark"] .themeswitch svg { transform: rotate(180deg); }
+
 /* P17 (2026-09-07): the row is two clusters now — the theme/language toggles
    first, then .tools__rule, then .tools__group--nav (Photos caption + the
    three collage jumps); order and rationale in index.html. A uniform gap had
@@ -517,7 +527,6 @@ html.past-origin .progress__fill--target { opacity: 1; }
 .tools__hint-text { transform: rotate(5deg); transform-origin: right bottom; }
 .tools__hint-arrow { width: 30px; height: auto; flex-shrink: 0; margin-bottom: 1px; }
 html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, so the invisible note can't be clicked or tabbed to */
-.tools__hint:hover .tools__hint-text { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
 /* Where there is room (>=1100px) the note sits to the RIGHT of 05, level with
    the row, its swash turned to point back left at the numeral. The gutter alone
@@ -2022,7 +2031,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .channels li { border-bottom: 1px solid var(--rule); }
 .channels a {
   display: flex; align-items: center;
-  padding-block: clamp(20px, 2.6vw, 32px);
+  padding-block: clamp(20px, 2.6vw, 32px) 0;
 }
 .ch__text {
   display: flex; align-items: baseline; flex-wrap: wrap;
@@ -2045,6 +2054,21 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .channels .ch__v {
   font-family: var(--mono); font-size: clamp(14px, 1.5vw, 17px); color: var(--fg2);
   letter-spacing: .02em;
+}
+
+/* Per-channel "why this one" line (2026-09-22, restyled same day — a first
+   pass used hover-revealed green handwriting here, but that's the page's
+   one human-hand gesture (§01's origin note, the masthead's "message me")
+   spent a third time, on copy that's informational rather than emotional,
+   and hidden behind a hover nothing signals exists. Real content belongs in
+   the row's own quiet second tier instead: same family/color as .ch__v,
+   always visible, no interaction required. */
+.ch__hint {
+  display: block;
+  font-family: var(--mono); font-size: clamp(12.5px, 1.3vw, 14px);
+  color: var(--fg2); opacity: .75;
+  letter-spacing: .01em;
+  padding-block: 6px clamp(20px, 2.6vw, 32px);
 }
 /* ---------- footer ---------- */
 .foot {
