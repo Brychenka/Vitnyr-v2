@@ -32,7 +32,7 @@
     if (chosen) document.documentElement.setAttribute('data-theme', chosen);
     else document.documentElement.removeAttribute('data-theme');
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', effectiveTheme() === 'light' ? '#EFEBE3' : '#14181A');
+    if (meta) meta.setAttribute('content', effectiveTheme() === 'light' ? '#EFEBE3' : '#171310');   /* the warm charcoal --bg (style.css) */
     labelTheme();
   }
   function labelTheme() {
@@ -83,8 +83,31 @@
       sws[j].setAttribute('aria-label', (l === 'ru') ? 'Switch to English' : 'Переключить на русский');
     }
     labelTheme();
+    applyHead(l);
     // the hero lines differ per language, so their masks need re-measuring
     document.dispatchEvent(new CustomEvent('vitnyr:langchange', { detail: l }));
+  }
+
+  /* 2026-09-23: the <head> follows the language too. The static HTML carries
+     the English title/description with a data-ru twin (index.html), and no
+     canonical of its own: a static canonical of "/" contradicted the
+     ?lang=ru hreflang alternate and got the Russian URL dropped. So the
+     canonical is written here, self-referencing per language, off the
+     x-default alternate's href (the one place the domain lives). */
+  var headEn = null;   /* the static English title/description. Their Russian
+                          twins are data-head-ru, not data-ru, so applyLang's
+                          [data-en][data-ru] textContent loop never touches them */
+  function applyHead(l) {
+    var t = document.querySelector('title[data-head-ru]');
+    var d = document.querySelector('meta[name="description"][data-head-ru]');
+    if (!headEn) headEn = { t: t && t.textContent, d: d && d.getAttribute('content') };
+    if (t) document.title = l === 'ru' ? t.dataset.headRu : headEn.t;
+    if (d) d.setAttribute('content', l === 'ru' ? d.dataset.headRu : headEn.d);
+    var base = document.querySelector('link[rel="alternate"][hreflang="x-default"]');
+    if (!base) return;
+    var c = document.querySelector('link[rel="canonical"]');
+    if (!c) { c = document.createElement('link'); c.rel = 'canonical'; document.head.appendChild(c); }
+    c.href = base.getAttribute('href') + (l === 'ru' ? '?lang=ru' : '');
   }
 
   /* P2 (Stage 6, 2026-09-06): language lived only in localStorage — the URL
@@ -105,6 +128,8 @@
   }
 
   document.documentElement.setAttribute('data-lang', lang);
+  document.documentElement.setAttribute('lang', lang);
+  applyHead(lang);   /* the head tags sit above this script, so they exist already */
   applyTheme();
 
   /* The wordmark is live SVG text positioned at Lora's own advances, so it must

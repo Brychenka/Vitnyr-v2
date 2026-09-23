@@ -6,7 +6,7 @@ import pytest
 from conftest import rule_contrast
 
 CREAM = "#EFEBE3"
-CHARCOAL = "#14181A"
+CHARCOAL = "#171310"
 
 
 def meta_theme_color(page):

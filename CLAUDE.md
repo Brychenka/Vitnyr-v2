@@ -234,8 +234,17 @@ misalign in a fallback face.
 
 Search for `PLACEHOLDER`, `fill in`, and `.ch__todo`. The Telegram, LinkedIn
 and Instagram handles are live in `index.html`; `og:url`, `og:image`, the
-canonical/hreflang links, `sitemap.xml` and `robots.txt` still point at the
-placeholder `https://vitnyr.example/` until the real domain exists. `BUILD-NOTES.md` lists these plus
+hreflang links, `sitemap.xml` and `robots.txt` still point at the
+placeholder `https://vitnyr.example/` until the real domain exists. There is
+deliberately **no static canonical** — `theme.js`'s `applyHead()` writes a
+self-referencing one per language (`/` or `/?lang=ru`) off the x-default
+alternate, plus the Russian `<title>`/description from their `data-head-ru`
+twins; a static `/` canonical contradicted the `?lang=ru` alternate
+(2026-09-23). The share card has two exports, `og-share.png` and
+`og-share-ru.png` (`assets/share/share-card.html`, `?lang=ru` for the second);
+only the English one is wired into `og:image`, because a crawler never runs
+`theme.js` — serving the Russian card to `?lang=ru` needs the real host
+(e.g. an edge rewrite) once the domain exists. `BUILD-NOTES.md` lists these plus
 what's been visually verified vs. only checked by measuring the DOM.
 
 ## Content and positioning decisions (already made — don't re-litigate)
@@ -252,7 +261,12 @@ the brand file, so nothing in the code will tell a new chat about them:
   100+ one-on-one clients, a **2100 chess rating stated without FIDE**
   (Igor's own correction — don't add "FIDE" back in), **7c redpoint indoor**
   and a **7C Kilter boulder** (climbing grades, not to be merged into one
-  generic "7c"). Nothing beyond these should be asserted about outcomes.
+  generic "7c"). Coaching-outcome figures Igor has since confirmed
+  (2026-09-16 and 2026-09-23), worded as the page has them: **C2 level ·
+  IELTS 9** (Igor's own English), **3 years / 30 students to 1800+**
+  (chess coaching), **2 years / 13 climbers reached 7a in a year**
+  (climbing coaching), and **5,000+ analysed games** (the chess pattern
+  bank). Nothing beyond these should be asserted about outcomes.
 - **"Igor Shatsev" everywhere, including in Russian.** Igor was explicit:
   *"I need to be Igor Shatsev everywhere on the website."* Don't swap in
   "Vitnyr" or a transliteration as the personal name in either language —
