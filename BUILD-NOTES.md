@@ -5172,3 +5172,29 @@ Achieved row unconfirmed is corrected.
 **New tests**: `test_russian_url_is_its_own_canonical_with_russian_head`;
 the canonical/hreflang test now expects the en alternate at `/`; the
 share-card test also fetches `og-share-ru.png`.
+
+## Pre-hosting SEO pass: titles, JSON-LD @graph, chess alt text (2026-09-23)
+
+What could land before a real domain exists, from the SEO review:
+
+- **Titles lead with the query.** EN `English Coach in Yerevan & Online — Igor Shatsev | Vitnyr`,
+  RU `Коуч по английскому в Ереване и онлайн — Igor Shatsev | Vitnyr`.
+- **"репетитор" is search-only.** Igor wants it off the visible page, so it
+  lives in the RU meta description (the Google snippet) and the JSON-LD only.
+  Not as hidden on-page text: that is cloaking under Google's spam policies.
+  `test_repetitor_is_search_only_never_visible_copy` guards both halves.
+- Added `og:site_name`, `twitter:title`, `twitter:description` (`og:locale`
+  plus its alternate were already there).
+- **JSON-LD is now a `@graph`:** `WebSite` + `Person` (still Person, not
+  LocalBusiness), with `knowsAbout`, `areaServed` (Yerevan + "Online") and a
+  `makesOffer` for the free screening + trial lesson and for English, chess
+  and climbing coaching. Offer descriptions are taken from the page's own copy.
+- The 4 real chess photos have alt text now. The 6 English stock stand-ins
+  keep `alt=""` on purpose, because they aren't photos of Igor.
+
+**Waiting on hosting:** a real `/ru/` page (a deploy script that writes
+`index.html` + `ru/index.html` + the inlined artifact), and the
+`vitnyr.example` → real-domain swap. `?lang=ru` plus theme.js's
+self-canonical stays in place until then.
+`test_specimen_permalink_cold_load_commits_its_discipline_and_lands_on_it`
+already failed on `main` before this pass. It isn't caused by these changes.

@@ -5,7 +5,7 @@ import pytest
 
 def test_document_loads_with_title(open_site):
     page, _ = open_site()
-    assert page.title() == "Igor Shatsev — Vitnyr"
+    assert page.title() == "English Coach in Yerevan & Online — Igor Shatsev | Vitnyr"
     # get_by_role, not locator("h1"): #collage carries its own h1 too (C3),
     # exposed to the accessibility tree only once that view is open.
     assert page.get_by_role("heading", level=1).count() == 1
