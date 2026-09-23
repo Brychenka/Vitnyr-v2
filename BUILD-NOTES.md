@@ -5326,3 +5326,37 @@ animated but the normal `.reveal`.
   overflow in any of them. Suite: 299 passed, 2 failed, 1 xfailed. The 2
   failures are the chess/climbing permalink cold-load cases that already
   fail on `feature/conversion-ux`.
+
+## Portrait → colour grade "A" (2026-09-24)
+
+Igor's reaction to the black-and-white portrait: it read like a memorial
+card ("does it look like I'm dead and raising money for a funeral"). The
+reasons were layout as much as tone: a lone B&W head-and-shoulders, a dark
+flattened ground, a "name · place" line underneath, beside "free" and
+"you owe me nothing". He sent a better-exposed, colour-edited version of the
+same frame and picked grade **A, "Editorial colour"** from five mock-ups
+(the others: green-tinted street, paper backdrop, flat green block, toned
+print; riso and line-engraving treatments were tried and dropped as
+filter-cheap).
+
+- **Colour, off `--collage-filter`.** The portrait no longer shares the
+  collage's black-and-white. This is Igor's call and a deliberate exception
+  to the two-colours-plus-two-inks rule, limited to his own photo, and
+  kept in the file's grade rather than in CSS (no new token): black point
+  `--fg`, white point Cream `--bg`, so the photo is never darker than the
+  type or brighter than the page; hedge and leaves hue-pulled toward
+  `--green` and muted; the camel knit nudged toward `--amber`; 12% off the
+  overall saturation, a soft S-curve, fine grain. One file serves both
+  themes; on Charcoal it sits as a mid-tone rectangle, no frame needed.
+- **Retouch.** The street is defocused further and flattened; the parked car
+  and the "BERLIN CITY" shopfront are painted out (inpaint, then blur).
+  Igor himself is not retouched, only colour-graded.
+- **Matte.** GrabCut seeded from the earlier variant-D mask, refined with a
+  colour-guided filter (clean hair and ear edge), plus colour
+  decontamination of the soft edge. Kept at `reference/portrait-grade/`
+  (`matte.png`, and the two scripts that turn it and the source into the
+  assets; their paths point at a session scratchpad, so edit before re-use).
+- **Caption removed.** "Igor Shatsev · Yerevan" under a portrait is the
+  memorial layout; the name is already in the masthead line and the alt.
+- **Files.** `reference/portrait-source.jpg` replaced by the new edit;
+  `igor.jpg` 480w ~39KB, `igor@2x.jpg` 960w ~109KB.
