@@ -665,6 +665,18 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
     row-gap: 6px;
   }
 }
+/* Out of the way while reading (2026-09-23): main.js (trackMast) adds
+   .mast-hidden on a downward scroll past 120px and drops it on any scroll
+   up, on focus inside the bar, and during in-page jumps. The whole bar
+   slides up by its own height — its own transform channel (no reveal, no
+   layout offset lives on .masthead). Deliberately no visibility:hidden, so
+   a keyboard reader can still Tab into it, which brings it back. */
+@media (max-width: 602px) {
+  .masthead {
+    transition: background var(--t) var(--e), border-color var(--t) var(--e), transform var(--t) var(--e);
+  }
+  html.mast-hidden .masthead { transform: translateY(-100%); }
+}
 
 /* ---------- in-copy emphasis ----------
    Body copy is 17px and every paragraph is --fg2, so the default lift is to
@@ -1008,6 +1020,26 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 @media (min-width: 900px) {
   .specimen-top { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
+/* Below 900px (2026-09-23): the mini-mark sits beside "03 Specimens" and the
+   three text buttons take their own full-width line beneath, spread edge to
+   edge — at 375 the RU labels need ~333 of 335px, so wrapping at 320 is
+   load-bearing, not decorative. */
+@media (max-width: 899.98px) {
+  .specimen-top { grid-template-columns: minmax(0, 1fr) auto; row-gap: 12px; column-gap: 16px; }
+  .specimen-top > .specimen-switch { display: contents; }   /* beats the base .specimen-switch rule below */
+  .specimen-switch .origin__mark--mini { grid-area: 1 / 2; }
+  /* contain: inline-size — a spanning item otherwise hands its whole
+     min-content width to the mark's auto column, squeezing the label to 0. */
+  .specimen-switch__items { grid-area: 2 / 1 / 3 / 3; justify-content: space-between; column-gap: 10px; contain: inline-size; }
+  /* No separators and a slightly tighter track here: the RU labels
+     (АНГЛИЙСКИЙ · ШАХМАТЫ · СКАЛОЛАЗАНИЕ) must hold one line at 375; at
+     320 they wrap, so the wrap packs left instead of spreading ragged. */
+  .specimen-switch__sep { display: none; }
+  .specimen-switch__item { letter-spacing: .06em; }
+}
+@media (max-width: 359.98px) {
+  .specimen-switch__items { justify-content: flex-start; column-gap: 20px; }
+}
 .specimen-switch {
   display: flex; align-items: center; gap: 18px;
   justify-self: start;
@@ -1024,9 +1056,31 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
      the lede, so end stays. */
   .specimen-switch { justify-self: end; }
 }
-.specimen-switch__label {
-  font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+/* §03's text switch (2026-09-23): the three disciplines named outright, in
+   the page's small-caps label voice (.origin__panel-item's own 12px/.1em),
+   pressed one in --fg with the channels list's drawn underline at 1px in
+   target ink. Replaces the 11px "Switch discipline" instruction. */
+.specimen-switch__items { display: flex; align-items: center; flex-wrap: wrap; }
+.specimen-switch__item {
+  position: relative;
+  margin: 0; padding: 12px 0; border: 0; background: none; appearance: none;
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: color var(--t) var(--e);
 }
+@media (pointer: coarse) { .specimen-switch__item { min-height: 44px; } }
+.specimen-switch__item:hover,
+.specimen-switch__item:focus-visible,
+.specimen-switch__item.is-active { color: var(--fg); }
+.specimen-switch__item::after {
+  content: ""; position: absolute; left: 0; right: .1em; bottom: 8px; height: 1px;
+  background: var(--ink-target);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.specimen-switch__item[aria-pressed="true"]::after { transform: scaleX(1); }
+.specimen-switch__sep { color: var(--fg2); opacity: .5; margin-inline: 10px; }
 /* .label's own margin-bottom (clamp(28px, 4vw, 56px), set globally for
    every other .sec__head's kicker line) is dead weight here: this .label
    isn't stacked directly above a heading any more, .specimen-top is — so
@@ -1039,7 +1093,7 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
    occasionally call attention to itself — it's easy to land on §03 and
    never notice the switch sits there. Text only, not the mark (tried
    glowing both — Igor asked the mark left alone). Kept off the label's
-   actual fill: .specimen-switch__label is 11px, and CLAUDE.md's color rule
+   actual fill: the label was 11px, and CLAUDE.md's color rule
    forbids --amber/--green as text under 24px (fails 4.5:1 in one theme or
    the other) — that's about text fill, not a shadow behind still-solid
    text, so the glow lives in text-shadow, never in `color`. Amber and
@@ -1054,12 +1108,19 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
    killed entirely under reduced motion below rather than left to the
    generic .01ms override, since an infinite text-shadow loop left
    spinning at that speed would flicker rather than stop. */
+/* 2026-09-23: the glow moved with the label's job — onto the switch's
+   buttons that aren't pressed, each in its own stroke's ink (English and
+   chess are the V's amber arms, climbing the green stem), offset half a
+   cycle so the two unpressed ones never glow together. Same 10s rhythm,
+   same ~2s hold, same text-shadow-not-fill rule as before. */
 @keyframes specimen-label-glow {
-  0%, 20%, 50%, 70%, 100% { text-shadow: 0 0 0 transparent; }
-  10% { text-shadow: 0 0 5px var(--ink-specimen); }
-  60% { text-shadow: 0 0 5px var(--ink-target); }
+  0%, 20%, 100% { text-shadow: 0 0 0 transparent; }
+  10% { text-shadow: 0 0 5px var(--glow); }
 }
-.specimen-switch__label { animation: specimen-label-glow 10s var(--e) infinite; }
+.specimen-switch__item { --glow: var(--ink-specimen); }
+.specimen-switch__item[data-discipline="climbing"] { --glow: var(--ink-target); }
+.specimen-switch__item:not([aria-pressed="true"]) { animation: specimen-label-glow 10s var(--e) infinite; }
+.specimen-switch__item[data-discipline="chess"]:not([aria-pressed="true"]) { animation-delay: -5s; }
 .specs { border-top: 1px solid var(--rule); }
 .spec {
   padding-block: clamp(32px, 4.5vw, 60px);
@@ -1576,6 +1637,40 @@ html.js .reading__value.is-active {
 html.js .reading__value + .reading__value::before { content: none; }
 
 .origin__note { color: var(--fg2); max-width: var(--measure); margin-top: clamp(32px, 5vw, 56px); }
+/* DESIGN-PASS-III Q6 (2026-09-23): at >=900px the readout was capped at
+   360px, centred in ~500px of dead ground either side, carrying every proof
+   point the site has. It now sits on the page's own grid — the same
+   1.05fr | 1fr split as .sec__head and .specimen-top (kept in sync by
+   comment), so the panel lands directly under the lede column (~524px at
+   1280, ~369px at 900 — never narrower than before). align-items: start
+   pins the mark beside the chooser rows, not beside "In detail". Same
+   type, same register, same rows; phone layout untouched. */
+@media (min-width: 900px) {
+  .origin__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    column-gap: clamp(40px, 6vw, 90px);
+    align-items: start;
+  }
+  .origin__body > .origin__mark { justify-self: start; }
+  .origin__body > .origin__panel { width: 100%; }
+  /* The aside moves with the chooser it points into. */
+  #origin .origin__hint {
+    margin-left: calc((100% - clamp(40px, 6vw, 90px)) * 1.05 / 2.05 + clamp(40px, 6vw, 90px));
+  }
+  /* One left edge for the whole panel: chooser labels, the "In detail"
+     eyebrow and a real two-column spec table (fixed label column, values
+     left-aligned) all start 16px in, clear of the 1px commit marker. The
+     labels were centred for a narrow box; above a table they read as a
+     third alignment. */
+  .origin__panel .origin__panel-item { justify-content: flex-start; text-align: left; padding-inline: 16px 0; }
+  .reading__intro { padding-left: 16px; }
+  .reading .reading__row {
+    display: grid; grid-template-columns: 164px minmax(0, 1fr);
+    column-gap: 24px; padding: 10px 0 10px 16px;
+  }
+  html.js .reading__values { justify-items: start; }
+}
 
 /* ---------- who ---------- */
 .rows { border-top: 1px solid var(--rule); }
@@ -2089,24 +2184,11 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    plain — no control anywhere for the one thing the page is actually
    asking for. Travelling-arrow language matches .proof__link and
    .channels a; the drawn-in underline (::after) was dropped 2026-09-12
-   per Igor — the arrow alone carries the "leads somewhere" cue here. */
-.contact__cta {
-  display: inline-flex; align-items: center; gap: clamp(20px, 3.5vw, 40px);
-  color: var(--fg); position: relative;
-}
-.contact__cta-arrow { position: relative; width: clamp(48px, 7vw, 84px); aspect-ratio: 26 / 8; flex: none; }
-.contact__cta-arrow svg {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  color: var(--fg2);
-  transition: transform var(--t) var(--e), color var(--t) var(--e), opacity var(--t) var(--e);
-}
-.contact__cta-arrow--echo { opacity: 0; }
-.contact__cta:hover .contact__cta-arrow svg,
-.contact__cta:focus-visible .contact__cta-arrow svg { color: var(--fg); transform: translateX(14px); }
-.contact__cta:hover .contact__cta-arrow--echo,
-.contact__cta:focus-visible .contact__cta-arrow--echo {
-  opacity: .3; transform: translateX(5px); transition-delay: .07s;
-}
+   per Igor — the arrow alone carried the "leads somewhere" cue here.
+   2026-09-24: the arrow went too (Igor: it wasn't doing its job), so for now
+   the headline has no visible link cue beyond the cursor dot and the
+   "Opens Telegram" line under it; a replacement cue is still to be picked. */
+.contact__cta { color: var(--fg); position: relative; }
 /* C9 (2026-09-06): the handle used to live in its own grid column pinned to
    the far right — "Telegram" at 44px Lora beside "@yngvil" at 13px mono,
    up to 950px apart on a wide screen. Three of those in a row read as a
@@ -2166,6 +2248,128 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   letter-spacing: .01em;
   padding-block: 6px clamp(20px, 2.6vw, 32px);
 }
+/* "Opens Telegram · @yngvil" (2026-09-23): the CTA headline never names the
+   platform. .ch__hint's quiet tier, tucked 10px under the CTA — the negative
+   top margin cancels .contact__big's own margin-bottom, and this line hands
+   that same gap on to the lede below, so the section's spacing is unchanged. */
+.contact__via {
+  font-family: var(--mono); font-size: clamp(12.5px, 1.3vw, 14px);
+  color: var(--fg2); opacity: .75; letter-spacing: .01em;
+  margin: calc(-1 * clamp(24px, 3vw, 40px) + 10px) 0 clamp(24px, 3vw, 40px);
+}
+/* The composed Telegram message while a §04 row is picked — the reader sees
+   exactly what they'll send. Same 2px leading rule, same -14px gutter, as
+   the picked row's ::before, so the two read as one thing. Fade only. */
+.contact__draft {
+  position: relative;
+  margin: 0 0 clamp(24px, 3vw, 40px); max-width: var(--measure);
+  font-family: var(--mono); font-size: clamp(12.5px, 1.3vw, 14px);
+  line-height: 1.55; color: var(--fg2);
+  opacity: 0; transition: opacity var(--t) var(--e);
+}
+.contact__draft::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -14px; width: 2px;
+  background: var(--ink-target);
+}
+.contact__draft.is-in { opacity: 1; }
+
+/* Portrait (variant D, 2026-09-24; colour grade "A", same day). In colour,
+   and deliberately not under --collage-filter: in black and white, a lone
+   head-and-shoulders beside "Message me" read as a memorial card (Igor's
+   own reaction). The grade is baked into the file instead of adding a third
+   colour here: its black point is --fg and its white point --bg (Cream), so
+   the photo is never darker than the type or brighter than the page; the
+   leaves are pulled toward --green and the knit toward --amber, the street
+   is defocused and flattened (car and shopfront painted out), and there's a
+   fine grain. Recipe in BUILD-NOTES.md. No frame and no caption: the quieter
+   ground separates it from both --bg pairs, and a name-and-place line under
+   a portrait is the memorial's layout.
+   Phone: plain flow after the lede, at a modest fixed width, so the CTA
+   stays the first thing on screen. */
+.contact__portrait { margin: clamp(32px, 6vw, 48px) 0 0; width: min(216px, 62%); }
+.contact__portrait img {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+/* >=900px: text column | portrait column, the portrait held to the right
+   content edge. The gap is .sec__head's own, so the gutter matches the rest
+   of the page. The top margin drops the photo from the CTA's line box to
+   the ink top of its capitals: .177em of the CTA's size (Lora's ascent
+   minus its cap height plus half-leading at line-height 1.02, measured),
+   so it takes .contact__big's own clamp. The width is chosen so the 4:5
+   photo's bottom edge meets the EN lede's last line at 1280 — the two
+   columns end together. */
+@media (min-width: 900px) {
+  .contact__head {
+    display: grid; align-items: start;
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 22.5vw, 320px);
+    gap: clamp(40px, 6vw, 90px);
+  }
+  .contact__portrait {
+    margin: calc(clamp(34px, 6.4vw, 88px) * .177) 0 0;
+    width: auto;
+  }
+}
+
+/* §04 pick feedback (2026-09-23). Built by initWhoRows(), so a no-JS reader
+   never sees it. Not the removed instruction line (63792e0): it says
+   nothing until a row is picked, then confirms the pick and points at §05.
+   Its box is reserved (min-height) so a pick never shifts the page. */
+.rows__status {
+  min-height: 1.6em; margin-top: 20px;
+  font-family: var(--mono); font-size: 13px; color: var(--fg2);
+}
+.rows__status a {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding-block: 6px;
+  color: inherit; text-decoration: none; position: relative;
+  opacity: 0; transition: opacity var(--t) var(--e);
+}
+.rows__status a.is-in { opacity: 1; }
+.rows__status a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 4px; height: 1px;
+  background: var(--ink-target);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.rows__status a:hover::after, .rows__status a:focus-visible::after { transform: scaleX(1); }
+.rows__status svg { width: auto; height: 1em; flex: none; }
+
+/* Phone contact bar (2026-09-23). Below 900px only, where the masthead's
+   "message me" doesn't exist; above 480px of height so a landscape phone
+   isn't left with a sliver of page between two bars. The scrolled
+   masthead's own vocabulary — --bg ground, one hairline — mirrored at the
+   bottom edge. The small rise on show is this element's own transform
+   (decorative; it carries no layout). z-index 39: under the masthead (40),
+   the collage view (60) and the pointer dot (70). */
+.dock { display: none; }
+@media (max-width: 899.98px) and (min-height: 481px) {
+  html.js .dock {
+    position: fixed; inset: auto 0 0 0; z-index: 39;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    min-height: 56px;
+    padding: 10px var(--gut) max(10px, env(safe-area-inset-bottom));
+    background: var(--bg); border-top: 1px solid var(--rule); color: var(--fg);
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0; visibility: hidden; transform: translateY(8px);
+    transition: opacity var(--t) var(--e), transform var(--t) var(--e), visibility 0s var(--t);
+  }
+  html.js .dock.is-on {
+    opacity: 1; visibility: visible; transform: none;
+    transition: opacity var(--t) var(--e), transform var(--t) var(--e), visibility 0s 0s;
+  }
+  html.js.collage-open .dock { opacity: 0; visibility: hidden; }
+}
+.dock__k { font-family: var(--mono); font-size: 13px; color: var(--fg2); letter-spacing: .02em; }
+.dock__v {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--sans); font-size: 15px; font-weight: 500; color: var(--fg);
+}
+.dock__arrow { display: block; width: 26px; aspect-ratio: 26 / 8; color: var(--fg2); }
+.dock__arrow svg { display: block; width: 100%; height: 100%; transition: transform var(--t) var(--e), color var(--t) var(--e); }
+.dock:active .dock__arrow svg, .dock:focus-visible .dock__arrow svg { color: var(--fg); transform: translateX(6px); }
+.dock:focus-visible { outline-offset: -4px; }
+
 /* ---------- footer ---------- */
 .foot {
   display: flex; align-items: center; justify-content: space-between;
@@ -2332,7 +2536,7 @@ html.js .collage .reveal.is-in .collage__slot {
      .01ms override below: at that speed an infinite text-shadow loop
      wouldn't stop, it'd flicker every frame — exactly the kind of motion
      this media query exists to prevent. */
-  .specimen-switch__label { animation: none !important; text-shadow: none !important; }
+  .specimen-switch__item { animation: none !important; text-shadow: none !important; }
   /* P22: same for the masthead mark. initLockmark() sits past the
      reduced-motion return in main.js, so .is-drawing is never added here —
      without this the html.js base rule leaves the drawn-in mark clipped away.
@@ -2340,5 +2544,7 @@ html.js .collage .reveal.is-in .collage__slot {
   html.js .lockup #lockClipLeft rect { height: 42px !important; animation: none !important; }
   html.js .lockup #lockClipRight rect { y: 15px !important; height: 42px !important; animation: none !important; }
   html.js .lockup #lockClipStem rect { height: 44px !important; animation: none !important; }
+  /* Phone contact bar: opacity only, no rise. */
+  html.js .dock { transform: none !important; }
   * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
