@@ -298,7 +298,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
          position, matching the reveal system's own convention. -->
     <span class="tools__rule tools__rule--sections" aria-hidden="true"></span>
     <div class="tools__group tools__group--sections">
-      <a class="tool" href="#origin" data-magnetic>01<span class="vh" data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span></a>
+      <a class="tool" href="#origin" data-magnetic>01<span class="vh" data-en="Three disciplines" data-ru="Три направления">Three disciplines</span></a>
       <a class="tool" href="#method" data-magnetic>02<span class="vh" data-en="The method" data-ru="Метод">The method</span></a>
       <a class="tool" href="#specimen" data-magnetic>03<span class="vh" data-en="Specimens" data-ru="Частые проблемы">Specimens</span></a>
       <a class="tool" href="#who" data-magnetic>04<span class="vh" data-en="Who this is for" data-ru="Для кого это">Who this is for</span></a>
@@ -368,7 +368,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <p class="stand reveal" data-l="en">Ten years, 100+ one-on-one clients. Same method under three different scoreboards: English fluency under pressure, chess results that hold up past move fifteen, climbing that doesn’t stall at the same grade for a year. Not one-size-fits-all. What’s holding you back.</p>
     <p class="stand reveal" data-l="ru">Десять лет, больше ста учеников индивидуально. Один метод — три разных табло: беглый английский под давлением, шахматные результаты, которые не рассыпаются после пятнадцатого хода, скалолазание, которое не буксует на одном уровне сложности годами. Не единый шаблон для всех. То, что тебя сдерживает.</p>
     <a class="scrollcue reveal" href="#origin" data-magnetic>
-      <span data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span>
+      <span data-en="Three disciplines" data-ru="Три направления">Three disciplines</span>
       <svg viewBox="0 0 12 24" aria-hidden="true"><path d="M6 0 V22 M1 17 L6 22 L11 17" fill="none" stroke="currentColor" stroke-width="1.25"/></svg>
     </a>
   </div>
@@ -393,13 +393,20 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      section's own markup changes in this stage, only its place in the
      document and its .num. -->
 <section class="sec" id="origin">
-  <p class="label reveal"><span class="num">01</span><span data-en="Name &amp; mark" data-ru="Имя и знак">Name &amp; mark</span></p>
+  <!-- DESIGN-PASS-III Q3 (2026-09-23, feature/conversion-ux): the head now
+       leads with the invitation, per Igor's own D0.1 ordering — the
+       etymology moved down, verbatim, to .origin__note as the second beat.
+       The label, the hero's scroll cue and the masthead's 01 name changed
+       with it, so the cue names what the reader gets. The h2 avoids
+       "choose/pick", which the handwritten aside below already says. EN
+       new, RU a model's first pass — flagged per Standing Order 9. -->
+  <p class="label reveal"><span class="num">01</span><span data-en="Three disciplines" data-ru="Три направления">Three disciplines</span></p>
   <div class="sec__head">
-    <h2 class="reveal" data-l="en">What Vitnyr stands for.</h2>
-    <h2 class="reveal" data-l="ru">Что стоит за именем Vitnyr.</h2>
+    <h2 class="reveal" data-l="en">One mark, three strokes.</h2>
+    <h2 class="reveal" data-l="ru">Один знак, три штриха.</h2>
     <div class="sec__lede">
-      <p class="reveal" data-l="en"><strong>Vitnyr</strong> is a word created from two Old Norse roots: <strong class="mark">vit</strong>, meaning sense or understanding, and <strong class="mark">nýr</strong>, meaning new. Together: new understanding. The word is a call to look for fresh perspectives on old skills, and to stay endlessly curious.</p>
-      <p class="reveal" data-l="ru"><strong>Vitnyr</strong> — слово, созданное из двух древнескандинавских корней: <strong class="mark">vit</strong> — понимание, разумение — и <strong class="mark">nýr</strong> — новый. Вместе: новое понимание. Слово напутствует поиску свежих взглядов на старые навыки и бесконечному любопытству.</p>
+      <p class="reveal" data-l="en">English, chess and climbing: <strong class="mark">the three disciplines I love, practice and coach</strong>. Each one is a stroke of the mark, with its details beside it.</p>
+      <p class="reveal" data-l="ru">Английский, шахматы и скалолазание — <strong class="mark">три направления, которые я люблю, практикую и преподаю</strong>. Каждое — штрих этого знака, а подробности — рядом с ним.</p>
     </div>
   </div>
 
@@ -612,8 +619,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </div>
   </div>
 
-  <p class="origin__note reveal" data-l="en">Three strokes stand for the three disciplines I love, practice and coach. The mark itself comes from merging Vitnyr’s initials, V and Y, into one shape.</p>
-  <p class="origin__note reveal" data-l="ru">Три штриха — это три направления, которые я люблю, практикую и преподаю. Сам знак — слияние инициалов Vitnyr, V и Y, в одну форму.</p>
+  <p class="origin__note reveal" data-l="en"><strong>Vitnyr</strong> is a word created from two Old Norse roots: <em>vit</em>, meaning sense or understanding, and <em>nýr</em>, meaning new. Together: new understanding. The word is a call to look for fresh perspectives on old skills, and to stay endlessly curious. The mark merges its initials, V and Y, into one shape.</p>
+  <p class="origin__note reveal" data-l="ru"><strong>Vitnyr</strong> — слово, созданное из двух древнескандинавских корней: <em>vit</em> — понимание, разумение — и <em>nýr</em> — новый. Вместе: новое понимание. Слово напутствует поиску свежих взглядов на старые навыки и бесконечному любопытству. Знак сливает его инициалы, V и Y, в одну форму.</p>
 </section>
 
 <section class="sec" id="method">
@@ -798,7 +805,22 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <div class="specimen-top">
     <p class="label reveal"><span class="num">03</span><span data-en="Specimens" data-ru="Частые проблемы">Specimens</span></p>
     <div class="specimen-switch">
-      <span class="specimen-switch__label" data-en="Switch discipline" data-ru="Сменить направление">Switch discipline</span>
+      <!-- 2026-09-23 (feature/conversion-ux): the mini-mark alone was the only
+           way into the chess and climbing lists, and most readers never
+           guessed it. Three real text buttons now name the choice outright,
+           with §01's own labels; they share initOrigin()'s single committed
+           state (main.js), so they flip with §01's rows and both marks. They
+           replace the "Switch discipline" instruction, which they make
+           redundant — its discoverability glow (Igor, 2026-09-17) moves onto
+           the two buttons not currently pressed (style.css). -->
+      <div class="specimen-switch__items" role="group" aria-labelledby="specimen-switch-name">
+        <span class="vh" id="specimen-switch-name" data-en="Discipline" data-ru="Направление">Discipline</span>
+        <button type="button" class="specimen-switch__item" data-discipline="english" aria-pressed="true"><span data-en="English" data-ru="Английский">English</span></button>
+        <span class="specimen-switch__sep" aria-hidden="true">·</span>
+        <button type="button" class="specimen-switch__item" data-discipline="chess" aria-pressed="false"><span data-en="Chess" data-ru="Шахматы">Chess</span></button>
+        <span class="specimen-switch__sep" aria-hidden="true">·</span>
+        <button type="button" class="specimen-switch__item" data-discipline="climbing" aria-pressed="false"><span data-en="Climbing" data-ru="Скалолазание">Climbing</span></button>
+      </div>
       <figure class="origin__mark origin__mark--mini" data-magnetic>
       <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
         <defs>
@@ -1162,7 +1184,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        promised. RU wording is Igor's own (shortened from the model's
        first-pass translation, per Standing Order 9). -->
   <h2 class="contact__big reveal">
-    <a class="contact__cta" data-magnetic target="_blank" rel="noopener"
+    <a class="contact__cta" data-magnetic target="_blank" rel="noopener" aria-describedby="contact-via"
        href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
        data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
        data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D0%B5.">
@@ -1176,6 +1198,17 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </span>
     </a>
   </h2>
+  <!-- 2026-09-23 (feature/conversion-ux): the headline above never names the
+       platform it opens, so this says it, in the channels list's own quiet
+       .ch__hint tier — glued to the CTA, not a .reveal of its own, no arrow.
+       RU is a model's first pass, flagged per Standing Order 9. -->
+  <p class="contact__via" id="contact-via"><span data-en="Opens Telegram" data-ru="Откроется Telegram">Opens Telegram</span> · @yngvil</p>
+  <!-- The composed Telegram message, shown only while a §04 row is picked
+       (initWhoRows() in main.js writes it from the same place it writes the
+       CTA's href, so the two can't disagree). Hidden with no JS — without
+       JS no row can be picked. The leading 2px rule is the picked row's own
+       geometry, so the two read as one thing. -->
+  <blockquote class="contact__draft" hidden></blockquote>
   <!-- 2026-09-18: the RU lede below was still English-specific ("для чего
        вам английский") after the EN was broadened to "what skills you
        struggle with" (commit 9649964) — caught while rebuilding the live
@@ -1268,6 +1301,29 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     <span data-en="Back to top" data-ru="Наверх">Back to top</span>
   </a>
 </footer>
+<!-- Phone contact bar (2026-09-23, feature/conversion-ux). Below 900px the
+     masthead has no "message me" link, and the page runs ~8,400px before
+     §05 — so a reader who's ready early had nowhere to go. A plain bar in
+     the scrolled masthead's own vocabulary (--bg ground, one hairline, no
+     card, no radius), fixed to the bottom edge. main.js (initDock) shows it
+     only once the hero is scrolled past and hides it while #contact or the
+     footer is on screen, so there is never a second CTA beside the real one
+     and it never sits over "Back to top". Its href is written by the same
+     updateCta() as .contact__cta, so a §04 pick travels with it. Hidden with
+     no JS (nothing could hide it at #contact then, and the in-flow CTA is
+     there anyway). "Free trial lesson" is the one offer the EN and RU CTAs
+     both promise while DESIGN-PASS-III Q4 is open — revisit with Q4. RU is
+     a model's first pass, flagged per Standing Order 9. -->
+<a class="dock" target="_blank" rel="noopener"
+   href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
+   data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
+   data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D0%B5.">
+  <span class="dock__k" data-en="Free trial lesson" data-ru="Бесплатное занятие">Free trial lesson</span>
+  <span class="dock__v">
+    <span><span data-en="Message me" data-ru="Написать">Message me</span><span class="vh" data-en=" on Telegram" data-ru=" в Telegram"> on Telegram</span></span>
+    <span class="dock__arrow" aria-hidden="true"><svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span>
+  </span>
+</a>
 </div><!-- /#app -->
 
 <!-- ================================================================

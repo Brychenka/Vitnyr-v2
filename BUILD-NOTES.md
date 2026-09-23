@@ -5225,3 +5225,61 @@ already failed on `main` before this pass. It isn't caused by these changes.
     trifecta, which is what makes the metadata honest.
 - New test `test_head_names_all_three_disciplines_english_first` checks
   both languages' title and description name all three, in order.
+
+## Conversion & UX pass (2026-09-24, `feature/conversion-ux`, not merged)
+
+Eight items from the 2026-09-23 site review, built in Igor's order, each
+checked against its spec by a design-review pass before and after
+building. Held on the branch for Igor to look at; not merged, artifact not
+republished.
+
+- **§01 idle hint no longer contradicts the readout.** It used to light the
+  readout rows (Chess lit) while the values stayed English's. It now walks
+  only the §01 figure's strokes, with each stroke's sigil naming it, once
+  (chess → climbing → the committed one), and never touches rows, values,
+  marker, aria, or §03's mini-mark (`paintGlyph()` / `endIdle()` in
+  `initOrigin()`).
+- **Phone contact bar (`.dock`).** Below 900px (and above 480px tall), a
+  fixed bottom bar in the scrolled masthead's own vocabulary: "Free trial
+  lesson" + "Message me →" (RU «Бесплатное занятие» / «Написать», first
+  pass). Shown once the hero is past; hidden while #contact or the footer
+  is on screen, and under the collage view. Hidden with no JS. Its href is
+  written by the same `updateCta()` as the CTA, so §04 picks carry over.
+  "Free trial lesson" is the one offer both CTAs share while DP0-Q4 is open.
+- **"Opens Telegram · @yngvil"** under the §05 CTA (`.contact__via`,
+  `.ch__hint` tier, `aria-describedby` on the CTA). Igor's headline untouched.
+- **§04 pick feedback.** A picked row now (a) shows "Added to your message ↓"
+  under the rows (aria-live, links to #contact; says nothing at rest, so
+  it isn't the instruction line 63792e0 removed), and (b) previews the
+  composed Telegram message under the §05 CTA (`.contact__draft`, the
+  picked row's own 2px target rule). Both clear on unpick and recompose on
+  a language switch.
+- **§03 text switch.** "English · Chess · Climbing" buttons beside the
+  mini-mark (§01's labels), on `initOrigin()`'s one committed state. They
+  replace the "Switch discipline" label; its glow moved onto the unpressed
+  buttons, each in its own stroke's ink. Phone: the mark sits beside the
+  "03" label, the buttons get their own line (no separators; RU wraps at
+  320 only).
+- **Phone masthead hides on scroll-down** (≤602px, past 120px), returns on
+  any scroll-up, on focus inside it, and during in-page jumps (`navLock`
+  in `jumpTo()`, which the generic #-link handler now shares). Its own
+  transform; no visibility change, so it stays Tab-reachable.
+- **DP0-Q3:** §01 leads with the invitation: label/scroll cue/masthead 01
+  "Three disciplines"; h2 "One mark, three strokes."; the lede names the
+  three disciplines. The etymology moved verbatim to `.origin__note`. RU is
+  a first pass, flagged.
+- **DP0-Q5:** mechanism 01 ships open; the other four stay folded.
+- **DP0-Q6:** at ≥900px `.origin__body` is on the page's 1.05fr | 1fr grid,
+  so the readout sits under the lede column (524px at 1280, never narrower
+  than the old 360px cap). The chooser labels and a two-column spec table
+  (164px label column) all share one left edge 16px in. The mark is pinned
+  beside the chooser.
+
+Already failing on `main` before this branch: the specimen-permalink
+tests (`test_each_specimen_is_addressable_by_its_own_permalink`,
+`test_specimen_permalink_updates_the_url_and_moves_focus`, and the two
+chess/climbing cold-load cases in test_motion).
+On this branch the suite ends 299 passed, 2 failed, 1 xfailed; the two
+failures are the chess/climbing permalink cold-load cases above, unchanged.
+The two test_content permalink tests passed here but failed on main, so
+they look flaky rather than fixed.

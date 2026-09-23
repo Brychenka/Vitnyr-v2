@@ -94,7 +94,42 @@
     progressEl.style.setProperty('--progress', p.toFixed(4));
     if (INK_SWITCH_EL) root.classList.toggle('past-origin', y + window.innerHeight * 0.5 >= inkSwitchY);
   }
-  function onScroll(y) { setStuck(y); trackProgress(y); }
+  /* Phone masthead: out of the way while reading (2026-09-23,
+     feature/conversion-ux). At <=602px the masthead holds ~118px scrolled and
+     ~194px at rest — J4 settled that its rows never wrap and its 44px targets
+     never shrink, so the room comes back by moving the whole bar instead:
+     scroll down past 120px and it slides up out of view (.mast-hidden, its
+     own transform — .masthead carries no reveal and no layout transform);
+     any scroll up brings it straight back. Never hidden near the top, while
+     focus is inside it, while the collage view is open, or during a jump
+     from an in-page link (navLock, set by jumpTo() above) — those all scroll
+     downward, and hiding mid-jump would leave headerHeight()'s offset as an
+     empty band over the destination. */
+  var mastEl = document.querySelector('.masthead');
+  var phoneMast = window.matchMedia('(max-width: 602px)');
+  var navLock = false, lastY = 0, downRun = 0, upRun = 0;
+  function showMast() { root.classList.remove('mast-hidden'); downRun = 0; upRun = 0; }
+  function releaseNav() { navLock = false; showMast(); }
+  function trackMast(y) {
+    var max = Math.max(0, root.scrollHeight - window.innerHeight);
+    y = Math.min(max, Math.max(0, y));          // iOS bounce must not flip it
+    var dy = y - lastY;
+    lastY = y;
+    if (!mastEl || !phoneMast.matches || navLock || y <= 120 ||
+        root.classList.contains('collage-open') ||
+        mastEl.contains(document.activeElement)) { showMast(); return; }
+    // Runs, not single deltas: Lenis reports a smoothed scroll a few px per
+    // frame, so one frame's delta almost never clears a threshold on its own.
+    if (dy < 0) {
+      downRun = 0; upRun -= dy;
+      if (upRun >= 4) showMast();
+    } else if (dy > 0) {
+      upRun = 0; downRun += dy;
+      if (downRun >= 8) root.classList.add('mast-hidden');
+    }
+  }
+  if (mastEl) mastEl.addEventListener('focusin', showMast);
+  function onScroll(y) { setStuck(y); trackProgress(y); trackMast(y); }
 
   if (lenis) lenis.on('scroll', function (e) { onScroll(e.scroll); });
   else window.addEventListener('scroll', function () { onScroll(window.scrollY); }, { passive: true });
@@ -122,6 +157,19 @@
   }
 
   // In-page links go through Lenis so the easing stays consistent.
+  // jumpTo() is also what links built later by JS (the §04 pick status) use,
+  // since they don't exist yet when the loop below binds.
+  function jumpTo(target) {
+    navLock = true;
+    showMast();
+    if (lenis) lenis.scrollTo(target, { offset: -headerHeight(), duration: 1.2, onComplete: releaseNav });
+    else { target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); setTimeout(releaseNav, 900); }
+    /* Scrolling is not navigating. preventDefault also cancels the focus move
+       the browser would have made, which for the skip link is the entire
+       point of the link — a keyboard user would land back in the masthead. */
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+  }
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     if (a.hasAttribute('data-collage-open')) return;   // the collage router owns this one
     if (a.hasAttribute('data-permalink')) return;      // initSpecimenPermalinks owns these
@@ -132,13 +180,7 @@
       var target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(target, { offset: -headerHeight(), duration: 1.2 });
-      else target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-      /* Scrolling is not navigating. preventDefault also cancels the focus move
-         the browser would have made, which for the skip link is the entire
-         point of the link — a keyboard user would land back in the masthead. */
-      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
-      target.focus({ preventScroll: true });
+      jumpTo(target);
     });
   });
 
@@ -147,6 +189,7 @@
      reduced-motion path returns. */
   initCollageView();
   initWhoRows();
+  initDock();
   initSpecimenPermalinks();
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
@@ -681,6 +724,9 @@
     var parts = document.querySelectorAll('.glyph__part');
     var panel = document.querySelector('.origin__panel');
     var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : [];
+    // §03's text switch (2026-09-23): three more controls on the same
+    // committed state, treated exactly like the readout rows below.
+    var switchItems = document.querySelectorAll('.specimen-switch__item');
     var marker = panel ? panel.querySelector('.origin__marker') : null;
     // D3 (2026-09-15): the readout's body — see .reading in style.css and
     // index.html. Queried once here rather than re-queried per commit; a
@@ -729,10 +775,37 @@
       panelItems.forEach(function (el) {
         el.classList.toggle('is-active', el.dataset.discipline === name);
       });
+      switchItems.forEach(function (el) {
+        el.classList.toggle('is-active', el.dataset.discipline === name);
+      });
     }
 
     function clearPaint() {
       paint(committed);
+    }
+
+    // The idle hint's own paint: the §01 figure's strokes and sigils only.
+    // paint() above is document-wide (it also drives §03's mini-mark and
+    // switch buttons, and the readout rows' names), and the hint lighting a
+    // readout row while the values beside it still showed the committed
+    // discipline read as a mismatch — Chess lit next to "C2 level · IELTS 9".
+    // So the hint names each stroke with its sigil instead and never
+    // touches the readout, the rows, the marker, or any aria state.
+    var markParts = mark.querySelectorAll('.glyph__part');
+    var markSigils = mark.querySelectorAll('.origin__sigil');
+    function paintGlyph(name) {
+      markParts.forEach(function (el) {
+        var on = el.dataset.discipline === name;
+        el.classList.toggle('is-active', on);
+        el.classList.toggle('is-dim', !on);
+      });
+      markSigils.forEach(function (el) {
+        el.classList.toggle('is-preview', el.dataset.discipline === name);
+      });
+    }
+    function endIdle() {
+      if (idleTl) { idleTl.kill(); idleTl = null; }
+      markSigils.forEach(function (el) { el.classList.remove('is-preview'); });
     }
 
     // Specimen sigils: deliberately NOT folded into paint() above. paint()
@@ -825,7 +898,7 @@
       // whether the hero-gated draw sequence has started yet — a reader who
       // tabs in during that wait must not land on an invisible control.
       mark.classList.add('is-in');
-      if (idleTl) { idleTl.kill(); idleTl = null; }
+      endIdle();
       paint(name);
     }
 
@@ -868,7 +941,7 @@
     function commit(name) {
       engaged = true;
       mark.classList.add('is-in');   // see preview() above
-      if (idleTl) { idleTl.kill(); idleTl = null; }
+      endIdle();
       committed = name;
       paint(name);
       updateReading(name);
@@ -880,6 +953,9 @@
         el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
       });
       panelItems.forEach(function (el) {
+        el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
+      });
+      switchItems.forEach(function (el) {
         el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
       });
     }
@@ -902,6 +978,9 @@
       el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
     });
     panelItems.forEach(function (el) {
+      el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
+    });
+    switchItems.forEach(function (el) {
       el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
     });
 
@@ -947,6 +1026,7 @@
     }
     hits.forEach(wire);
     panelItems.forEach(wire);
+    switchItems.forEach(wire);
 
     // Row heights can change under the reader without a commit happening —
     // a resize crossing the 900px breakpoint, or a language switch changing
@@ -954,14 +1034,16 @@
     window.addEventListener('resize', function () { positionMarker(committed, false); }, { passive: true });
     document.addEventListener('vitnyr:langchange', function () { positionMarker(committed, false); });
 
-    // One-shot hint, not a loop: previews all three discipline/stat pairs a
-    // couple of times when the section first scrolls into view, then settles
-    // back to the neutral resting state on its own. It has to preview the
-    // panel too, not just the glyph — a shimmer with no text next to it
-    // teaches nothing about what hovering actually does. Skipped outright
-    // under reduced motion; the real interaction above still works either
-    // way, and paint() carries no aria side effects, so this stays silent to
-    // assistive tech.
+    // One-shot hint, not a loop: walks the §01 figure's three strokes once
+    // when the section first scrolls into view — chess, climbing, then back
+    // to the committed one, so the settle is not a jump. Each stroke shows
+    // its sigil while lit, and the sigil is what names it: the hint used to
+    // light the readout rows too, but the values beside them never swapped
+    // (a hint must not rewrite proof figures under a reader's eyes), so
+    // Chess sat lit next to English's numbers. paintGlyph() stays inside
+    // the §01 mark — no rows, no readout, no marker, no aria, no spark.
+    // Skipped outright under reduced motion; the real interaction above
+    // still works either way.
     if (reduce || !('IntersectionObserver' in window)) return;
     // S7 move 03: the mark draws its three strokes on the reveal (~0.9s of
     // CSS, keyed off .is-in). Hold the idle preview until that has finished
@@ -982,14 +1064,19 @@
       if (engaged || mark.classList.contains('is-in')) return;
       mark.classList.add('is-in');
       if (engaged) return;   // a real interaction can land in the same tick
-      var order = ['english', 'chess', 'climbing'];
+      var order = ['english', 'chess', 'climbing'].filter(function (n) { return n !== committed; });
+      order.push(committed);
       var tl = gsap.timeline({
         delay: DRAW_HOLD,
-        repeat: 1,
-        onComplete: function () { if (!engaged) clearPaint(); idleTl = null; }
+        onComplete: function () {
+          idleTl = null;
+          if (engaged) return;
+          paintGlyph(committed);
+          markSigils.forEach(function (el) { el.classList.remove('is-preview'); });
+        }
       });
       order.forEach(function (name) {
-        tl.call(function () { if (!engaged) paint(name); }).to({}, { duration: 1 });
+        tl.call(function () { if (!engaged) paintGlyph(name); }).to({}, { duration: 1 });
       });
       idleTl = tl;
     }
@@ -1630,11 +1717,72 @@
     // theme.js's plain per-language default (applyLang sets the same value on
     // a switch — this keeps them in step between switches). A selection:
     // baseMessage + " — " + the row's clause, in the current language.
+    // 2026-09-23: writes every Telegram link that carries the offer — the
+    // CTA and the phone contact bar (.dock) — plus the §05 draft preview, so
+    // all three are composed here and nowhere else.
+    var targets = document.querySelectorAll('.contact__cta, .dock');
+    var draft = document.querySelector('.contact__draft');
     function updateCta() {
       var l = lang();
-      if (selected === null) { cta.setAttribute('href', cta.getAttribute('data-href-' + l)); return; }
-      var clause = rows[selected].getAttribute('data-prefill-' + l) || '';
-      cta.setAttribute('href', BASE + encodeURIComponent(decodedBase(l) + ' — ' + clause));
+      var href = cta.getAttribute('data-href-' + l);
+      var message = null;
+      if (selected !== null) {
+        var clause = rows[selected].getAttribute('data-prefill-' + l) || '';
+        message = decodedBase(l) + ' — ' + clause;
+        href = BASE + encodeURIComponent(message);
+      }
+      targets.forEach(function (a) { a.setAttribute('href', href); });
+      if (!draft) return;
+      if (message === null) {
+        draft.classList.remove('is-in');
+        draft.hidden = true;
+        draft.textContent = '';
+        return;
+      }
+      draft.textContent = l === 'ru' ? '«' + message + '»' : '“' + message + '”';
+      if (draft.hidden) {
+        draft.hidden = false;
+        requestAnimationFrame(function () { draft.classList.add('is-in'); });
+      }
+    }
+
+    // The pick status under the rows: confirms a pick and points at §05,
+    // where the draft above now shows what will be sent. Says nothing at
+    // rest — this is not the instruction line 63792e0 removed. aria-live,
+    // so the confirmation is announced; the draft itself is not.
+    var list = document.querySelector('.rows');
+    var status = document.createElement('p');
+    status.className = 'rows__status';
+    status.setAttribute('aria-live', 'polite');
+    list.parentNode.insertBefore(status, list.nextSibling);
+    function setStatus(picked) {
+      status.textContent = '';
+      var l = lang();
+      if (picked) {
+        var a = document.createElement('a');
+        a.href = '#contact';
+        var t = document.createElement('span');
+        t.setAttribute('data-en', 'Added to your message');
+        t.setAttribute('data-ru', 'Добавлено в ваше сообщение');
+        t.textContent = t.dataset[l];
+        a.appendChild(t);
+        a.insertAdjacentHTML('beforeend', '<svg viewBox="0 0 12 24" aria-hidden="true"><path d="M6 0 V22 M1 17 L6 22 L11 17" fill="none" stroke="currentColor" stroke-width="1.25"/></svg>');
+        a.addEventListener('click', function (e) {
+          var dest = document.getElementById('contact');
+          if (!dest) return;
+          e.preventDefault();
+          jumpTo(dest);
+        });
+        status.appendChild(a);
+        requestAnimationFrame(function () { a.classList.add('is-in'); });
+      } else {
+        var v = document.createElement('span');
+        v.className = 'vh';
+        v.setAttribute('data-en', 'Removed from your message');
+        v.setAttribute('data-ru', 'Убрано из сообщения');
+        v.textContent = v.dataset[l];
+        status.appendChild(v);
+      }
     }
 
     var picks = [];
@@ -1661,6 +1809,7 @@
         picks.forEach(function (b, j) { b.setAttribute('aria-pressed', selected === j ? 'true' : 'false'); });
         rows.forEach(function (r, j) { r.classList.toggle('is-picked', selected === j); });
         updateCta();
+        setStatus(selected !== null);
       });
       li.appendChild(btn);
       picks.push(btn);
@@ -1669,6 +1818,32 @@
     // A language switch re-sets the default href and fires this; re-run the
     // one writer so a live selection recomposes in the new language.
     document.addEventListener('vitnyr:langchange', updateCta);
+  }
+
+  /* ---------- phone contact bar ----------
+     Shows .dock (index.html) once the hero has scrolled away above the
+     viewport, and hides it while #contact or the footer is on screen — so
+     it never doubles the real CTA and never covers "Back to top". The
+     bottom rootMargin is the bar's own height: #contact counts as on screen
+     the moment it reaches the bar's top edge. Visibility only, not motion,
+     so it's wired before the reduced-motion return (CSS drops the rise). */
+  function initDock() {
+    var dock = document.querySelector('.dock');
+    var hero = document.getElementById('hero');
+    var contact = document.getElementById('contact');
+    var foot = document.querySelector('.foot');
+    if (!dock || !hero || !contact || !('IntersectionObserver' in window)) return;
+    var state = { heroAbove: false, contact: false, foot: false };
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.target === hero) state.heroAbove = !en.isIntersecting && en.boundingClientRect.top < 0;
+        else if (en.target === contact) state.contact = en.isIntersecting;
+        else state.foot = en.isIntersecting;
+      });
+      var on = state.heroAbove && !state.contact && !state.foot;
+      dock.classList.toggle('is-on', on);
+    }, { rootMargin: '0px 0px -56px 0px' });
+    io.observe(hero); io.observe(contact); if (foot) io.observe(foot);
   }
 
   /* ---------- the specimen reveal ----------
@@ -1787,9 +1962,15 @@
   function initMechanismFold() {
     var toggles = document.querySelectorAll('.mech__toggle');
     if (!toggles.length) return;
-    toggles.forEach(function (btn) {
-      btn.setAttribute('aria-expanded', 'false');
+    // DESIGN-PASS-III Q5 (2026-09-23): mechanism 01 ships open, so a reader
+    // who never clicks still gets one paragraph of the argument and sees
+    // what the fold does; the other four stay folded (the 2026-09-18 length
+    // decision stands). A starting state, not a new mechanism.
+    toggles.forEach(function (btn, i) {
+      var startOpen = i === 0;
+      btn.setAttribute('aria-expanded', startOpen ? 'true' : 'false');
       var mark = btn.querySelector('.mech__toggle-mark');
+      if (mark && startOpen) mark.textContent = '−';
       btn.addEventListener('click', function () {
         var open = btn.getAttribute('aria-expanded') === 'true';
         btn.setAttribute('aria-expanded', open ? 'false' : 'true');
