@@ -1183,6 +1183,15 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        to match, so what the reader says on arrival mirrors what the button
        promised. RU wording is Igor's own (shortened from the model's
        first-pass translation, per Standing Order 9). -->
+  <!-- Portrait, variant D (2026-09-24, feature/portrait-d-contact-plain):
+       the page asks the reader to message a person it had never shown.
+       .contact__head puts the photo beside the CTA block at >=900px (text
+       column | portrait column, see style.css); below that it's plain flow,
+       so the photo lands after the lede and the CTA stays first on screen.
+       The figure comes last in source order for the same reason: a screen
+       reader meets the ask before the picture. -->
+  <div class="contact__head">
+  <div class="contact__text">
   <h2 class="contact__big reveal">
     <a class="contact__cta" data-magnetic target="_blank" rel="noopener" aria-describedby="contact-via"
        href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
@@ -1217,6 +1226,32 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <div class="sec__lede">
     <p class="reveal" data-l="en">Tell me what skills you struggle with and where it breaks now. We start with a call: <strong class="mark">it’s free, and you owe me nothing after it</strong>. Online or in Yerevan.</p>
     <p class="reveal" data-l="ru">Напишите, с какими навыками у вас сложности и что хотите улучшить. Начнём с созвона: <strong class="mark">бесплатно и ни к чему не обязывает</strong>. Онлайн или в Ереване.</p>
+  </div>
+  </div>
+  <!-- The source (reference/portrait-source.jpg) is re-cut offline, not
+       filtered here: a 4:5 crop with the glasses on the zip kept in frame,
+       a red-weighted mono mix (skin and the camel sweater lift, the green
+       hedge sinks), shadows lifted, and the street behind — the parked car,
+       the "BERLIN CITY" shopfront — blurred and flattened to one quiet
+       mid-grey. Igor himself is untouched. --collage-filter then matches it
+       to the collage's own black-and-white per theme.
+       Two <img>s on the data-l pattern, because alt text has no attribute
+       twin in applyLang(); both share one URL, so the hidden one costs no
+       second download. RU alt keeps "Igor Shatsev" in Latin, as the rest of
+       the page does. -->
+  <figure class="contact__portrait reveal">
+    <img data-l="en" src="assets/portrait/igor@2x.jpg"
+         srcset="assets/portrait/igor.jpg 480w, assets/portrait/igor@2x.jpg 960w"
+         sizes="(min-width: 900px) clamp(220px, 22.5vw, 320px), 216px"
+         width="960" height="1200" loading="lazy" decoding="async"
+         alt="Igor Shatsev, English, chess and climbing coach, in Yerevan">
+    <img data-l="ru" src="assets/portrait/igor@2x.jpg"
+         srcset="assets/portrait/igor.jpg 480w, assets/portrait/igor@2x.jpg 960w"
+         sizes="(min-width: 900px) clamp(220px, 22.5vw, 320px), 216px"
+         width="960" height="1200" loading="lazy" decoding="async"
+         alt="Igor Shatsev, тренер по английскому, шахматам и скалолазанию, в Ереване">
+    <figcaption data-en="Igor Shatsev · Yerevan" data-ru="Igor Shatsev · Ереван">Igor Shatsev · Yerevan</figcaption>
+  </figure>
   </div>
 
   <!-- C9 (2026-09-06): the handle used to sit in its own grid column, pinned

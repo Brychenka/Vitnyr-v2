@@ -2286,6 +2286,45 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 }
 .contact__draft.is-in { opacity: 1; }
 
+/* Portrait (variant D, 2026-09-24). No frame: unlike the collage tiles it
+   sits alone, and its flattened mid-grey ground already separates it from
+   both --bg pairs, so a hairline would only turn it into a card. Same
+   --collage-filter as the collage, so every photo of Igor on the site
+   shares one black-and-white. The caption speaks .contact__via's quiet
+   mono tier: it names who the reader is about to message, and where.
+   Phone: plain flow after the lede, at a modest fixed width, so the CTA
+   stays the first thing on screen. */
+.contact__portrait { margin: clamp(32px, 6vw, 48px) 0 0; width: min(216px, 62%); }
+.contact__portrait img {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 5;
+  object-fit: cover;
+  filter: var(--collage-filter);
+}
+.contact__portrait figcaption {
+  margin-top: 12px;
+  font-family: var(--mono); font-size: clamp(12.5px, 1.3vw, 14px);
+  color: var(--fg2); opacity: .75; letter-spacing: .01em;
+}
+/* >=900px: text column | portrait column, the portrait held to the right
+   content edge. The gap is .sec__head's own, so the gutter matches the rest
+   of the page. The top margin drops the photo from the CTA's line box to
+   the ink top of its capitals: .177em of the CTA's size (Lora's ascent
+   minus its cap height plus half-leading at line-height 1.02, measured),
+   so it takes .contact__big's own clamp. The width is chosen so the 4:5
+   photo's bottom edge meets the EN lede's last line at 1280 — the two
+   columns end together, caption hanging below like a footnote. */
+@media (min-width: 900px) {
+  .contact__head {
+    display: grid; align-items: start;
+    grid-template-columns: minmax(0, 1fr) clamp(220px, 22.5vw, 320px);
+    gap: clamp(40px, 6vw, 90px);
+  }
+  .contact__portrait {
+    margin: calc(clamp(34px, 6.4vw, 88px) * .177) 0 0;
+    width: auto;
+  }
+}
+
 /* §04 pick feedback (2026-09-23). Built by initWhoRows(), so a no-JS reader
    never sees it. Not the removed instruction line (63792e0): it says
    nothing until a row is picked, then confirms the pick and points at §05.

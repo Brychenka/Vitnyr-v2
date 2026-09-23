@@ -5283,3 +5283,46 @@ On this branch the suite ends 299 passed, 2 failed, 1 xfailed; the two
 failures are the chess/climbing permalink cold-load cases above, unchanged.
 The two test_content permalink tests passed here but failed on main, so
 they look flaky rather than fixed.
+
+## Portrait, variant D: §05, the photo alone (2026-09-24, `feature/portrait-d-contact-plain`, not merged)
+
+One of four portrait variants built in parallel for Igor to compare. This is
+the control: the real photo beside the §05 CTA, no line drawing, nothing
+animated but the normal `.reveal`.
+
+- **Where.** `.contact__head` wraps the CTA block (h2, "Opens Telegram",
+  draft preview, lede) and a `figure.contact__portrait`. At >=900px it's a
+  grid: text column | `clamp(220px, 22.5vw, 320px)` portrait column held to
+  the right content edge, `.sec__head`'s gap. The photo's top edge drops
+  `.177em` of the CTA's size so it meets the capitals' ink top, not the line
+  box (measured from Lora's metrics); at 1280 EN its bottom edge meets the
+  lede's last line. The CTA's arrow now points at the photo. Below 900px it's
+  plain flow after the lede at `min(216px, 62%)`, so the CTA stays first on
+  screen. The figure is last in source order so a screen reader reaches the
+  ask before the picture.
+- **Image.** `reference/portrait-source.jpg` re-cut offline (opencv): 4:5
+  crop keeping the glasses on the zip in frame; red-weighted mono mix (skin
+  and the camel sweater lift, the hedge sinks); shadows lifted with a gamma
+  curve; a GrabCut mask (hand-seeded) so only the street behind is blurred and
+  flattened to one mid-grey (car, "BERLIN CITY" shopfront, window lights gone).
+  Igor himself is not retouched. `assets/portrait/igor.jpg` 480w (~25KB) and
+  `igor@2x.jpg` 960w (~79KB), `srcset`/`sizes`, lazy, explicit size.
+  `--collage-filter` on top, so it shares one black-and-white with the
+  collage in both themes. No frame: the mid-grey ground separates it from
+  both backgrounds, and a hairline would make it a card.
+- **Caption.** "Igor Shatsev · Yerevan" / "Igor Shatsev · Ереван" in
+  `.contact__via`'s mono/fg2 tier. It names who the reader is about to
+  message. No accent ink.
+- **Alt, both languages.** Two `<img>`s using the `data-l` pattern (applyLang
+  has no alt twin; both share one URL, so no second download). **RU alt is a
+  first pass, flagged:** "Igor Shatsev, тренер по английскому, шахматам и
+  скалолазанию, в Ереване". The brief proposed «Игорь Шацев». I kept the
+  Latin name, following CLAUDE.md's "Igor Shatsev everywhere" rule.
+- **Cost.** In the narrower column the CTA takes one more line: EN goes from
+  2 lines to 3 at 1280, RU wraps to 3 (4 at 1024).
+- **Verified** with Playwright real frames: Cream/Charcoal, EN/RU (plus a
+  live switch), 1280/1024/375/320 (touch at phone widths), reduced motion,
+  no JS, and GSAP/Lenis blocked. No console errors and no horizontal
+  overflow in any of them. Suite: 299 passed, 2 failed, 1 xfailed. The 2
+  failures are the chess/climbing permalink cold-load cases that already
+  fail on `feature/conversion-ux`.
