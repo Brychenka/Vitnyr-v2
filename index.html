@@ -3,12 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Igor Shatsev — Vitnyr</title>
-<meta name="description" content="Igor Shatsev, English coach in Yerevan, for people who know English far better than they speak it — 100+ one-on-one clients over 10 years. Also coaches chess (rated 2100) and climbing (7c/7C) as their own disciplines.">
+<title data-head-ru="Igor Shatsev — Vitnyr · коучинг английского, шахмат и скалолазания">Igor Shatsev — Vitnyr</title>
+<!-- 2026-09-23: title/description exist in both languages. Crawlers read
+     the static EN pair; theme.js swaps in the data-head-ru pair (and html[lang])
+     on a Russian load, so ?lang=ru renders with its own title and snippet. -->
+<meta name="description" content="Igor Shatsev, English coach in Yerevan — 10 years, 100+ one-on-one clients. Also coaches chess (rated 2100) and climbing (7c/7C) as their own disciplines. Online or in Yerevan." data-head-ru="Igor Shatsev — коуч по английскому в Ереване: 10 лет, больше ста учеников индивидуально. Также тренирует по шахматам (рейтинг 2100) и скалолазанию (7c/7C) как отдельным дисциплинам. Онлайн или в Ереване.">
 <meta name="theme-color" content="#EFEBE3">
 
 <meta property="og:title" content="Igor Shatsev — Vitnyr">
-<meta property="og:description" content="For people who know English far better than they speak it — 100+ one-on-one clients over 10 years in Yerevan. Chess and climbing coaching too, each on its own terms.">
+<meta property="og:description" content="English coach in Yerevan — 10 years, 100+ one-on-one clients. Chess and climbing coaching too, each on its own terms.">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ru_RU">
 <meta property="og:type" content="website">
 <!--
   P1 (Stage 6, 2026-09-06): og:image now points at a real, exported share
@@ -29,11 +34,17 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://vitnyr.example/assets/share/og-share.png">
 
-<link rel="canonical" href="https://vitnyr.example/">
 <!-- P3/P2 (Stage 6, 2026-09-06): hreflang alternates point at the ?lang=
      URLs theme.js already reads on load and now writes back via
-     history.replaceState on a language switch (see theme.js). -->
-<link rel="alternate" hreflang="en" href="https://vitnyr.example/?lang=en">
+     history.replaceState on a language switch (see theme.js).
+     2026-09-23: no static <link rel="canonical"> on purpose. A static one
+     said "/" for every URL, so it told Google ?lang=ru was a duplicate of
+     the English page and the Russian alternate got dropped. theme.js now
+     writes a self-referencing canonical per language (en -> "/", ru ->
+     "/?lang=ru"), built from the x-default href below so the domain swap
+     stays a find-and-replace in this file. The en alternate is "/" for the
+     same reason: hreflang must name the canonical URL, not a duplicate. -->
+<link rel="alternate" hreflang="en" href="https://vitnyr.example/">
 <link rel="alternate" hreflang="ru" href="https://vitnyr.example/?lang=ru">
 <link rel="alternate" hreflang="x-default" href="https://vitnyr.example/">
 
@@ -458,10 +469,11 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
            Stage 5 (2026-09-16): Igor supplied real chess coaching figures
            (3 years, 30 students to 1800+, named specimens below), so chess's
            rows are no longer placeholders. A same-day follow-up added
-           climbing's own coaching duration (2 years), so only climbing's
-           Achieved row (a student-outcome figure) remains unconfirmed —
-           Common mistakes is real for both, now that §03 has named
-           specimens for each.
+           climbing's own coaching duration (2 years). Common mistakes is
+           real for both, now that §03 has named specimens for each.
+           2026-09-23: Igor confirmed climbing's Achieved row (13 climbers
+           to 7a in a year) and English's IELTS 9 — every row here is now a
+           confirmed fact, listed in CLAUDE.md.
 
            Stage 6 (2026-09-17): dropped the original opening row (Measured:
            the 8yrs/100+, 2100, 7c/7C headline figures) — it only ever
@@ -505,6 +517,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
             <!-- Stage 5 (2026-09-16): real figure from Igor, replacing the
                  D0.6.4/5 placeholder. -->
             <span class="reading__value" data-discipline="chess" data-en="30 students to 1800+" data-ru="30 учеников довел до 1800+">30 students to 1800+</span>
+            <!-- Confirmed by Igor 2026-09-23 (CLAUDE.md confirmed facts). -->
             <span class="reading__value" data-discipline="climbing" data-en="13 climbers reached 7a in a year" data-ru="13 скалолазов достигли 7a за год">13 climbers reached 7a in a year</span>
           </span>
         </div>

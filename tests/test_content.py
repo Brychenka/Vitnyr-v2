@@ -195,17 +195,39 @@ def test_og_url_and_image_use_the_placeholder_domain(open_site):
 
 
 def test_canonical_and_hreflang_share_the_same_placeholder_domain(open_site):
-    page, _ = open_site()
+    page, _ = open_site(lang="en")
+    assert page.locator('link[rel="canonical"]').count() == 1
     assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/"
     alternates = {
         el.get_attribute("hreflang"): el.get_attribute("href")
         for el in page.locator('link[rel="alternate"][hreflang]').all()
     }
     assert alternates == {
-        "en": "https://vitnyr.example/?lang=en",
+        "en": "https://vitnyr.example/",
         "ru": "https://vitnyr.example/?lang=ru",
         "x-default": "https://vitnyr.example/",
     }
+
+
+def test_russian_url_is_its_own_canonical_with_russian_head(open_site):
+    """2026-09-23: a static canonical of "/" told Google ?lang=ru was a
+    duplicate, contradicting its own hreflang. The Russian load now carries
+    a self-referencing canonical, html[lang=ru], and the Russian title and
+    description; switching back restores the English set."""
+    page, _ = open_site(query="?lang=ru")
+    assert page.locator('link[rel="canonical"]').count() == 1
+    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/?lang=ru"
+    assert page.locator("html").get_attribute("lang") == "ru"
+    assert "коучинг" in page.title()
+    assert "Igor Shatsev" in page.title()
+    desc = page.locator('meta[name="description"]').get_attribute("content")
+    assert "коуч" in desc and "Igor Shatsev" in desc
+    assert page.locator('meta[name="description"]').evaluate("el => el.textContent") == ""
+    page.locator(".masthead .langswitch").click()
+    page.wait_for_function("document.documentElement.lang === 'en'")
+    assert page.title() == "Igor Shatsev — Vitnyr"
+    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/"
+    assert "коуч" not in page.locator('meta[name="description"]').get_attribute("content")
 
 
 def test_share_card_asset_is_actually_served(open_site, site_url):
@@ -217,6 +239,8 @@ def test_share_card_asset_is_actually_served(open_site, site_url):
     resp = page.request.get(f"{site_url}/assets/share/og-share.png")
     assert resp.ok
     assert resp.headers.get("content-type", "").startswith("image/")
+    ru = page.request.get(f"{site_url}/assets/share/og-share-ru.png")
+    assert ru.ok
 
 
 def test_person_json_ld_carries_only_confirmed_facts(open_site):

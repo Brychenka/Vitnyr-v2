@@ -5130,3 +5130,45 @@ with real pointer frames, not a single screenshot: the strokes lean and
 settle in both themes, the mark rests as the locked logo, 84px wide and
 centred at 375px with no horizontal overflow, no listeners on a coarse
 pointer, no console errors.
+
+## Trust and SEO fixes: share card, per-language head, confirmed claims (2026-09-23)
+
+From an audit's "fix first" list. Three of its five items landed here; the
+other two are Igor's (the domain) or deferred by him (the English collage
+stand-ins, Q9).
+
+**Share card.** `og-share.png` still said "8 yrs coaching", sat on the
+retired cool charcoal `#14181A`, used a headline no longer on the page and a
+mono face the site never loads. `share-card.html` now uses the warm charcoal
+pair, the hero's own headline and Inter for the facts line, and renders in
+both languages (`?lang=ru`) — exported at 1200×630, DPR 1, via Playwright,
+as `og-share.png` and `og-share-ru.png`. Only the English file is wired into
+`og:image`: crawlers don't run JS, so a Russian preview for `?lang=ru` needs
+the real host (an edge rewrite) once a domain exists.
+
+**Canonical vs hreflang.** The static `<link rel="canonical" href="/">` told
+Google `?lang=ru` was a duplicate of `/` while hreflang named it the Russian
+version, so the Russian URL would be dropped; the Russian load also kept
+`lang="en"` and the English title/description until DOMContentLoaded (lang)
+or forever (title/description). Now: no static canonical; `theme.js`'s
+`applyHead()` runs before first paint and again on every switch, writing a
+self-referencing canonical off the x-default href (`/` or `/?lang=ru`),
+`html[lang]`, and the Russian title/description from `data-head-ru` twins —
+deliberately not `data-ru`, which would put them in `applyLang()`'s
+textContent loop and fail `test_i18n`'s both-languages rule. The en
+alternate is now `/` (the canonical, not the `?lang=en` duplicate);
+`sitemap.xml` lists `?lang=ru` as its own `<url>`. The meta and og
+descriptions also lost "for people who know English far better than they
+speak it", which the page no longer says.
+
+**theme-color.** Also still `#14181A` on charcoal; now `#171310`, the
+current `--bg`.
+
+**Claims.** Igor confirmed IELTS 9, "13 climbers reached 7a in a year",
+5,000+ analysed games and 30 students to 1800+. Added to CLAUDE.md's
+confirmed facts; the §01 readout comment that still called climbing's
+Achieved row unconfirmed is corrected.
+
+**New tests**: `test_russian_url_is_its_own_canonical_with_russian_head`;
+the canonical/hreflang test now expects the en alternate at `/`; the
+share-card test also fetches `og-share-ru.png`.

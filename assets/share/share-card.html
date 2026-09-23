@@ -13,6 +13,14 @@
   this must never drift into its own palette. Regenerate by opening this
   file at a 1200×630 viewport and re-exporting, whenever the wordmark,
   the facts, or the charcoal-pair tokens change.
+
+  2026-09-23: re-exported. The old card still said 8 years (10 since
+  feature/ten-years-coaching), sat on the retired cool charcoal #14181A,
+  carried a headline no longer on the page, and set its facts in IBM Plex
+  Mono, which the site never loads. Now: the warm charcoal pair, the hero's
+  own headline, Inter for the facts line. One source, two languages:
+  open with ?lang=ru for og-share-ru.png (the name stays "Igor Shatsev" in
+  both, per CLAUDE.md).
 -->
 <html>
 <head>
@@ -20,12 +28,12 @@
 <title>Vitnyr share card source</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Lora:ital,wght@0,500;0,600;1,500&display=swap">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     width: 1200px; height: 630px; overflow: hidden;
-    background: #14181A; /* --bg, charcoal pair */
+    background: #171310; /* --bg, charcoal pair */
   }
   .card {
     width: 1200px; height: 630px;
@@ -46,6 +54,9 @@
     max-width: 920px;
     text-wrap: balance;
   }
+  .headline em { font-style: italic; }
+  [data-l] { display: none; }
+  html[data-lang="en"] [data-l="en"], html[data-lang="ru"] [data-l="ru"] { display: revert; }
   .foot {
     display: flex; align-items: baseline; justify-content: space-between;
     border-top: 1px solid rgba(242,239,232,0.235); /* --rule, charcoal pair */
@@ -56,13 +67,14 @@
     color: #F2EFE8;
   }
   .foot .facts {
-    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 17px;
-    letter-spacing: 0.02em; color: #A8ABA9; /* --fg2 */
+    font-family: Inter, system-ui, sans-serif; font-size: 18px;
+    color: #A8ABA9; /* --fg2 */
   }
   .foot .facts b { color: #F2EFE8; font-weight: 500; }
 </style>
 </head>
 <body>
+  <script>document.documentElement.setAttribute('data-lang', new URLSearchParams(location.search).get('lang') === 'ru' ? 'ru' : 'en');</script>
   <div class="card">
     <div class="lockup">
       <!-- identical d= to .lockup/.footmark in index.html — do not redraw -->
@@ -75,11 +87,14 @@
       </span>
     </div>
 
-    <p class="headline">For people who know English<br>far better than they speak it.</p>
+    <!-- the hero's own headline (index.html .hero__title), both languages -->
+    <p class="headline" data-l="en">Skill acquisition, coached.<br><em>English, chess, climbing.</em></p>
+    <p class="headline" data-l="ru">Коучинг по навыкам.<br><em>Английский, шахматы, скалолазание.</em></p>
 
     <div class="foot">
       <span class="who">Igor Shatsev</span>
-      <span class="facts"><b>8</b> yrs coaching &nbsp;·&nbsp; <b>100+</b> one-on-one clients &nbsp;·&nbsp; Yerevan</span>
+      <span class="facts" data-l="en"><b>10</b> years coaching &nbsp;·&nbsp; <b>100+</b> one-on-one clients &nbsp;·&nbsp; Yerevan</span>
+      <span class="facts" data-l="ru"><b>10</b> лет &nbsp;·&nbsp; <b>100+</b> учеников индивидуально &nbsp;·&nbsp; Ереван</span>
     </div>
   </div>
 </body>
