@@ -3,11 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-head-ru="Igor Shatsev — Vitnyr · коучинг английского, шахмат и скалолазания">Igor Shatsev — Vitnyr</title>
+<title data-head-ru="Коуч по английскому в Ереване и онлайн — Igor Shatsev | Vitnyr">English Coach in Yerevan &amp; Online — Igor Shatsev | Vitnyr</title>
 <!-- 2026-09-23: title/description exist in both languages. Crawlers read
      the static EN pair; theme.js swaps in the data-head-ru pair (and html[lang])
-     on a Russian load, so ?lang=ru renders with its own title and snippet. -->
-<meta name="description" content="Igor Shatsev, English coach in Yerevan — 10 years, 100+ one-on-one clients. Also coaches chess (rated 2100) and climbing (7c/7C) as their own disciplines. Online or in Yerevan." data-head-ru="Igor Shatsev — коуч по английскому в Ереване: 10 лет, больше ста учеников индивидуально. Также тренирует по шахматам (рейтинг 2100) и скалолазанию (7c/7C) как отдельным дисциплинам. Онлайн или в Ереване.">
+     on a Russian load, so ?lang=ru renders with its own title and snippet.
+     Titles lead with the query ("English coach Yerevan") rather than the
+     brand. "репетитор" is the word Russian searchers actually type, but Igor
+     doesn't want it on the page itself — so it lives only in the RU
+     description (search snippet) and the JSON-LD, never in visible copy. -->
+<meta name="description" content="Igor Shatsev, English coach in Yerevan — 10 years, 100+ one-on-one clients. Also coaches chess (rated 2100) and climbing (7c/7C) as their own disciplines. Online or in Yerevan." data-head-ru="Igor Shatsev — коуч и репетитор по английскому в Ереване и онлайн: 10 лет, больше ста учеников индивидуально. Также тренирует по шахматам (рейтинг 2100) и скалолазанию (7c/7C) как отдельным дисциплинам.">
 <meta name="theme-color" content="#EFEBE3">
 
 <meta property="og:title" content="Igor Shatsev — Vitnyr">
@@ -15,6 +19,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="ru_RU">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Vitnyr">
 <!--
   P1 (Stage 6, 2026-09-06): og:image now points at a real, exported share
   card (assets/share/, source + provenance in that folder). og:url and
@@ -32,6 +37,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Vitnyr — Igor Shatsev, English coach in Yerevan">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Igor Shatsev — Vitnyr">
+<meta name="twitter:description" content="English coach in Yerevan — 10 years, 100+ one-on-one clients. Chess and climbing coaching too, each on its own terms.">
 <meta name="twitter:image" content="https://vitnyr.example/assets/share/og-share.png">
 
 <!-- P3/P2 (Stage 6, 2026-09-06): hreflang alternates point at the ?lang=
@@ -51,23 +58,91 @@
 <!-- P3 (Stage 6, 2026-09-06): Person over LocalBusiness — no storefront,
      just a named coach; sameAs is the three settled contact channels only,
      in the settled order. Every field here is one of the site's own
-     confirmed facts (CLAUDE.md) — nothing added for search's sake alone. -->
+     confirmed facts (CLAUDE.md) — nothing added for search's sake alone.
+     2026-09-23: widened to a @graph — a WebSite node (so the site name
+     "Vitnyr" and both languages are declared) plus the Person, who now
+     carries knowsAbout, areaServed and one Offer per thing the page
+     actually sells: English, chess and climbing coaching, and the free
+     screening + trial lesson from the CTA. Each offer's wording is lifted
+     from the page's own copy. "репетитор" appears here and in the RU meta
+     description only — see the <title> comment above. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Igor Shatsev",
-  "alternateName": "Vitnyr",
-  "jobTitle": "English coach",
-  "description": "English coach in Yerevan for people who know English far better than they speak it — 100+ one-on-one clients over 10 years. Also coaches chess and climbing as their own disciplines, online or in Yerevan.",
-  "url": "https://vitnyr.example/",
-  "image": "https://vitnyr.example/assets/share/og-share.png",
-  "address": { "@type": "PostalAddress", "addressLocality": "Yerevan", "addressCountry": "AM" },
-  "knowsLanguage": ["en", "ru"],
-  "sameAs": [
-    "https://t.me/yngvil",
-    "https://www.linkedin.com/in/vitnyrcoach/",
-    "https://www.instagram.com/brychenka/"
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://vitnyr.example/#website",
+      "url": "https://vitnyr.example/",
+      "name": "Vitnyr",
+      "inLanguage": ["en", "ru"],
+      "publisher": { "@id": "https://vitnyr.example/#igor" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://vitnyr.example/#igor",
+      "name": "Igor Shatsev",
+      "alternateName": "Vitnyr",
+      "jobTitle": "English coach",
+      "description": "English coach in Yerevan for people who know English far better than they speak it — 100+ one-on-one clients over 10 years. Also coaches chess and climbing as their own disciplines, online or in Yerevan.",
+      "disambiguatingDescription": "Коуч и репетитор по английскому в Ереване и онлайн; также тренер по шахматам и скалолазанию.",
+      "url": "https://vitnyr.example/",
+      "image": "https://vitnyr.example/assets/share/og-share.png",
+      "address": { "@type": "PostalAddress", "addressLocality": "Yerevan", "addressCountry": "AM" },
+      "areaServed": [
+        { "@type": "City", "name": "Yerevan" },
+        "Online"
+      ],
+      "knowsLanguage": ["en", "ru"],
+      "knowsAbout": ["English language", "Spoken English", "Chess", "Rock climbing", "Bouldering"],
+      "makesOffer": [
+        {
+          "@type": "Offer",
+          "name": "Free screening and trial lesson",
+          "price": "0",
+          "priceCurrency": "AMD",
+          "itemOffered": { "@type": "Service", "name": "Free screening call and trial lesson", "serviceType": "English coaching" }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "English coaching",
+            "alternateName": "Репетитор по английскому",
+            "serviceType": "English coaching",
+            "description": "One-on-one English coaching for people who know English far better than they speak it. Online or in Yerevan.",
+            "areaServed": [{ "@type": "City", "name": "Yerevan" }, "Online"]
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Chess coaching",
+            "alternateName": "Тренер по шахматам",
+            "serviceType": "Chess coaching",
+            "description": "60-minute sessions, one-on-one or in groups, for players under 1800 who've plateaued — over Lichess or Chess.com plus a call. Online or in Yerevan.",
+            "areaServed": [{ "@type": "City", "name": "Yerevan" }, "Online"]
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Climbing coaching",
+            "alternateName": "Тренер по скалолазанию",
+            "serviceType": "Climbing coaching",
+            "description": "One-on-one or group sessions, in the gym or over video, on technique, route-reading, or the mental side of leading — for climbers under 7a. Online or in Yerevan.",
+            "areaServed": [{ "@type": "City", "name": "Yerevan" }, "Online"]
+          }
+        }
+      ],
+      "sameAs": [
+        "https://t.me/yngvil",
+        "https://www.linkedin.com/in/vitnyrcoach/",
+        "https://www.instagram.com/brychenka/"
+      ]
+    }
   ]
 }
 </script>
@@ -1430,8 +1505,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
             <img data-src="assets/collage/chess-01-board@2x.jpg"
                  data-srcset="assets/collage/chess-01-board.jpg 450w, assets/collage/chess-01-board@2x.jpg 900w"
                  sizes="(min-width: 600px) 50vw, 100vw"
-                 width="900" height="600" decoding="async" alt="">
-            <noscript><img src="assets/collage/chess-01-board@2x.jpg" srcset="assets/collage/chess-01-board.jpg 450w, assets/collage/chess-01-board@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="600" loading="lazy" decoding="async" alt=""></noscript>
+                 width="900" height="600" decoding="async" alt="Igor Shatsev reaching across a tournament board to make a move, other players watching.">
+            <noscript><img src="assets/collage/chess-01-board@2x.jpg" srcset="assets/collage/chess-01-board.jpg 450w, assets/collage/chess-01-board@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="600" loading="lazy" decoding="async" alt="Igor Shatsev reaching across a tournament board to make a move, other players watching."></noscript>
           </div>
           <figcaption data-en="Over the board, mid-game." data-ru="За доской, посреди партии.">Over the board, mid-game.</figcaption>
         </figure>
@@ -1440,8 +1515,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
             <img data-src="assets/collage/chess-02-clock@2x.jpg"
                  data-srcset="assets/collage/chess-02-clock.jpg 450w, assets/collage/chess-02-clock@2x.jpg 900w"
                  sizes="(min-width: 600px) 50vw, 100vw"
-                 width="900" height="900" decoding="async" alt="">
-            <noscript><img src="assets/collage/chess-02-clock@2x.jpg" srcset="assets/collage/chess-02-clock.jpg 450w, assets/collage/chess-02-clock@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="900" loading="lazy" decoding="async" alt=""></noscript>
+                 width="900" height="900" decoding="async" alt="A giant outdoor chessboard with waist-high pieces in a tree-lined park.">
+            <noscript><img src="assets/collage/chess-02-clock@2x.jpg" srcset="assets/collage/chess-02-clock.jpg 450w, assets/collage/chess-02-clock@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="900" loading="lazy" decoding="async" alt="A giant outdoor chessboard with waist-high pieces in a tree-lined park."></noscript>
           </div>
           <figcaption data-en="A life-size board, out in the park." data-ru="Доска в полный рост, в парке.">A life-size board, out in the park.</figcaption>
         </figure>
@@ -1450,8 +1525,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
             <img data-src="assets/collage/chess-04-reset@2x.jpg"
                  data-srcset="assets/collage/chess-04-reset.jpg 450w, assets/collage/chess-04-reset@2x.jpg 900w"
                  sizes="(min-width: 600px) 50vw, 100vw"
-                 width="900" height="1125" decoding="async" alt="">
-            <noscript><img src="assets/collage/chess-04-reset@2x.jpg" srcset="assets/collage/chess-04-reset.jpg 450w, assets/collage/chess-04-reset@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="1125" loading="lazy" decoding="async" alt=""></noscript>
+                 width="900" height="1125" decoding="async" alt="Igor Shatsev placing a white piece on the board mid-game, eyes on the position.">
+            <noscript><img src="assets/collage/chess-04-reset@2x.jpg" srcset="assets/collage/chess-04-reset.jpg 450w, assets/collage/chess-04-reset@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="1125" loading="lazy" decoding="async" alt="Igor Shatsev placing a white piece on the board mid-game, eyes on the position."></noscript>
           </div>
           <figcaption data-en="Mid-move, on the clock." data-ru="Ход — под часами.">Mid-move, on the clock.</figcaption>
         </figure>
@@ -1460,8 +1535,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
             <img data-src="assets/collage/chess-05-pieces@2x.jpg"
                  data-srcset="assets/collage/chess-05-pieces.jpg 450w, assets/collage/chess-05-pieces@2x.jpg 900w"
                  sizes="(min-width: 600px) 50vw, 100vw"
-                 width="900" height="900" decoding="async" alt="">
-            <noscript><img src="assets/collage/chess-05-pieces@2x.jpg" srcset="assets/collage/chess-05-pieces.jpg 450w, assets/collage/chess-05-pieces@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="900" loading="lazy" decoding="async" alt=""></noscript>
+                 width="900" height="900" decoding="async" alt="A hand-carved wooden chess set on an ornately carved board, pieces mid-game.">
+            <noscript><img src="assets/collage/chess-05-pieces@2x.jpg" srcset="assets/collage/chess-05-pieces.jpg 450w, assets/collage/chess-05-pieces@2x.jpg 900w" sizes="(min-width: 600px) 50vw, 100vw" width="900" height="900" loading="lazy" decoding="async" alt="A hand-carved wooden chess set on an ornately carved board, pieces mid-game."></noscript>
           </div>
           <figcaption data-en="A hand-carved set, mid-game." data-ru="Резной комплект, партия в разгаре.">A hand-carved set, mid-game.</figcaption>
         </figure>

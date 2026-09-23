@@ -218,14 +218,13 @@ def test_russian_url_is_its_own_canonical_with_russian_head(open_site):
     assert page.locator('link[rel="canonical"]').count() == 1
     assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/?lang=ru"
     assert page.locator("html").get_attribute("lang") == "ru"
-    assert "коучинг" in page.title()
-    assert "Igor Shatsev" in page.title()
+    assert page.title() == "Коуч по английскому в Ереване и онлайн — Igor Shatsev | Vitnyr"
     desc = page.locator('meta[name="description"]').get_attribute("content")
     assert "коуч" in desc and "Igor Shatsev" in desc
     assert page.locator('meta[name="description"]').evaluate("el => el.textContent") == ""
     page.locator(".masthead .langswitch").click()
     page.wait_for_function("document.documentElement.lang === 'en'")
-    assert page.title() == "Igor Shatsev — Vitnyr"
+    assert page.title() == "English Coach in Yerevan & Online — Igor Shatsev | Vitnyr"
     assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/"
     assert "коуч" not in page.locator('meta[name="description"]').get_attribute("content")
 
@@ -245,17 +244,38 @@ def test_share_card_asset_is_actually_served(open_site, site_url):
 
 def test_person_json_ld_carries_only_confirmed_facts(open_site):
     page, _ = open_site()
-    data = page.evaluate(
+    graph = page.evaluate(
         """() => JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent)"""
-    )
-    assert data["@type"] == "Person"
+    )["@graph"]
+    assert [n["@type"] for n in graph] == ["WebSite", "Person"]
+    data = graph[1]
     assert data["name"] == "Igor Shatsev"
     assert data["sameAs"] == [
         "https://t.me/yngvil",
         "https://www.linkedin.com/in/vitnyrcoach/",
         "https://www.instagram.com/brychenka/",
     ]
-    assert "FIDE" not in str(data)
+    assert "FIDE" not in str(graph)
+    assert [o["itemOffered"]["name"] for o in data["makesOffer"][1:]] == [
+        "English coaching", "Chess coaching", "Climbing coaching",
+    ]
+
+
+def test_repetitor_is_search_only_never_visible_copy(open_site):
+    """2026-09-23: "репетитор" is what Russian searchers type, but Igor
+    wants it off the page — it may live in the RU meta description and the
+    JSON-LD, never in rendered text, in either language."""
+    for lang in ("en", "ru"):
+        page, _ = open_site(lang=lang)
+        assert "репетитор" not in page.locator("body").inner_text().lower()
+    page, _ = open_site(query="?lang=ru")
+    assert "репетитор" in page.locator('meta[name="description"]').get_attribute("content")
+
+
+def test_real_chess_photos_carry_alt_text(open_site):
+    page, _ = open_site()
+    for img in page.locator('img[data-src*="collage/chess-"]').all():
+        assert img.get_attribute("alt").strip()
 
 
 def test_section_numbering_is_sequential(open_site):
