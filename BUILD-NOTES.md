@@ -5360,3 +5360,17 @@ filter-cheap).
   memorial layout; the name is already in the masthead line and the alt.
 - **Files.** `reference/portrait-source.jpg` replaced by the new edit;
   `igor.jpg` 480w ~39KB, `igor@2x.jpg` 960w ~109KB.
+
+## §05 CTA arrow removed (2026-09-24)
+
+Igor: the travelling arrow after "Message me for a free screening and trial
+lesson." wasn't doing its job, so it's gone (markup, its CSS, and the
+`.contact__cta` inline-flex/gap that only existed to seat it). For now the
+headline's only link cues are the cursor dot's target ink and the "Opens
+Telegram · @yngvil" line under it. A stronger cue is still to be picked — four
+were mocked up and none chosen yet: a green underline (recommended), green words
++ underline, a flat green "Message me on Telegram" button under the headline,
+or a handwritten note in the masthead hint's voice. `.proof__link` keeps its
+arrow. `test_channels_no_longer_carry_the_cta_style_arrow` now expects 0 CTA
+arrows. Suite: 300 passed, 1 xfailed, 1 failed — the known flaky
+`test_specimen_permalink_cold_load…[climbing-grip]`, pre-existing.

@@ -2184,24 +2184,11 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
    plain — no control anywhere for the one thing the page is actually
    asking for. Travelling-arrow language matches .proof__link and
    .channels a; the drawn-in underline (::after) was dropped 2026-09-12
-   per Igor — the arrow alone carries the "leads somewhere" cue here. */
-.contact__cta {
-  display: inline-flex; align-items: center; gap: clamp(20px, 3.5vw, 40px);
-  color: var(--fg); position: relative;
-}
-.contact__cta-arrow { position: relative; width: clamp(48px, 7vw, 84px); aspect-ratio: 26 / 8; flex: none; }
-.contact__cta-arrow svg {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  color: var(--fg2);
-  transition: transform var(--t) var(--e), color var(--t) var(--e), opacity var(--t) var(--e);
-}
-.contact__cta-arrow--echo { opacity: 0; }
-.contact__cta:hover .contact__cta-arrow svg,
-.contact__cta:focus-visible .contact__cta-arrow svg { color: var(--fg); transform: translateX(14px); }
-.contact__cta:hover .contact__cta-arrow--echo,
-.contact__cta:focus-visible .contact__cta-arrow--echo {
-  opacity: .3; transform: translateX(5px); transition-delay: .07s;
-}
+   per Igor — the arrow alone carried the "leads somewhere" cue here.
+   2026-09-24: the arrow went too (Igor: it wasn't doing its job), so for now
+   the headline has no visible link cue beyond the cursor dot and the
+   "Opens Telegram" line under it; a replacement cue is still to be picked. */
+.contact__cta { color: var(--fg); position: relative; }
 /* C9 (2026-09-06): the handle used to live in its own grid column pinned to
    the far right — "Telegram" at 44px Lora beside "@yngvil" at 13px mono,
    up to 950px apart on a wide screen. Three of those in a row read as a

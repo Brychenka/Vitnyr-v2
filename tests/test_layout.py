@@ -228,9 +228,9 @@ def test_contact_handle_sits_close_behind_its_platform_name(open_site):
 def test_channels_no_longer_carry_the_cta_style_arrow(open_site):
     page, _ = open_site(viewport=WIDE)
     assert page.locator("#contact .channels .ch__arrow").count() == 0
-    # the CTA and the collage entry link keep their own arrows — only the
-    # channels list lost the shared device
-    assert page.locator(".contact__cta-arrow").count() == 1
+    # the collage entry link keeps its arrow — the channels list lost the
+    # shared device (J3), and the CTA's own arrow was removed 2026-09-24
+    assert page.locator(".contact__cta-arrow").count() == 0
     assert page.locator(".proof__arrow").count() == 1
 
 
