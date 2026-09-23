@@ -5198,3 +5198,30 @@ What could land before a real domain exists, from the SEO review:
 self-canonical stays in place until then.
 `test_specimen_permalink_cold_load_commits_its_discipline_and_lands_on_it`
 already failed on `main` before this pass. It isn't caused by these changes.
+
+## Real domain + all three disciplines in search metadata (2026-09-23)
+
+- **Domain.** Igor registered `vitnyrcoach.com` (no hosting yet). Every
+  `https://vitnyr.example/` in `index.html` (og:url, og:image,
+  twitter:image, hreflang, JSON-LD `@id`/`url`/`image`), `sitemap.xml`,
+  `robots.txt` and the tests now reads `https://vitnyrcoach.com/`. The
+  URLs won't resolve until the site is deployed there; nothing else about
+  the head has to change at deploy time. Still waiting on hosting: the
+  static `/ru/` page (and serving `og-share-ru.png` to it).
+- **Trifecta in search.** Igor asked to be findable through chess and
+  climbing, not only English. This is an explicit decision that supersedes
+  the "Weighted doesn't change metadata" note in CLAUDE.md for the head:
+  - Titles: EN `English, Chess & Climbing Coach in Yerevan — Igor Shatsev |
+    Vitnyr`; RU `Английский, шахматы и скалолазание в Ереване — коуч Igor
+    Shatsev | Vitnyr`. English stays first in both.
+  - Descriptions (EN + RU) open with all three, then one confirmed fact set
+    per discipline (10 years / 100+ clients; 2100 / 30 students to 1800+;
+    7c / 7C). "репетитор" stays in the RU description only.
+  - og/twitter descriptions name all three.
+  - JSON-LD `jobTitle` is now `["English coach", "Chess coach", "Climbing
+    coach"]`; `knowsAbout` adds "Chess coaching" and "Climbing coaching".
+    The three Service offers were already there.
+  - Visible copy untouched — the hero headline already carries the
+    trifecta, which is what makes the metadata honest.
+- New test `test_head_names_all_three_disciplines_english_first` checks
+  both languages' title and description name all three, in order.

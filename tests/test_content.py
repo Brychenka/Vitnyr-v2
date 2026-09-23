@@ -181,31 +181,31 @@ def test_contact_channel_order_is_telegram_linkedin_instagram(open_site):
     assert [o.strip() for o in order] == ["Telegram", "LinkedIn", "Instagram"]
 
 
-def test_og_url_and_image_use_the_placeholder_domain(open_site):
+def test_og_url_and_image_use_the_real_domain(open_site):
     """P1 (Stage 6): og:url / og:image landed as a real share card + a
-    documented https://vitnyr.example/ placeholder domain (RFC 2606) rather
-    than a guessed real-looking one — a real domain still doesn't exist."""
+    documented placeholder domain; 2026-09-23 swapped for Igor's registered
+    domain, vitnyrcoach.com (not hosted yet)."""
     page, _ = open_site()
-    assert page.locator('meta[property="og:url"]').get_attribute("content") == "https://vitnyr.example/"
+    assert page.locator('meta[property="og:url"]').get_attribute("content") == "https://vitnyrcoach.com/"
     assert (
         page.locator('meta[property="og:image"]').get_attribute("content")
-        == "https://vitnyr.example/assets/share/og-share.png"
+        == "https://vitnyrcoach.com/assets/share/og-share.png"
     )
     assert page.locator('meta[property="og:title"]').count() == 1
 
 
-def test_canonical_and_hreflang_share_the_same_placeholder_domain(open_site):
+def test_canonical_and_hreflang_share_the_same_domain(open_site):
     page, _ = open_site(lang="en")
     assert page.locator('link[rel="canonical"]').count() == 1
-    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/"
+    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyrcoach.com/"
     alternates = {
         el.get_attribute("hreflang"): el.get_attribute("href")
         for el in page.locator('link[rel="alternate"][hreflang]').all()
     }
     assert alternates == {
-        "en": "https://vitnyr.example/",
-        "ru": "https://vitnyr.example/?lang=ru",
-        "x-default": "https://vitnyr.example/",
+        "en": "https://vitnyrcoach.com/",
+        "ru": "https://vitnyrcoach.com/?lang=ru",
+        "x-default": "https://vitnyrcoach.com/",
     }
 
 
@@ -216,16 +216,16 @@ def test_russian_url_is_its_own_canonical_with_russian_head(open_site):
     description; switching back restores the English set."""
     page, _ = open_site(query="?lang=ru")
     assert page.locator('link[rel="canonical"]').count() == 1
-    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/?lang=ru"
+    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyrcoach.com/?lang=ru"
     assert page.locator("html").get_attribute("lang") == "ru"
-    assert page.title() == "Коуч по английскому в Ереване и онлайн — Igor Shatsev | Vitnyr"
+    assert page.title() == "Английский, шахматы и скалолазание в Ереване — коуч Igor Shatsev | Vitnyr"
     desc = page.locator('meta[name="description"]').get_attribute("content")
     assert "коуч" in desc and "Igor Shatsev" in desc
     assert page.locator('meta[name="description"]').evaluate("el => el.textContent") == ""
     page.locator(".masthead .langswitch").click()
     page.wait_for_function("document.documentElement.lang === 'en'")
-    assert page.title() == "English Coach in Yerevan & Online — Igor Shatsev | Vitnyr"
-    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyr.example/"
+    assert page.title() == "English, Chess & Climbing Coach in Yerevan — Igor Shatsev | Vitnyr"
+    assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyrcoach.com/"
     assert "коуч" not in page.locator('meta[name="description"]').get_attribute("content")
 
 
@@ -416,3 +416,17 @@ def test_no_straight_apostrophes_in_visible_english_copy(open_site):
     # main-page innerText above — check it too.
     page, _ = open_site(lang="en", hash="#collage")
     assert "'" not in visible_text(page)
+
+
+def test_head_names_all_three_disciplines_english_first(open_site):
+    """2026-09-23: Igor wants to be findable for chess and climbing coaching
+    too, not just English. Title and description in both languages name all
+    three, English first (Weighted positioning)."""
+    for lang, words in (("en", ["english", "chess", "climbing"]),
+                        ("ru", ["английск", "шахмат", "скалолаз"])):
+        page, _ = open_site(query=f"?lang={lang}")
+        for text in (page.title().lower(),
+                     page.locator('meta[name="description"]').get_attribute("content").lower()):
+            positions = [text.find(w) for w in words]
+            assert all(p >= 0 for p in positions), (lang, text)
+            assert positions == sorted(positions), (lang, text)
