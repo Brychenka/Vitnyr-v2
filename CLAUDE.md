@@ -11,8 +11,8 @@ proof-of-method — see "Content and positioning decisions" below).
 Static HTML/CSS/JS, no build step, no framework, no package.json. Built
 against a design guide called `onesignaturemove.pdf` (not in this repo);
 `BUILD-NOTES.md` has the full phase-by-phase log, deviations from that guide,
-and what's still outstanding (`og:url`/`og:image`/canonical still point at the
-placeholder `vitnyr.example`, a below-the-hero visual check in a real browser).
+and what's still outstanding (hosting for the registered domain
+`vitnyrcoach.com`, a below-the-hero visual check in a real browser).
 
 Repo: https://github.com/Brychenka/Vitnyr-v2 (branch `main`). This
 `site-v2/` folder is the repo root — there is no v1 in this repo; an earlier
@@ -234,8 +234,10 @@ misalign in a fallback face.
 
 Search for `PLACEHOLDER`, `fill in`, and `.ch__todo`. The Telegram, LinkedIn
 and Instagram handles are live in `index.html`; `og:url`, `og:image`, the
-hreflang links, `sitemap.xml` and `robots.txt` still point at the
-placeholder `https://vitnyr.example/` until the real domain exists. There is
+hreflang links, JSON-LD, `sitemap.xml` and `robots.txt` point at Igor's
+registered domain `https://vitnyrcoach.com/` (swapped in 2026-09-23 from the
+`vitnyr.example` placeholder) — it has **no hosting yet**, so those URLs
+don't resolve until the site is deployed there. There is
 deliberately **no static canonical** — `theme.js`'s `applyHead()` writes a
 self-referencing one per language (`/` or `/?lang=ru`) off the x-default
 alternate, plus the Russian `<title>`/description from their `data-head-ru`

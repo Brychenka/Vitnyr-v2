@@ -3,19 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-head-ru="Коуч по английскому в Ереване и онлайн — Igor Shatsev | Vitnyr">English Coach in Yerevan &amp; Online — Igor Shatsev | Vitnyr</title>
+<title data-head-ru="Английский, шахматы и скалолазание в Ереване — коуч Igor Shatsev | Vitnyr">English, Chess &amp; Climbing Coach in Yerevan — Igor Shatsev | Vitnyr</title>
 <!-- 2026-09-23: title/description exist in both languages. Crawlers read
      the static EN pair; theme.js swaps in the data-head-ru pair (and html[lang])
      on a Russian load, so ?lang=ru renders with its own title and snippet.
-     Titles lead with the query ("English coach Yerevan") rather than the
-     brand. "репетитор" is the word Russian searchers actually type, but Igor
+     Titles lead with the query rather than the brand, and name all three
+     disciplines (English first, per the Weighted positioning) so a search
+     for a chess or climbing coach in Yerevan can land here too — Igor's
+     call, 2026-09-23. "репетитор" is the word Russian searchers actually type, but Igor
      doesn't want it on the page itself — so it lives only in the RU
      description (search snippet) and the JSON-LD, never in visible copy. -->
-<meta name="description" content="Igor Shatsev, English coach in Yerevan — 10 years, 100+ one-on-one clients. Also coaches chess (rated 2100) and climbing (7c/7C) as their own disciplines. Online or in Yerevan." data-head-ru="Igor Shatsev — коуч и репетитор по английскому в Ереване и онлайн: 10 лет, больше ста учеников индивидуально. Также тренирует по шахматам (рейтинг 2100) и скалолазанию (7c/7C) как отдельным дисциплинам.">
+<meta name="description" content="Igor Shatsev coaches English, chess and climbing in Yerevan and online. English: 10 years, 100+ one-on-one clients. Chess: rated 2100, 30 students brought to 1800+. Climbing: 7c redpoint, 7C boulder." data-head-ru="Igor Shatsev — коуч и репетитор по английскому, тренер по шахматам и скалолазанию в Ереване и онлайн. Английский: 10 лет, больше ста учеников. Шахматы: рейтинг 2100, 30 учеников до 1800+. Скалолазание: 7c, 7C.">
 <meta name="theme-color" content="#EFEBE3">
 
 <meta property="og:title" content="Igor Shatsev — Vitnyr">
-<meta property="og:description" content="English coach in Yerevan — 10 years, 100+ one-on-one clients. Chess and climbing coaching too, each on its own terms.">
+<meta property="og:description" content="English, chess and climbing coach in Yerevan and online — 10 years, 100+ one-on-one clients.">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="ru_RU">
 <meta property="og:type" content="website">
@@ -23,23 +25,21 @@
 <!--
   P1 (Stage 6, 2026-09-06): og:image now points at a real, exported share
   card (assets/share/, source + provenance in that folder). og:url and
-  og:image still can't be made *correct* without a real domain, so both
-  use https://vitnyr.example/ — the IANA-reserved placeholder TLD (RFC
-  2606), not a guessed real-looking one — as a single find-and-replace
-  point. PLACEHOLDER stands until the domain exists; canonical and the
-  hreflang alternates below share the same placeholder for the same
-  reason. Twitter/X needs twitter:card declared separately from the og:
+  og:image were first set on the RFC 2606 placeholder vitnyr.example.
+  2026-09-23: swapped for Igor's registered domain, vitnyrcoach.com
+  (no hosting yet — these URLs resolve once the site is deployed there).
+  canonical and the hreflang alternates below use the same domain. Twitter/X needs twitter:card declared separately from the og:
   tags to render a large-image preview.
 -->
-<meta property="og:url" content="https://vitnyr.example/">
-<meta property="og:image" content="https://vitnyr.example/assets/share/og-share.png">
+<meta property="og:url" content="https://vitnyrcoach.com/">
+<meta property="og:image" content="https://vitnyrcoach.com/assets/share/og-share.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Vitnyr — Igor Shatsev, English coach in Yerevan">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Igor Shatsev — Vitnyr">
-<meta name="twitter:description" content="English coach in Yerevan — 10 years, 100+ one-on-one clients. Chess and climbing coaching too, each on its own terms.">
-<meta name="twitter:image" content="https://vitnyr.example/assets/share/og-share.png">
+<meta name="twitter:description" content="English, chess and climbing coach in Yerevan and online — 10 years, 100+ one-on-one clients.">
+<meta name="twitter:image" content="https://vitnyrcoach.com/assets/share/og-share.png">
 
 <!-- P3/P2 (Stage 6, 2026-09-06): hreflang alternates point at the ?lang=
      URLs theme.js already reads on load and now writes back via
@@ -51,9 +51,9 @@
      "/?lang=ru"), built from the x-default href below so the domain swap
      stays a find-and-replace in this file. The en alternate is "/" for the
      same reason: hreflang must name the canonical URL, not a duplicate. -->
-<link rel="alternate" hreflang="en" href="https://vitnyr.example/">
-<link rel="alternate" hreflang="ru" href="https://vitnyr.example/?lang=ru">
-<link rel="alternate" hreflang="x-default" href="https://vitnyr.example/">
+<link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/">
+<link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/?lang=ru">
+<link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/">
 
 <!-- P3 (Stage 6, 2026-09-06): Person over LocalBusiness — no storefront,
      just a named coach; sameAs is the three settled contact channels only,
@@ -72,29 +72,29 @@
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://vitnyr.example/#website",
-      "url": "https://vitnyr.example/",
+      "@id": "https://vitnyrcoach.com/#website",
+      "url": "https://vitnyrcoach.com/",
       "name": "Vitnyr",
       "inLanguage": ["en", "ru"],
-      "publisher": { "@id": "https://vitnyr.example/#igor" }
+      "publisher": { "@id": "https://vitnyrcoach.com/#igor" }
     },
     {
       "@type": "Person",
-      "@id": "https://vitnyr.example/#igor",
+      "@id": "https://vitnyrcoach.com/#igor",
       "name": "Igor Shatsev",
       "alternateName": "Vitnyr",
-      "jobTitle": "English coach",
+      "jobTitle": ["English coach", "Chess coach", "Climbing coach"],
       "description": "English coach in Yerevan for people who know English far better than they speak it — 100+ one-on-one clients over 10 years. Also coaches chess and climbing as their own disciplines, online or in Yerevan.",
-      "disambiguatingDescription": "Коуч и репетитор по английскому в Ереване и онлайн; также тренер по шахматам и скалолазанию.",
-      "url": "https://vitnyr.example/",
-      "image": "https://vitnyr.example/assets/share/og-share.png",
+      "disambiguatingDescription": "Коуч и репетитор по английскому, тренер по шахматам и скалолазанию в Ереване и онлайн.",
+      "url": "https://vitnyrcoach.com/",
+      "image": "https://vitnyrcoach.com/assets/share/og-share.png",
       "address": { "@type": "PostalAddress", "addressLocality": "Yerevan", "addressCountry": "AM" },
       "areaServed": [
         { "@type": "City", "name": "Yerevan" },
         "Online"
       ],
       "knowsLanguage": ["en", "ru"],
-      "knowsAbout": ["English language", "Spoken English", "Chess", "Rock climbing", "Bouldering"],
+      "knowsAbout": ["English language", "Spoken English", "Chess", "Chess coaching", "Rock climbing", "Bouldering", "Climbing coaching"],
       "makesOffer": [
         {
           "@type": "Offer",
