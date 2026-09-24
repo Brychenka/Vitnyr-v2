@@ -386,6 +386,12 @@ strings so they name what is real and what is a stand-in.
 **Recommend (b) now and (a) when the shoot lands.** New EN copy; RU flagged for
 Igor.
 
+**Answered 2026-09-24 (Igor): neither — the stock photos are removed.** Igor
+supplied three real English frames and asked for every remaining stand-in to
+go. With only real photos left, "It's me at work" is now true as written. The
+English group lede was re-pointed at what the frames actually show ("a call,
+a club, an article taken apart").
+
 ### Q10 — four claims with no entry in the build log
 
 *"patterns drawn from 5,000+ analyzed"* (§03 chess), *"C2 level · IELTS 9"* and

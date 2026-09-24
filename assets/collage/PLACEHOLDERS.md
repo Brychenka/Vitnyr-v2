@@ -1,5 +1,12 @@
 # Collage placeholder images — provenance
 
+**2026-09-24: every stock stand-in is gone.** Igor asked for all remaining
+stock photos to be removed; the English group now ships his three real frames
+(`en-01-anywhere`, `en-03-club`, `en-06-article`) and every image in the
+collage is a real photograph of him. The stand-in files (`en-02`, `en-04`,
+`en-05`, plus the long-unused `chess-03`/`chess-06`) are deleted from
+`assets/collage/`. What follows is kept as provenance history only.
+
 **These are throwaway stand-ins, NOT photographs of Igor Shatsev.** They exist
 so the layout, grayscale treatment and motion stages have real pixels to run
 against while the actual shoot is pending. They are replaced by real photos of
@@ -150,8 +157,8 @@ first 3:2 slot. Crop: centred 3:2 (1986×1324), no tone change. 900×600 /
 soft-focus, not identifiable at display size. `en-01-call`'s files are
 deleted; its provenance row below is kept, marked replaced.
 
-The other 3 English frames (`en-02`, `en-04`, `en-05`) remain the stand-ins
-below.
+The other 3 English stand-ins (`en-02`, `en-04`, `en-05`) were removed
+outright the same day, not replaced — see the note at the top.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 

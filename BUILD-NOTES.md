@@ -5472,3 +5472,17 @@ lesson on his laptop, replaces the `en-01-call` stand-in (first 3:2 slot of
 the English group). Caption is Igor's: "I can teach anywhere." / «Могу вести
 урок где угодно.»; real EN `alt`. Three English stand-ins remain (en-02,
 en-04, en-05).
+
+## Collage — all stock photos removed (2026-09-24)
+
+Igor: "remove all the stock photos". The English group's last three stand-ins
+(`en-02-yerevan-table`, `en-04-correction`, `en-05-markup`) are removed from
+the page and their files deleted, along with the long-unused `chess-03-study`
+/ `chess-06-notation` files. Every collage image is now a real photo of Igor
+(15 in all: English 3, chess 6, climbing 6), which answers DESIGN-PASS-III Q9
+— "It's me at work" is now true as written. The three English frames (3:2,
+4:5, 4:5) sit in one proportional `.collage__row` at ≥900px, the same
+construct as chess, so they share one height with no crop. The group lede no
+longer promises "a table, a text being pulled apart": it now reads "a call, a
+club, an article taken apart" / «созвон, разговорный клуб, статья, разобранная
+по косточкам». `COLLAGE_IMAGES` 18 → 15.
