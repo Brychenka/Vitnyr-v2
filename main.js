@@ -1256,90 +1256,6 @@
     });
   }
 
-  /* ---------- §02 loop mark: the pointer magnet (2026-09-22) ----------
-     §02 argues that one loop runs under all three disciplines. The mark says
-     it without prose: three strokes that rest as the exact locked logo and
-     lean toward the pointer dot when it comes near, then settle back. The dot
-     IS the magnet — no circle is drawn, because the only circle on the page is
-     .cursor__dot and that is a stated exception, not a precedent.
-
-     Translation only, never rotation: reference/vitnyr-brand-identity.md lists
-     rotating the mark as a hard rule, so the rest state is always the locked
-     geometry and the lean is a straight ≤PULL offset.
-
-     Wired past the reduced-motion return above and gated on finePointer, like
-     initCursor/initMagnetic: a reduce reader, a touch screen or a coarse
-     pointer gets the static mark and no listener is ever attached. Nothing is
-     lost — the figure is aria-hidden decoration, not content.
-
-     Why not just reuse initMagnetic: that pulls a whole element, and the point
-     here is that the three strokes move INDEPENDENTLY, each from its own
-     notional centre, so they separate instead of sliding as one logo. Same
-     falloff maths, same D.state / EASE, applied three times. */
-  function initLoopmark() {
-    if (!finePointer) return;
-    var fig = document.querySelector('.loopmark');
-    if (!fig) return;
-
-    var RADIUS = 110, PULL = 7;
-    /* Each stroke's own centre, in the SVG's 0–100 viewBox: the left arm of
-       the V, the right arm, the stem. Read off the shared geometry, not
-       measured per-node — getBBox on a <use> of a clipped path reports the
-       whole source path, which would put both arms at the same point. */
-    var CENTRES = { left: [34, 36], right: [66, 36], stem: [50, 64] };
-
-    var strokes = [];
-    fig.querySelectorAll('.loopmark__stroke').forEach(function (g) {
-      var c = CENTRES[g.getAttribute('data-stroke')];
-      if (!c) return;
-      strokes.push({
-        vx: c[0], vy: c[1],
-        qx: gsap.quickTo(g, 'x', { duration: D.state, ease: EASE }),
-        qy: gsap.quickTo(g, 'y', { duration: D.state, ease: EASE })
-      });
-    });
-    if (!strokes.length) return;
-
-    /* Measured on enter, not per move — same reason as initMagnetic's
-       capture(): no forced layout on every mousemove. The strokes' own
-       translates never enter this reading, because the box comes from the
-       figure and the transforms live on the <g>s inside it. */
-    var box = null;
-    var freed = false;
-    function capture() {
-      /* .reveal still lists `transform` in its transition for the 24px rise.
-         That rise is long over by the first hover; hand the channel over so
-         nothing double-eases — the figure's own transform, not the strokes'. */
-      if (!freed) { fig.style.transitionProperty = 'opacity'; freed = true; }
-      var r = fig.getBoundingClientRect();
-      box = { left: r.left, top: r.top, w: r.width, h: r.height, R: r.width / 2 + RADIUS };
-    }
-
-    fig.addEventListener('mouseenter', capture);
-    fig.addEventListener('mousemove', function (e) {
-      if (!box) capture();
-      for (var i = 0; i < strokes.length; i++) {
-        var s = strokes[i];
-        var cx = box.left + box.w * (s.vx / 100);
-        var cy = box.top + box.h * (s.vy / 100);
-        var dx = e.clientX - cx;
-        var dy = e.clientY - cy;
-        var dist = Math.hypot(dx, dy);
-        if (dist < 0.5) { s.qx(0); s.qy(0); continue; }
-        /* Linear falloff to zero at the rim, so the field is continuous where
-           it ends rather than snapping off. The vector is scaled as a whole,
-           never each axis clamped, so PULL is a real ceiling on the distance
-           moved and a diagonal cannot reach PULL√2. */
-        var k = PULL * Math.max(0, 1 - dist / box.R) / dist;
-        s.qx(dx * k); s.qy(dy * k);
-      }
-    }, { passive: true });
-    fig.addEventListener('mouseleave', function () {
-      box = null;
-      for (var i = 0; i < strokes.length; i++) { strokes[i].qx(0); strokes[i].qy(0); }
-    });
-  }
-
   /* ---------- masthead mark: draw-in (P22) ----------
      The V/Y symbol assembles from its three strokes — left arm of the V, then
      the right, then the stem (see style.css). It plays exactly ONCE, a short
@@ -2015,7 +1931,6 @@
   initLockmark();
   initCursor();
   initMagnetic();
-  initLoopmark();
 
   whenRendering(function () {
     /* Hold the hero until the display face is real, so the lines don't rise in

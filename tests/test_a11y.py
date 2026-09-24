@@ -440,19 +440,3 @@ def test_specimen_permalink_degrades_to_a_plain_anchor_without_js(open_site):
         assert page.locator(f"article#{sid}").count() == 1
     # no JS => no clipboard confirmation shown
     assert page.locator("#specimen .spec__permalink-status:not([hidden])").count() == 0
-
-
-def test_loopmark_is_mute_and_out_of_the_tab_order(open_site):
-    """§02's loop mark (2026-09-22) is decoration: §01's .origin__mark is the
-    page's index, with three real buttons, and a second interactive-looking
-    mark would compete with it. So this one is aria-hidden, holds no focusable
-    descendant, and carries no data-magnetic — the attribute that turns the
-    pointer dot to accent ink, which is the page's "this is a control" cue."""
-    page, _ = open_site()
-    fig = page.locator(".loopmark")
-    assert fig.get_attribute("aria-hidden") == "true"
-    assert fig.get_attribute("data-magnetic") is None
-    assert page.locator(".loopmark a, .loopmark button, .loopmark [tabindex]").count() == 0
-    assert fig.evaluate(
-        "el => el.querySelectorAll('.glyph__part, .origin__sigil, .origin__hit').length"
-    ) == 0, "the loop mark must not borrow §01's document-wide classes"
