@@ -5387,3 +5387,41 @@ answer rather than standing in for it), and both JSON-LD names on the offer
 lesson. The §05 lede's "We start with a call" is left as is (the call is how the
 trial starts, not a separate offer) — flag to Igor if he reads it otherwise.
 Tests: the two prefill assertions in `test_layout.py` updated to the new text.
+
+## Collage — first real English frame: the English club (2026-09-24, `feature/collage-english-club`)
+
+Igor supplied a phone photo of himself leading his English conversation club
+(café, night, pink neon) and asked for the man on the right to be blurred or
+cropped out. Both were made and compared; **crop won** — the blurred face
+beside sharp ones read as a smudge, and the crop also loses the neon sign.
+`en-03-club` replaces the `en-03-desk` stand-in in the same 4:5 slot (first
+row, third tile), greyed at rest by `--collage-filter` like every tile, colour
+in the lightbox. Caption "Running the English club." / «Веду английский клуб.»
+(RU first pass), real EN `alt`. Details in `assets/collage/PLACEHOLDERS.md`.
+Five English stand-ins remain, so DESIGN-PASS-III Q9 (the "It's me at work"
+page copy) is narrower but still open.
+
+## Collage — two chess frames and a climbing coaching frame (2026-09-24, same branch)
+
+Chess goes 4 → 6 (still two-up): `chess-07-floor` (a travel-set game on stone)
+and `chess-08-2100` (the blitz result that crossed 2100, cropped to the game
+card). Climbing goes 5 → 6: `climb-07-coaching` leads the last row, which
+becomes three equal 3:2 zones at ≥900px; at 600–899 it takes its own full-width
+line so the other two stay paired (`:first-child:nth-last-child(3)`), stacked
+below 600. The pair row's `sizes` gains a `(min-width: 900px) 33vw` step.
+`COLLAGE_IMAGES` 15 → 18 and the pair-row trigger count 2 → 3 in the tests.
+Provenance and crops in `assets/collage/PLACEHOLDERS.md`. RU captions are first
+passes.
+
+## Collage — chess in two proportional rows of three (2026-09-24, same branch)
+
+Igor: "3 photos in 2 rows … proportional". At ≥900px the chess group is two
+`.collage__row` flex lines; each figure's `flex-grow` is its slot ratio (3:2 →
+1.5, 1:1 → 1, 4:5 → .8) on a zero basis, so the three in a row resolve to one
+height with nothing cropped (measured at 1280: row 1 all 332px, row 2 all
+313px). Row 1: board mid-game (3:2) · mid-move on the clock (4:5) · park board
+(1:1). Row 2: floor game (1:1) · the 2100 result (3:2) · carved set (1:1).
+Below 900 the rows are `display: contents`, so tablet/phone keep the ordinary
+two-up / one-up grid. `.collage--group--pairs` is gone (chess was its only
+user). Figures stay flat descendants of `.collage`, so the lightbox order is
+unchanged.

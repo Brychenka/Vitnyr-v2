@@ -127,7 +127,7 @@ def test_paired_row_figures_are_in_the_sequence(open_site):
     page, _ = open_site()
     _open_collage(page)
 
-    assert page.locator(".collage__pair__fig .collage__trigger").count() == 2
+    assert page.locator(".collage__pair__fig .collage__trigger").count() == 3   # 2026-09-24: coaching frame joined the row
 
 
 def test_grayscale_still_applied_inside_the_lightbox(open_site):

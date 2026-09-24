@@ -119,15 +119,28 @@ The chess group now ships the four real frames only, two-up on desktop
 drops to four real frames"). Their `.jpg`/`@2x.jpg` files are still on disk
 and their provenance stays recorded below, in case Igor wants them back.
 
-The other 6 collage frames (all `en-*`) remain the stand-ins below, so the
-artifact hold still stands.
+**Exception — one English frame is real (`en-03-club`, 2026-09-24).** Igor
+leading his English conversation club, in a café at night, from a phone photo
+he supplied (1506×2000). It replaces the `en-03-desk` stand-in in the same
+first-row 4:5 slot. A second participant sat at the right edge, in focus and
+identifiable; **cropped out rather than blurred** — a blurred face beside a
+sharp one read as a smudge (Igor was unsure which; both were compared). Crop:
+x 0–1240, bottom-anchored 4:5 (1240×1550), which also drops the neon "life is
+a journey" sign. The two participants left are seen from behind, not
+identifiable. `autocontrast(cutoff=0.5)`, no colour change; 900×1125 (110 KB) /
+450×563. Real `alt` (EN, like the climbing frames) and caption "Running the
+English club." / «Веду английский клуб.» (RU first pass). `en-03-desk`'s files
+are deleted; its provenance row below is kept, marked replaced.
+
+The other 5 collage frames (`en-01`, `en-02`, `en-04`, `en-05`, `en-06`)
+remain the stand-ins below.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
 | file | Openverse ID | creator | source |
 |---|---|---|---|
 | en-02-yerevan-table | `5e4ceb38-c8e8-49d2-8296-4edd0ab48bd2` | Kristin Hardwick | https://stocksnap.io/photo/hands-beverage-RYM2WIKREP |
-| en-03-desk | `15b8aa96-d680-4c8d-bda0-9633cdbbe309` | Pixel.la Free Stock Photos | https://commons.wikimedia.org/w/index.php?curid=51439338 |
+| en-03-desk *(replaced 2026-09-24 by the real `en-03-club`; files deleted)* | `15b8aa96-d680-4c8d-bda0-9633cdbbe309` | Pixel.la Free Stock Photos | https://commons.wikimedia.org/w/index.php?curid=51439338 |
 | en-04-correction | `b73d6a7e-37f4-4f5e-9468-5ac1d0ef30fe` | Helloquence | https://stocksnap.io/photo/writing-papers-Y01VDYAX63 |
 | en-05-markup | `281b6a9b-acdb-48bf-9ca7-f699d191b73b` | — | https://www.rawpixel.com/image/5903740/ |
 
@@ -152,3 +165,30 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 were replaced by real photos of Igor's on 2026-09-08 — see the exception
 above. `chess-03-study` and `chess-06-notation` were then removed from the
 page the same day; the files stay here for provenance and easy restore.)*
+
+## Three more real frames (2026-09-24)
+
+All supplied by Igor; real `alt` (EN) and claim-free captions, greyed at rest
+by `--collage-filter` like every tile.
+
+- `chess-07-floor` — Igor thinking over a travel set on a stone floor, his
+  opponent's knee at the right edge (not identifiable). Source 954×850, already
+  colour-edited by Igor, so **no autocontrast** (it crunched the edit); left-
+  anchored 1:1 crop (850×850) keeps his hand and the whole board. 900×900
+  (upscaled slightly) / 450×450. Caption "A travel set, on the stones." /
+  «Походная доска, прямо на камнях.» (RU first pass).
+- `chess-08-2100` — a screenshot of the rated 3+0 blitz result that took Igor's
+  online rating past 2100 (yngvibrychenka 2095 +6, checkmate, vs a 2125). The
+  confirmed fact is "2100", stated without FIDE; this frame is its receipt.
+  Cropped to the game card only (531×354 of a 2000×1107 screen, 3:2) — the
+  board beside it is at the start position and the rest is empty UI. Shipped at
+  native 531w and 1062w (@2x, upscaled — screen text, no finer source).
+  Caption "The game that took the rating past 2100." / «Партия, после которой
+  рейтинг перевалил за 2100.» (RU first pass). The opponent's public handle is
+  visible; left as is (Igor's call if it should be blurred).
+- `climb-07-coaching` — Igor coaching at an indoor wall, phone in hand,
+  pointing out a hold to a climber with her back to the camera (not
+  identifiable). Source 1279×853, centred 3:2, `autocontrast(cutoff=0.5)`.
+  1200×800 / 600×400. Leads the climbing group's last row, which is now three
+  3:2 frames (see `.collage__pair` in style.css). Caption "Coaching at the wall,
+  reading the route." / «Тренировка у стены: читаем трассу.» (RU first pass).
