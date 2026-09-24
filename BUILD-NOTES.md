@@ -5464,3 +5464,11 @@ the English style), «Разбираю статью к уроку», «За до
 обвязку перед стартом», «На скале, в середине маршрута», «Борд, вид снизу»
 («доска» was ambiguous next to the chess group). Unchanged: the 2100 game,
 «У скалы, между попытками», «Тренировка у стены: читаем трассу».
+
+## Collage — third real English frame, teaching from a bench (2026-09-24)
+
+Igor's photo of himself on a bench in a Yerevan square, waving at an online
+lesson on his laptop, replaces the `en-01-call` stand-in (first 3:2 slot of
+the English group). Caption is Igor's: "I can teach anywhere." / «Могу вести
+урок где угодно.»; real EN `alt`. Three English stand-ins remain (en-02,
+en-04, en-05).
