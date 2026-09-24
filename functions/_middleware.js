@@ -2,13 +2,26 @@
 // LinkedIn) don't run theme.js, so /?lang=ru would look like the English page.
 // For that URL only, rewrite the <head> to Russian at the edge. Every other
 // request passes straight through to the static file.
+const SITE = 'https://vitnyrcoach.com';
+
 export async function onRequest(context) {
-  const res = await context.next();
   const url = new URL(context.request.url);
+  const res = await handle(context, url);
+  // the *.pages.dev address is a duplicate of the real domain: keep it out of search
+  if (url.hostname.endsWith('.pages.dev')) {
+    const out = new Response(res.body, res);
+    out.headers.set('X-Robots-Tag', 'noindex');
+    return out;
+  }
+  return res;
+}
+
+async function handle(context, url) {
+  const res = await context.next();
   const type = res.headers.get('content-type') || '';
   if (url.searchParams.get('lang') !== 'ru' || !type.includes('text/html')) return res;
 
-  const origin = url.origin;
+  const origin = SITE;
   const ruUrl = origin + '/?lang=ru';
   let title = '', desc = '';
 

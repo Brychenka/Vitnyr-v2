@@ -141,8 +141,17 @@ in the same last-row 4:5 slot. Crop: full width, bottom-anchored 4:5
 lesson." / «Разбираю статью к уроку.» (RU revised 2026-09-24). `en-06-window`'s files
 are deleted; its provenance row below is kept, marked replaced.
 
-The other 4 English frames (`en-01`, `en-02`, `en-04`, `en-05`) remain the
-stand-ins below.
+**Third real English frame (`en-01-anywhere`, 2026-09-24).** Igor on a stone
+bench in a Yerevan square, laptop on his knees, waving at the screen (source
+2000×1324, supplied by Igor). Replaces the `en-01-call` stand-in in the same
+first 3:2 slot. Crop: centred 3:2 (1986×1324), no tone change. 900×600 /
+450×300. Real `alt` (EN), caption Igor's own: "I can teach anywhere." /
+«Могу вести урок где угодно.» Passers-by in the background are small and
+soft-focus, not identifiable at display size. `en-01-call`'s files are
+deleted; its provenance row below is kept, marked replaced.
+
+The other 3 English frames (`en-02`, `en-04`, `en-05`) remain the stand-ins
+below.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -165,7 +174,7 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 
 | file | tags | lock | on the page? |
 |---|---|---|---|
-| en-01-call | office,laptop | 22 | yes |
+| en-01-call *(replaced 2026-09-24 by the real `en-01-anywhere`; files deleted)* | office,laptop | 22 | no |
 | en-06-window *(replaced 2026-09-24 by the real `en-06-article`; files deleted)* | yerevan,armenia | 6 | no |
 | chess-03-study | chess,board | 9 | no — pulled 2026-09-08 |
 | chess-06-notation | chess,game | 12 | no — pulled 2026-09-08 |
