@@ -5425,3 +5425,14 @@ Below 900 the rows are `display: contents`, so tablet/phone keep the ordinary
 two-up / one-up grid. `.collage--group--pairs` is gone (chess was its only
 user). Figures stay flat descendants of `.collage`, so the lightbox order is
 unchanged.
+
+## §02 loop mark removed (2026-09-24)
+
+Igor asked for the mark in the method section to go. The `.loopmark` figure
+(the mute V/Y between the §02 lede and the mechanisms list), its CSS (including
+the reduced-motion pins), `initLoopmark()` in `main.js` and its four tests
+(`test_loopmark_*` in `test_motion.py` / `test_a11y.py`) are all removed; the
+"§02 loop mark — the pointer magnet" entry above is now history. §01's
+`.origin__mark` and §03's mini mark are untouched. Without the figure's own
+margins the lede runs into "01 Feedback loops" on the section's normal
+spacing — checked at 1280 and 375, no overflow, no console errors.

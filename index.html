@@ -640,52 +640,6 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
     </div>
   </div>
 
-  <!-- Loop mark (2026-09-22): a fourth, MUTE instance of the V/Y mark, sitting
-       between the lede and the mechanisms because that is where the section
-       turns from "skill comes from one loop" into the five parts of that loop.
-       It rests as the exact locked mark; on a fine pointer each of the three
-       strokes leans toward the cursor dot and returns. The dot is the magnet —
-       nothing new is drawn, and the lean is translation only, never rotation
-       (a named hard rule in reference/vitnyr-brand-identity.md).
-
-       It carries its OWN class names rather than reusing .origin__mark, for
-       four reasons that are all live code:
-        1. initOrigin() queries .glyph__part and .origin__sigil document-wide
-           (main.js), so every mark instance shares the committed-discipline
-           paint — two strokes dimmed, one lit. Right for §01 and §03; wrong
-           here, where the whole point is that the three read equal. Hence a
-           new stroke class, no sigils, all three at full ink always.
-        2. initMagnetic() already pulls .origin__mark as a whole figure; the
-           class would move the figure as well as its strokes.
-        3. The S7 draw-in clips are scoped `html.js .origin__mark #glyphClip*`
-           in style.css, so a shared class or shared clip ids would collapse
-           this mark until it scrolled into view. Hence glyphClip*Loop.
-        4. CLAUDE.md's transform-channel rule: the <g> per stroke carries the
-           pull and nothing else — no static placement transform shares it,
-           the same discipline §01's sigils follow.
-       Deliberately no data-magnetic: initCursor's HOT selector is what turns
-       the pointer dot to accent ink, and that colour IS the page's "this is a
-       control" signal. This mark is not one. aria-hidden, no hit regions, not
-       in the tab order — §01's mark is the page's index and this must not
-       compete with it. #glyphV is referenced, not copied; the stem path is
-       copied verbatim exactly as §03's mini already copies it, and neither is
-       ever redrawn. No stem clip: §01 only clips the stem for the draw-in. -->
-  <figure class="loopmark reveal" aria-hidden="true">
-    <!-- aria-hidden on the <svg> as well as the <figure>: the sweep in
-         test_a11y.py asks every svg on the page to be either role=img with a
-         label or explicitly hidden, and an inherited hidden state doesn't
-         answer it — §01's mark states it on the svg for the same reason. -->
-    <svg viewBox="0 0 100 100" class="glyph" aria-hidden="true">
-      <defs>
-        <clipPath id="glyphClipLeftLoop" clipPathUnits="userSpaceOnUse"><rect x="0" y="0" width="50" height="100"/></clipPath>
-        <clipPath id="glyphClipRightLoop" clipPathUnits="userSpaceOnUse"><rect x="50" y="0" width="50" height="100"/></clipPath>
-      </defs>
-      <g class="loopmark__stroke" data-stroke="left"><use href="#glyphV" clip-path="url(#glyphClipLeftLoop)" fill="var(--amber)"/></g>
-      <g class="loopmark__stroke" data-stroke="right"><use href="#glyphV" clip-path="url(#glyphClipRightLoop)" fill="var(--amber)"/></g>
-      <g class="loopmark__stroke" data-stroke="stem"><path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/></g>
-    </svg>
-  </figure>
-
   <!-- Foldable mechanisms (2026-09-18): each item is a heading-wrapped
        <button> (WAI-ARIA disclosure pattern, same shape as #specimen's "Show
        the common mistake" reveal) controlling a sibling .mech__panel. The
