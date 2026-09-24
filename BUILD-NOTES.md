@@ -5425,3 +5425,14 @@ Below 900 the rows are `display: contents`, so tablet/phone keep the ordinary
 two-up / one-up grid. `.collage--group--pairs` is gone (chess was its only
 user). Figures stay flat descendants of `.collage`, so the lightbox order is
 unchanged.
+
+## Collage — second real English frame, the article prep (2026-09-24)
+
+Igor supplied a photo of himself at a laptop reading an article he's breaking
+down for a lesson. It replaces the `en-06-window` stand-in in the English
+group's last 4:5 slot (bottom-anchored 4:5 crop, 76px of ceiling dropped).
+Caption "Breaking down the article for the lesson." / «Разбираю статью для
+урока.» (RU first pass), real EN `alt`. The `en-06-window` files are deleted;
+provenance kept in `assets/collage/PLACEHOLDERS.md`. Four English stand-ins
+remain (en-01, en-02, en-04, en-05), so DESIGN-PASS-III Q9 is narrower again
+but still open.

@@ -132,8 +132,17 @@ identifiable. `autocontrast(cutoff=0.5)`, no colour change; 900×1125 (110 KB) /
 English club." / «Веду английский клуб.» (RU first pass). `en-03-desk`'s files
 are deleted; its provenance row below is kept, marked replaced.
 
-The other 5 collage frames (`en-01`, `en-02`, `en-04`, `en-05`, `en-06`)
-remain the stand-ins below.
+**Second real English frame (`en-06-article`, 2026-09-24).** Igor at a laptop
+in a co-working loft, reading the article he is preparing a lesson from
+(source 1539×2000, supplied by Igor). It replaces the `en-06-window` stand-in
+in the same last-row 4:5 slot. Crop: full width, bottom-anchored 4:5
+(1539×1924), dropping 76px of ceiling; no tone change. 900×1125 (142 KB) /
+450×563. Real `alt` (EN) and caption "Breaking down the article for the
+lesson." / «Разбираю статью для урока.» (RU first pass). `en-06-window`'s files
+are deleted; its provenance row below is kept, marked replaced.
+
+The other 4 English frames (`en-01`, `en-02`, `en-04`, `en-05`) remain the
+stand-ins below.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
@@ -157,7 +166,7 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 | file | tags | lock | on the page? |
 |---|---|---|---|
 | en-01-call | office,laptop | 22 | yes |
-| en-06-window | yerevan,armenia | 6 | yes |
+| en-06-window *(replaced 2026-09-24 by the real `en-06-article`; files deleted)* | yerevan,armenia | 6 | no |
 | chess-03-study | chess,board | 9 | no — pulled 2026-09-08 |
 | chess-06-notation | chess,game | 12 | no — pulled 2026-09-08 |
 
