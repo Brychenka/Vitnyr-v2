@@ -5374,3 +5374,16 @@ or a handwritten note in the masthead hint's voice. `.proof__link` keeps its
 arrow. `test_channels_no_longer_carry_the_cta_style_arrow` now expects 0 CTA
 arrows. Suite: 300 passed, 1 xfailed, 1 failed — the known flaky
 `test_specimen_permalink_cold_load…[climbing-grip]`, pre-existing.
+
+## DP0-Q4 answered: the offer is a free trial lesson (2026-09-24, `feature/cta-trial-only`)
+
+Igor: "remove the screening part and just leave trial." The EN CTA was
+"Message me for a free screening and trial lesson." and promised more than the
+RU («Пишите сюда для бесплатного занятия.»). Now: EN CTA "Message me for a free
+trial lesson.", EN Telegram prefill "Hi! I'd like to book a free trial lesson."
+(the CTA and the phone `.dock`, whose "Free trial lesson" label now matches the
+answer rather than standing in for it), and both JSON-LD names on the offer
+"Free trial lesson". RU copy and prefill unchanged — they already offered a free
+lesson. The §05 lede's "We start with a call" is left as is (the call is how the
+trial starts, not a separate offer) — flag to Igor if he reads it otherwise.
+Tests: the two prefill assertions in `test_layout.py` updated to the new text.
