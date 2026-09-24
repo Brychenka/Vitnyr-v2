@@ -119,15 +119,28 @@ The chess group now ships the four real frames only, two-up on desktop
 drops to four real frames"). Their `.jpg`/`@2x.jpg` files are still on disk
 and their provenance stays recorded below, in case Igor wants them back.
 
-The other 6 collage frames (all `en-*`) remain the stand-ins below, so the
-artifact hold still stands.
+**Exception — one English frame is real (`en-03-club`, 2026-09-24).** Igor
+leading his English conversation club, in a café at night, from a phone photo
+he supplied (1506×2000). It replaces the `en-03-desk` stand-in in the same
+first-row 4:5 slot. A second participant sat at the right edge, in focus and
+identifiable; **cropped out rather than blurred** — a blurred face beside a
+sharp one read as a smudge (Igor was unsure which; both were compared). Crop:
+x 0–1240, bottom-anchored 4:5 (1240×1550), which also drops the neon "life is
+a journey" sign. The two participants left are seen from behind, not
+identifiable. `autocontrast(cutoff=0.5)`, no colour change; 900×1125 (110 KB) /
+450×563. Real `alt` (EN, like the climbing frames) and caption "Running the
+English club." / «Веду английский клуб.» (RU first pass). `en-03-desk`'s files
+are deleted; its provenance row below is kept, marked replaced.
+
+The other 5 collage frames (`en-01`, `en-02`, `en-04`, `en-05`, `en-06`)
+remain the stand-ins below.
 
 ## en-02 … en-05 — Openverse, CC0 1.0 / public-domain
 
 | file | Openverse ID | creator | source |
 |---|---|---|---|
 | en-02-yerevan-table | `5e4ceb38-c8e8-49d2-8296-4edd0ab48bd2` | Kristin Hardwick | https://stocksnap.io/photo/hands-beverage-RYM2WIKREP |
-| en-03-desk | `15b8aa96-d680-4c8d-bda0-9633cdbbe309` | Pixel.la Free Stock Photos | https://commons.wikimedia.org/w/index.php?curid=51439338 |
+| en-03-desk *(replaced 2026-09-24 by the real `en-03-club`; files deleted)* | `15b8aa96-d680-4c8d-bda0-9633cdbbe309` | Pixel.la Free Stock Photos | https://commons.wikimedia.org/w/index.php?curid=51439338 |
 | en-04-correction | `b73d6a7e-37f4-4f5e-9468-5ac1d0ef30fe` | Helloquence | https://stocksnap.io/photo/writing-papers-Y01VDYAX63 |
 | en-05-markup | `281b6a9b-acdb-48bf-9ca7-f699d191b73b` | — | https://www.rawpixel.com/image/5903740/ |
 

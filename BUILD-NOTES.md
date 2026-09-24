@@ -5387,3 +5387,16 @@ answer rather than standing in for it), and both JSON-LD names on the offer
 lesson. The §05 lede's "We start with a call" is left as is (the call is how the
 trial starts, not a separate offer) — flag to Igor if he reads it otherwise.
 Tests: the two prefill assertions in `test_layout.py` updated to the new text.
+
+## Collage — first real English frame: the English club (2026-09-24, `feature/collage-english-club`)
+
+Igor supplied a phone photo of himself leading his English conversation club
+(café, night, pink neon) and asked for the man on the right to be blurred or
+cropped out. Both were made and compared; **crop won** — the blurred face
+beside sharp ones read as a smudge, and the crop also loses the neon sign.
+`en-03-club` replaces the `en-03-desk` stand-in in the same 4:5 slot (first
+row, third tile), greyed at rest by `--collage-filter` like every tile, colour
+in the lightbox. Caption "Running the English club." / «Веду английский клуб.»
+(RU first pass), real EN `alt`. Details in `assets/collage/PLACEHOLDERS.md`.
+Five English stand-ins remain, so DESIGN-PASS-III Q9 (the "It's me at work"
+page copy) is narrower but still open.
