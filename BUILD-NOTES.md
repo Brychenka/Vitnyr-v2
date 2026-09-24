@@ -5436,3 +5436,20 @@ Caption "Breaking down the article for the lesson." / «Разбираю ста�
 provenance kept in `assets/collage/PLACEHOLDERS.md`. Four English stand-ins
 remain (en-01, en-02, en-04, en-05), so DESIGN-PASS-III Q9 is narrower again
 but still open.
+
+## Collage — caption pass on the real photos (2026-09-24)
+
+Igor asked for the captions on his own photos (not the four English stock
+stand-ins) to be checked, and the Russian rewritten as a native writer would.
+EN changes: "Breaking down an article for a lesson." (was "the article for
+the lesson"), and "Checking the harness before setting off." (was "At the
+belay loop…", which you can't stand at). RU, all first passes replaced:
+«Веду разговорный клуб по английскому» («английский клуб» read as a club in
+the English style), «Разбираю статью к уроку», «За доской, в середине
+партии», «Делаю ход, часы идут» (was «Ход — под часами»), «Уличные шахматы в
+парке» («в полный рост» is said of people), «Дорожные шахматы, прямо на
+камнях», «Резные фигуры, партия в разгаре», «Тянусь к следующему зацепу»
+(first person like the rest; «зацеп» is the climbers' word), «Проверяю
+обвязку перед стартом», «На скале, в середине маршрута», «Борд, вид снизу»
+(«доска» was ambiguous next to the chess group). Unchanged: the 2100 game,
+«У скалы, между попытками», «Тренировка у стены: читаем трассу».

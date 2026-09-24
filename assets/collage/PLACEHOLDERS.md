@@ -129,7 +129,7 @@ x 0–1240, bottom-anchored 4:5 (1240×1550), which also drops the neon "life is
 a journey" sign. The two participants left are seen from behind, not
 identifiable. `autocontrast(cutoff=0.5)`, no colour change; 900×1125 (110 KB) /
 450×563. Real `alt` (EN, like the climbing frames) and caption "Running the
-English club." / «Веду английский клуб.» (RU first pass). `en-03-desk`'s files
+English club." / «Веду разговорный клуб по английскому.» (RU revised 2026-09-24). `en-03-desk`'s files
 are deleted; its provenance row below is kept, marked replaced.
 
 **Second real English frame (`en-06-article`, 2026-09-24).** Igor at a laptop
@@ -137,8 +137,8 @@ in a co-working loft, reading the article he is preparing a lesson from
 (source 1539×2000, supplied by Igor). It replaces the `en-06-window` stand-in
 in the same last-row 4:5 slot. Crop: full width, bottom-anchored 4:5
 (1539×1924), dropping 76px of ceiling; no tone change. 900×1125 (142 KB) /
-450×563. Real `alt` (EN) and caption "Breaking down the article for the
-lesson." / «Разбираю статью для урока.» (RU first pass). `en-06-window`'s files
+450×563. Real `alt` (EN) and caption "Breaking down an article for a
+lesson." / «Разбираю статью к уроку.» (RU revised 2026-09-24). `en-06-window`'s files
 are deleted; its provenance row below is kept, marked replaced.
 
 The other 4 English frames (`en-01`, `en-02`, `en-04`, `en-05`) remain the
