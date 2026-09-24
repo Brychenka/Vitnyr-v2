@@ -63,8 +63,8 @@
      "Vitnyr" and both languages are declared) plus the Person, who now
      carries knowsAbout, areaServed and one Offer per thing the page
      actually sells: English, chess and climbing coaching, and the free
-     screening + trial lesson from the CTA. Each offer's wording is lifted
-     from the page's own copy. "репетитор" appears here and in the RU meta
+     trial lesson from the CTA ("screening" dropped 2026-09-24, Q4). Each
+     offer's wording is lifted from the page's own copy. "репетитор" appears here and in the RU meta
      description only — see the <title> comment above. -->
 <script type="application/ld+json">
 {
@@ -98,10 +98,10 @@
       "makesOffer": [
         {
           "@type": "Offer",
-          "name": "Free screening and trial lesson",
+          "name": "Free trial lesson",
           "price": "0",
           "priceCurrency": "AMD",
-          "itemOffered": { "@type": "Service", "name": "Free screening call and trial lesson", "serviceType": "English coaching" }
+          "itemOffered": { "@type": "Service", "name": "Free trial lesson", "serviceType": "English coaching" }
         },
         {
           "@type": "Offer",
@@ -1183,6 +1183,9 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        to match, so what the reader says on arrival mirrors what the button
        promised. RU wording is Igor's own (shortened from the model's
        first-pass translation, per Standing Order 9).
+       2026-09-24 (DESIGN-PASS-III Q4): Igor dropped "screening" — the offer
+       is a free trial lesson, which is what the RU already said, so EN and
+       RU (and the phone .dock) now promise the same thing.
        2026-09-24: the travelling arrow after it is removed (Igor: it wasn't
        doing its job). What replaces it as the "this is clickable" cue is
        still open: underline / green / button / handwritten note were
@@ -1198,11 +1201,11 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <div class="contact__text">
   <h2 class="contact__big reveal">
     <a class="contact__cta" data-magnetic target="_blank" rel="noopener" aria-describedby="contact-via"
-       href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
-       data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
+       href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
+       data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
        data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D0%B5.">
       <span class="contact__cta-text">
-        <span data-l="en">Message me for a free screening and trial lesson.</span>
+        <span data-l="en">Message me for a free trial lesson.</span>
         <span data-l="ru">Пишите сюда для бесплатного занятия.</span>
       </span>
     </a>
@@ -1345,11 +1348,11 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      updateCta() as .contact__cta, so a §04 pick travels with it. Hidden with
      no JS (nothing could hide it at #contact then, and the in-flow CTA is
      there anyway). "Free trial lesson" is the one offer the EN and RU CTAs
-     both promise while DESIGN-PASS-III Q4 is open — revisit with Q4. RU is
+     both promise; Q4 was answered 2026-09-24 as exactly that (trial only). RU is
      a model's first pass, flagged per Standing Order 9. -->
 <a class="dock" target="_blank" rel="noopener"
-   href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
-   data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20the%20free%20screening%20and%20trial%20lesson."
+   href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
+   data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
    data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D0%B5.">
   <span class="dock__k" data-en="Free trial lesson" data-ru="Бесплатное занятие">Free trial lesson</span>
   <span class="dock__v">

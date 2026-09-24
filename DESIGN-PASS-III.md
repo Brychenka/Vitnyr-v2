@@ -282,6 +282,11 @@ The English promises an assessment plus a lesson; the Russian promises a free
 lesson. Both are Igor's own wording (see `W5`); this is not a prose note. The
 question is which offer is real, so that one of the two can be corrected.
 
+**Answered 2026-09-24 (Igor): trial lesson only — "remove the screening part
+and just leave trial."** EN CTA is now *"Message me for a free trial lesson."*,
+its Telegram prefill *"…book a free trial lesson."*, and the JSON-LD offer
+"Free trial lesson". The RU CTA already promised a free lesson and is unchanged.
+
 ### Q5 — §02's mechanisms ship collapsed
 
 All three `.mech__panel`s are closed at rest (`2edc076`, 2026-09-18, a
