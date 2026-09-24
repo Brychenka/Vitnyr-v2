@@ -136,16 +136,12 @@ Four files, each with one job:
 
 Plus **`assets/collage/`** — the `#collage` view's photographs, two widths
 each (`<slug>.jpg` ~450w, `<slug>@2x.jpg` ~900w), grayscaled at display time
-by the per-theme `--collage-filter` token. As of 2026-09-06 these were
-**temporary non-Igor placeholders** (see `assets/collage/PLACEHOLDERS.md` and
-`BUILD-NOTES.md` → "Collage Stage 3"); chess and climbing are now real photos
-of Igor, but the English group (6 frames) still ships on stock stand-ins.
-**2026-09-17: Igor lifted the artifact hold** — no shoot is scheduled yet, and
-he'd rather the live artifact track `main` in the meantime than sit stale, so
-normal republishing (step 5 above) applies even while the English stand-ins
-are still up. When the real shoot lands, swap the files, do the deferred
-`<picture>`/WebP half of the Stage 3 spec (`collage-plan.md`), and republish
-once more in that same pass.
+by the per-theme `--collage-filter` token. **Every image is a real photo of
+Igor** (2026-09-24): the English group's stock stand-ins were removed outright
+rather than waiting for a shoot, leaving three real English frames; provenance
+of the retired stand-ins stays in `assets/collage/PLACEHOLDERS.md`. The
+deferred `<picture>`/WebP half of the Stage 3 spec (`collage-plan.md`) is
+still undone.
 
 ### i18n: dual-language DOM, not a template system
 
