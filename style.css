@@ -1816,7 +1816,9 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
      an orphan on a fourth. Equal columns; slots keep their own ratio classes,
      nothing stretched. align-items:start (inherited from the 600px rule) keeps
      the ragged bottoms the rest of the collage already has. */
-  .collage--group--pairs { grid-template-columns: repeat(2, 1fr); }
+  /* 2026-09-24: chess grew to six and went to two rows of three (Igor).
+     The group is one column of two .collage__row lines; see below. */
+  .collage--group--rows { grid-template-columns: 1fr; }
 
   /* Climbing group's first row of three (4:5 / 9:16 / 1:1). Equal 1fr
      columns made the 9:16 belay-loop frame tower over the other two. Size
@@ -1829,6 +1831,22 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
   .collage--group:has(.collage__pair) {
     grid-template-columns: 64fr 45fr 80fr;
   }
+}
+
+/* ---------- collage proportional rows (chess group) ----------
+   Mixed ratios in one row, all the same height, none cropped: each figure's
+   flex-grow is its slot's width:height (3:2 -> 1.5, 1:1 -> 1, 4:5 -> .8) on a
+   zero basis, so the width after the gaps is shared out in proportion to the
+   ratio and every slot resolves to the same height. Below 900px the row box
+   disappears (display: contents) and its figures sit in the group's grid like
+   any other tile. No transform, no spanning. */
+.collage__row { display: contents; }
+@media (min-width: 900px) {
+  .collage__row { display: flex; align-items: flex-start; gap: var(--collage-gap-x); }
+  .collage__row > .collage__fig { min-width: 0; flex: 1 1 0; }
+  .collage__row > .collage__fig--32 { flex-grow: 1.5; }
+  .collage__row > .collage__fig--45 { flex-grow: .8; }
+  .collage__row > .collage__fig--916 { flex-grow: .5625; }
 }
 
 /* ---------- collage paired row (climbing group only) ----------

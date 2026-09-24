@@ -5412,3 +5412,16 @@ below 600. The pair row's `sizes` gains a `(min-width: 900px) 33vw` step.
 `COLLAGE_IMAGES` 15 → 18 and the pair-row trigger count 2 → 3 in the tests.
 Provenance and crops in `assets/collage/PLACEHOLDERS.md`. RU captions are first
 passes.
+
+## Collage — chess in two proportional rows of three (2026-09-24, same branch)
+
+Igor: "3 photos in 2 rows … proportional". At ≥900px the chess group is two
+`.collage__row` flex lines; each figure's `flex-grow` is its slot ratio (3:2 →
+1.5, 1:1 → 1, 4:5 → .8) on a zero basis, so the three in a row resolve to one
+height with nothing cropped (measured at 1280: row 1 all 332px, row 2 all
+313px). Row 1: board mid-game (3:2) · mid-move on the clock (4:5) · park board
+(1:1). Row 2: floor game (1:1) · the 2100 result (3:2) · carved set (1:1).
+Below 900 the rows are `display: contents`, so tablet/phone keep the ordinary
+two-up / one-up grid. `.collage--group--pairs` is gone (chess was its only
+user). Figures stay flat descendants of `.collage`, so the lightbox order is
+unchanged.
