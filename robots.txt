@@ -1,6 +1,4 @@
-# P3 (Stage 6, 2026-09-06). Sitemap line uses the same
-# https://vitnyrcoach.com/ placeholder as index.html's canonical/og tags —
-# swap both together once the real domain exists.
+# Sitemap for https://vitnyrcoach.com/ (one page, two language URLs).
 User-agent: *
 Allow: /
 
