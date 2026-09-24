@@ -5400,3 +5400,15 @@ in the lightbox. Caption "Running the English club." / «Веду английс
 (RU first pass), real EN `alt`. Details in `assets/collage/PLACEHOLDERS.md`.
 Five English stand-ins remain, so DESIGN-PASS-III Q9 (the "It's me at work"
 page copy) is narrower but still open.
+
+## Collage — two chess frames and a climbing coaching frame (2026-09-24, same branch)
+
+Chess goes 4 → 6 (still two-up): `chess-07-floor` (a travel-set game on stone)
+and `chess-08-2100` (the blitz result that crossed 2100, cropped to the game
+card). Climbing goes 5 → 6: `climb-07-coaching` leads the last row, which
+becomes three equal 3:2 zones at ≥900px; at 600–899 it takes its own full-width
+line so the other two stay paired (`:first-child:nth-last-child(3)`), stacked
+below 600. The pair row's `sizes` gains a `(min-width: 900px) 33vw` step.
+`COLLAGE_IMAGES` 15 → 18 and the pair-row trigger count 2 → 3 in the tests.
+Provenance and crops in `assets/collage/PLACEHOLDERS.md`. RU captions are first
+passes.

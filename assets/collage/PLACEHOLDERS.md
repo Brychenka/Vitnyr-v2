@@ -165,3 +165,30 @@ shoot, pull the real attribution or swap it for a CC0 image first.
 were replaced by real photos of Igor's on 2026-09-08 — see the exception
 above. `chess-03-study` and `chess-06-notation` were then removed from the
 page the same day; the files stay here for provenance and easy restore.)*
+
+## Three more real frames (2026-09-24)
+
+All supplied by Igor; real `alt` (EN) and claim-free captions, greyed at rest
+by `--collage-filter` like every tile.
+
+- `chess-07-floor` — Igor thinking over a travel set on a stone floor, his
+  opponent's knee at the right edge (not identifiable). Source 954×850, already
+  colour-edited by Igor, so **no autocontrast** (it crunched the edit); left-
+  anchored 1:1 crop (850×850) keeps his hand and the whole board. 900×900
+  (upscaled slightly) / 450×450. Caption "A travel set, on the stones." /
+  «Походная доска, прямо на камнях.» (RU first pass).
+- `chess-08-2100` — a screenshot of the rated 3+0 blitz result that took Igor's
+  online rating past 2100 (yngvibrychenka 2095 +6, checkmate, vs a 2125). The
+  confirmed fact is "2100", stated without FIDE; this frame is its receipt.
+  Cropped to the game card only (531×354 of a 2000×1107 screen, 3:2) — the
+  board beside it is at the start position and the rest is empty UI. Shipped at
+  native 531w and 1062w (@2x, upscaled — screen text, no finer source).
+  Caption "The game that took the rating past 2100." / «Партия, после которой
+  рейтинг перевалил за 2100.» (RU first pass). The opponent's public handle is
+  visible; left as is (Igor's call if it should be blurred).
+- `climb-07-coaching` — Igor coaching at an indoor wall, phone in hand,
+  pointing out a hold to a climber with her back to the camera (not
+  identifiable). Source 1279×853, centred 3:2, `autocontrast(cutoff=0.5)`.
+  1200×800 / 600×400. Leads the climbing group's last row, which is now three
+  3:2 frames (see `.collage__pair` in style.css). Caption "Coaching at the wall,
+  reading the route." / «Тренировка у стены: читаем трассу.» (RU first pass).

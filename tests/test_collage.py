@@ -7,7 +7,7 @@ import pytest
 # Photographs currently in the view. Real frames land in batches (commit 5970eae
 # dropped the two chess stand-ins, 18 -> 15), so keep the count in one place and
 # update this line when the shoot adds more.
-COLLAGE_IMAGES = 15
+COLLAGE_IMAGES = 18   # 2026-09-24: +chess floor game, +2100 result, +climbing coaching
 
 
 def _is_open(page):

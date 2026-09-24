@@ -1832,9 +1832,9 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
 }
 
 /* ---------- collage paired row (climbing group only) ----------
-   The climbing group's last row is two photos filling the group's full
-   width — Igor on rock beside the training board from the floor — split into
-   two equal 3:2 zones. Just a two-column grid inside one full-width grid
+   The climbing group's last row is 3:2 photos filling the group's full
+   width — coaching at the wall, Igor on rock, the training board from the
+   floor — in equal zones (three since 2026-09-24). Just a two-column grid inside one full-width grid
    item; stacks to one column on narrow viewports like the rest of the
    collage. No overlap, no hover behaviour. */
 .collage__pair {
@@ -1844,6 +1844,14 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
 }
 @media (min-width: 600px) {
   .collage__pair { grid-template-columns: 1fr 1fr; align-items: start; }
+  /* 2026-09-24: a third 3:2 (the coaching frame) joined the row. Two-up it
+     leads on its own full-width line so the other two stay a pair; three-up
+     from 900px, where the group itself goes three-up. */
+  .collage__pair__fig:first-child:nth-last-child(3) { grid-column: 1 / -1; }
+}
+@media (min-width: 900px) {
+  .collage__pair { grid-template-columns: repeat(3, 1fr); }
+  .collage__pair__fig:first-child:nth-last-child(3) { grid-column: auto; }
 }
 .collage__pair__fig { margin: 0; }
 .collage__pair__fig .collage__slot { aspect-ratio: 3 / 2; }
