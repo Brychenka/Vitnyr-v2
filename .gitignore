@@ -7,3 +7,4 @@ tests/.pytest_cache/
 tests/test-results/
 __pycache__/
 *.pyc
+dist/
