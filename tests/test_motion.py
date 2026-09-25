@@ -947,6 +947,7 @@ def test_specimen_permalink_cold_load_commits_its_discipline_and_lands_on_it(
     assert item.get_attribute("aria-pressed") == "true"
     target = page.locator(f"#{specimen_id}")
     assert target.is_visible(), "specimen's group never committed — still display:none"
+    page.wait_for_timeout(1500)   # let the 1.2s Lenis tween settle — "load" fires mid-scroll
     box = target.bounding_box()
     assert box["y"] <= 400, f"{specimen_id} lands at y={box['y']}, not near the top of the viewport"
     head_h = _masthead_height(page)
