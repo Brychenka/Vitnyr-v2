@@ -1120,6 +1120,100 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   </ul>
 </section>
 
+<!-- ================================================================
+     IN THEIR WORDS — testimonials marquee (feature/testimonials, 2026-09-26)
+     Unnumbered on purpose: it sits between §04 and §05 as a bridge into the
+     ask, not a sixth argument, so the page keeps its 01–05 count.
+
+     PLACEHOLDER — every quote below is a visibly flagged stand-in, not a
+     testimonial. "Real material only" applies here more than anywhere: a
+     real student's own words, their name (or first name + initial) and
+     their permission, or the item doesn't ship. Weighted like the page:
+     three English, one chess, one climbing. Don't merge this to main or
+     republish the artifact while any "Placeholder" attribution is left.
+
+     Motion (initVoices() in main.js): the list is cloned once for a seamless
+     loop and the track drifts left; scrolling speeds it up and steers it
+     (down = left, up = right), hovering holds it, and the Pause control
+     stops it outright (WCAG 2.2.2). No JS or reduced motion: the band is a
+     plain static grid of the same quotes, nothing hidden.
+     ================================================================ -->
+<section class="sec sec--voices" id="voices" aria-labelledby="voices-title">
+  <p class="label label--glyph reveal">
+    <svg class="label__mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 17.5V12c0-3.6 1.6-5.8 4.6-6.8M13 17.5V12c0-3.6 1.6-5.8 4.6-6.8"/>
+      <path d="M4 12.5h4.5v5H4zM13 12.5h4.5v5H13z"/>
+    </svg>
+    <span data-en="In their words" data-ru="Своими словами">In their words</span>
+  </p>
+  <div class="sec__head">
+    <h2 class="reveal" id="voices-title">
+      <span data-l="en">What changed, in their words.</span>
+      <span data-l="ru">Что изменилось — их словами.</span>
+    </h2>
+  </div>
+
+  <div class="voices__band reveal">
+    <div class="voices__track" id="voices-track">
+      <ul class="voices__list">
+        <!-- PLACEHOLDER — English #1 -->
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q">
+            <p data-l="en">A real student’s words go here: where the English froze before, and what it does now.</p>
+            <p data-l="ru">Здесь будут слова реального ученика: где английский раньше замирал и что изменилось.</p>
+          </blockquote>
+          <p class="voice__who"><span data-en="Placeholder · English" data-ru="Заглушка · Английский">Placeholder · English</span></p>
+        </li>
+        <!-- PLACEHOLDER — chess -->
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q">
+            <p data-l="en">A chess student’s own words: the rating before, the pattern that kept costing games, the rating after.</p>
+            <p data-l="ru">Слова шахматиста: рейтинг до, паттерн, который стоил партий, рейтинг после.</p>
+          </blockquote>
+          <p class="voice__who"><span data-en="Placeholder · Chess" data-ru="Заглушка · Шахматы">Placeholder · Chess</span></p>
+        </li>
+        <!-- PLACEHOLDER — English #2 -->
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q">
+            <p data-l="en">Two sentences from a past student about speaking under pressure: the call, the interview, the meeting.</p>
+            <p data-l="ru">Два предложения от бывшего ученика о речи под давлением: созвон, собеседование, встреча.</p>
+          </blockquote>
+          <p class="voice__who"><span data-en="Placeholder · English" data-ru="Заглушка · Английский">Placeholder · English</span></p>
+        </li>
+        <!-- PLACEHOLDER — climbing -->
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q">
+            <p data-l="en">A climber’s own words: the grade they were stuck on, and what the sessions changed.</p>
+            <p data-l="ru">Слова скалолаза: на какой категории он застрял и что изменили тренировки.</p>
+          </blockquote>
+          <p class="voice__who"><span data-en="Placeholder · Climbing" data-ru="Заглушка · Скалолазание">Placeholder · Climbing</span></p>
+        </li>
+        <!-- PLACEHOLDER — English #3 -->
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q">
+            <p data-l="en">A student’s plateau, in their own words, and the moment it finally moved.</p>
+            <p data-l="ru">Плато ученика его же словами и момент, когда всё наконец сдвинулось.</p>
+          </blockquote>
+          <p class="voice__who"><span data-en="Placeholder · English" data-ru="Заглушка · Английский">Placeholder · English</span></p>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="voices__foot" hidden>
+    <p class="voices__hint" data-en="Hover to hold · scroll to steer" data-ru="Наведите, чтобы остановить · прокрутка задаёт направление">Hover to hold · scroll to steer</p>
+    <button type="button" class="voices__toggle" aria-pressed="false" aria-controls="voices-track">
+      <span class="voices__toggle-pause" data-en="Pause" data-ru="Пауза">Pause</span>
+      <span class="voices__toggle-play" data-en="Play" data-ru="Пуск" hidden>Play</span>
+    </button>
+  </div>
+</section>
+
 <section class="sec sec--contact" id="contact">
   <p class="label reveal"><span class="num">05</span><span data-en="How to start" data-ru="Как начать">How to start</span></p>
   <!-- P8 (Stage 6, 2026-09-06): this used to be plain text — the page's one
