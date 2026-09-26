@@ -672,34 +672,53 @@ def _rotation_deg(page, selector):
 
 def test_footer_line_marks_turn_once_on_hover(open_site):
     """2026-09-26: the Vitnyr mark is set into the footer line — the EN Y is
-    the whole mark and the v its chevron (RU keeps the mark at the end).
-    Hovering the line turns each glyph once, F1-style: transition on the
+    the whole mark and the v its chevron (RU keeps the mark at the end). Each
+    glyph turns once when the pointer is on THAT glyph (2026-09-27, Igor: the
+    whole-line trigger started them too early), F1-style: transition on the
     hover state only, 1.2s, back on its own geometry after, snap on leave."""
     page, _ = open_site()
     _uncover_footer(page)
-    glyphs = page.locator('.foot__line[data-l="en"] .fglyph')
-    assert glyphs.count() == 2
+    assert page.locator('.foot__line[data-l="en"] .fspin .fglyph').count() == 2
     page.mouse.move(400, 60)
     page.wait_for_timeout(150)
-    for sel in (".fglyph--y", ".fglyph--v"):
-        assert abs(_rotation_deg(page, sel)) < 0.5
-    page.locator(".foot__move").hover()
+
+    # on the words, not a glyph: nothing turns
+    words = page.locator('.foot__line[data-l="en"]').bounding_box()
+    y_box = page.locator(".fspin:has(.fglyph--y)").bounding_box()
+    page.mouse.move(y_box["x"] + y_box["width"] + words["height"] * 0.6,
+                    words["y"] + words["height"] * 0.5)
     page.wait_for_timeout(250)
     for sel in (".fglyph--y", ".fglyph--v"):
-        assert page.locator(sel).evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
-        assert abs(_rotation_deg(page, sel)) > 5, "should be mid-turn"
+        assert abs(_rotation_deg(page, sel)) < 0.5, f"{sel} turned off a word hover"
+
+    # on the Y: the Y turns, the v doesn't
+    page.locator(".fspin:has(.fglyph--y)").hover()
+    page.wait_for_timeout(250)
+    assert page.locator(".fglyph--y").evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
+    assert abs(_rotation_deg(page, ".fglyph--y")) > 5, "should be mid-turn"
+    assert abs(_rotation_deg(page, ".fglyph--v")) < 0.5
+
+    # moving around inside the Y's box mid-turn doesn't restart it
+    for fx, fy in [(0.9, 0.1), (0.1, 0.9), (0.5, 0.5)]:
+        page.mouse.move(y_box["x"] + y_box["width"] * fx, y_box["y"] + y_box["height"] * fy)
+        page.wait_for_timeout(60)
     page.wait_for_timeout(1300)
-    for sel in (".fglyph--y", ".fglyph--v"):
-        assert abs(_rotation_deg(page, sel)) < 0.5
+    assert abs(_rotation_deg(page, ".fglyph--y")) < 0.5
+
+    # on the v: the v turns
+    page.locator(".fspin:has(.fglyph--v)").hover()
+    page.wait_for_timeout(250)
+    assert abs(_rotation_deg(page, ".fglyph--v")) > 5, "should be mid-turn"
+
     page.mouse.move(400, 60)
     page.wait_for_timeout(60)
-    assert page.locator(".fglyph--y").evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
+    assert page.locator(".fglyph--v").evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
 
 
 def test_footer_line_marks_do_not_turn_under_reduced_motion(open_site):
     page, _ = open_site(reduced_motion=True)
     _uncover_footer(page)
-    page.locator(".foot__move").hover()
+    page.locator(".fspin:has(.fglyph--y)").hover()
     page.wait_for_timeout(300)
     assert abs(_rotation_deg(page, ".fglyph--y")) < 0.5
 
