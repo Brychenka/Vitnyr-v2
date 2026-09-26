@@ -5486,3 +5486,73 @@ construct as chess, so they share one height with no crop. The group lede no
 longer promises "a table, a text being pulled apart": it now reads "a call, a
 club, an article taken apart" / «созвон, разговорный клуб, статья, разобранная
 по косточкам». `COLLAGE_IMAGES` 18 → 15.
+
+## Footer — "Your move" (2026-09-26, `feature/footer-your-move`)
+
+Igor: "does footer have to be that boring?", then "build your idea on a
+branch". P15 had turned the footer from a dead stop into a small close (mark,
+one 12px line, "Back to top"). This makes it the page's last word.
+
+- **One line, three readings.** "Your move." in Lora 500 at `clamp(44px,
+  16vw, 212px)`, bigger than the hero title. It means whose turn it is in
+  chess, your turn to speak in English, and the next move on the route in
+  climbing. Three annotations under it make that explicit, set like the notes
+  under a chess diagram, English first (Weighted): *Your turn to speak.* /
+  *1… The board is waiting.* / *The next grade.* (Igor's change from "The
+  next hold"). RU: «Ваш ход» (ход also works for a climbing move),
+  «Теперь говорите вы.» / «Доска ждёт.» / «Следующая категория.» — a model's first pass, **flagged for Igor per Standing
+  Order 9**.
+- **The line is a link to Telegram,** with the same offer as the §05 CTA.
+  `updateCta()` writes its href too, so a §04 pick carries through. This is a
+  deliberate, narrow qualification of P15's "don't repeat the channels": it's
+  one line, not a second contact list.
+- **The mark set into the words** (Igor's second revision; the first draft
+  put the mark at the end as the full stop, the second coloured Lora's own Y
+  and v). In EN, the Y *is* the Vitnyr mark and the v is its amber chevron:
+  inline SVGs whose viewBoxes are cropped to the ink (16→84; the arms' round
+  caps reach 16.5, and a 17.5 crop clipped them) and sized to Lora's cap
+  height (.7em) and x-height (.4em). RU «Ваш ход» has neither letter, so it
+  keeps the mark at the end, as in the first draft. Hovering the line turns
+  every glyph once with F1's rule: the transition is on the hover state only,
+  so leaving snaps back, and the non-transforming link is the hover target.
+  The styled line is `aria-hidden` and the link's name comes from a `.vh`
+  span, because the glyph-as-letter version read as "Y our" (caught by a
+  test). The RU closing mark uses the same ink crop at .7em, so it scales
+  with the letters (Igor: the old `max(48px, .46em)` full-box mark read too
+  small on a wide screen). The hairline's descender clearance sits on
+  `.foot__line`, not the link: an em on `.foot__move` is the 17px body size,
+  so the first ".3em" was about 5px, and the line cut through «д».
+  F1's three footer tests became three `.fglyph` tests (turn, reduced
+  motion, accessible name in both languages). "Back to top" stays.
+- **Curtain.** `html.js main` gets `position: relative; z-index: 1` and its
+  own `--bg`. The footer is `position: sticky; bottom: 0; z-index: 0`
+  underneath it, so the end of the page lifts off and uncovers it. It's plain
+  scroll with no transform and nothing for reduced motion to switch off.
+  Not z-index −1: that sinks it under `#app`'s box for hit-testing and
+  nothing in it can be clicked (found on the first pass). `main` holds no
+  fixed or sticky descendants, so its new stacking context traps nothing.
+  Screens ≤560px tall fall back to an in-flow footer. With no JS it's a plain
+  footer, because `#collage` follows it in flow there.
+- **Theme flip.** The footer grounds in the other pair: charcoal under cream,
+  cream under charcoal. The two pairs' own values are re-declared on `.foot`,
+  and `--ink-target` / `--cursor-active-ink` are re-declared too, because a
+  var() alias resolves where it's declared. The pointer dot flips with it
+  (`.cursor.on-foot`, set in `main.js`) and takes amber over footer controls.
+- **Yerevan clock.** The small print reads "Yerevan · 21:55 local time"
+  (`Intl`, `Asia/Yerevan`, re-armed on each minute boundary). It stays hidden
+  until JS fills it. On phones the place and clock take their own line, so
+  nothing strands a "· © 2026".
+- **Two side effects handled.** The pinned footer is always geometrically in
+  the viewport. (1) `initDock()` now watches the zero-height `.foot-edge`
+  marker at the footer's flow position, not `.foot`, or the phone bar would
+  never show. (2) Tabbing into a still-covered footer link wouldn't scroll, so
+  `initFoot()` jumps to the end on `focusin`.
+
+Tests: the four footer tests used `scroll_into_view_if_needed()`, which is a
+no-op on a pinned element. They now scroll to the end (`_uncover_footer`),
+as a reader does, and rest the pointer off the new line. The first draft's
+64px floor overflowed at 320px, caught by `test_collage_nav_icons`'s overflow
+checks, hence the 16vw sizing. Two new tests cover the curtain's hit-testing
+and the keyboard fix. Verified in both themes, both languages, at 375 and
+1280, with and without reduced motion, with no console errors and no overflow.
+**Not merged or republished** — built on the branch for Igor to look at first.

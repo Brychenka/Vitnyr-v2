@@ -190,6 +190,7 @@
   initCollageView();
   initWhoRows();
   initDock();
+  initFoot();             // a clock and a focus fix, not motion
   initSpecimenPermalinks();
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
@@ -1164,6 +1165,11 @@
        over the contact CTA it takes target green (the outcome); off the
        stylesheet's --ink-* tokens, no hex here. */
     var HOT = 'a, button, [data-magnetic]';
+    // The footer grounds in the other theme pair, so the dot flips its ink
+    // there (.on-foot — the sheet owns the colour).
+    document.addEventListener('mouseover', function (e) {
+      el.classList.toggle('on-foot', !!(e.target.closest && e.target.closest('.foot')));
+    });
     document.addEventListener('mouseover', function (e) {
       var hot = e.target.closest && e.target.closest(HOT);
       if (!hot) return;
@@ -1722,8 +1728,10 @@
     // baseMessage + " — " + the row's clause, in the current language.
     // 2026-09-23: writes every Telegram link that carries the offer — the
     // CTA and the phone contact bar (.dock) — plus the §05 draft preview, so
-    // all three are composed here and nowhere else.
-    var targets = document.querySelectorAll('.contact__cta, .dock');
+    // all three are composed here and nowhere else. 2026-09-26: the footer's
+    // "Your move" line (.foot__move) carries the same offer, so it's written
+    // here too.
+    var targets = document.querySelectorAll('.contact__cta, .dock, .foot__move');
     var draft = document.querySelector('.contact__draft');
     function updateCta() {
       var l = lang();
@@ -1834,19 +1842,59 @@
     var dock = document.querySelector('.dock');
     var hero = document.getElementById('hero');
     var contact = document.getElementById('contact');
-    var foot = document.querySelector('.foot');
+    // The footer is pinned under <main> (the curtain), so it's geometrically
+    // on screen the whole time; its flow edge is what says it's uncovered.
+    var foot = document.querySelector('.foot-edge');
     if (!dock || !hero || !contact || !('IntersectionObserver' in window)) return;
     var state = { heroAbove: false, contact: false, foot: false };
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.target === hero) state.heroAbove = !en.isIntersecting && en.boundingClientRect.top < 0;
         else if (en.target === contact) state.contact = en.isIntersecting;
-        else state.foot = en.isIntersecting;
+        else state.foot = en.isIntersecting || en.boundingClientRect.top < 0;
       });
       var on = state.heroAbove && !state.contact && !state.foot;
       dock.classList.toggle('is-on', on);
     }, { rootMargin: '0px 0px -56px 0px' });
     io.observe(hero); io.observe(contact); if (foot) io.observe(foot);
+  }
+
+  /* ---------- footer: Yerevan clock + keyboard reach ----------
+     The small print's "Yerevan · 14:32 local time" — so a reader abroad can
+     tell whether a message lands at a sensible hour. Hidden until JS fills
+     it; re-arms on each minute boundary rather than polling.
+
+     The curtain keeps the footer pinned beneath <main> until the page's end
+     uncovers it, so a Tab into it from higher up would focus a link the
+     reader can't see — and the browser won't scroll, because geometrically
+     it's already in the viewport. On focus, go to the bottom first. */
+  function initFoot() {
+    var foot = document.querySelector('.foot');
+    if (!foot) return;
+    var clock = foot.querySelector('.foot__clock');
+    var time = foot.querySelector('.foot__time');
+    if (clock && time && window.Intl) {
+      try {
+        var fmt = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Asia/Yerevan', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        });
+        var tick = function () {
+          var hm = fmt.format(new Date());
+          time.textContent = hm;
+          time.setAttribute('datetime', hm);
+          clock.hidden = false;
+          setTimeout(tick, 60000 - (Date.now() % 60000) + 50);
+        };
+        tick();
+      } catch (err) { /* no Asia/Yerevan zone data: the line just reads "Yerevan" */ }
+    }
+    foot.addEventListener('focusin', function () {
+      if (getComputedStyle(foot).position !== 'sticky') return;
+      var end = document.documentElement.scrollHeight - window.innerHeight;
+      if (window.scrollY >= end - 2) return;
+      if (lenis) lenis.scrollTo(end, { immediate: true });
+      else window.scrollTo(0, end);
+    });
   }
 
   /* ---------- the specimen reveal ----------

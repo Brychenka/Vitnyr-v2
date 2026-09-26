@@ -592,17 +592,66 @@ def test_magnetic_pull_absent_under_reduced_motion(open_site):
     assert tx == 0 and ty == 0
 
 
+def _uncover_footer(page):
+    """The footer is a curtain (2026-09-26): pinned beneath <main> at the
+    viewport's bottom edge, so it is geometrically "in view" the whole time and
+    scroll_into_view_if_needed() is a no-op that leaves it covered. A reader
+    reaches it by scrolling to the end — so do that."""
+    page.evaluate(
+        "window.__lenis ? window.__lenis.scrollTo(1e7, {immediate: true})"
+        " : window.scrollTo(0, 1e7)"
+    )
+    page.wait_for_timeout(300)
+
+
 def test_back_to_top_returns_from_the_footer_to_hero(open_site):
     """P15: the footer used to be a dead end after 7,500px of scroll — no
     way back up. Goes through the same in-page Lenis link wiring every
     other #-href on the page already uses, not a new mechanism."""
     page, _ = open_site()
     page.locator("#top").scroll_into_view_if_needed()  # no-op, just settles the page first
-    page.locator(".foot__top").scroll_into_view_if_needed()
-    page.wait_for_timeout(200)
+    _uncover_footer(page)
     assert page.evaluate("window.scrollY") > 4000
     page.locator(".foot__top").click()
     page.wait_for_function("window.scrollY < 50", timeout=3000)
+
+
+def test_footer_is_a_curtain_covered_by_main_until_the_end(open_site):
+    """2026-09-26: <main> lifts off a footer pinned beneath it. Mid-page the
+    footer's box is under the viewport but main is what a click hits; at the
+    end the footer is uncovered and its line is what a click hits."""
+    page, _ = open_site()
+    page.evaluate("window.__lenis.scrollTo(3000, {immediate: true})")
+    page.wait_for_timeout(300)
+    probe = """() => {
+        const y = innerHeight - 40;
+        const el = document.elementFromPoint(innerWidth / 2, y);
+        return el && el.closest('.foot') ? 'foot' : 'main';
+    }"""
+    assert page.evaluate(probe) == "main"
+    _uncover_footer(page)
+    assert page.evaluate(probe) == "foot"
+    line = page.locator(".foot__move").bounding_box()
+    hit = page.evaluate(
+        "([x, y]) => !!document.elementFromPoint(x, y).closest('.foot__move')",
+        [line["x"] + 40, line["y"] + line["height"] / 2],
+    )
+    assert hit, "the uncovered 'Your move' line should take the click"
+
+
+def test_tabbing_into_the_covered_footer_uncovers_it(open_site):
+    """The browser won't scroll to a focused link that is already inside the
+    viewport — and the pinned footer always is, just under <main>. initFoot()
+    scrolls to the end on focusin so a keyboard reader never focuses a link
+    they can't see."""
+    page, _ = open_site()
+    page.evaluate("window.__lenis.scrollTo(3000, {immediate: true})")
+    page.wait_for_timeout(300)
+    page.focus(".foot__move")
+    page.wait_for_timeout(300)
+    assert page.evaluate(
+        "Math.abs(scrollY - (document.documentElement.scrollHeight - innerHeight)) < 3"
+    )
 
 
 def _rotation_deg(page, selector):
@@ -621,82 +670,55 @@ def _rotation_deg(page, selector):
     )
 
 
-def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
-    """F1 (2026-09-07): hovering the footer wordmark spins it one full clockwise
-    turn (transition on the hover state only, so leave snaps 360->0 with no
-    reverse). The turn runs on --t-turn (1.2s) and the one brand ease. The
-    hover target is the .footmark-spin wrapper, not the rotating <svg>."""
+def test_footer_line_marks_turn_once_on_hover(open_site):
+    """2026-09-26: the Vitnyr mark is set into the footer line — the EN Y is
+    the whole mark and the v its chevron (RU keeps the mark at the end).
+    Hovering the line turns each glyph once, F1-style: transition on the
+    hover state only, 1.2s, back on its own geometry after, snap on leave."""
     page, _ = open_site()
-    wrap = page.locator(".foot .footmark-spin")
-    mark = page.locator(".foot .footmark-spin .footmark")
-    wrap.scroll_into_view_if_needed()
-    page.mouse.move(400, 300)
+    _uncover_footer(page)
+    glyphs = page.locator('.foot__line[data-l="en"] .fglyph')
+    assert glyphs.count() == 2
+    page.mouse.move(400, 60)
     page.wait_for_timeout(150)
-
-    # at rest: no rotation, and no transition armed
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
-
-    wrap.hover()
+    for sel in (".fglyph--y", ".fglyph--v"):
+        assert abs(_rotation_deg(page, sel)) < 0.5
+    page.locator(".foot__move").hover()
     page.wait_for_timeout(250)
-    # mid-turn: the transition is armed on transform for 1.2s and the mark has
-    # visibly rotated off its rest angle
-    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
-    assert "transform" in mark.evaluate("el => getComputedStyle(el).transitionProperty")
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) > 5, "should be mid-turn"
-
-    # after the turn: back on its own geometry (360deg == rest)
+    for sel in (".fglyph--y", ".fglyph--v"):
+        assert page.locator(sel).evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
+        assert abs(_rotation_deg(page, sel)) > 5, "should be mid-turn"
     page.wait_for_timeout(1300)
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-
-    # leaving: no transition, so it snaps home with no animated reverse spin
-    page.mouse.move(400, 300)
+    for sel in (".fglyph--y", ".fglyph--v"):
+        assert abs(_rotation_deg(page, sel)) < 0.5
+    page.mouse.move(400, 60)
     page.wait_for_timeout(60)
-    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
+    assert page.locator(".fglyph--y").evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
 
 
-def test_footer_mark_does_not_restart_when_the_pointer_moves_within_it(open_site):
-    """F1 regression: the turn used to restart on the tiniest re-enter when the
-    pointer sat near the mark's edge — :hover was on the rotating <svg>, whose
-    box sweeps out from under a parked cursor. With the fixed .footmark-spin
-    wrapper as the target (and the <svg> pointer-events:none), nudging the
-    pointer around inside the mark leaves the settled turn alone."""
-    page, _ = open_site()
-    wrap = page.locator(".foot .footmark-spin")
-    wrap.scroll_into_view_if_needed()
-    box = wrap.bounding_box()
-    wrap.hover()
-    page.wait_for_timeout(1600)                     # let the one turn finish
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-
-    # walk the pointer around inside the box, including hard into a corner where
-    # the old rotating hit-area flickered worst
-    for fx, fy in [(0.5, 0.5), (0.9, 0.1), (0.1, 0.9), (0.95, 0.95), (0.5, 0.5)]:
-        page.mouse.move(box["x"] + box["width"] * fx, box["y"] + box["height"] * fy)
-        page.wait_for_timeout(80)
-    # still settled, still armed — no restart, no reverse
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-    assert page.locator(".foot .footmark-spin .footmark").evaluate(
-        "el => getComputedStyle(el).transitionDuration"
-    ) == "1.2s"
-
-
-def test_footer_mark_does_not_turn_under_reduced_motion(open_site):
-    """F1: the reduced-motion block pins the hover turn to transform:none, so a
-    reduce reader gets no spin (without it the global transition-duration
-    override would just instant-flip it)."""
+def test_footer_line_marks_do_not_turn_under_reduced_motion(open_site):
     page, _ = open_site(reduced_motion=True)
-    wrap = page.locator(".foot .footmark-spin")
-    wrap.scroll_into_view_if_needed()
-    wrap.hover()
+    _uncover_footer(page)
+    page.locator(".foot__move").hover()
     page.wait_for_timeout(300)
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
+    assert abs(_rotation_deg(page, ".fglyph--y")) < 0.5
+
+
+def test_footer_line_link_reads_as_words_not_glyphs(open_site):
+    """The styled line is aria-hidden (an SVG Y would leave "our mo e."); the
+    link's name comes from its .vh span, in both languages."""
+    page, _ = open_site()
+    _uncover_footer(page)
+    snap = page.locator(".foot__move").aria_snapshot()
+    assert "Your move." in snap and "our mo" not in snap.replace("Your move", "")
+    page.evaluate("document.querySelector('.langswitch').click()")
+    page.wait_for_timeout(300)
+    assert "Ваш ход." in page.locator(".foot__move").aria_snapshot()
 
 
 def test_collage_bar_mark_turns_once_on_hover(open_site):
     """F1 (2026-09-07): the #collage view bar carries the same one-turn-on-hover
-    Vitnyr mark as the footer, via the same .footmark-spin wrapper. Open the
+    Vitnyr mark the footer used to, via the same .footmark-spin wrapper. Open the
     view, hover the bar mark: one clockwise turn on --t-turn (1.2s), settling
     back on its own geometry, transition armed on the hover state only."""
     page, _ = open_site(hash="#collage")

@@ -215,7 +215,7 @@ html[data-lang="en"] [data-l="ru"],
 html[data-lang="ru"] [data-l="en"] { display: none !important; }
 
 /* ---------- shell ---------- */
-.hero, .sec, .foot, .masthead {
+.hero, .sec, .foot__in, .masthead {
   max-width: var(--maxw);
   margin-inline: auto;
   padding-inline: var(--gut);
@@ -2496,21 +2496,172 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .dock:active .dock__arrow svg, .dock:focus-visible .dock__arrow svg { color: var(--fg); transform: translateX(6px); }
 .dock:focus-visible { outline-offset: -4px; }
 
-/* ---------- footer ---------- */
+/* ---------- footer: "Your move" (2026-09-26) ----------
+   See the comment above <footer> in index.html for the why.
+
+   The flipped pair. The footer is the one place the page swaps theme: under
+   a cream page it grounds in charcoal, under a charcoal page in cream. These
+   are the two pairs' own values — copied from :root and the charcoal block
+   above, not new colours; keep them in step if either pair ever moves.
+   --ink-target / --ink-specimen / --cursor-active-ink are re-declared, not
+   inherited, because a custom property that says var(--green) resolves where
+   it is declared (:root), so it would carry the page's green, not the
+   footer's. */
+html:not([data-theme="dark"]) .foot {
+  --bg:     #171310;
+  --green:  #4C7A52;
+  --fg:     #F2EFE8;
+  --fg2:    #A8ABA9;
+  --rule:   rgba(242,239,232,0.235);
+  --amber-text: var(--amber);
+  --green-text: #578C5E;
+  --ink-target: var(--green);
+  --cursor-active-ink: var(--ink-target);
+}
+html[data-theme="dark"] .foot {
+  --bg:     #EFEBE3;
+  --green:  #3D6543;
+  --fg:     #1D2224;
+  --fg2:    #5A5F60;
+  --rule:   rgba(29,34,36,0.33);
+  --amber-text: #8C631D;
+  --green-text: var(--green);
+  --ink-target: var(--green);
+  --cursor-active-ink: var(--ink-specimen);
+}
 .foot {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 20px; flex-wrap: wrap;
-  padding-block: clamp(28px, 4vw, 44px);
+  background: var(--bg);
+  color: var(--fg);
+}
+.foot__in {
+  display: flex; flex-direction: column; justify-content: space-between;
+  gap: clamp(36px, 6vw, 72px);
+  padding-block: clamp(56px, 9vw, 120px) clamp(24px, 3vw, 36px);
+}
+
+/* The curtain. <main> gets its own ground and its own layer (z-index 1) and
+   the footer is pinned to the viewport's bottom edge underneath it (z-index
+   0), so the page's end lifts off and uncovers it. Not z-index -1 on the
+   footer alone: that sinks it below #app's box for hit-testing, and nothing
+   in it could be clicked. main holds no fixed/sticky descendants, so its new
+   stacking context traps nothing under the masthead. All
+   of it is position + stacking — no transform, so nothing to reconcile with
+   the reveal system and nothing reduced motion needs to turn off (it is just
+   scroll). JS-only: without JS #collage is a plain block after the footer and
+   a pinned footer would paint over it. The footer has to fit the viewport or
+   a sticky bottom edge uncovers it bottom-first, so short screens (landscape
+   phones) fall back to a normal in-flow footer. */
+html.js main { position: relative; z-index: 1; background: var(--bg); }
+html.js .foot {
+  position: sticky; bottom: 0; z-index: 0;
+  min-height: min(86svh, 780px);
+  display: flex; flex-direction: column;
+}
+html.js .foot__in { flex: 1; width: 100%; }
+@media (max-height: 560px) {
+  html.js .foot { position: relative; z-index: auto; min-height: 0; }
+}
+/* Zero-height marker where the footer's flow position starts. The footer
+   itself is always "on screen" while pinned, so initDock() and the focus
+   handler read this edge instead. */
+.foot-edge { height: 0; }
+
+/* The line. Bigger than the hero title on purpose: the page's last word.
+   The whole line is the link; its rest-state hairline is --rule so it reads
+   as a link without hover (P9's precedent), brightening to --ink-target. */
+.foot__move {
+  display: inline-block; align-self: flex-start;
+  position: relative;
+}
+.foot__move::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 2px; background: var(--rule);
+  transition: background var(--t) var(--e);
+}
+.foot__move:hover::after, .foot__move:focus-visible::after { background: var(--ink-target); }
+.foot__line {
+  display: block;
+  font-family: var(--serif); font-weight: 500;
+  font-size: clamp(44px, 16vw, 212px);   /* ~5.2em wide: 16vw keeps it inside the gutters down to 320px */
+  line-height: .95; letter-spacing: -.035em;
+  /* On the line, not the link: an em on .foot__move is the 17px body size.
+     Clears Lora's deep Cyrillic д descender, which the hairline cut through. */
+  padding-bottom: .14em;
+  white-space: nowrap;
+}
+/* The mark set into the words (Igor, 2026-09-26). EN: the Y is the whole
+   Vitnyr mark, the v is its amber chevron; RU: the mark sits at the end.
+   Sizes are in em off Lora 500's metrics — the Y's ink to cap height
+   (~.7em), the chevron to x-height — and the EN viewBoxes are cropped to
+   the ink (the arms' round caps reach 16.5 — the crop has to include
+   them), so the box's foot is the ink's foot and sits on the baseline with
+   no nudge. Side margins are the only spacing (layout never takes the
+   transform channel; the turn below owns it). Never under the 32px
+   two-colour minimum: the Y's ink is ~.7em of a >=44px line. */
+.fglyph { display: inline-block; overflow: visible; }
+.fglyph--y { height: .7em; width: .7em; margin-inline: -.01em -.05em; }
+.fglyph--v { height: .4em; width: calc(.4em * 68 / 41); margin-inline: 0 .02em; }
+/* RU's closing mark: same crop and cap height as the EN Y, so it scales
+   with the letters instead of sitting at a fixed-ish 48px (Igor: too small
+   on a wide screen). */
+.fglyph--mark { height: .7em; width: .7em; margin-left: .16em; }
+
+/* F1's single turn, carried over: 0 -> 360 on the hover state only, so
+   leaving snaps home with no reverse spin. The hover target is the link,
+   which never transforms, so :hover can't flicker as the glyphs sweep. */
+.fglyph { transform: rotate(0deg); }
+.foot__move:hover .fglyph, .foot__move:focus-visible .fglyph {
+  transform: rotate(360deg);
+  transition: transform var(--t-turn) var(--e);
+  will-change: transform;
+}
+
+/* The three readings, set like the notes under a chess diagram. */
+.foot__notes {
+  display: grid; grid-template-columns: 1fr;
+  gap: 18px;
+  margin: 0; padding-top: 22px;
   border-top: 1px solid var(--rule);
 }
-.foot__id { display: flex; align-items: center; gap: clamp(14px, 2vw, 20px); }
-/* 48px box = 32.2px of actual ink, which is the 32px two-colour minimum.
-   The old 32px box was only 21px of mark — inside the band where amber and
-   green antialias into one indistinct colour. */
+@media (min-width: 720px) {
+  .foot__notes { grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 4vw, 56px); }
+}
+.foot__note { display: grid; gap: 4px; }
+.foot__notes dt {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--fg2);
+}
+.foot__notes dd {
+  margin: 0;
+  font-family: var(--serif); font-style: italic; font-weight: 500;
+  font-size: clamp(19px, 1.8vw, 24px); line-height: 1.3;
+}
+.foot__nota { font-family: var(--mono); font-style: normal; font-size: .8em; color: var(--fg2); }
+
+.foot__base {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px 20px; flex-wrap: wrap;
+}
+.foot__print {
+  display: flex; flex-wrap: wrap; gap: 4px .5em;
+  font-family: var(--sans); font-size: 12px; letter-spacing: .06em; color: var(--fg2);
+}
+/* Place + clock is one unit. Joined by a dot on a wide line; on a phone it
+   takes its own line instead, so nothing wraps into a stranded "· © 2026". */
+.foot__place::before { content: "·"; margin-right: .5em; }
+@media (max-width: 719px) {
+  .foot__place { flex-basis: 100%; }
+  .foot__place::before { content: none; }
+}
+.foot__time { font-variant-numeric: tabular-nums; }
+/* .foot__top reuses .tool wholesale (P15) — no rules of its own. */
+
+/* The mark shape (#collage view bar). */
 .footmark { width: 48px; height: 48px; flex: none; }
 /* F1 (2026-09-07): hover spins the Vitnyr mark one full clockwise turn and
    stops. Runs wherever the mark carries the .footmark-spin wrapper — the
-   footer and the #collage view bar both do. 360deg lands it back on its own
+   the #collage view bar does (the footer's marks turn on .foot__move hover —
+   see .fglyph). 360deg lands it back on its own
    geometry exactly, so the mark is never left off-register. --e (an ease-out)
    is fine here even though it's banned on the scrollcue loop: this doesn't
    return to its start value, it goes 0 -> 360 once, so it accelerates out of
@@ -2534,11 +2685,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   transition: transform var(--t-turn) var(--e);
   will-change: transform;
 }
-.foot p { font-family: var(--sans); font-size: 12px; letter-spacing: .06em; color: var(--fg2); }
-/* P15: .foot__top reuses .tool wholesale (same type, same hover-draws-a-
-   line language as Cream/RU in the masthead) rather than inventing a
-   footer-only control for the one thing the old footer was missing — a
-   way back up. No rules of its own needed. */
+
 
 /* ============================================================
    Pointer — one dot that rides the pointer (phase 4, reworked C14)
@@ -2583,6 +2730,13 @@ html.has-cursor.cursor-out .cursor { opacity: 0; }
 html.has-cursor.cursor-active .cursor__dot { background: var(--cursor-active-ink); }
 html.has-cursor.cursor-active .cursor.is-specimen .cursor__dot { background: var(--ink-specimen); }
 html.has-cursor.cursor-active .cursor.is-target .cursor__dot { background: var(--cursor-active-ink); }
+/* Over the footer the ground is the other pair, so the dot flips with it:
+   the page's --bg is the footer's ink. Active over the footer's controls it
+   takes specimen amber, the one accent that carries on both grounds (C15's
+   reason for amber on cream; it clears 4.9:1 on charcoal). main.js sets
+   .on-foot. */
+html.has-cursor .cursor.on-foot .cursor__dot { background: var(--bg); }
+html.has-cursor.cursor-active .cursor.on-foot .cursor__dot { background: var(--ink-specimen); }
 
 /* C16 (2026-09-07): the magnetic pull is back on non-text controls only
    (initMagnetic in main.js — the .tool switches / icon-nav, .view__back).
@@ -2641,7 +2795,9 @@ html.js .collage .reveal.is-in .collage__slot {
   /* F1: no hover turn on either Vitnyr mark (footer + #collage bar). Without
      this the global transition-duration override below just makes it
      instant-flip on hover. */
-  .footmark-spin:hover .footmark { transform: none !important; will-change: auto !important; }
+  .footmark-spin:hover .footmark,
+  .foot__move:hover .fglyph,
+  .foot__move:focus-visible .fglyph { transform: none !important; will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
      which would clip the stroke away rather than show it whole. */
