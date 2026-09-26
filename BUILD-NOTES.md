@@ -5517,7 +5517,12 @@ one 12px line, "Back to top"). This makes it the page's last word.
   so leaving snaps back, and the non-transforming link is the hover target.
   The styled line is `aria-hidden` and the link's name comes from a `.vh`
   span, because the glyph-as-letter version read as "Y our" (caught by a
-  test). F1's three footer tests became three `.fglyph` tests (turn, reduced
+  test). The RU closing mark uses the same ink crop at .7em, so it scales
+  with the letters (Igor: the old `max(48px, .46em)` full-box mark read too
+  small on a wide screen). The hairline's descender clearance sits on
+  `.foot__line`, not the link: an em on `.foot__move` is the 17px body size,
+  so the first ".3em" was about 5px, and the line cut through «д».
+  F1's three footer tests became three `.fglyph` tests (turn, reduced
   motion, accessible name in both languages). "Back to top" stays.
 - **Curtain.** `html.js main` gets `position: relative; z-index: 1` and its
   own `--bg`. The footer is `position: sticky; bottom: 0; z-index: 0`
