@@ -1125,12 +1125,19 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      Unnumbered on purpose: it sits between §04 and §05 as a bridge into the
      ask, not a sixth argument, so the page keeps its 01–05 count.
 
-     PLACEHOLDER — every quote below is a visibly flagged stand-in, not a
-     testimonial. "Real material only" applies here more than anywhere: a
-     real student's own words, their name (or first name + initial) and
-     their permission, or the item doesn't ship. Weighted like the page:
-     three English, one chess, one climbing. Don't merge this to main or
-     republish the artifact while any "Placeholder" attribution is left.
+     REAL, from Igor's LinkedIn recommendations (screenshots he supplied,
+     2026-09-26). Each quote is a verbatim excerpt — "…" marks a cut, nothing
+     is reworded; only straight apostrophes became typographic ones. Names
+     and job titles exactly as LinkedIn shows them. Two recommendations are
+     written in Russian and are shown only on the RU page (data-l="ru" on the
+     whole item) rather than translated — putting words in a student's mouth
+     in a language they didn't write in is the fabrication this site avoids.
+     Not used: Maksim Kirienko (LinkedIn lists him as a teammate, not a
+     client) and Viktor Chernetsov (never names Igor — "my English teacher",
+     "their teaching"). No chess or climbing recommendations exist yet.
+     LinkedIn has no per-recommendation permalink, so there is one link, to
+     the recommendations list, not one per quote (logged-out visitors meet
+     LinkedIn's sign-in wall there — a LinkedIn limit, not ours).
 
      Motion (initVoices() in main.js): the list is cloned once for a seamless
      loop and the track drifts left; scrolling speeds it up and steers it
@@ -1157,60 +1164,109 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   <div class="voices__band reveal">
     <div class="voices__track" id="voices-track">
       <ul class="voices__list">
-        <!-- PLACEHOLDER — English #1 -->
         <li class="voice">
           <span class="voice__glyph" aria-hidden="true">“</span>
-          <blockquote class="voice__q">
-            <p data-l="en">A real student’s words go here: where the English froze before, and what it does now.</p>
-            <p data-l="ru">Здесь будут слова реального ученика: где английский раньше замирал и что изменилось.</p>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>He helped me progress from a basic A1–A2 level to a confident B2+ level. … each lesson follows a clear, well-structured plan.</p>
           </blockquote>
-          <p class="voice__who"><span data-en="Placeholder · English" data-ru="Заглушка · Английский">Placeholder · English</span></p>
+          <p class="voice__who">
+            <span class="voice__name">Artem Kirbal</span>
+            <span class="voice__role">QA Automation Engineer</span>
+          </p>
         </li>
-        <!-- PLACEHOLDER — chess -->
         <li class="voice">
           <span class="voice__glyph" aria-hidden="true">“</span>
-          <blockquote class="voice__q">
-            <p data-l="en">A chess student’s own words: the rating before, the pattern that kept costing games, the rating after.</p>
-            <p data-l="ru">Слова шахматиста: рейтинг до, паттерн, который стоил партий, рейтинг после.</p>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>Usually it went like this: “Oh, I understand everything now, I can move on.” But just one or two weeks later, the understanding would disappear. Igor, however, has a unique teaching approach.</p>
           </blockquote>
-          <p class="voice__who"><span data-en="Placeholder · Chess" data-ru="Заглушка · Шахматы">Placeholder · Chess</span></p>
+          <p class="voice__who">
+            <span class="voice__name">Vitalii Honcharenko</span>
+            <span class="voice__role">Frontend Engineer</span>
+          </p>
         </li>
-        <!-- PLACEHOLDER — English #2 -->
-        <li class="voice">
+        <li class="voice" data-l="ru">
           <span class="voice__glyph" aria-hidden="true">“</span>
-          <blockquote class="voice__q">
-            <p data-l="en">Two sentences from a past student about speaking under pressure: the call, the interview, the meeting.</p>
-            <p data-l="ru">Два предложения от бывшего ученика о речи под давлением: созвон, собеседование, встреча.</p>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>С Игорем я обучаюсь Английскому вот уже полгода и (!) за это время я стала более уверенно разговаривать и понимать правила.</p>
           </blockquote>
-          <p class="voice__who"><span data-en="Placeholder · English" data-ru="Заглушка · Английский">Placeholder · English</span></p>
+          <p class="voice__who">
+            <span class="voice__name">Milena Khabibulina</span>
+            <span class="voice__role">IT and Digital recruiter</span>
+          </p>
         </li>
-        <!-- PLACEHOLDER — climbing -->
         <li class="voice">
           <span class="voice__glyph" aria-hidden="true">“</span>
-          <blockquote class="voice__q">
-            <p data-l="en">A climber’s own words: the grade they were stuck on, and what the sessions changed.</p>
-            <p data-l="ru">Слова скалолаза: на какой категории он застрял и что изменили тренировки.</p>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>Before, I was kinda fumbling through conversations, but now I can chat with ease and even get all the slang without batting an eye. We’ve even done a bunch of mock interviews, which was super clutch for my confidence.</p>
           </blockquote>
-          <p class="voice__who"><span data-en="Placeholder · Climbing" data-ru="Заглушка · Скалолазание">Placeholder · Climbing</span></p>
+          <p class="voice__who">
+            <span class="voice__name">Shokhrukh Yokubov</span>
+            <span class="voice__role">Cloud Solutions Architect</span>
+          </p>
         </li>
-        <!-- PLACEHOLDER — English #3 -->
         <li class="voice">
           <span class="voice__glyph" aria-hidden="true">“</span>
-          <blockquote class="voice__q">
-            <p data-l="en">A student’s plateau, in their own words, and the moment it finally moved.</p>
-            <p data-l="ru">Плато ученика его же словами и момент, когда всё наконец сдвинулось.</p>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>At the beginning, we talked about my goals, and since then he picks materials just for my needs. Need to prepare for a job interview? No problem.</p>
           </blockquote>
-          <p class="voice__who"><span data-en="Placeholder · English" data-ru="Заглушка · Английский">Placeholder · English</span></p>
+          <p class="voice__who">
+            <span class="voice__name">Hanna Sycheva</span>
+            <span class="voice__role">Software Engineer</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>All of our lessons are conducted entirely in English, which really helps build confidence and improves communication naturally.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Kseniya Solovei</span>
+            <span class="voice__role">QA Engineer</span>
+          </p>
+        </li>
+        <li class="voice" data-l="ru">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>…быстро почувствовал прогресс в своем разговорном английском. … основная проблема для меня была как мне казалось нелогичность английского языка, но он смог все грамотно объяснить</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Дмитрий Лубганс</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>I tried different online schools but quickly gave up on them, because they were boring. … With Igor, learning English won’t be boring, maximum practice without fluff</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Andrei Veselov</span>
+            <span class="voice__role">Senior Full-stack Developer</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>The atmosphere is always friendly and relaxed, and our lessons feel more like an interesting conversation than a typical English class.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Stas Babitsky</span>
+            <span class="voice__role">Full Stack Engineer</span>
+          </p>
         </li>
       </ul>
     </div>
   </div>
-  <div class="voices__foot" hidden>
-    <p class="voices__hint" data-en="Hover to hold · scroll to steer" data-ru="Наведите, чтобы остановить · прокрутка задаёт направление">Hover to hold · scroll to steer</p>
-    <button type="button" class="voices__toggle" aria-pressed="false" aria-controls="voices-track">
-      <span class="voices__toggle-pause" data-en="Pause" data-ru="Пауза">Pause</span>
-      <span class="voices__toggle-play" data-en="Play" data-ru="Пуск" hidden>Play</span>
-    </button>
+  <div class="voices__foot">
+    <p class="voices__hint" data-en="Hover to hold · scroll to steer" data-ru="Наведите, чтобы остановить · прокрутка задаёт направление" hidden>Hover to hold · scroll to steer</p>
+    <div class="voices__actions">
+      <a class="voices__more" href="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/" target="_blank" rel="noopener">
+        <span data-en="Read them in full on LinkedIn" data-ru="Полные отзывы — в LinkedIn">Read them in full on LinkedIn</span>
+      </a>
+      <button type="button" class="voices__toggle" aria-pressed="false" aria-controls="voices-track" hidden>
+        <span class="voices__toggle-pause" data-en="Pause" data-ru="Пауза">Pause</span>
+        <span class="voices__toggle-play" data-en="Play" data-ru="Пуск" hidden>Play</span>
+      </button>
+    </div>
   </div>
 </section>
 

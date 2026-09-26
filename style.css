@@ -2228,18 +2228,22 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .voice__q { margin: 0; }
 .voice__q p {
   font-family: var(--serif); font-style: italic; font-weight: 500;
-  font-size: clamp(23px, 2.35vw, 34px); line-height: 1.24;
+  font-size: clamp(21px, 2vw, 29px); line-height: 1.26;
   letter-spacing: -.012em;
   text-wrap: pretty;
 }
 .voice__who {
-  display: flex; align-items: center; gap: 12px;
-  margin-top: clamp(20px, 2.2vw, 30px);
-  font-family: var(--mono); font-size: 12px; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--fg2);
+  display: grid; grid-template-columns: 28px auto; column-gap: 12px; row-gap: 2px;
+  align-items: baseline; justify-content: start;
+  margin-top: auto; padding-top: clamp(20px, 2.2vw, 30px);
 }
 .voice__who::before {
-  content: ""; flex: none; width: 28px; height: 1px; background: var(--rule);
+  content: ""; grid-row: 1; align-self: center; height: 1px; background: var(--rule);
+}
+.voice__name { font-size: 15px; font-weight: 500; }
+.voice__role {
+  grid-column: 2;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--fg2);
 }
 
 /* marquee state */
@@ -2253,7 +2257,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 }
 .voices__band.is-marquee .voice {
   flex: none;
-  width: clamp(290px, 31vw, 500px);
+  width: clamp(300px, 32vw, 520px);
   padding-inline: clamp(28px, 3.2vw, 56px);
   border-left: 1px solid var(--rule);
 }
@@ -2271,24 +2275,29 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; margin-top: 18px;
 }
-.voices__foot[hidden] { display: none; }
+.voices__actions { display: flex; align-items: center; gap: clamp(20px, 3vw, 40px); margin-left: auto; }
+.voices__hint[hidden], .voices__toggle[hidden] { display: none; }
 .voices__hint {
   font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--fg2);
 }
-.voices__toggle {
+.voices__more, .voices__toggle {
   appearance: none; background: none; border: 0; margin: 0; padding: 6px 0;
   font: 500 12px/1.35 var(--sans); letter-spacing: .1em; text-transform: uppercase;
   color: var(--fg); cursor: pointer;
   position: relative;
 }
-.voices__toggle::after {
+.voices__more::after, .voices__toggle::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px;
   background: var(--fg); transform: scaleX(0); transform-origin: left;
   transition: transform var(--t) var(--e);
 }
+.voices__more:hover::after, .voices__more:focus-visible::after,
 .voices__toggle:hover::after, .voices__toggle:focus-visible::after { transform: scaleX(1); }
-@media (pointer: coarse) { .voices__toggle { padding-block: 13px; } }
-@media (max-width: 602px), (hover: none) { .voices__hint { display: none; } .voices__foot { justify-content: flex-end; } }
+/* The link's underline rests drawn at a third of its width, so it reads as a
+   link before any hover — the pause control's doesn't, since it's a button. */
+.voices__more::after { transform: scaleX(.33); }
+@media (pointer: coarse) { .voices__more, .voices__toggle { padding-block: 13px; } }
+@media (max-width: 602px), (hover: none) { .voices__hint { display: none !important; } }
 
 /* ---------- contact ---------- */
 .sec--contact { padding-bottom: clamp(60px, 8vh, 110px); }

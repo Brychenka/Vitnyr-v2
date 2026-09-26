@@ -1220,8 +1220,8 @@
     var track = band && band.querySelector('.voices__track');
     var list = track && track.querySelector('.voices__list');
     if (!list) return;
-    var foot = document.querySelector('.voices__foot');
-    var toggle = foot && foot.querySelector('.voices__toggle');
+    var toggle = document.querySelector('.voices__toggle');
+    var hint = document.querySelector('.voices__hint');
 
     var clone = list.cloneNode(true);
     clone.classList.add('is-clone');
@@ -1229,7 +1229,8 @@
     clone.inert = true;
     track.appendChild(clone);
     band.classList.add('is-marquee');
-    if (foot) foot.hidden = false;
+    if (toggle) toggle.hidden = false;
+    if (hint) hint.hidden = false;
 
     var BASE = 38;          // px per second at rest
     var loopW = 0, x = 0, dir = -1, speed = 1;
