@@ -5555,4 +5555,4 @@ as a reader does, and rest the pointer off the new line. The first draft's
 checks, hence the 16vw sizing. Two new tests cover the curtain's hit-testing
 and the keyboard fix. Verified in both themes, both languages, at 375 and
 1280, with and without reduced motion, with no console errors and no overflow.
-**Not merged or republished** — built on the branch for Igor to look at first.
+**Merged to `main` 2026-09-27; not republished** (Igor: "don't republish"), so the live artifact still shows the old footer.
