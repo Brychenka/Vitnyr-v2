@@ -1419,8 +1419,8 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
      charcoal one) — the same two pairs, swapped, not a third colour. See
      style.css "footer".
 
-     The full stop is the Vitnyr mark, inside the same .footmark-spin wrapper
-     F1 made the hover target; hovering anywhere on the line turns it once.
+     The line carries the wordmark's colours in its own letters (V amber, Y
+     amber over green) instead of a separate mark — Igor, 2026-09-26.
      RU copy is a model's first pass, flagged per Standing Order 9. -->
 <div class="foot-edge" aria-hidden="true"></div>
 <footer class="foot">
@@ -1429,11 +1429,15 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
        href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
        data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
        data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D0%B5.">
-      <span class="foot__line"><span data-en="Your move" data-ru="Ваш ход">Your move</span><span class="footmark-spin" aria-hidden="true"><svg class="footmark" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-          <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
-          <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
-        </svg></span></span>
-      <span class="vh" data-en="— message Igor on Telegram" data-ru="— написать Игорю в Telegram">— message Igor on Telegram</span>
+      <!-- The wordmark's own colouring, set into the line: V in amber, Y split
+           like the mark (amber arms, green stem). .duo lays an amber copy of
+           the glyph over the green one and clips it to the arms. The styled line
+           is aria-hidden (an inline-block Y reads as "Y our" otherwise); the
+           link's name comes from the .vh span below. RU has no Y, so only
+           its В (the Cyrillic V) takes amber. -->
+      <span class="foot__line" data-l="en" aria-hidden="true"><span class="duo">Y<span class="duo__top" aria-hidden="true">Y</span></span>our mo<span class="amb">v</span>e.</span>
+      <span class="foot__line" data-l="ru" aria-hidden="true"><span class="amb">В</span>аш ход.</span>
+      <span class="vh" data-en="Your move. Message Igor on Telegram" data-ru="Ваш ход. Написать Игорю в Telegram">Your move. Message Igor on Telegram</span>
     </a>
 
     <!-- The annotations: the one line read three ways, set like the notes
@@ -1449,7 +1453,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       </div>
       <div class="foot__note">
         <dt data-en="Climbing" data-ru="Скалолазание">Climbing</dt>
-        <dd data-en="The next hold." data-ru="Следующий зацеп.">The next hold.</dd>
+        <dd data-en="The next grade." data-ru="Следующая категория.">The next grade.</dd>
       </div>
     </dl>
 

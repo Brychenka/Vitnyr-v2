@@ -670,84 +670,34 @@ def _rotation_deg(page, selector):
     )
 
 
-def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
-    """F1 (2026-09-07): hovering the footer wordmark spins it one full clockwise
-    turn (transition on the hover state only, so leave snaps 360->0 with no
-    reverse). The turn runs on --t-turn (1.2s) and the one brand ease. The
-    hover target is the .footmark-spin wrapper, not the rotating <svg>."""
+def test_footer_line_carries_the_wordmark_colours_in_its_letters(open_site):
+    """2026-09-26: the footer's Vitnyr mark (and F1's hover turn on it) gave
+    way to the line's own letters in the wordmark's colours — V amber, Y amber
+    over green. F1's turn lives on in the #collage bar (next test). The amber
+    styled line is aria-hidden (the inline-block Y would read "Y our"); the
+    link's name comes from a hidden text span."""
     page, _ = open_site()
-    wrap = page.locator(".foot .footmark-spin")
-    mark = page.locator(".foot .footmark-spin .footmark")
     _uncover_footer(page)
-    # rest the pointer on the page above the footer, off the "Your move" link
-    # (hovering anywhere on that line turns the mark too)
-    page.mouse.move(400, 60)
-    page.wait_for_timeout(150)
-
-    # at rest: no rotation, and no transition armed
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
-
-    wrap.hover()
-    page.wait_for_timeout(250)
-    # mid-turn: the transition is armed on transform for 1.2s and the mark has
-    # visibly rotated off its rest angle
-    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
-    assert "transform" in mark.evaluate("el => getComputedStyle(el).transitionProperty")
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) > 5, "should be mid-turn"
-
-    # after the turn: back on its own geometry (360deg == rest)
-    page.wait_for_timeout(1300)
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-
-    # leaving: no transition, so it snaps home with no animated reverse spin
-    page.mouse.move(400, 60)
-    page.wait_for_timeout(60)
-    assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-
-
-def test_footer_mark_does_not_restart_when_the_pointer_moves_within_it(open_site):
-    """F1 regression: the turn used to restart on the tiniest re-enter when the
-    pointer sat near the mark's edge — :hover was on the rotating <svg>, whose
-    box sweeps out from under a parked cursor. With the fixed .footmark-spin
-    wrapper as the target (and the <svg> pointer-events:none), nudging the
-    pointer around inside the mark leaves the settled turn alone."""
-    page, _ = open_site()
-    wrap = page.locator(".foot .footmark-spin")
-    _uncover_footer(page)
-    box = wrap.bounding_box()
-    wrap.hover()
-    page.wait_for_timeout(1600)                     # let the one turn finish
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-
-    # walk the pointer around inside the box, including hard into a corner where
-    # the old rotating hit-area flickered worst
-    for fx, fy in [(0.5, 0.5), (0.9, 0.1), (0.1, 0.9), (0.95, 0.95), (0.5, 0.5)]:
-        page.mouse.move(box["x"] + box["width"] * fx, box["y"] + box["height"] * fy)
-        page.wait_for_timeout(80)
-    # still settled, still armed — no restart, no reverse
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
-    assert page.locator(".foot .footmark-spin .footmark").evaluate(
-        "el => getComputedStyle(el).transitionDuration"
-    ) == "1.2s"
-
-
-def test_footer_mark_does_not_turn_under_reduced_motion(open_site):
-    """F1: the reduced-motion block pins the hover turn to transform:none, so a
-    reduce reader gets no spin (without it the global transition-duration
-    override would just instant-flip it)."""
-    page, _ = open_site(reduced_motion=True)
-    wrap = page.locator(".foot .footmark-spin")
-    _uncover_footer(page)
-    wrap.hover()
-    page.wait_for_timeout(300)
-    assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
+    assert page.locator(".foot .footmark").count() == 0
+    colour = lambda sel: page.locator(sel).evaluate("el => getComputedStyle(el).color")
+    amber = page.evaluate(
+        "getComputedStyle(document.querySelector('.foot')).getPropertyValue('--amber').trim()"
+    )
+    assert amber.lower() == "#b07c24"
+    assert colour('.foot__line[data-l="en"] .amb') == "rgb(176, 124, 36)"
+    assert colour(".duo__top") == "rgb(176, 124, 36)"
+    assert colour(".duo") != colour(".duo__top")          # the stem is green
+    name = page.locator(".foot__move").evaluate(
+        "el => el.querySelector('.foot__line[data-l=en]').innerText"
+    )
+    assert name.replace("\n", "") in ("YYour move.", "Your move.")
+    snap = page.locator(".foot__move").aria_snapshot()
+    assert "Your move." in snap and "Y our" not in snap and "YYour" not in snap
 
 
 def test_collage_bar_mark_turns_once_on_hover(open_site):
     """F1 (2026-09-07): the #collage view bar carries the same one-turn-on-hover
-    Vitnyr mark as the footer, via the same .footmark-spin wrapper. Open the
+    Vitnyr mark the footer used to, via the same .footmark-spin wrapper. Open the
     view, hover the bar mark: one clockwise turn on --t-turn (1.2s), settling
     back on its own geometry, transition armed on the hover state only."""
     page, _ = open_site(hash="#collage")

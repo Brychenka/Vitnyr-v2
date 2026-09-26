@@ -5498,17 +5498,25 @@ one 12px line, "Back to top"). This makes it the page's last word.
   chess, your turn to speak in English, and the next move on the route in
   climbing. Three annotations under it make that explicit, set like the notes
   under a chess diagram, English first (Weighted): *Your turn to speak.* /
-  *1… The board is waiting.* / *The next hold.* RU: «Ваш ход» (ход also
-  works for a climbing move), «Теперь говорите вы.» / «Доска ждёт.» /
-  «Следующий зацеп.» — a model's first pass, **flagged for Igor per Standing
+  *1… The board is waiting.* / *The next grade.* (Igor's change from "The
+  next hold"). RU: «Ваш ход» (ход also works for a climbing move),
+  «Теперь говорите вы.» / «Доска ждёт.» / «Следующая категория.» — a model's first pass, **flagged for Igor per Standing
   Order 9**.
 - **The line is a link to Telegram,** with the same offer as the §05 CTA.
   `updateCta()` writes its href too, so a §04 pick carries through. This is a
   deliberate, narrow qualification of P15's "don't repeat the channels": it's
   one line, not a second contact list.
-- **The full stop is the Vitnyr mark,** in F1's `.footmark-spin` wrapper.
-  Hovering anywhere on the line turns it once. The old separate footer mark
-  (the `.footmark-top` #top link) is gone; "Back to top" stays.
+- **The wordmark's colours, in the line's own letters** (Igor's revision; the
+  first draft used the Vitnyr mark as the full stop). V is amber and Y is
+  split like the mark, with amber arms over a green stem: `.duo` lays an
+  amber copy of the glyph over the green one and clips it with `clip-path`,
+  with negative side insets because the serifs overhang the advance box. RU
+  «Ваш ход» has no Y, so only its В (the Cyrillic V) is amber. Display size
+  only, so the small-accent-text rule isn't touched. The styled line is
+  `aria-hidden` because the inline-block Y read as "Y our" (caught by a
+  test), so the link's name comes from a `.vh` span. The footer no longer
+  has a mark, so F1's three footer spin tests went and one colour/name test
+  replaced them. F1 lives on in the #collage bar. "Back to top" stays.
 - **Curtain.** `html.js main` gets `position: relative; z-index: 1` and its
   own `--bg`. The footer is `position: sticky; bottom: 0; z-index: 0`
   underneath it, so the end of the page lifts off and uncovers it. It's plain

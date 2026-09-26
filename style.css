@@ -2587,11 +2587,29 @@ html.js .foot__in { flex: 1; width: 100%; }
   line-height: .95; letter-spacing: -.035em;
   white-space: nowrap;
 }
-/* The full stop is the mark. Box never under 48px (= 32px of ink, the
-   two-colour minimum — see .footmark below); vertical-align, not a
-   transform, sits the mark's foot on the baseline. */
-.foot__line .footmark-spin { margin-left: .06em; vertical-align: -.08em; }
-.foot__line .footmark { width: max(48px, .46em); height: max(48px, .46em); }
+/* The wordmark's colouring in the line's own letters (Igor, 2026-09-26):
+   V in amber, Y split like the mark — amber arms, green stem. Display size
+   only (never under 44px), so the "no accent text under 24px" rule holds;
+   amber on cream is 3.07:1, over the 3:1 large-text floor.
+   .duo stacks an amber copy of the glyph on the green one and clips the copy
+   to the arms with clip-path — no gradient, no transform. inline-block on
+   both with the line's own line-height so the two glyphs land on one
+   baseline. --split is the fraction of the box below the arms' fork,
+   measured against Lora 500's Y. */
+.foot__line .amb { color: var(--amber); }
+.duo {
+  display: inline-block; position: relative;
+  color: var(--green);
+  --split: 49%;
+}
+.duo__top {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  color: var(--amber);
+  /* negative side/top insets: the Y's serifs overhang its advance box (the
+     line's negative tracking narrows it), and a flush clip left a green
+     sliver on the right arm. */
+  clip-path: inset(-.2em -.2em var(--split) -.2em);
+}
 
 /* The three readings, set like the notes under a chess diagram. */
 .foot__notes {
@@ -2633,11 +2651,12 @@ html.js .foot__in { flex: 1; width: 100%; }
 .foot__time { font-variant-numeric: tabular-nums; }
 /* .foot__top reuses .tool wholesale (P15) — no rules of its own. */
 
-/* The mark shape, shared by the footer line and the #collage view bar. */
+/* The mark shape (#collage view bar). */
 .footmark { width: 48px; height: 48px; flex: none; }
 /* F1 (2026-09-07): hover spins the Vitnyr mark one full clockwise turn and
    stops. Runs wherever the mark carries the .footmark-spin wrapper — the
-   footer and the #collage view bar both do. 360deg lands it back on its own
+   the #collage view bar does (the footer's mark became coloured letters,
+   2026-09-26). 360deg lands it back on its own
    geometry exactly, so the mark is never left off-register. --e (an ease-out)
    is fine here even though it's banned on the scrollcue loop: this doesn't
    return to its start value, it goes 0 -> 360 once, so it accelerates out of
@@ -2656,9 +2675,7 @@ html.js .foot__in { flex: 1; width: 100%; }
    pointer-events:none so its sweeping corners can't retrigger it either. */
 .footmark-spin { display: inline-flex; }
 .footmark-spin .footmark { transform: rotate(0deg); pointer-events: none; }
-.footmark-spin:hover .footmark,
-.foot__move:hover .footmark,
-.foot__move:focus-visible .footmark {
+.footmark-spin:hover .footmark {
   transform: rotate(360deg);
   transition: transform var(--t-turn) var(--e);
   will-change: transform;
@@ -2773,9 +2790,7 @@ html.js .collage .reveal.is-in .collage__slot {
   /* F1: no hover turn on either Vitnyr mark (footer + #collage bar). Without
      this the global transition-duration override below just makes it
      instant-flip on hover. */
-  .footmark-spin:hover .footmark,
-  .foot__move:hover .footmark,
-  .foot__move:focus-visible .footmark { transform: none !important; will-change: auto !important; }
+  .footmark-spin:hover .footmark { transform: none !important; will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
      which would clip the stroke away rather than show it whole. */
