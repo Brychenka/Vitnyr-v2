@@ -592,17 +592,66 @@ def test_magnetic_pull_absent_under_reduced_motion(open_site):
     assert tx == 0 and ty == 0
 
 
+def _uncover_footer(page):
+    """The footer is a curtain (2026-09-26): pinned beneath <main> at the
+    viewport's bottom edge, so it is geometrically "in view" the whole time and
+    scroll_into_view_if_needed() is a no-op that leaves it covered. A reader
+    reaches it by scrolling to the end — so do that."""
+    page.evaluate(
+        "window.__lenis ? window.__lenis.scrollTo(1e7, {immediate: true})"
+        " : window.scrollTo(0, 1e7)"
+    )
+    page.wait_for_timeout(300)
+
+
 def test_back_to_top_returns_from_the_footer_to_hero(open_site):
     """P15: the footer used to be a dead end after 7,500px of scroll — no
     way back up. Goes through the same in-page Lenis link wiring every
     other #-href on the page already uses, not a new mechanism."""
     page, _ = open_site()
     page.locator("#top").scroll_into_view_if_needed()  # no-op, just settles the page first
-    page.locator(".foot__top").scroll_into_view_if_needed()
-    page.wait_for_timeout(200)
+    _uncover_footer(page)
     assert page.evaluate("window.scrollY") > 4000
     page.locator(".foot__top").click()
     page.wait_for_function("window.scrollY < 50", timeout=3000)
+
+
+def test_footer_is_a_curtain_covered_by_main_until_the_end(open_site):
+    """2026-09-26: <main> lifts off a footer pinned beneath it. Mid-page the
+    footer's box is under the viewport but main is what a click hits; at the
+    end the footer is uncovered and its line is what a click hits."""
+    page, _ = open_site()
+    page.evaluate("window.__lenis.scrollTo(3000, {immediate: true})")
+    page.wait_for_timeout(300)
+    probe = """() => {
+        const y = innerHeight - 40;
+        const el = document.elementFromPoint(innerWidth / 2, y);
+        return el && el.closest('.foot') ? 'foot' : 'main';
+    }"""
+    assert page.evaluate(probe) == "main"
+    _uncover_footer(page)
+    assert page.evaluate(probe) == "foot"
+    line = page.locator(".foot__move").bounding_box()
+    hit = page.evaluate(
+        "([x, y]) => !!document.elementFromPoint(x, y).closest('.foot__move')",
+        [line["x"] + 40, line["y"] + line["height"] / 2],
+    )
+    assert hit, "the uncovered 'Your move' line should take the click"
+
+
+def test_tabbing_into_the_covered_footer_uncovers_it(open_site):
+    """The browser won't scroll to a focused link that is already inside the
+    viewport — and the pinned footer always is, just under <main>. initFoot()
+    scrolls to the end on focusin so a keyboard reader never focuses a link
+    they can't see."""
+    page, _ = open_site()
+    page.evaluate("window.__lenis.scrollTo(3000, {immediate: true})")
+    page.wait_for_timeout(300)
+    page.focus(".foot__move")
+    page.wait_for_timeout(300)
+    assert page.evaluate(
+        "Math.abs(scrollY - (document.documentElement.scrollHeight - innerHeight)) < 3"
+    )
 
 
 def _rotation_deg(page, selector):
@@ -629,8 +678,10 @@ def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
     page, _ = open_site()
     wrap = page.locator(".foot .footmark-spin")
     mark = page.locator(".foot .footmark-spin .footmark")
-    wrap.scroll_into_view_if_needed()
-    page.mouse.move(400, 300)
+    _uncover_footer(page)
+    # rest the pointer on the page above the footer, off the "Your move" link
+    # (hovering anywhere on that line turns the mark too)
+    page.mouse.move(400, 60)
     page.wait_for_timeout(150)
 
     # at rest: no rotation, and no transition armed
@@ -650,7 +701,7 @@ def test_footer_mark_turns_once_on_hover_and_snaps_back_on_leave(open_site):
     assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
 
     # leaving: no transition, so it snaps home with no animated reverse spin
-    page.mouse.move(400, 300)
+    page.mouse.move(400, 60)
     page.wait_for_timeout(60)
     assert mark.evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
     assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5
@@ -664,7 +715,7 @@ def test_footer_mark_does_not_restart_when_the_pointer_moves_within_it(open_site
     pointer around inside the mark leaves the settled turn alone."""
     page, _ = open_site()
     wrap = page.locator(".foot .footmark-spin")
-    wrap.scroll_into_view_if_needed()
+    _uncover_footer(page)
     box = wrap.bounding_box()
     wrap.hover()
     page.wait_for_timeout(1600)                     # let the one turn finish
@@ -688,7 +739,7 @@ def test_footer_mark_does_not_turn_under_reduced_motion(open_site):
     override would just instant-flip it)."""
     page, _ = open_site(reduced_motion=True)
     wrap = page.locator(".foot .footmark-spin")
-    wrap.scroll_into_view_if_needed()
+    _uncover_footer(page)
     wrap.hover()
     page.wait_for_timeout(300)
     assert abs(_rotation_deg(page, ".foot .footmark-spin .footmark")) < 0.5

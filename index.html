@@ -1402,44 +1402,67 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 </section>
 </main>
 
-<!-- P15 (2026-09-06): the footer used to be the mark and one 12px line — after
-     7,500px of scroll the page just stopped. A close, not a stop: a way back
-     to the top (the one navigational thing a page this long is missing) and
-     a year, so the last thing on the page reads as finished rather than as
-     having run out. The three contact channels sit in the section directly
-     above this one with nothing between them and the footer, so repeating
-     them again here would be the redundant kind of ending, not the
-     conclusive kind — left alone on purpose. -->
+<!-- "Your move" footer (2026-09-26, feature/footer-your-move). P15 turned
+     the old dead stop into a close — a way back up and a year. This makes the
+     close say something: one line that reads in all three disciplines at once
+     (chess: whose turn it is; English: your turn to speak; climbing: the next
+     move on the route), and that line is the page's last door to Telegram.
+     P15's "don't repeat the three channels" still holds — this is one line
+     carrying the same offer as the §05 CTA (updateCta() writes its href too),
+     not a second contact list.
+
+     Layout: a curtain. With JS, <main> sits above the footer on its own
+     ground and the footer is sticky to the viewport's bottom edge beneath it,
+     so the end of the page lifts off and uncovers it — plain scroll, no
+     transform, nothing to reduce under reduced motion. The footer is the one
+     place the theme pair flips (charcoal under a cream page, cream under a
+     charcoal one) — the same two pairs, swapped, not a third colour. See
+     style.css "footer".
+
+     The full stop is the Vitnyr mark, inside the same .footmark-spin wrapper
+     F1 made the hover target; hovering anywhere on the line turns it once.
+     RU copy is a model's first pass, flagged per Standing Order 9. -->
+<div class="foot-edge" aria-hidden="true"></div>
 <footer class="foot">
-  <div class="foot__id">
-    <!-- F1: the .footmark-spin wrapper is the hover target for the one-turn
-         rotation, not the <svg> itself. A rotating element's own box sweeps
-         under a pointer parked near its edge, so :hover on it flickers and the
-         turn restarts on every re-enter. The wrapper is a fixed 48px box that
-         never transforms, so :hover stays put; the <svg> inside is
-         pointer-events:none so its sweeping corners can't retrigger it either.
-         See style.css and BUILD-NOTES F1.
-         2026-09-22: wrapped in a #top link, same "click the mark" convention
-         as the masthead's .lockup and #collage's .footmark-home — a plain
-         anchor is enough here (unlike the view's mark) since main.js's
-         generic #-anchor handler already gives every in-page href="#..."
-         Lenis smooth-scroll for free, no view to close first. Own class
-         (.footmark-top, not .footmark-home) so it isn't caught by the
-         exclusion main.js adds for the collage view's own link, which needs
-         its own click handler instead of that generic one. -->
-    <a class="footmark-top" href="#top" aria-label="Vitnyr — back to the top">
-      <span class="footmark-spin">
-        <svg class="footmark" viewBox="0 0 100 100" role="img" aria-label="Vitnyr">
+  <div class="foot__in">
+    <a class="foot__move" data-magnetic target="_blank" rel="noopener"
+       href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
+       data-href-en="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20to%20book%20a%20free%20trial%20lesson."
+       data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B0%D1%82%D1%8C%D1%81%D1%8F%20%D0%BD%D0%B0%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D0%BE%D0%B5%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D0%B5.">
+      <span class="foot__line"><span data-en="Your move" data-ru="Ваш ход">Your move</span><span class="footmark-spin" aria-hidden="true"><svg class="footmark" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
           <path d="M 44.5 50 A 5.5 5.5 0 0 1 55.5 50 L 55.5 78 A 5.5 5.5 0 0 1 44.5 78 Z" fill="var(--green)"/>
           <path d="M 18.1109 25.8891 L 46.1109 53.8891 A 5.5 5.5 0 0 0 53.8891 53.8891 L 81.8891 25.8891 A 5.5 5.5 0 0 0 74.1109 18.1109 L 50 42.2218 L 25.8891 18.1109 A 5.5 5.5 0 0 0 18.1109 25.8891 Z" fill="var(--amber)"/>
-        </svg>
-      </span>
+        </svg></span></span>
+      <span class="vh" data-en="— message Igor on Telegram" data-ru="— написать Игорю в Telegram">— message Igor on Telegram</span>
     </a>
-    <p data-en="Igor Shatsev · Vitnyr · Yerevan · © 2026" data-ru="Igor Shatsev · Vitnyr · Ереван · © 2026">Igor Shatsev · Vitnyr · Yerevan · © 2026</p>
+
+    <!-- The annotations: the one line read three ways, set like the notes
+         under a chess diagram. English first, per the Weighted positioning. -->
+    <dl class="foot__notes">
+      <div class="foot__note">
+        <dt data-en="English" data-ru="Английский">English</dt>
+        <dd data-en="Your turn to speak." data-ru="Теперь говорите вы.">Your turn to speak.</dd>
+      </div>
+      <div class="foot__note">
+        <dt data-en="Chess" data-ru="Шахматы">Chess</dt>
+        <dd><span class="foot__nota" aria-hidden="true">1…</span> <span data-en="The board is waiting." data-ru="Доска ждёт.">The board is waiting.</span></dd>
+      </div>
+      <div class="foot__note">
+        <dt data-en="Climbing" data-ru="Скалолазание">Climbing</dt>
+        <dd data-en="The next hold." data-ru="Следующий зацеп.">The next hold.</dd>
+      </div>
+    </dl>
+
+    <div class="foot__base">
+      <p class="foot__print">
+        <span>Igor Shatsev · Vitnyr · © 2026</span>
+        <span class="foot__place"><span data-en="Yerevan" data-ru="Ереван">Yerevan</span><span class="foot__clock" hidden> · <time class="foot__time"></time> <span data-en="local time" data-ru="по местному времени">local time</span></span></span>
+      </p>
+      <a class="tool foot__top" href="#top" data-magnetic>
+        <span data-en="Back to top" data-ru="Наверх">Back to top</span>
+      </a>
+    </div>
   </div>
-  <a class="tool foot__top" href="#top" data-magnetic>
-    <span data-en="Back to top" data-ru="Наверх">Back to top</span>
-  </a>
 </footer>
 <!-- Phone contact bar (2026-09-23, feature/conversion-ux). Below 900px the
      masthead has no "message me" link, and the page runs ~8,400px before
