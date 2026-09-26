@@ -2599,18 +2599,30 @@ html.js .foot__in { flex: 1; width: 100%; }
    transform channel; the turn below owns it). Never under the 32px
    two-colour minimum: the Y's ink is ~.7em of a >=44px line. */
 .fglyph { display: inline-block; overflow: visible; }
-.fglyph--y { height: .7em; width: .7em; margin-inline: -.01em -.05em; }
-.fglyph--v { height: .4em; width: calc(.4em * 68 / 41); margin-inline: 0 .02em; }
+.fglyph--y { height: .7em; width: .7em; }
+.fspin--y { margin-inline: -.01em -.05em; }
+.fglyph--v { height: .4em; width: calc(.4em * 68 / 41); }
+.fspin--v { margin-inline: 0 .02em; }
 /* RU's closing mark: same crop and cap height as the EN Y, so it scales
    with the letters instead of sitting at a fixed-ish 48px (Igor: too small
    on a wide screen). */
-.fglyph--mark { height: .7em; width: .7em; margin-left: .16em; }
+.fglyph--mark { height: .7em; width: .7em; }
+.fspin--mark { margin-left: .16em; }
 
 /* F1's single turn, carried over: 0 -> 360 on the hover state only, so
-   leaving snaps home with no reverse spin. The hover target is the link,
-   which never transforms, so :hover can't flicker as the glyphs sweep. */
-.fglyph { transform: rotate(0deg); }
-.foot__move:hover .fglyph, .foot__move:focus-visible .fglyph {
+   leaving snaps home with no reverse spin. Each glyph turns on its own
+   hover (Igor: hovering anywhere on the line started them too early). The
+   target is the .fspin wrapper, a box that never transforms, with the
+   <svg> pointer-events:none — so a glyph sweeping under a parked pointer
+   can't flicker :hover and restart the turn. Keyboard focus on the link
+   turns them all. inline-flex so the wrapper's baseline is the svg's foot:
+   the glyphs sit exactly where they did unwrapped. */
+.fspin { display: inline-flex; }
+/* Spacing sits on the wrapper, not the svg: a negative margin on a flex
+   item shrank the Y by its own margin. */
+.fspin .fglyph { flex: none; }
+.fglyph { transform: rotate(0deg); pointer-events: none; }
+.fspin:hover .fglyph, .foot__move:focus-visible .fglyph {
   transform: rotate(360deg);
   transition: transform var(--t-turn) var(--e);
   will-change: transform;
@@ -2660,8 +2672,8 @@ html.js .foot__in { flex: 1; width: 100%; }
 .footmark { width: 48px; height: 48px; flex: none; }
 /* F1 (2026-09-07): hover spins the Vitnyr mark one full clockwise turn and
    stops. Runs wherever the mark carries the .footmark-spin wrapper — the
-   the #collage view bar does (the footer's marks turn on .foot__move hover —
-   see .fglyph). 360deg lands it back on its own
+   the #collage view bar does (the footer's marks use .fspin, the same
+   pattern — see .fglyph). 360deg lands it back on its own
    geometry exactly, so the mark is never left off-register. --e (an ease-out)
    is fine here even though it's banned on the scrollcue loop: this doesn't
    return to its start value, it goes 0 -> 360 once, so it accelerates out of
@@ -2796,7 +2808,7 @@ html.js .collage .reveal.is-in .collage__slot {
      this the global transition-duration override below just makes it
      instant-flip on hover. */
   .footmark-spin:hover .footmark,
-  .foot__move:hover .fglyph,
+  .fspin:hover .fglyph,
   .foot__move:focus-visible .fglyph { transform: none !important; will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,

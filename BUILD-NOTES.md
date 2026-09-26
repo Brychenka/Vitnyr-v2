@@ -5555,4 +5555,12 @@ as a reader does, and rest the pointer off the new line. The first draft's
 checks, hence the 16vw sizing. Two new tests cover the curtain's hit-testing
 and the keyboard fix. Verified in both themes, both languages, at 375 and
 1280, with and without reduced motion, with no console errors and no overflow.
+**Follow-up 2026-09-27 (`feature/footer-glyph-hover`):** Igor found the
+glyphs started turning too early, because hovering anywhere on the line set
+them off. Each glyph now turns only on its own hover: a non-transforming
+`.fspin` wrapper is the target and the SVG inside is `pointer-events:none`,
+F1's pattern. Keyboard focus on the link still turns them all. The spacing
+moved onto the wrappers, because a negative margin on a flex item shrank the
+Y by 12px. Glyph positions measured identical to before.
+
 **Merged to `main` 2026-09-27; not republished** (Igor: "don't republish"), so the live artifact still shows the old footer.
