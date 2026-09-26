@@ -1202,6 +1202,93 @@
      list — GSAP's quickTo then owns the channel unopposed, with no CSS
      transform-transition double-easing every nudge. The lighting/panel path
      (initOrigin) is untouched. */
+  /* ---------- in their words: the testimonials marquee ----------
+     Past the reduced-motion return, so a reduce reader keeps the static grid
+     the CSS draws by default. The list is cloned once (aria-hidden + inert,
+     so a screen reader and the tab order meet each quote exactly once) and
+     the track drifts by one list-width, then wraps — seamless because the
+     clone starts exactly where the original did.
+     Speed and direction come from the page's own scroll: scrolling down
+     pushes the row left and faster, scrolling up swings it right, and it
+     eases back to a slow drift in whichever direction it was last sent.
+     Velocity is read off scrollPos() deltas rather than lenis.velocity, so
+     touch scrolling (which Lenis leaves native) steers it too. Hover holds
+     it; the Pause control stops it outright. The ticker returns early while
+     the band is off screen. */
+  function initVoices() {
+    var band = document.querySelector('.voices__band');
+    var track = band && band.querySelector('.voices__track');
+    var list = track && track.querySelector('.voices__list');
+    if (!list) return;
+    var toggle = document.querySelector('.voices__toggle');
+    var hint = document.querySelector('.voices__hint');
+
+    var clone = list.cloneNode(true);
+    clone.classList.add('is-clone');
+    clone.setAttribute('aria-hidden', 'true');
+    clone.inert = true;
+    track.appendChild(clone);
+    band.classList.add('is-marquee');
+    if (toggle) toggle.hidden = false;
+    if (hint) hint.hidden = false;
+
+    var BASE = 38;          // px per second at rest
+    var loopW = 0, x = 0, dir = -1, speed = 1;
+    var held = false, paused = false, visible = false;
+    var lastY = scrollPos();
+
+    function measure() {
+      loopW = clone.offsetLeft - list.offsetLeft;
+      if (loopW > 0) x = x % loopW;
+    }
+
+    gsap.ticker.add(function (time, dtMs) {
+      var y = scrollPos();
+      var dy = y - lastY;
+      lastY = y;
+      if (!visible || !loopW) return;
+      var dt = Math.min(dtMs || 16, 64) / 1000;
+      var v = dy / (dt * 60);                         // px per 60fps frame
+      if (Math.abs(v) > 0.6) dir = v > 0 ? -1 : 1;
+      var want = (held || paused) ? 0 : 1 + Math.min(Math.abs(v) * 0.45, 9);
+      speed += (want - speed) * Math.min(1, dt * (want > speed ? 6 : 2.5));
+      x += dir * BASE * speed * dt;
+      x = x % loopW;
+      if (x > 0) x -= loopW;
+      // Only while the scroll is pushing it: the row leans into its own
+      // direction of travel, then straightens as it settles to the drift.
+      var skew = -dir * Math.min(Math.max(speed - 1, 0) * 0.8, 6);
+      track.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0) skewX(' + skew.toFixed(2) + 'deg)';
+    });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[entries.length - 1].isIntersecting;
+      }, { rootMargin: '120px 0px' }).observe(band);
+    } else visible = true;
+
+    if (finePointer) {
+      band.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') held = true; });
+      band.addEventListener('pointerleave', function () { held = false; });
+    }
+
+    if (toggle) {
+      var pauseLbl = toggle.querySelector('.voices__toggle-pause');
+      var playLbl = toggle.querySelector('.voices__toggle-play');
+      toggle.addEventListener('click', function () {
+        paused = !paused;
+        toggle.setAttribute('aria-pressed', paused ? 'true' : 'false');
+        pauseLbl.hidden = paused;
+        playLbl.hidden = !paused;
+      });
+    }
+
+    measure();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    window.addEventListener('resize', measure, { passive: true });
+    document.addEventListener('vitnyr:langchange', function () { requestAnimationFrame(measure); });
+  }
+
   function initMagnetic() {
     if (!finePointer) return;
     var RADIUS = 60, PULL = 12;
@@ -1931,6 +2018,7 @@
   initLockmark();
   initCursor();
   initMagnetic();
+  initVoices();
 
   whenRendering(function () {
     /* Hold the hero until the display face is real, so the lines don't rise in

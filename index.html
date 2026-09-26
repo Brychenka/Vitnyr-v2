@@ -1120,6 +1120,156 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
   </ul>
 </section>
 
+<!-- ================================================================
+     IN THEIR WORDS — testimonials marquee (feature/testimonials, 2026-09-26)
+     Unnumbered on purpose: it sits between §04 and §05 as a bridge into the
+     ask, not a sixth argument, so the page keeps its 01–05 count.
+
+     REAL, from Igor's LinkedIn recommendations (screenshots he supplied,
+     2026-09-26). Each quote is a verbatim excerpt — "…" marks a cut, nothing
+     is reworded; only straight apostrophes became typographic ones. Names
+     and job titles exactly as LinkedIn shows them. Two recommendations are
+     written in Russian and are shown only on the RU page (data-l="ru" on the
+     whole item) rather than translated — putting words in a student's mouth
+     in a language they didn't write in is the fabrication this site avoids.
+     Not used: Maksim Kirienko (LinkedIn lists him as a teammate, not a
+     client) and Viktor Chernetsov (never names Igor — "my English teacher",
+     "their teaching"). No chess or climbing recommendations exist yet.
+     LinkedIn has no per-recommendation permalink, so there is one link, to
+     the recommendations list, not one per quote (logged-out visitors meet
+     LinkedIn's sign-in wall there — a LinkedIn limit, not ours).
+
+     Motion (initVoices() in main.js): the list is cloned once for a seamless
+     loop and the track drifts left; scrolling speeds it up and steers it
+     (down = left, up = right), hovering holds it, and the Pause control
+     stops it outright (WCAG 2.2.2). No JS or reduced motion: the band is a
+     plain static grid of the same quotes, nothing hidden.
+     ================================================================ -->
+<section class="sec sec--voices" id="voices" aria-labelledby="voices-title">
+  <p class="label label--glyph reveal">
+    <svg class="label__mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 17.5V12c0-3.6 1.6-5.8 4.6-6.8M13 17.5V12c0-3.6 1.6-5.8 4.6-6.8"/>
+      <path d="M4 12.5h4.5v5H4zM13 12.5h4.5v5H13z"/>
+    </svg>
+    <span data-en="In their words" data-ru="Своими словами">In their words</span>
+  </p>
+  <div class="sec__head">
+    <h2 class="reveal" id="voices-title">
+      <span data-l="en">What changed, in their words.</span>
+      <span data-l="ru">Что изменилось — их словами.</span>
+    </h2>
+  </div>
+
+  <div class="voices__band reveal">
+    <div class="voices__track" id="voices-track">
+      <ul class="voices__list">
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>He helped me progress from a basic A1–A2 level to a confident B2+ level. … each lesson follows a clear, well-structured plan.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Artem Kirbal</span>
+            <span class="voice__role">QA Automation Engineer</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>Usually it went like this: “Oh, I understand everything now, I can move on.” But just one or two weeks later, the understanding would disappear. Igor, however, has a unique teaching approach.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Vitalii Honcharenko</span>
+            <span class="voice__role">Frontend Engineer</span>
+          </p>
+        </li>
+        <li class="voice" data-l="ru">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>С Игорем я обучаюсь Английскому вот уже полгода и (!) за это время я стала более уверенно разговаривать и понимать правила.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Milena Khabibulina</span>
+            <span class="voice__role">IT and Digital recruiter</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>Before, I was kinda fumbling through conversations, but now I can chat with ease and even get all the slang without batting an eye. We’ve even done a bunch of mock interviews, which was super clutch for my confidence.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Shokhrukh Yokubov</span>
+            <span class="voice__role">Cloud Solutions Architect</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>At the beginning, we talked about my goals, and since then he picks materials just for my needs. Need to prepare for a job interview? No problem.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Hanna Sycheva</span>
+            <span class="voice__role">Software Engineer</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>All of our lessons are conducted entirely in English, which really helps build confidence and improves communication naturally.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Kseniya Solovei</span>
+            <span class="voice__role">QA Engineer</span>
+          </p>
+        </li>
+        <li class="voice" data-l="ru">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>…быстро почувствовал прогресс в своем разговорном английском. … основная проблема для меня была как мне казалось нелогичность английского языка, но он смог все грамотно объяснить</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Дмитрий Лубганс</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>I tried different online schools but quickly gave up on them, because they were boring. … With Igor, learning English won’t be boring, maximum practice without fluff</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Andrei Veselov</span>
+            <span class="voice__role">Senior Full-stack Developer</span>
+          </p>
+        </li>
+        <li class="voice">
+          <span class="voice__glyph" aria-hidden="true">“</span>
+          <blockquote class="voice__q" cite="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/">
+            <p>The atmosphere is always friendly and relaxed, and our lessons feel more like an interesting conversation than a typical English class.</p>
+          </blockquote>
+          <p class="voice__who">
+            <span class="voice__name">Stas Babitsky</span>
+            <span class="voice__role">Full Stack Engineer</span>
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="voices__foot">
+    <p class="voices__hint" data-en="Hover to hold · scroll to steer" data-ru="Наведите, чтобы остановить · прокрутка задаёт направление" hidden>Hover to hold · scroll to steer</p>
+    <div class="voices__actions">
+      <a class="voices__more" href="https://www.linkedin.com/in/vitnyrcoach/details/recommendations/" target="_blank" rel="noopener">
+        <span data-en="Read them in full on LinkedIn" data-ru="Полные отзывы — в LinkedIn">Read them in full on LinkedIn</span>
+      </a>
+      <button type="button" class="voices__toggle" aria-pressed="false" aria-controls="voices-track" hidden>
+        <span class="voices__toggle-pause" data-en="Pause" data-ru="Пауза">Pause</span>
+        <span class="voices__toggle-play" data-en="Play" data-ru="Пуск" hidden>Play</span>
+      </button>
+    </div>
+  </div>
+</section>
+
 <section class="sec sec--contact" id="contact">
   <p class="label reveal"><span class="num">05</span><span data-en="How to start" data-ru="Как начать">How to start</span></p>
   <!-- P8 (Stage 6, 2026-09-06): this used to be plain text — the page's one

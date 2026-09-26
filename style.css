@@ -2178,6 +2178,127 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   opacity: .3; transform: translateX(3px); transition-delay: .07s;
 }
 
+/* ---------- in their words (testimonials marquee) ----------
+   Two states. The base rules are the static one — no JS, GSAP missing, or
+   reduced motion (initVoices() sits past main.js's reduce return): a plain
+   grid, every quote readable, nothing moving. .is-marquee (added by JS
+   only) turns the same list into one long row, cloned once, that main.js
+   drifts with translate3d on .voices__track. The track is not a .reveal
+   target — the reveal rises .voices__band, the wrapper — so the drift and
+   the reveal never share an element's transform channel.
+   The band bleeds to the viewport edge (body already clips overflow-x);
+   no fade masks at the edges, because the brand has no gradients — the
+   quotes simply run under the frame, the way a strip of film does. */
+#voices .sec__head { text-align: center; }
+#voices .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
+@media (min-width: 900px) {
+  #voices .sec__head { grid-template-columns: none; }
+}
+
+.voices__band {
+  margin-inline: calc(50% - 50vw);
+  border-block: 1px solid var(--rule);
+  overflow: hidden;
+  padding-block: clamp(36px, 5vw, 72px);
+}
+.voices__track { padding-inline: var(--gut); }
+.voices__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: clamp(40px, 5vw, 72px) clamp(28px, 4vw, 64px);
+  max-width: calc(var(--maxw) - 2 * var(--gut));
+  margin-inline: auto;
+}
+.voices__list.is-clone { display: none; }
+
+.voice {
+  display: flex; flex-direction: column;
+  color: var(--fg);
+  transition: color var(--t) var(--e);
+}
+/* Display glyph, well over 24px, so accent ink is allowed here — and green
+   because a student's outcome IS the target, not the specimen. */
+.voice__glyph {
+  font-family: var(--serif); font-weight: 500;
+  font-size: clamp(64px, 6vw, 96px); line-height: 1;
+  height: .5em; margin-bottom: .12em;
+  color: var(--ink-target);
+  user-select: none;
+}
+.voice__q { margin: 0; }
+.voice__q p {
+  font-family: var(--serif); font-style: italic; font-weight: 500;
+  font-size: clamp(21px, 2vw, 29px); line-height: 1.26;
+  letter-spacing: -.012em;
+  text-wrap: pretty;
+}
+.voice__who {
+  display: grid; grid-template-columns: 28px auto; column-gap: 12px; row-gap: 2px;
+  align-items: baseline; justify-content: start;
+  margin-top: auto; padding-top: clamp(20px, 2.2vw, 30px);
+}
+.voice__who::before {
+  content: ""; grid-row: 1; align-self: center; height: 1px; background: var(--rule);
+}
+.voice__name { font-size: 15px; font-weight: 500; }
+.voice__role {
+  grid-column: 2;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--fg2);
+}
+
+/* marquee state */
+.voices__band.is-marquee .voices__track {
+  display: flex; width: max-content; padding-inline: 0;
+  will-change: transform;
+}
+.voices__band.is-marquee .voices__list,
+.voices__band.is-marquee .voices__list.is-clone {
+  display: flex; max-width: none; margin: 0; gap: 0;
+}
+.voices__band.is-marquee .voice {
+  flex: none;
+  width: clamp(300px, 32vw, 520px);
+  padding-inline: clamp(28px, 3.2vw, 56px);
+  border-left: 1px solid var(--rule);
+}
+@media (max-width: 602px) {
+  .voices__band.is-marquee .voice { width: 82vw; }
+}
+/* Holding the row under the pointer brings the one being read forward and
+   lets the rest recede — colour only, no scale, nothing that moves text. */
+@media (hover: hover) and (pointer: fine) {
+  .voices__band.is-marquee:hover .voice { color: var(--fg2); }
+  .voices__band.is-marquee:hover .voice:hover { color: var(--fg); }
+}
+
+.voices__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-top: 18px;
+}
+.voices__actions { display: flex; align-items: center; gap: clamp(20px, 3vw, 40px); margin-left: auto; }
+.voices__hint[hidden], .voices__toggle[hidden] { display: none; }
+.voices__hint {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--fg2);
+}
+.voices__more, .voices__toggle {
+  appearance: none; background: none; border: 0; margin: 0; padding: 6px 0;
+  font: 500 12px/1.35 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg); cursor: pointer;
+  position: relative;
+}
+.voices__more::after, .voices__toggle::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 1px;
+  background: var(--fg); transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.voices__more:hover::after, .voices__more:focus-visible::after,
+.voices__toggle:hover::after, .voices__toggle:focus-visible::after { transform: scaleX(1); }
+/* The link's underline rests drawn at a third of its width, so it reads as a
+   link before any hover — the pause control's doesn't, since it's a button. */
+.voices__more::after { transform: scaleX(.33); }
+@media (pointer: coarse) { .voices__more, .voices__toggle { padding-block: 13px; } }
+@media (max-width: 602px), (hover: none) { .voices__hint { display: none !important; } }
+
 /* ---------- contact ---------- */
 .sec--contact { padding-bottom: clamp(60px, 8vh, 110px); }
 .contact__big {
