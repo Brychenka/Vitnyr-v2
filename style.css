@@ -2587,28 +2587,28 @@ html.js .foot__in { flex: 1; width: 100%; }
   line-height: .95; letter-spacing: -.035em;
   white-space: nowrap;
 }
-/* The wordmark's colouring in the line's own letters (Igor, 2026-09-26):
-   V in amber, Y split like the mark — amber arms, green stem. Display size
-   only (never under 44px), so the "no accent text under 24px" rule holds;
-   amber on cream is 3.07:1, over the 3:1 large-text floor.
-   .duo stacks an amber copy of the glyph on the green one and clips the copy
-   to the arms with clip-path — no gradient, no transform. inline-block on
-   both with the line's own line-height so the two glyphs land on one
-   baseline. --split is the fraction of the box below the arms' fork,
-   measured against Lora 500's Y. */
-.foot__line .amb { color: var(--amber); }
-.duo {
-  display: inline-block; position: relative;
-  color: var(--green);
-  --split: 49%;
-}
-.duo__top {
-  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
-  color: var(--amber);
-  /* negative side/top insets: the Y's serifs overhang its advance box (the
-     line's negative tracking narrows it), and a flush clip left a green
-     sliver on the right arm. */
-  clip-path: inset(-.2em -.2em var(--split) -.2em);
+/* The mark set into the words (Igor, 2026-09-26). EN: the Y is the whole
+   Vitnyr mark, the v is its amber chevron; RU: the mark sits at the end.
+   Sizes are in em off Lora 500's metrics — the Y's ink to cap height
+   (~.7em), the chevron to x-height — and the EN viewBoxes are cropped to
+   the ink (the arms' round caps reach 16.5 — the crop has to include
+   them), so the box's foot is the ink's foot and sits on the baseline with
+   no nudge. Side margins are the only spacing (layout never takes the
+   transform channel; the turn below owns it). Never under the 32px
+   two-colour minimum: the Y's ink is ~.7em of a >=44px line. */
+.fglyph { display: inline-block; overflow: visible; }
+.fglyph--y { height: .7em; width: .7em; margin-inline: -.01em -.05em; }
+.fglyph--v { height: .4em; width: calc(.4em * 68 / 41); margin-inline: 0 .02em; }
+.fglyph--mark { width: max(48px, .46em); height: max(48px, .46em); margin-left: .06em; vertical-align: -.08em; }
+
+/* F1's single turn, carried over: 0 -> 360 on the hover state only, so
+   leaving snaps home with no reverse spin. The hover target is the link,
+   which never transforms, so :hover can't flicker as the glyphs sweep. */
+.fglyph { transform: rotate(0deg); }
+.foot__move:hover .fglyph, .foot__move:focus-visible .fglyph {
+  transform: rotate(360deg);
+  transition: transform var(--t-turn) var(--e);
+  will-change: transform;
 }
 
 /* The three readings, set like the notes under a chess diagram. */
@@ -2655,8 +2655,8 @@ html.js .foot__in { flex: 1; width: 100%; }
 .footmark { width: 48px; height: 48px; flex: none; }
 /* F1 (2026-09-07): hover spins the Vitnyr mark one full clockwise turn and
    stops. Runs wherever the mark carries the .footmark-spin wrapper — the
-   the #collage view bar does (the footer's mark became coloured letters,
-   2026-09-26). 360deg lands it back on its own
+   the #collage view bar does (the footer's marks turn on .foot__move hover —
+   see .fglyph). 360deg lands it back on its own
    geometry exactly, so the mark is never left off-register. --e (an ease-out)
    is fine here even though it's banned on the scrollcue loop: this doesn't
    return to its start value, it goes 0 -> 360 once, so it accelerates out of
@@ -2790,7 +2790,9 @@ html.js .collage .reveal.is-in .collage__slot {
   /* F1: no hover turn on either Vitnyr mark (footer + #collage bar). Without
      this the global transition-duration override below just makes it
      instant-flip on hover. */
-  .footmark-spin:hover .footmark { transform: none !important; will-change: auto !important; }
+  .footmark-spin:hover .footmark,
+  .foot__move:hover .fglyph,
+  .foot__move:focus-visible .fglyph { transform: none !important; will-change: auto !important; }
   /* the mark is simply present and complete — no stroke draw (S7 move 03).
      Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
      which would clip the stroke away rather than show it whole. */

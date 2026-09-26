@@ -670,29 +670,50 @@ def _rotation_deg(page, selector):
     )
 
 
-def test_footer_line_carries_the_wordmark_colours_in_its_letters(open_site):
-    """2026-09-26: the footer's Vitnyr mark (and F1's hover turn on it) gave
-    way to the line's own letters in the wordmark's colours — V amber, Y amber
-    over green. F1's turn lives on in the #collage bar (next test). The amber
-    styled line is aria-hidden (the inline-block Y would read "Y our"); the
-    link's name comes from a hidden text span."""
+def test_footer_line_marks_turn_once_on_hover(open_site):
+    """2026-09-26: the Vitnyr mark is set into the footer line — the EN Y is
+    the whole mark and the v its chevron (RU keeps the mark at the end).
+    Hovering the line turns each glyph once, F1-style: transition on the
+    hover state only, 1.2s, back on its own geometry after, snap on leave."""
     page, _ = open_site()
     _uncover_footer(page)
-    assert page.locator(".foot .footmark").count() == 0
-    colour = lambda sel: page.locator(sel).evaluate("el => getComputedStyle(el).color")
-    amber = page.evaluate(
-        "getComputedStyle(document.querySelector('.foot')).getPropertyValue('--amber').trim()"
-    )
-    assert amber.lower() == "#b07c24"
-    assert colour('.foot__line[data-l="en"] .amb') == "rgb(176, 124, 36)"
-    assert colour(".duo__top") == "rgb(176, 124, 36)"
-    assert colour(".duo") != colour(".duo__top")          # the stem is green
-    name = page.locator(".foot__move").evaluate(
-        "el => el.querySelector('.foot__line[data-l=en]').innerText"
-    )
-    assert name.replace("\n", "") in ("YYour move.", "Your move.")
+    glyphs = page.locator('.foot__line[data-l="en"] .fglyph')
+    assert glyphs.count() == 2
+    page.mouse.move(400, 60)
+    page.wait_for_timeout(150)
+    for sel in (".fglyph--y", ".fglyph--v"):
+        assert abs(_rotation_deg(page, sel)) < 0.5
+    page.locator(".foot__move").hover()
+    page.wait_for_timeout(250)
+    for sel in (".fglyph--y", ".fglyph--v"):
+        assert page.locator(sel).evaluate("el => getComputedStyle(el).transitionDuration") == "1.2s"
+        assert abs(_rotation_deg(page, sel)) > 5, "should be mid-turn"
+    page.wait_for_timeout(1300)
+    for sel in (".fglyph--y", ".fglyph--v"):
+        assert abs(_rotation_deg(page, sel)) < 0.5
+    page.mouse.move(400, 60)
+    page.wait_for_timeout(60)
+    assert page.locator(".fglyph--y").evaluate("el => getComputedStyle(el).transitionDuration") == "0s"
+
+
+def test_footer_line_marks_do_not_turn_under_reduced_motion(open_site):
+    page, _ = open_site(reduced_motion=True)
+    _uncover_footer(page)
+    page.locator(".foot__move").hover()
+    page.wait_for_timeout(300)
+    assert abs(_rotation_deg(page, ".fglyph--y")) < 0.5
+
+
+def test_footer_line_link_reads_as_words_not_glyphs(open_site):
+    """The styled line is aria-hidden (an SVG Y would leave "our mo e."); the
+    link's name comes from its .vh span, in both languages."""
+    page, _ = open_site()
+    _uncover_footer(page)
     snap = page.locator(".foot__move").aria_snapshot()
-    assert "Your move." in snap and "Y our" not in snap and "YYour" not in snap
+    assert "Your move." in snap and "our mo" not in snap.replace("Your move", "")
+    page.evaluate("document.querySelector('.langswitch').click()")
+    page.wait_for_timeout(300)
+    assert "Ваш ход." in page.locator(".foot__move").aria_snapshot()
 
 
 def test_collage_bar_mark_turns_once_on_hover(open_site):

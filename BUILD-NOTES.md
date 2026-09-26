@@ -5506,17 +5506,19 @@ one 12px line, "Back to top"). This makes it the page's last word.
   `updateCta()` writes its href too, so a §04 pick carries through. This is a
   deliberate, narrow qualification of P15's "don't repeat the channels": it's
   one line, not a second contact list.
-- **The wordmark's colours, in the line's own letters** (Igor's revision; the
-  first draft used the Vitnyr mark as the full stop). V is amber and Y is
-  split like the mark, with amber arms over a green stem: `.duo` lays an
-  amber copy of the glyph over the green one and clips it with `clip-path`,
-  with negative side insets because the serifs overhang the advance box. RU
-  «Ваш ход» has no Y, so only its В (the Cyrillic V) is amber. Display size
-  only, so the small-accent-text rule isn't touched. The styled line is
-  `aria-hidden` because the inline-block Y read as "Y our" (caught by a
-  test), so the link's name comes from a `.vh` span. The footer no longer
-  has a mark, so F1's three footer spin tests went and one colour/name test
-  replaced them. F1 lives on in the #collage bar. "Back to top" stays.
+- **The mark set into the words** (Igor's second revision; the first draft
+  put the mark at the end as the full stop, the second coloured Lora's own Y
+  and v). In EN, the Y *is* the Vitnyr mark and the v is its amber chevron:
+  inline SVGs whose viewBoxes are cropped to the ink (16→84; the arms' round
+  caps reach 16.5, and a 17.5 crop clipped them) and sized to Lora's cap
+  height (.7em) and x-height (.4em). RU «Ваш ход» has neither letter, so it
+  keeps the mark at the end, as in the first draft. Hovering the line turns
+  every glyph once with F1's rule: the transition is on the hover state only,
+  so leaving snaps back, and the non-transforming link is the hover target.
+  The styled line is `aria-hidden` and the link's name comes from a `.vh`
+  span, because the glyph-as-letter version read as "Y our" (caught by a
+  test). F1's three footer tests became three `.fglyph` tests (turn, reduced
+  motion, accessible name in both languages). "Back to top" stays.
 - **Curtain.** `html.js main` gets `position: relative; z-index: 1` and its
   own `--bg`. The footer is `position: sticky; bottom: 0; z-index: 0`
   underneath it, so the end of the page lifts off and uncovers it. It's plain
