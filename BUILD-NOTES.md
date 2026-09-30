@@ -5564,3 +5564,24 @@ moved onto the wrappers, because a negative margin on a flex item shrank the
 Y by 12px. Glyph positions measured identical to before.
 
 **Merged to `main` 2026-09-27; not republished** (Igor: "don't republish"), so the live artifact still shows the old footer.
+
+## Collage: Cascade photo replaces the 2100 screenshot (2026-09-30)
+
+Igor asked for it (`feature/collage-cascade`). In the chess group's second
+row, `chess-08-2100`, the blitz-result screenshot and the only frame in the
+view that wasn't a photograph, is now `chess-09-cascade`: Igor on a bench at
+the Cascade in Yerevan with a hand-lettered "Let's Play Chess" sign. It's cut
+to 4:5 from a 3:4 source, taking 40px off the top so his hair isn't clipped.
+The row is now 1:1 / 4:5 / 1:1, so the two squares' `sizes` hints went from
+28vw to 36vw. The caption is "Blitz at the Cascade — anyone can sit down." /
+«Блиц у Каскада — сесть может любой.» (the RU is a first pass). The old files
+were removed and are still in git history. Provenance is in
+`assets/collage/PLACEHOLDERS.md`. The 2100 fact is still on the page in its
+usual places.
+
+Checked at 1280 (all three frames in the row are 391px tall, no overflow) and
+at 375 in RU, with no console errors. `pytest -k "collage or content"`:
+148 passed and 1 known xfail. `test_lightbox_photo_reverts_to_grayscale_on_unhover`
+failed once, catching the filter mid-transition, then passed 3/3 on its own.
+It's a flake on the first (English) photo. **Not republished**, because the
+footer hold from 2026-09-27 is still in place.
