@@ -202,15 +202,17 @@ by `--collage-filter` like every tile.
   anchored 1:1 crop (850×850) keeps his hand and the whole board. 900×900
   (upscaled slightly) / 450×450. Caption "A travel set, on the stones." /
   «Походная доска, прямо на камнях.» (RU first pass).
-- `chess-08-2100` — a screenshot of the rated 3+0 blitz result that took Igor's
-  online rating past 2100 (yngvibrychenka 2095 +6, checkmate, vs a 2125). The
-  confirmed fact is "2100", stated without FIDE; this frame is its receipt.
-  Cropped to the game card only (531×354 of a 2000×1107 screen, 3:2) — the
-  board beside it is at the start position and the rest is empty UI. Shipped at
-  native 531w and 1062w (@2x, upscaled — screen text, no finer source).
-  Caption "The game that took the rating past 2100." / «Партия, после которой
-  рейтинг перевалил за 2100.» (RU first pass). The opponent's public handle is
-  visible; left as is (Igor's call if it should be blurred).
+- `chess-09-cascade` — Igor on a wooden bench at the Cascade in Yerevan, hand
+  in his hair over a board and a phone clock, a hand-lettered "Let's Play Chess"
+  sign beside him; his opponent is the back of a head at the right edge (not
+  identifiable). Source 1506×2000 (3:4), no autocontrast; cropped to 4:5 with
+  40px off the top (keeps his hair) and the rest off the bottom, so the sign
+  and board stay whole. 900×1125 / 450×563. Caption "Blitz at the Cascade —
+  anyone can sit down." / «Блиц у Каскада — сесть может любой.» (RU first
+  pass). **Replaced `chess-08-2100` 2026-09-30** at Igor's request — the 2100
+  blitz-result screenshot (the only non-photograph in the view, and it showed
+  the opponent's public handle); its files are gone from `assets/collage/`,
+  recoverable from git history.
 - `climb-07-coaching` — Igor coaching at an indoor wall, phone in hand,
   pointing out a hold to a climber with her back to the camera (not
   identifiable). Source 1279×853, centred 3:2, `autocontrast(cutoff=0.5)`.
