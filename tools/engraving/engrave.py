@@ -83,8 +83,8 @@ halo = "".join(poly(p) for p, w in segs)
 rope = smooth(jitter([(700,214),(668,236),(640,280),(626,340)], rng, .5, 5, 20))
 arrow = smooth([(478,106),(560,112),(640,128)])
 
-svg = f'''<svg class="climb-art__svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMax slice" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-<g class="climb-art__plate">
+svg = f'''<svg class="plate__svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMax slice" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+<g class="plate__ink">
 <path class="eng eng--sky" d="{sky}"/>
 <path class="eng eng--sky eng--alt" d="{sky_alt}"/>
 <path class="eng eng--1" d="{e1}"/>
@@ -92,13 +92,13 @@ svg = f'''<svg class="climb-art__svg" viewBox="0 0 {W} {H}" preserveAspectRatio=
 <path class="eng eng--3" d="{e3}"/>
 <path class="eng eng--lip" d="{lip}"/>
 </g>
-<g class="climb-art__figure">
-<path class="climb-art__halo" stroke="none" d="{halo}"/>
-<circle class="climb-art__halo" stroke="none" cx="{head[0]}" cy="{head[1]}" r="8"/>
-<path class="climb-art__rope" d="{rope}"/>
+<g class="plate__figure">
+<path class="plate__halo" stroke="none" d="{halo}"/>
+<circle class="plate__halo" stroke="none" cx="{head[0]}" cy="{head[1]}" r="8"/>
+<path class="plate__rope" d="{rope}"/>
 <g class="climber">{"".join(f'<path class="climber--{w}" d="{poly(p) if len(p) == 2 else smooth(p)}"/>' for p, w in segs)}<circle class="climber__head" fill="currentColor" stroke="none" cx="{head[0]}" cy="{head[1]}" r="7.5"/></g>
 </g>
-<g class="climb-art__labels">
+<g class="plate__labels">
 <path class="lab-arrow" d="{arrow}"/>
 <text class="lab" fill="currentColor" stroke="none" x="420" y="112" transform="rotate(-4 420 112)" data-en="crux" data-ru="ключ">crux</text>
 </g>
