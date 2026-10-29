@@ -96,7 +96,7 @@ svg = f'''<svg class="plate__svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMi
 <path class="plate__halo" stroke="none" d="{halo}"/>
 <circle class="plate__halo" stroke="none" cx="{head[0]}" cy="{head[1]}" r="8"/>
 <path class="plate__rope" d="{rope}"/>
-<g class="climber">{"".join(f'<path class="climber--{w}" d="{poly(p) if len(p) == 2 else smooth(p)}"/>' for p, w in segs)}<circle class="climber__head" fill="currentColor" stroke="none" cx="{head[0]}" cy="{head[1]}" r="7.5"/></g>
+<g class="person">{"".join(f'<path class="person--{w}" d="{poly(p) if len(p) == 2 else smooth(p)}"/>' for p, w in segs)}<circle class="person__head" fill="currentColor" stroke="none" cx="{head[0]}" cy="{head[1]}" r="7.5"/></g>
 </g>
 <g class="plate__labels">
 <path class="lab-arrow" d="{arrow}"/>

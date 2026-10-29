@@ -987,18 +987,22 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 .specimens-group { display: none; }
 .specimens-group.is-active { display: block; }
 
-/* ---------- the engraved plates (climbing, chess) ----------
+/* ---------- the engraved plates (English, chess, climbing) ----------
    Victorian-engraving illustrations between a specimens group's head and its
    specimens — in a band of their own, never under a line of copy. Climbing:
    a ruled sky, a great roof, a climber hanging off its lip
    (tools/engraving/engrave.py). Chess: Staunton queen, knight and king, the
-   knight forking the other two (tools/engraving/staunton.py). Both inlined:
+   knight forking the other two (tools/engraving/staunton.py). English: a
+   lesson at a table, one person writing, the other asking
+   (tools/engraving/lesson.py); its two people are the climber's own stroke
+   figure, hence the shared .person. All three inlined:
    every weight class is ONE <path>, so a plate is ~30 KB rather than
    hundreds of nodes.
 
    Two inks only: the plate is --fg at per-weight opacities (engraving lines
    in place of shading — the page has no gradients), the rope is
-   --ink-target (as are the knight's two jumps), the one label is --hand text in --fg2 with a --bg halo so
+   --ink-target (as are the knight's two jumps and the coach's question),
+   the struck "am" is --ink-specimen, the labels are --hand text in --fg2 with a --bg halo so
    it stays legible over the ruled sky. Bleeds to the section edge like
    .specs (C12), so the drawing and the hairlines share one width.
 
@@ -1028,27 +1032,34 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 .plate__halo { fill: none; stroke: var(--bg); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
 .plate__rope { fill: none; stroke: var(--ink-target); stroke-width: 1.8; stroke-linecap: round; }
 .plate__move { fill: none; stroke: var(--ink-target); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.plate__strike { fill: none; stroke: var(--ink-specimen); stroke-width: 2.2; stroke-linecap: round; }
 .plate__paper { fill: var(--bg); }
 .plate__dot { fill: currentColor; fill-opacity: .9; }
-.plate .climber { fill: none; stroke: currentColor; stroke-opacity: .9; stroke-linecap: round; stroke-linejoin: round; }
-.plate .climber--torso { stroke-width: 8.5; }
-.plate .climber--thick { stroke-width: 4.6; }
-.plate .climber--leg   { stroke-width: 5.6; }
-.plate .climber--thin  { stroke-width: 3.4; }
-.plate .climber__head  { fill: currentColor; stroke: none; }
+.plate .person { fill: none; stroke: currentColor; stroke-opacity: .9; stroke-linecap: round; stroke-linejoin: round; }
+.plate .person--torso { stroke-width: 8.5; }
+.plate .person--thick { stroke-width: 4.6; }
+.plate .person--leg   { stroke-width: 5.6; }
+.plate .person--thin  { stroke-width: 3.4; }
+.plate .person__head  { fill: currentColor; stroke: none; }
 .plate .lab {
   font-family: var(--hand); font-size: 27px; fill: var(--fg2);
   paint-order: stroke; stroke: var(--bg); stroke-width: 8px; stroke-linejoin: round;
 }
 .plate .lab-arrow { fill: none; stroke: var(--fg2); stroke-width: 1.2; stroke-linecap: round; }
+.plate .lab-arrow--dash { stroke-dasharray: 2 5; }
+/* the written line: its words and strike are placed against each other, so
+   it keeps one size here and is scaled as a group at phone width below */
+.plate .lab.lab--note { font-size: 30px; }
 
 @media (max-width: 602px) {
-  /* slice-cropped to the middle of the plate (the lip and climber; the knight and its fork) at phone width; at ~0.55x the
+  /* slice-cropped to the middle of the plate (the lip and climber; the knight and its fork; the two people at the table) at phone width; at ~0.55x the
      5-unit ruling would close up into a grey wash, so every other sky line
      drops out, and the label is set larger in user units to land near 20px */
   .plate { height: clamp(190px, 52vw, 260px); }
   .plate .eng--alt { display: none; }
   .plate .lab { font-size: 40px; stroke-width: 10px; }
+  .plate .lab.lab--note { stroke-width: 7px; }
+  .plate__note { transform: scale(1.4); transform-box: view-box; transform-origin: 560px 108px; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
