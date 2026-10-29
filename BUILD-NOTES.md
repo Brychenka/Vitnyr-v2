@@ -5585,3 +5585,56 @@ at 375 in RU, with no console errors. `pytest -k "collage or content"`:
 failed once, catching the filter mid-transition, then passed 3/3 on its own.
 It's a flake on the first (English) photo. **Not republished**, because the
 footer hold from 2026-09-27 is still in place.
+
+## Climbing — the engraved plate (2026-10-29, `feature/climb-engraving`)
+
+Igor wanted "a bit more style": a drawn background, in the hand of the old
+Lord of the Rings book illustrations, for climbing first (English and chess
+to get their own later, one section at a time). Explored in this order, all
+kept on branches for comparison, none merged:
+
+- `feature/climb-ararat`, `-topo`, `-ridge`: Ararat from Yerevan as a pen
+  drawing / a contour map / a single ridgeline. **Ararat was dropped by Igor:
+  he coaches climbing, not mountaineering** — don't propose a mountain again.
+- `feature/climb-cliff`: a pen-hatched crag in profile with a climber.
+- A Claude Design canvas ("Vitnyr Climbing Illustrations",
+  https://claude.ai/artifact/1bQcfzSB4HTSkcV6AsUQs8) with that crag plus five
+  directions: guidebook topo, sumi-e brush, Victorian engraving,
+  Fontainebleau stipple, training board. **Igor picked the engraving (#3).**
+
+What shipped on this branch:
+
+- **Placement.** A `<figure class="climb-art reveal" aria-hidden="true">`
+  between the climbing `.specimens-group`'s `.sec__head` and its `.specs`, in
+  a band of its own (never under copy), bled to the section edge like
+  `.specs` (C12). Only the climbing group has it; English and chess are
+  untouched.
+- **The plate.** Ruled horizontal sky (the engraver's sky), a great roof
+  from the right in diagonal engraving, a receding wall, a few valley lines,
+  and a climber hanging off the lip at full stretch with a `--bg` halo so the
+  figure reads cleanly over the ruling. Rope in `--ink-target`; one
+  annotation, *crux* / *ключ*, in `--hand` / `--fg2` with a `--bg`
+  `paint-order: stroke` halo. Two inks only, no gradients — shade is line
+  weight and density.
+- **Size.** `tools/engraving/engrave.py` (plus its `ink.py` helpers)
+  generates the SVG; every weight class is one `<path>` of integer
+  coordinates, so the plate is ~27 KB inline. The canvas version was ~300 KB
+  of separate nodes. Regenerate rather than hand-edit the paths.
+- **Motion.** Rides the existing reveal (no new JS): on `.is-in` the `<svg>`
+  is wiped left-to-right with `clip-path: inset()` over `--t-draw` (2.2s, new
+  token in `:root`) on `--e`, then the climber/rope and the label fade in.
+  A per-line dashoffset draw was rejected: ~1,500 subpaths transitioning on a
+  phone. `clip-path` is not the transform channel the reveal uses. Hidden
+  state only under `html.js` + `prefers-reduced-motion: no-preference`; no-JS
+  and reduce get the finished plate, and the failsafe sweep reaches it
+  through `.reveal`.
+- **Phone.** `preserveAspectRatio="xMidYMax slice"` crops to the lip and the
+  climber; under 602px the odd sky lines (`.eng--alt`) drop out, because at
+  ~0.55x the ruling closed into a grey wash, and the label is set larger in
+  user units.
+- `--hand`'s comment now names this second use.
+
+Verified: Cream/Charcoal, EN/RU, 1280 and 390 (touch), reduced motion,
+mid-wipe frames driven headlessly, no console errors, no horizontal overflow.
+
+**Merged to `main` 2026-10-29; not republished** (Igor: "don't republish the artifact yet"), so the live artifact still lacks the plate.
