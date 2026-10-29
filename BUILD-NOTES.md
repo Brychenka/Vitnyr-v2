@@ -5636,3 +5636,5 @@ What shipped on this branch:
 
 Verified: Cream/Charcoal, EN/RU, 1280 and 390 (touch), reduced motion,
 mid-wipe frames driven headlessly, no console errors, no horizontal overflow.
+
+**Merged to `main` 2026-10-29; not republished** (Igor: "don't republish the artifact yet"), so the live artifact still lacks the plate.
