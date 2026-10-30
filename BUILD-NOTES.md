@@ -5730,7 +5730,7 @@ Igor wanted "here and there some nice small features" in the plates' style
 for the rest of the page — engraving, not handwriting (his correction), about
 six, drawing in once. Proposed on a private page first
 (https://claude.ai/artifact/TmnvwkpU63fstB1gfyJPbu); Igor: build all six,
-then he'll say what to remove. **On the branch, not merged.**
+then he'll say what to remove.
 
 - **The six.** Hero: a still life — books (biggest, English first), a
   Staunton knight on them, a coil of rope (`--ink-target`) and a chalk bag.
@@ -5766,3 +5766,6 @@ then he'll say what to remove. **On the branch, not merged.**
 - Verified: 1280 Cream EN and 375 (touch) Charcoal RU, every vignette after
   its reveal with real frames, the footer fitting the viewport at both,
   reduced motion and no-JS headless, no console errors, no overflow.
+
+**Merged to `main` 2026-10-30; not republished**, so the live artifact still
+lacks the vignettes (and the clipped rope before them).
