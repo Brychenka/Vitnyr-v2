@@ -1031,6 +1031,10 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 :root[data-theme="dark"] .plate .eng--sky { stroke-opacity: .3; }
 .plate__halo { fill: none; stroke: var(--bg); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
 .plate__rope { fill: none; stroke: var(--ink-target); stroke-width: 1.8; stroke-linecap: round; }
+/* the quickdraws the rope is clipped through: hardware, so plain ink */
+.plate__halo--draw { stroke-width: 6; }
+.plate__draw  { fill: none; stroke: currentColor; stroke-opacity: .9; stroke-width: 2; stroke-linecap: round; }
+.plate__biner { fill: var(--bg); stroke: currentColor; stroke-opacity: .9; stroke-width: 1.5; }
 .plate__move { fill: none; stroke: var(--ink-target); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .plate__strike { fill: none; stroke: var(--ink-specimen); stroke-width: 2.2; stroke-linecap: round; }
 .plate__paper { fill: var(--bg); }
