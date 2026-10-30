@@ -80,7 +80,19 @@ head = (690, 160)
 segs = limbs(head, (694,170), (700,214), [(676,140),(712,138)], [(674,262),(724,256)])
 def poly(p): return "M" + "L".join(f"{i(x)} {i(y)}" for x, y in p)
 halo = "".join(poly(p) for p, w in segs)
-rope = smooth(jitter([(700,214),(668,236),(640,280),(626,340)], rng, .5, 5, 20))
+# lead rope: harness -> last draw (sagging, he's climbed past it) -> draws back
+# along the roof -> one on the wall -> down to the belayer off-plate
+def lip_y(x):
+    for (x0, y0), (x1, y1) in zip(roof_lip, roof_lip[1:]):
+        if x0 <= x <= x1: return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+bolts = [(x, lip_y(x) - 3) for x in (790, 930, 1035)] + [(1066, 212)]
+biners = [(x, y + 15) for x, y in bolts]
+draws = "".join(f"M{i(bx)} {i(by)}L{i(cx)} {i(cy - 4)}" for (bx, by), (cx, cy) in zip(bolts, biners))
+rope = smooth(jitter([(700,214),(724,212),(750,199),(774,178)] + biners[:1]
+    + [(826,172),(860,176),(896,168)] + biners[1:2]
+    + [(962,167),(990,169),(1014,160)] + biners[2:3]
+    + [(1046,178),(1058,204)] + biners[3:]
+    + [(1060,262),(1052,300),(1046,340)], rng, .5, 5, 20))
 arrow = smooth([(478,106),(560,112),(640,128)])
 
 svg = f'''<svg class="plate__svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMax slice" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -95,6 +107,9 @@ svg = f'''<svg class="plate__svg" viewBox="0 0 {W} {H}" preserveAspectRatio="xMi
 <g class="plate__figure">
 <path class="plate__halo" stroke="none" d="{halo}"/>
 <circle class="plate__halo" stroke="none" cx="{head[0]}" cy="{head[1]}" r="8"/>
+<path class="plate__halo plate__halo--draw" stroke="none" d="{draws}"/>
+<path class="plate__draw" d="{draws}"/>
+{"".join(f'<ellipse class="plate__biner" cx="{i(x)}" cy="{i(y)}" rx="2.6" ry="4"/>' for x, y in biners)}
 <path class="plate__rope" d="{rope}"/>
 <g class="person">{"".join(f'<path class="person--{w}" d="{poly(p) if len(p) == 2 else smooth(p)}"/>' for p, w in segs)}<circle class="person__head" fill="currentColor" stroke="none" cx="{head[0]}" cy="{head[1]}" r="7.5"/></g>
 </g>
