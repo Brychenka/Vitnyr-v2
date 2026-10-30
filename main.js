@@ -1888,6 +1888,7 @@
         tick();
       } catch (err) { /* no Asia/Yerevan zone data: the line just reads "Yerevan" */ }
     }
+    initFootClock(foot);
     foot.addEventListener('focusin', function () {
       if (getComputedStyle(foot).position !== 'sticky') return;
       var end = document.documentElement.scrollHeight - window.innerHeight;
@@ -1895,6 +1896,39 @@
       if (lenis) lenis.scrollTo(end, { immediate: true });
       else window.scrollTo(0, end);
     });
+  }
+
+  /* The engraved chess clock above "Your move": the reader's dial (the
+     raised button — Igor has just moved) keeps Yerevan time, read the same
+     way as the small print's clock. Igor's dial is stopped, its hands baked
+     into the SVG. The hands are SVG transform attributes on <g>s inside the
+     drawing, not CSS transforms, so nothing here touches a reveal. Under
+     reduced motion the second hand is hidden (style.css) and the dial moves
+     once a minute. */
+  function initFootClock(foot) {
+    var hands = foot.querySelectorAll('.vig__hand[data-side="you"]');
+    if (!hands.length || !window.Intl) return;
+    var fmt;
+    try {
+      fmt = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Yerevan', hour: 'numeric', minute: 'numeric', second: 'numeric', hourCycle: 'h23'
+      });
+    } catch (err) { return; }
+    var tick = function () {
+      var t = {};
+      fmt.formatToParts(new Date()).forEach(function (p) { t[p.type] = +p.value; });
+      var deg = {
+        h: (t.hour % 12 + t.minute / 60) * 30,
+        m: (t.minute + t.second / 60) * 6,
+        s: t.second * 6
+      };
+      Array.prototype.forEach.call(hands, function (g) {
+        g.setAttribute('transform', 'rotate(' + deg[g.getAttribute('data-hand')].toFixed(1) + ' ' + g.getAttribute('data-c') + ')');
+      });
+      var step = reduce ? 60000 : 1000;
+      setTimeout(tick, step - (Date.now() % step) + 20);
+    };
+    tick();
   }
 
   /* ---------- the specimen reveal ----------

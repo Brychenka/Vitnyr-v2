@@ -5723,3 +5723,46 @@ bolts or make it a free solo. Clipped it: the page's grade is a 7c *redpoint*
 
 **Merged to `main` 2026-10-30; not republished** (Igor: "don't republish"),
 so the live artifact still shows the old rope.
+
+## The vignettes — six small engravings outside §03 (2026-10-30, `feature/vignettes`)
+
+Igor wanted "here and there some nice small features" in the plates' style
+for the rest of the page — engraving, not handwriting (his correction), about
+six, drawing in once. Proposed on a private page first
+(https://claude.ai/artifact/TmnvwkpU63fstB1gfyJPbu); Igor: build all six,
+then he'll say what to remove. **On the branch, not merged.**
+
+- **The six.** Hero: a still life — books (biggest, English first), a
+  Staunton knight on them, a coil of rope (`--ink-target`) and a chalk bag.
+  §01: a runestone cut with the mark, beside the note on the name. §02: a
+  chain under "pointed at the weakest link", one link worn and cracked in
+  `--ink-specimen`. §04: a figure before a cheval glass, above "Which of these
+  is you?". §05: the lesson plate's table with the coach seated and the
+  chair opposite pulled out, under the free-trial lede. Footer: a chess
+  clock at the end of the notes row — the reader's button up, their dial
+  keeping Yerevan time (`initFootClock()` in main.js, same Intl zone as the
+  small print), Igor's dial stopped with its hands baked into the SVG.
+- **Left alone on purpose:** §03 (has the plates), the testimonials (real
+  people's words), the photo view, and mountains (Ararat was dropped).
+- **Generator.** `tools/engraving/vignettes.py NAME` — the plates' helpers
+  and weight classes, no labels. ~130 KB inline for all six (the chain is
+  the heaviest at ~40 KB; thin it first if weight matters).
+- **CSS.** The plates' engraving-weight and `.person` rules now also match
+  `.vig`; `.vig` block after the plates. Sized by height, the SVG's aspect
+  gives the width; every placement is grid/flex/margin. Hero: a third
+  column in `.hero__foot` ≥900px. §01: the two notes and the stone are
+  wrapped in `.origin__coda` (same 1.05fr/1fr split as `.origin__body`).
+  Chain: `preserveAspectRatio="xMidYMid slice"`, weak link centred so phones
+  crop to it. Footer: `.foot__row` wraps `.foot__notes` + the clock; the
+  first try put the clock above the line and made the footer taller than
+  the viewport, which breaks the curtain — the notes row costs ~35px and
+  still fits at 1280×800.
+- **Motion.** Five are `.reveal`s with the plates' clip-path wipe. The clock
+  is not: the pinned footer is geometrically on screen from load, so a wipe
+  would fire unseen — the curtain is its reveal. Reduced motion: finished
+  drawings, second hand hidden, dial steps once a minute. No JS: all six
+  drawn, the running dial at 12:00.
+- Asset URLs bumped to `?v=20261030b`.
+- Verified: 1280 Cream EN and 375 (touch) Charcoal RU, every vignette after
+  its reveal with real frames, the footer fitting the viewport at both,
+  reduced motion and no-JS headless, no console errors, no overflow.
