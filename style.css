@@ -3068,7 +3068,10 @@ html.js .collage .reveal.is-in .collage__slot {
   line-height: 1.06; letter-spacing: -.022em;
 }
 .doors__head p { color: var(--fg2); }
-.doors__hint {
+/* #origin .origin__hint (above) pins the old hint over the readout column at
+   >=900px; the doors' hint is centred over the mark instead, so it needs the
+   same id-level weight to undo that. */
+#origin .doors__hint {
   justify-content: center;
   margin: clamp(32px, 5vw, 56px) 0 clamp(12px, 2vw, 20px);
 }
@@ -3122,7 +3125,7 @@ html.js .collage .reveal.is-in .collage__slot {
 
 @media (min-width: 900px) {
   .doors {
-    --mark-w: clamp(230px, 23vw, 330px);
+    --mark-w: clamp(250px, 26vw, 370px);
     grid-template-columns: minmax(0, 1fr) var(--mark-w) minmax(0, 1fr);
     grid-template-areas:
       "en mark ch"
@@ -3144,7 +3147,7 @@ html.js .collage .reveal.is-in .collage__slot {
   .door--chess { grid-area: ch; justify-self: start; }
   .door--climbing {
     grid-area: cl; justify-self: center; justify-items: center; text-align: center;
-    padding-top: clamp(28px, 3.4vw, 48px);
+    padding-top: clamp(12px, 1.6vw, 24px);
   }
   .door--climbing .door__name { justify-self: center; }
   .door--climbing .door__name::after { transform-origin: center; }
