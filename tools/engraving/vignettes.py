@@ -7,7 +7,7 @@ figure on a --bg halo) at spot size, with no labels. See .vig in style.css.
 still-life (hero), runestone (§01), chain (§02), mirror (§04),
 empty-chair (§05), chess-clock (footer; its hands are turned by main.js)."""
 import math, random, sys, os
-from ink import jitter, smooth, inside
+from ink import jitter, smooth, inside, densify
 
 def f(v): return str(int(round(v)))
 def poly_d(p): return "M" + "L".join(f"{f(x)} {f(y)}" for x, y in p) + "Z"
@@ -134,12 +134,12 @@ class Plate:
 
 # ---------------------------------------------------------------- 1. hero still life
 def still_life():
-    p = Plate(560, 360, 7)
+    p = Plate(600, 360, 7)
     GY = 318
-    p.ruled(10, GY - 4, p.vignette(290, 200, 300, 190, .75))
-    p.ground(GY, 30, 540)
+    p.ruled(10, GY - 4, p.vignette(310, 200, 320, 190, .75))
+    p.ground(GY, 30, 590)
     # cast shadow to the left of everything
-    p.o["shadow"].append(p.hatch([(60, GY), (500, GY), (470, GY - 10), (20, GY - 12)], 0, 2.4))
+    p.o["shadow"].append(p.hatch([(60, GY), (590, GY), (560, GY - 10), (20, GY - 12)], 0, 2.4))
     # books, lying, English first and largest
     y = GY
     for w, h, dx in [(250, 30, 40), (226, 24, 52), (238, 27, 44)]:
@@ -171,23 +171,54 @@ def still_life():
     p.o["line"].append(hd)
     ex, ey = cx - 16*s, top - 84*s
     p.o["dot"].append(f"M{f(ex-2.6)} {f(ey)}a2.6 1.9 0 1 0 5.2 0a2.6 1.9 0 1 0 -5.2 0")
-    # chalk bag behind the coil
-    bx, bw, bt = 446, 64, GY - 88
-    bag = [(bx, GY - 2), (bx + bw, GY - 2), (bx + bw + 3, bt + 14), (bx + bw - 4, bt), (bx + 4, bt), (bx - 3, bt + 14)]
-    p.solid(bag, 75, 2.6, keep=lambda x, yy: x > bx + bw * .45 or yy > GY - 22)
-    p.o["paper"].append(poly_d(ellipse(bx + bw/2, bt + 2, bw/2 - 4, 6)))
-    p.o["line"].append(smooth(ellipse(bx + bw/2, bt + 2, bw/2 - 4, 6)))
-    p.o["line"].append(p.ink([(bx + 20, bt + 4), (bx + 14, bt - 16), (bx + 30, bt - 22)], .4, 4, 10))
     # coil of rope on the ground, in the target ink
-    cx2, cy2 = 400, GY - 16
+    cx2, cy2 = 370, GY - 16
     coil = []
     for k in range(7):
-        rx, ry = 92 - k*7, 22 - k*1.6
+        rx, ry = 74 - k*5.6, 21 - k*1.5
         pts = ellipse(cx2 + k*1.5, cy2 - k*3.2, rx, ry, -10 + k*20, 350 + k*20, 60)
         coil.append(smooth(jitter(pts, p.rng, .5, 6, 20)))
-    p.o["paper"].append(poly_d(ellipse(cx2, cy2 - 8, 94, 30)))
+    p.o["paper"].append(poly_d(ellipse(cx2, cy2 - 8, 76, 29)))
     p.o["coil"].append("".join(coil))
-    p.o["coil"].append(p.ink([(cx2 + 88, cy2 + 4), (cx2 + 112, cy2 + 12), (cx2 + 132, cy2 + 6)], .6, 6, 14))
+    # a pair of climbing shoes beside the coil: downturned, toe to the rope,
+    # the straps in the specimen ink, the one bit of amber in the hero
+    def shoe(tx, s, dy=0):
+        S = lambda pts: [(tx + u*s, GY - dy - v*s) for u, v in pts]
+        sole = [(103, 22), (101, 12), (97, 5), (90, 1), (82, 0), (70, 3), (58, 6), (46, 7), (34, 5), (22, 2), (12, 0),
+                (5, 1), (1, 4), (0, 8), (1, 14)]
+        upper = [(4, 19), (9, 23), (16, 26), (26, 29), (38, 34), (48, 40), (56, 46), (60, 49), (64, 47), (74, 44),
+                 (84, 45), (90, 48), (96, 50), (100, 44), (103, 34)]
+        rand_top = [(2, 12), (10, 10), (22, 9), (34, 11), (46, 13), (58, 12), (70, 9), (82, 7), (92, 9), (99, 14), (103, 22)]
+        return dict(body=S(sole + upper), rand=S(rand_top + sole[1:-1]),
+                    toe=S([(1, 14), (4, 19), (9, 23), (16, 26), (24, 28), (27, 19), (22, 9), (10, 10), (2, 12)]),
+                    heel=S([(84, 7), (92, 9), (99, 14), (103, 22), (103, 34), (100, 44), (95, 41), (93, 28), (89, 15)]),
+                    strap=S([(34, 32), (46, 39), (59, 15), (47, 11)]),
+                    lip=S([(61, 46), (72, 42), (86, 43)]), tab=S([(91, 48), (94, 56), (99, 50)]))
+    def outside_runs(pts, poly):
+        runs, run = [], []
+        for x, y in densify(pts, 2):
+            if poly and inside(poly, x, y):
+                if len(run) > 1: runs.append(run)
+                run = []
+            else: run.append((x, y))
+        if len(run) > 1: runs.append(run)
+        return "".join("M" + "L".join(f"{f(x)} {f(y)}" for x, y in r) for r in runs)
+    def draw(sh, hidden=None):
+        vis = lambda k: (lambda x, yy: not (hidden and inside(hidden, x, yy)) and k(x, yy))
+        rubber = lambda x, yy: inside(sh["rand"], x, yy) or inside(sh["toe"], x, yy) or inside(sh["heel"], x, yy)
+        p.o["paper"].append(poly_d(sh["body"]))
+        p.o["hatch"].append(p.hatch(sh["body"], 70, 3.2, keep=vis(lambda x, yy: not rubber(x, yy) and not inside(sh["strap"], x, yy))))
+        p.o["hatch"].append(p.hatch(sh["rand"], 0, 1.3, keep=vis(lambda x, yy: True)))
+        p.o["hatch"].append(p.hatch(sh["toe"], 25, 1.9, keep=vis(lambda x, yy: not inside(sh["rand"], x, yy))))
+        p.o["hatch"].append(p.hatch(sh["heel"], 100, 1.9, keep=vis(lambda x, yy: not inside(sh["rand"], x, yy))))
+        p.o["weak"].append(p.hatch(sh["strap"], 60, 2.0, keep=vis(lambda x, yy: not inside(sh["rand"], x, yy))))
+        for k in ("body", "rand", "toe", "heel"):
+            p.o["line"].append(outside_runs(sh[k] + sh[k][:1], hidden))
+        p.o["line"].append(outside_runs(sh["lip"], hidden) + outside_runs(sh["tab"], hidden))
+        p.o["weakline"].append(outside_runs(sh["strap"] + sh["strap"][:1], hidden))
+    near = shoe(460, 1.3)
+    draw(shoe(447, 1.22, 13), near["body"])
+    draw(near)
     return p.svg()
 
 

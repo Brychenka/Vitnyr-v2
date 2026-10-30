@@ -5769,3 +5769,18 @@ then he'll say what to remove.
 
 **Merged to `main` 2026-10-30; not republished**, so the live artifact still
 lacks the vignettes (and the clipped rope before them).
+
+## Hero still life — climbing shoes for the chalk bag (2026-10-30, `feature/vignette-shoes`)
+
+Igor couldn't tell what the chalk bag was: with its drawstring hidden it read
+as a can or a box. It is now a pair of downturned climbing shoes, toe to the
+rope: dense-hatched rubber rand, toe cap and heel cup, and each velcro strap
+in the specimen ink, at Igor's request for "a tiny bit of amber". The far
+shoe is clipped by the near one's silhouette (hatch and outline both), since
+the plate layers can't occlude each other. To make room the canvas is 600
+wide instead of 560, and the coil is smaller, moved left, with no tail.
+Asset URLs bumped to `?v=20261030c`. Verified at 1280 (Cream EN, Charcoal
+RU) and 375 touch (both), reduced motion, no console errors or overflow;
+299 passed + the known xfail.
+
+**Merged to `main` 2026-10-30; not republished.**
