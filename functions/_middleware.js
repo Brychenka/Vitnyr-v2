@@ -1,7 +1,8 @@
 // Cloudflare Pages Function. Crawlers and link-preview bots (Yandex, Telegram,
 // LinkedIn) don't run theme.js, so /?lang=ru would look like the English page.
-// For that URL only, rewrite the <head> to Russian at the edge. Every other
-// request passes straight through to the static file.
+// For ?lang=ru on any page (/, /english/, /chess/, /climbing/), rewrite the
+// <head> to Russian at the edge, from the Russian twins that page itself
+// carries. Every other request passes straight through to the static file.
 const SITE = 'https://vitnyrcoach.com';
 
 export async function onRequest(context) {
@@ -22,7 +23,9 @@ async function handle(context, url) {
   if (url.searchParams.get('lang') !== 'ru' || !type.includes('text/html')) return res;
 
   const origin = SITE;
-  const ruUrl = origin + '/?lang=ru';
+  // the page's own path (discipline pages, 2026-10-31), not always "/"
+  const path = url.pathname.replace(/index\.html$/, '');
+  const ruUrl = origin + path + '?lang=ru';
   let title = '', desc = '';
 
   // pass 1: read the Russian twins that index.html already carries

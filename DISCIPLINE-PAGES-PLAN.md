@@ -112,7 +112,53 @@ core, then one line per discipline under a label that links to that page.
 
 ---
 
-## Stage 2 — `/english/` (EN + RU)
+## Stage 2 — `/english/` (EN + RU)  ✅ built on this branch
+
+**As built (2026-10-31)**, where it differs from or adds to the order below:
+
+- **Order:** hero → 01 Mistakes I fix (`#specimen`) → 02 How I coach English (`#method`) →
+  03 Who this is for (`#who`) → 04 How sessions run (`#sessions`) → testimonials (unnumbered,
+  as on home) → bridge → 05 How to start (`#contact`). Mistakes come first: they are the
+  page's proof, and the method reads better once you've seen what it fixes.
+- **Masthead:** on a discipline page the three photo shortcuts become links to the three
+  pages (label *Coaching* / *Направления*), and the current one carries the underline a
+  section link gets when it's in view. The lockup goes home (`/`). The section numerals are
+  this page's own five.
+- **Hero:** the H1 is the line-mask title at a smaller size, and the hero sizes to its
+  content, so the CTA is on the first screen at 1280×800. *Igor Shatsev* in the eyebrow
+  links home: a visible breadcrumb to match the JSON-LD one. The photo is
+  `en-01-anywhere` (*I can teach anywhere*), not the portrait: the portrait stays in
+  contact, so no image appears twice on one page. The club and article frames sit under
+  *How sessions run*, so the English photo group is all here, inline.
+- **Hero CTA** goes straight to Telegram with the English opener. A who-row pick composes
+  onto it too (`updateCta()` targets `.page-cta`).
+- **Method:** each panel is the core sentence plus the English line only (`.mech__here`).
+  The lede is re-cut for English: *If it did, years of films, podcasts and apps would
+  already have done the job.*
+- **Mistakes:** the three specimens and the *I am agree* engraving come across verbatim.
+  New H2: *Your mistakes have deep roots. I'll teach you to unlearn them.* RU fix: *please
+  недостаточно* (one word).
+- **Sessions:** the old §03 closing paragraph, with RU moved from *ты* to *вы* to match the
+  rest of the site, plus three facts (format, where, first lesson).
+- **Contact:** *Message me for a free trial English lesson.* The lede now says *the first
+  lesson is free* instead of *We start with a call*, which matches the dock and the Q4
+  answer (trial lesson only). Igor should confirm this.
+- **Head:** own title and description (RU description carries *репетитор*), og/twitter,
+  hreflang `/english/` + `/english/?lang=ru`, and a JSON-LD WebPage + BreadcrumbList +
+  Service (with the free-trial Offer) pointing at the home page's `#igor` Person. The share
+  image is still the generic card; per-page cards are Stage 5.
+- **Shell:** the masthead, footer, dock and contact are generated from the home page's
+  markup (comments stripped) by a scratch script, then committed as plain HTML.
+  `english/index.html` is the source of truth from here on; a home-page shell edit has to be
+  copied across by hand until Stage 6 decides on an include step.
+- **Pulled forward from Stage 5**, because shipping this page without them would break it:
+  `build.sh` copies `english/` (and `chess/`, `climbing/` once they exist), and the
+  middleware's Russian canonical/og:url now uses the request's own path. Before, it said
+  `/?lang=ru` on every page, so `/english/?lang=ru` would have called itself the home page.
+  The title and description were already read from each page's own `data-head-ru`.
+
+Original order, for reference:
+
 
 Order on the page. Source → treatment:
 

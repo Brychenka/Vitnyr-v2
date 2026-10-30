@@ -1741,7 +1741,7 @@
     // all three are composed here and nowhere else. 2026-09-26: the footer's
     // "Your move" line (.foot__move) carries the same offer, so it's written
     // here too.
-    var targets = document.querySelectorAll('.contact__cta, .dock, .foot__move');
+    var targets = document.querySelectorAll('.contact__cta, .dock, .foot__move, .page-cta');
     var draft = document.querySelector('.contact__draft');
     function updateCta() {
       var l = lang();
