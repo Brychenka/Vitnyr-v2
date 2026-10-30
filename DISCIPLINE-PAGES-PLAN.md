@@ -1,0 +1,234 @@
+# Discipline pages — plan
+
+Branch: `feature/discipline-pages` (worktree `.claude/worktrees/discipline-pages`), cut from
+`origin/main` at 3110e7b on 2026-10-31. Igor's brief, in his words: the home page is the hero,
+then the method, then the interactive logo, centred, leading people to a page per
+discipline; the words are re-cut as a native writer would, in English and Russian, so each
+page carries the weight the old single page did.
+
+This file is the work order. Each stage ends in a state that can be reviewed in a browser,
+and Igor sees it before the next one starts.
+
+---
+
+## The rule that decides where every sentence goes
+
+The old page wrote most blocks as one sentence per discipline, packed together (method
+cards, "Which of these is you?", the §01 readout). The split:
+
+| Layer | What it is | Where it lives |
+|---|---|---|
+| **Core** | The idea with no discipline in it ("A mistake is easiest to fix the second you make it.") | Home, and the top of the matching block on every discipline page |
+| **Discipline** | The example, the specimen, the number, the format | Only on its own page |
+| **Bridge** | One line, near the end of a discipline page, saying the same method runs in the other two | Each discipline page, once |
+
+**The test for a discipline page:** every sentence on `/chess/` must make sense to someone who
+only cares about chess. A "shared" sentence that names the board, the wall *and* the language
+fails it and gets a per-page variant.
+
+**Home keeps the whole picture, sorted rather than mixed:** each method principle shows its
+core, then one line per discipline under a label that links to that page.
+
+---
+
+## Architecture decisions (taken in Stage 1, revisit in Stage 5)
+
+1. **Real URLs:** `/` · `/english/` · `/chess/` · `/climbing/`. Each is `<folder>/index.html`.
+2. **Language stays as it is:** the same dual-language DOM (`data-en`/`data-ru`, `data-l`), and
+   `?lang=ru` per page, with `theme.js` unchanged. No third i18n mechanism, no build step, and
+   the instant language switch survives. Real `/ru/…` paths are a possible later stage, not
+   assumed.
+3. **Shared files:** `style.css`, `theme.js`, `main.js` and `assets/` are referenced by absolute
+   path (`/style.css`) from the sub-pages. `main.js` already returns early when a section is
+   missing, and every new behaviour keeps that contract.
+4. **The masthead and footer are copied into each page**, at four pages. If they drift, a
+   small include step in `build.sh` is the fix (Stage 6 decides).
+5. **The edge function** (`functions/_middleware.js`) currently hardcodes `/?lang=ru`. Stage 5
+   generalises it to any path, so `/chess/?lang=ru` gets its Russian `<head>` for crawlers and
+   link previews.
+
+---
+
+## Stage 1 — Home: hero → method → the mark  ✅ built on this branch
+
+**1.1 Hero** (kept, as Igor asked)
+- Unchanged in look and copy.
+- New: the italic line *English, chess, climbing.* is three real links to the three pages. This
+  is the fastest choice on the site, it's on the first screen, and it gives Google an internal
+  link per page. Hover underlines the word in its stroke's ink (amber, amber, green). An
+  underline is a rule, not text, so the "no accent text under 24px" rule holds.
+- The scroll cue now reads *Choose a discipline ↓* and jumps past the method straight to the
+  mark. People who already know what they want don't have to read theory. People who scroll
+  get the method first, as ordered.
+
+**1.2 §01 The method** (moved up from §02, re-cut)
+- Heading kept: *Deliberate practice, pointed at the weakest link.* The RU heading no longer
+  has English in it: *Осознанная практика, нацеленная на самое слабое звено.*
+- The lede is kept. The RU lede gains the closing sentence the EN had and the RU had lost.
+- Each of the five principles opens to: the core paragraph, then three labelled lines
+  (English · Chess · Climbing), each label linking to that page's method block.
+- Copy changes, all in the commit:
+  - Feedback loops: the unsourced "Tutoring software found the same thing" sentence was
+    removed. Put it back with a named study if there is one.
+  - Load management: "chilling" became "coasting", which keeps the register.
+  - Feedback loops and Retrieval each got a new English line. They had no English example,
+    because English was the default. **Igor to confirm these two lines describe how he
+    actually teaches.**
+  - RU names: *Интерливинг* → *Чередование*, *Распознавание закономерностей* →
+    *Поиск закономерностей*, *Циклы обратной связи* → *Обратная связь в моменте*.
+  - RU climbing: *из одних зацепок* lost the point; it is now *из одних мизеров*.
+
+**1.3 §02 Three disciplines: the mark** (was §01, now centred)
+- The mark sits in the centre, large. Each stroke has its door in its own corner: English at the
+  top-left arm, chess at the top-right arm, climbing under the stem. Every door is a link with
+  the discipline's name in display type, one line on who it's for, and its credentials in
+  mono.
+- Hovering or focusing a stroke or a door lights that stroke, dims the other two, and shows the
+  stroke's sigil, using the paint logic the mark already had. A click goes to the page. There is
+  no more "commit" state on the home page.
+- The draw-in on first view and the idle hint (the strokes light in turn until someone engages)
+  are kept.
+- The readout table (credential / years / achieved / common problems) leaves the home page.
+  Each line moves to its own discipline page's hero (Stages 2–4).
+- The handwritten *Choose your discipline* stays, centred above the mark.
+- The Vitnyr etymology stays under the mark, because that is where it explains the mark. RU
+  grammar fixed (*напутствует поиску* → *призыв искать*).
+- Phones: the mark on top, then the three doors as a big-type index list.
+
+**1.4 What follows the mark**
+- *In their words* (testimonials) and *How to start* (now §03) are unchanged, and so are the
+  footer and the phone dock.
+- §03 Specimens and §04 Who this is for **leave the home page**. Their content moves, split by
+  discipline, to Stages 2–4. Until then it lives on `main` and in git history.
+- Masthead section links: 01 Method · 02 Disciplines · 03 How to start.
+- The progress hairline's ink switch now flips at the mark (it used to flip at §04, which is
+  gone from home).
+
+**1.5 Known gaps at the end of Stage 1**
+- `/english/`, `/chess/` and `/climbing/` don't exist yet, so the doors and the hero links 404
+  locally until Stages 2–4.
+- The Playwright suite still describes the old page. Specimen and who-row tests will fail on
+  home. They move with their content (Stage 6).
+
+---
+
+## Stage 2 — `/english/` (EN + RU)
+
+Order on the page. Source → treatment:
+
+1. **Hero.**
+   - Eyebrow: *Igor Shatsev / English / Yerevan & online*.
+   - H1: the English specimen heading, re-cut: EN *You know English far better than you speak
+     it.* / RU *Вы знаете английский гораздо лучше, чем на нём говорите.* This comes from the
+     JSON-LD's own description, which until now was the only place it existed.
+   - Stand-first: the §03 English intro ("Russian speakers don't make random mistakes…").
+   - Credential strip (moved from the §01 readout): *C2 · IELTS 9 · 10 years · 100+ one-on-one
+     clients*.
+   - CTA, *Book a free trial lesson*, plus the portrait.
+2. **Mistakes I fix** (eyebrow *Specimens*). The three English specimens, verbatim, with their
+   reveal, plus the common-problems line as a short list under them.
+3. **How I coach English.** The five principles: core sentence plus the English line only. One
+   anchor, `#method`, so the home page's labels land here.
+4. **Is this you?** The four who-rows, cut to their English clause, and re-phrased where the
+   clause was a list:
+   - Plateau → *Years of grammar drills and the English still freezes under pressure.*
+   - Stress → *You understand the conversation, but the words don't come when it counts.*
+   - One skill carrying the rest → *Your reading is far ahead of your listening and speaking.*
+   - Backing off → *The conversation gets hard and you switch back to Russian.*
+
+   Each row's Telegram prefill names English.
+5. **How sessions run.** The §03 English session paragraph (one-on-one or groups, built around
+   you, online or Yerevan). The free trial gets one name used everywhere (**Igor decides:
+   lesson or call, and how long**).
+6. **In their words.** All nine testimonials. They are all English learners, so this is where
+   they belong.
+7. **Bridge.** *I coach chess and climbing the same way: find the habit, fix it in the moment,
+   bring it back cold a week later.* → links.
+8. **CTA + footer.** The Telegram opener names English: *Hi! I'd like a free trial English
+   lesson.*
+9. **Photos.** The English collage group, inline (three frames).
+
+Head: title *Spoken English coaching for Russian speakers in Yerevan and online — Igor
+Shatsev*, its own description (RU twin with *репетитор*, per Igor's rule that the word lives
+only in snippets and JSON-LD), its own share card, a Service JSON-LD node and breadcrumbs.
+
+## Stage 3 — `/chess/`
+
+Same skeleton.
+- **H1:** EN *Your rating has stalled. The pattern behind it hasn't.* / RU *Рейтинг встал. А
+  паттерн, который его держит, — нет.* The §03 chess heading ("procrastination device") moves
+  into the stand-first, softened to *can turn into*. **Igor decides whether he wants the sharper
+  original.**
+- **Credential strip:** *Rated 2100 · 3 years coaching · 30 students to 1800+ · 5,000+ analysed
+  games*.
+- **Specimens:** the three chess specimens. Fix: *Calculating only 2 moves* → *two moves*. RU
+  common-problems list moved to second person, and *враг* → *соперник*.
+- **Format:** 60 minutes, Lichess or Chess.com plus a call, reviewing 2–3 recent games against
+  the pattern bank.
+- **Who-rows (chess clause):** *Years of rated games and the rating's flat.* · *You see the move
+  in analysis, not over the board.* · *Your openings are far ahead of your endgames.* · *The
+  position gets sharp and you head for a safe trade.*
+- **Proof:** no chess testimonials exist yet. The section ships as a marked placeholder
+  (`.ch__todo`), never an invented quote. Igor to collect 2–3.
+- **Telegram opener:** *Hi! I'd like a free trial chess lesson. My Lichess/Chess.com
+  username:*
+- **Igor decides:** adults only? (Most chess search in Yerevan is parents.)
+
+## Stage 4 — `/climbing/`
+
+Same skeleton.
+- **H1:** EN *Most plateaus are habits you can't see yet.* / RU *Большинство плато — это
+  привычки, которых вы пока не видите.* This fixes the old heading, which in both languages said
+  the habits *couldn't* be unlearned.
+- **Credential strip:** *7c redpoint · 7C Kilter · 2 years coaching · 13 climbers to 7a in a
+  year*.
+- **Format paragraph re-cut.** The "overtraining everything else…" sentence becomes *In most
+  hobbies, overtraining costs you motivation. In climbing it costs you a tendon, and you find
+  out when it's already too late.*
+- **Who-rows (climbing clause):** *Years of gym sessions and the grade hasn't moved.* · *You know
+  the crux, but your body doesn't do it on the lead.* · *Your grip strength is far ahead of your
+  footwork.* · *The move gets scary and you climb down.* RU uses *ключ* to match *crux*
+  (the old RU said *бета*).
+- **Proof:** placeholder until real quotes exist.
+- **Telegram opener:** *Hi! I'd like a free trial climbing session. I climb around…*
+
+## Stage 5 — Google and old links
+
+- **Sitemap:** 2 URLs → 8 (four pages × EN/RU), each pair with hreflang.
+- **`_middleware.js`:** RU `<head>` rewrite for any path; canonical and og:url built from the
+  request path; a per-page RU share card.
+- **Old hash links redirect** (a small script at the top of `/`):
+  - `/#english`, `/#chess`, `/#climbing` → the page.
+  - `/#specimen-chess-tilt` → `/chess/#specimen-chess-tilt`, and the same for every specimen.
+  - `/#who`, `/#specimen` → the home doors.
+- **Home head:** title *Igor Shatsev — English, chess and climbing coach in Yerevan | Vitnyr*
+  (brand query). The disciplines' own queries move to their pages.
+- **`build.sh`** copies the three new folders into `dist/`.
+- **After deploy (Igor):** resubmit the sitemap in Search Console and Yandex Webmaster,
+  request indexing for the three new URLs, and point profiles at the specific page (Lichess →
+  `/chess/`, Instagram → `/climbing/`, LinkedIn → `/english/`).
+
+## Stage 6 — Polish, tests, docs
+
+- **Cross-document View Transitions** (`@view-transition { navigation: auto }`): the stroke
+  you click grows into the top of the discipline page. Chrome and Safari animate; others just
+  navigate. Motion stays additive.
+- **The photos view:** retire the global `#collage` overlay in favour of each page's own
+  group, or keep it as `/photos/` (**Igor decides**).
+- **Tests:** split `tests/` per page, move the specimen and who-row tests to their pages, and
+  add tests for door links, hreflang and the redirect map.
+- **Docs:** CLAUDE.md's "one file" rule, the §-numbering and the stale "no hosting yet"
+  line get updated. BUILD-NOTES entry.
+- **The claude.ai artifact can't hold four pages.** Retire it, or keep it as a home-only
+  snapshot (**Igor decides**).
+
+## Things Igor hasn't been asked yet (collected)
+
+1. Is the free trial a lesson or a call, and how long? One name everywhere.
+2. Show prices, or a "from"?
+3. Chess: adults only?
+4. Sharp chess heading ("procrastination device"), or softened?
+5. The two new English method lines (Feedback loops, Retrieval): true to how you teach?
+6. "available 24/7" on Telegram: keep, or say what's true?
+7. Photos: one global view, or each page's own?
+8. Artifact: retire, or keep as a snapshot?

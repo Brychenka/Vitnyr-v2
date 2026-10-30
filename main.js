@@ -81,7 +81,10 @@
      offset is measured once and re-measured on resize and language switch,
      not read on every scroll frame. */
   var progressEl = document.querySelector('.progress');
-  var INK_SWITCH_EL = document.getElementById('who');
+  // Discipline pages, Stage 1 (2026-10-31): #who left the home page; there
+  // the switch lands at the mark (#origin), where the page stops explaining
+  // the method and starts sending people to a discipline.
+  var INK_SWITCH_EL = document.getElementById('who') || document.getElementById('origin');
   var inkSwitchY = 0;
   function scrollPos() { return lenis ? lenis.scroll : (window.scrollY || 0); }
   function measureInkSwitch() {
@@ -724,7 +727,12 @@
     var hits = document.querySelectorAll('.origin__hit');
     var parts = document.querySelectorAll('.glyph__part');
     var panel = document.querySelector('.origin__panel');
-    var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : [];
+    // Stage 1 (2026-10-31): on the home page the readout is gone and the
+    // three .door links take its place as the mark's labelled partners.
+    var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : document.querySelectorAll('.door');
+    // Doors navigate; nothing is ever "committed" there, so the mark rests
+    // with all three strokes at full ink instead of one lit and two dimmed.
+    var navigates = !panel;
     // §03's text switch (2026-09-23): three more controls on the same
     // committed state, treated exactly like the readout rows below.
     var switchItems = document.querySelectorAll('.specimen-switch__item');
@@ -761,7 +769,7 @@
     // alternatives. committed tracks whichever discipline was last actually
     // clicked/tapped/entered; it starts on 'english' to match the HTML's own
     // default aria-pressed="true" on that row.
-    var committed = 'english';
+    var committed = navigates ? null : 'english';
 
     // The visual half of activation — glyph active/dim plus which panel
     // row's name is lit — shared by preview, commit, and the idle hint
@@ -771,7 +779,7 @@
       parts.forEach(function (el) {
         var on = el.dataset.discipline === name;
         el.classList.toggle('is-active', on);
-        el.classList.toggle('is-dim', !on);
+        el.classList.toggle('is-dim', !!name && !on);
       });
       panelItems.forEach(function (el) {
         el.classList.toggle('is-active', el.dataset.discipline === name);
@@ -798,7 +806,7 @@
       markParts.forEach(function (el) {
         var on = el.dataset.discipline === name;
         el.classList.toggle('is-active', on);
-        el.classList.toggle('is-dim', !on);
+        el.classList.toggle('is-dim', !!name && !on);
       });
       markSigils.forEach(function (el) {
         el.classList.toggle('is-preview', el.dataset.discipline === name);
@@ -914,6 +922,8 @@
     // pattern this copies, pushState swapped for replaceState because this is
     // a selector, not a jump (a correction to what TRIFECTA-C-MARK-NAV.md's
     // C1 recommends for the jump case).
+    function press(el, on) { if (el.tagName === 'BUTTON') el.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+
     var HASH_NAMES = ['english', 'chess', 'climbing'];
     // DP8 (DESIGN-PASS-III.md): a specimen permalink's id names no discipline
     // directly (`#specimen-chess-calculation`), but sits inside a
@@ -951,13 +961,13 @@
       syncHash(name);
       sparkSigil(name);
       hits.forEach(function (el) {
-        el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
+        press(el, el.dataset.discipline === name);
       });
       panelItems.forEach(function (el) {
-        el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
+        press(el, el.dataset.discipline === name);
       });
       switchItems.forEach(function (el) {
-        el.setAttribute('aria-pressed', el.dataset.discipline === name ? 'true' : 'false');
+        press(el, el.dataset.discipline === name);
       });
     }
 
@@ -976,13 +986,13 @@
     updateSpecimens(committed);
     positionMarker(committed, false);
     hits.forEach(function (el) {
-      el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
+      press(el, el.dataset.discipline === committed);
     });
     panelItems.forEach(function (el) {
-      el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
+      press(el, el.dataset.discipline === committed);
     });
     switchItems.forEach(function (el) {
-      el.setAttribute('aria-pressed', el.dataset.discipline === committed ? 'true' : 'false');
+      press(el, el.dataset.discipline === committed);
     });
 
     // The reader lands *inside* the readout, not merely near it — scroll
@@ -1017,7 +1027,7 @@
 
     function wire(el) {
       var name = el.dataset.discipline;
-      el.addEventListener('click', function () { commit(name); });
+      if (el.tagName !== 'A') el.addEventListener('click', function () { commit(name); });
       el.addEventListener('focus', function () { preview(name); previewSigil(name); });
       el.addEventListener('blur', function () { preview(committed); previewSigil(null); });
       if (finePointer) {
