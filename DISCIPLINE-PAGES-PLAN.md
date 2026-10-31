@@ -300,7 +300,36 @@ Same skeleton.
 - **Proof:** placeholder until real quotes exist.
 - **Telegram opener:** *Hi! I'd like a free trial climbing session. I climb around…*
 
-## Stage 5 — Google and old links
+## Stage 5 — Google and old links  ✅ built on this branch
+
+**As built (2026-10-31):**
+
+- **Sitemap:** eight URLs (four pages × EN/RU), each listing en, ru and x-default.
+  `robots.txt`'s comment updated to match.
+- **Old links:** a render-blocking script in the home page's `<head>` (beside the
+  `#collage` one) sends `/#english`, `/#chess`, `/#climbing` to the page, and every
+  specimen permalink (`#specimen-copula`, `#specimen-chess-tilt`, …) to its page with the
+  hash kept, using `location.replace` so the dead URL doesn't sit in history. `?lang` is
+  carried across. `/#specimen` and `/#who` are rewritten in place to `/#origin` (the
+  doors). Verified: all nine specimen targets land clear of the masthead.
+- **Share cards:** `assets/share/share-card.html` takes `?page=english|chess|climbing`
+  and renders that page's H1, credentials and a discipline tag (amber, green for
+  climbing). Six new exports: `og-english(-ru).png`, `og-chess(-ru).png`,
+  `og-climbing(-ru).png`. The home cards are untouched.
+- **Edge function:** the Russian share image is now the page's own `og:image` with
+  `-ru` added, so every page gets its own Russian card. (Path-based canonical and og:url
+  landed in Stage 2.)
+- **Home head:** title leads with the name (*Igor Shatsev — English, Chess & Climbing
+  Coach in Yerevan | Vitnyr*, RU twin to match). The JSON-LD's three Services carry the
+  `@id` and `url` of their page's Service node, so the Person on `/` and the Service on
+  each page are one entity to Google.
+- **`build.sh`** already copies the three folders (Stage 2).
+
+Still Igor's, after deploy: resubmit the sitemap in Search Console and Yandex
+Webmaster, request indexing for the three new URLs, and point profiles at the matching
+page (Lichess → `/chess/`, Instagram → `/climbing/`, LinkedIn → `/english/`).
+
+Original plan, for reference:
 
 - **Sitemap:** 2 URLs → 8 (four pages × EN/RU), each pair with hreflang.
 - **`_middleware.js`:** RU `<head>` rewrite for any path; canonical and og:url built from the

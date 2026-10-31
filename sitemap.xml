@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Four pages x two languages (discipline pages, Stage 5, 2026-10-31). Each
+     language URL lists both alternates plus x-default, as Google asks. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
@@ -12,5 +14,41 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/?lang=ru"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/english/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/english/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/english/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/english/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/english/?lang=ru</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/english/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/english/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/english/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/chess/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/chess/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/chess/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/chess/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/chess/?lang=ru</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/chess/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/chess/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/chess/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/climbing/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/climbing/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/climbing/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/climbing/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/climbing/?lang=ru</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/climbing/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/climbing/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/climbing/"/>
   </url>
 </urlset>

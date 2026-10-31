@@ -1,4 +1,4 @@
-# Sitemap for https://vitnyrcoach.com/ (one page, two language URLs).
+# Sitemap for https://vitnyrcoach.com/ (four pages, two language URLs each).
 User-agent: *
 Allow: /
 

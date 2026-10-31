@@ -3,14 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-head-ru="Английский, шахматы и скалолазание в Ереване — коуч Igor Shatsev | Vitnyr">English, Chess &amp; Climbing Coach in Yerevan — Igor Shatsev | Vitnyr</title>
+<title data-head-ru="Igor Shatsev — коуч по английскому, шахматам и скалолазанию в Ереване | Vitnyr">Igor Shatsev — English, Chess &amp; Climbing Coach in Yerevan | Vitnyr</title>
 <!-- 2026-09-23: title/description exist in both languages. Crawlers read
      the static EN pair; theme.js swaps in the data-head-ru pair (and html[lang])
      on a Russian load, so ?lang=ru renders with its own title and snippet.
      Titles lead with the query rather than the brand, and name all three
      disciplines (English first, per the Weighted positioning) so a search
      for a chess or climbing coach in Yerevan can land here too — Igor's
-     call, 2026-09-23. "репетитор" is the word Russian searchers actually type, but Igor
+     call, 2026-09-23. 2026-10-31 (discipline pages, Stage 5): the title now
+     leads with the name, because the home page answers the brand query;
+     each discipline's own query moved to /english/, /chess/, /climbing/.
+     "репетитор" is the word Russian searchers actually type, but Igor
      doesn't want it on the page itself — so it lives only in the RU
      description (search snippet) and the JSON-LD, never in visible copy. -->
 <meta name="description" content="Igor Shatsev coaches English, chess and climbing in Yerevan and online. English: 10 years, 100+ one-on-one clients. Chess: rated 2100, 30 students brought to 1800+. Climbing: 7c redpoint, 7C boulder." data-head-ru="Igor Shatsev — коуч и репетитор по английскому, тренер по шахматам и скалолазанию в Ереване и онлайн. Английский: 10 лет, больше ста учеников. Шахматы: рейтинг 2100, 30 учеников до 1800+. Скалолазание: 7c, 7C.">
@@ -107,6 +110,8 @@
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
+            "@id": "https://vitnyrcoach.com/english/#service",
+            "url": "https://vitnyrcoach.com/english/",
             "name": "English coaching",
             "alternateName": "Репетитор по английскому",
             "serviceType": "English coaching",
@@ -118,6 +123,8 @@
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
+            "@id": "https://vitnyrcoach.com/chess/#service",
+            "url": "https://vitnyrcoach.com/chess/",
             "name": "Chess coaching",
             "alternateName": "Тренер по шахматам",
             "serviceType": "Chess coaching",
@@ -129,6 +136,8 @@
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
+            "@id": "https://vitnyrcoach.com/climbing/#service",
+            "url": "https://vitnyrcoach.com/climbing/",
             "name": "Climbing coaching",
             "alternateName": "Тренер по скалолазанию",
             "serviceType": "Climbing coaching",
@@ -162,6 +171,23 @@
    main page for a frame and then jumps. All other routing is in main.js;
    with JS off this class is never set and #collage is just the last section. */
 if (location.hash === '#collage') document.documentElement.classList.add('collage-open');
+
+/* Old links (discipline pages, Stage 5, 2026-10-31). Before the split, every
+   discipline and specimen lived on this page behind a hash: #chess,
+   #specimen-chess-tilt and so on, shared in chats and saved in bookmarks.
+   Those now live on their own pages, so send the reader there before first
+   paint, keeping ?lang. #specimen and #who no longer exist here at all;
+   they land on the doors (#origin) instead of the top of the page. */
+(function () {
+  var id = location.hash.slice(1);
+  if (!id) return;
+  var page = null, hash = '';
+  if (id === 'english' || id === 'chess' || id === 'climbing') page = id;
+  else if (/^specimen-(reflexive|copula|register)$/.test(id)) { page = 'english'; hash = '#' + id; }
+  else if (/^specimen-(chess|climbing)-[a-z]+$/.test(id)) { page = id.split('-')[1]; hash = '#' + id; }
+  if (page) { location.replace('/' + page + '/' + location.search + hash); return; }
+  if ((id === 'specimen' || id === 'who') && history.replaceState) history.replaceState(null, '', location.pathname + location.search + '#origin');
+})();
 </script>
 </head>
 <body>
