@@ -255,7 +255,34 @@ Same skeleton.
   username:*
 - **Igor decides:** adults only? (Most chess search in Yerevan is parents.)
 
-## Stage 4 — `/climbing/`
+## Stage 4 — `/climbing/`  ✅ built on this branch
+
+**As built (2026-10-31):**
+
+- **Order:** the same as `/chess/`, with no testimonials block (an HTML `PLACEHOLDER`
+  comment marks the spot until real climbing quotes exist).
+- **Hero:** H1 as planned (EN *Most plateaus / are habits you / can't see yet.*, RU
+  *Большинство плато — / это привычки, которых / вы пока не видите.*). Stand-first re-cut
+  from the old lede: fear, old injuries and undertraining each leave a habit behind. The
+  eyebrow says *Yerevan & over video*, not *online*, because that is how climbing sessions
+  run. Credentials: 7c redpoint, indoor · 7C on the Kilter Board · 13 climbers to 7a in a
+  year · 2 years. Photo: `climb-07-coaching` (Igor coaching at the wall).
+- **Habits I fix:** H2 *Three habits, and none of them is weak fingers.* / *Три привычки — и
+  ни одна не про слабые пальцы.* Specimens verbatim from `origin/main` with these fixes:
+  RU label *Перехват из страха* → *Пережим из страха* (перехват is a re-grip); RU label
+  *Импровизирует…* → *Импровизируешь связку на трассе* (the only third-person label among
+  nine); two RU correct-lines smoothed (*ровно с той силой, которая нужна…*, *руки прямые и
+  нужны только для баланса*); the beta explanation re-cut in both languages.
+- **Method:** chess-style re-cut lede (*Mileage doesn't build skill. If it did, years in the
+  gym would already have got you there.*), core plus climbing line per principle.
+- **Who:** the four planned climbing clauses; RU uses *ключ* and *нижняя страховка*.
+- **Sessions:** H2 *Technique, route-reading, and your head on lead.* The tendon sentence is
+  re-cut as planned. Facts: one-on-one or group / gym in Yerevan or over video / first
+  session free. Photos: `climb-04-crimp`, `climb-06-wide`.
+- **Wording:** climbing says *session* where English and chess say *lesson* (CTA, facts,
+  Telegram opener, JSON-LD offer).
+
+Original order, for reference:
 
 Same skeleton.
 - **H1:** EN *Most plateaus are habits you can't see yet.* / RU *Большинство плато — это
