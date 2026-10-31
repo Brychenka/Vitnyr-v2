@@ -198,7 +198,42 @@ Head: title *Spoken English coaching for Russian speakers in Yerevan and online 
 Shatsev*, its own description (RU twin with *репетитор*, per Igor's rule that the word lives
 only in snippets and JSON-LD), its own share card, a Service JSON-LD node and breadcrumbs.
 
-## Stage 3 — `/chess/`
+## Stage 3 — `/chess/`  ✅ built on this branch
+
+**As built (2026-10-31)**, where it differs from or adds to the order below:
+
+- **Order:** the same as `/english/`: hero → 01 Patterns I fix → 02 How I coach chess →
+  03 Who this is for → 04 How sessions run → bridge → 05 How to start. There is no
+  testimonials block: none from chess students exist, and the plan's `.ch__todo` class no
+  longer exists in the CSS, so instead of a visible placeholder the page carries an HTML
+  `PLACEHOLDER` comment where the quotes go. A visitor never sees an empty slot.
+- **Hero:** EN H1 as planned. RU H1 re-cut to *Рейтинг встал. / А то, что его держит, /
+  никуда не делось.*: the planned *А паттерн… — нет* read as a calque. Stand-first carries
+  the softened procrastination line (*can turn from learning into a way of putting it off*).
+  **The sharper original is still Igor's call.** Credentials: 2100 · 30 students brought to
+  1800+ · 3 years · 5,000+ analysed games. Photo: `chess-01-board`.
+- **Patterns I fix:** H2 *The same three mistakes, at every rating.* / *Одни и те же три
+  ошибки — на любом рейтинге.* The lede now names the three specimens that are actually on
+  the page (the old lede described an earlier set). Specimens verbatim from `origin/main`
+  with two fixes: RU *насмотрености* → *насмотренности*, and the tilt specimen's
+  explanation re-cut in both languages (*A pawn down, a quiet game drifts into a lost
+  endgame…*), because the old sentence said losing the pawn itself put you in a lost
+  endgame. Permalink ids are unchanged, so Stage 5's redirect map still holds.
+- **Method:** core sentence plus the chess line only; lede re-cut for chess (*More games
+  don't build skill. If they did, a few thousand blitz games would already have got you
+  there.*). The home page's method labels link to `/chess/#method`, which now resolves.
+- **Who:** the four planned chess clauses, each with its own Telegram prefill.
+- **Sessions:** H2 *Your games, read against five thousand others.* Lede is the old §03
+  chess paragraph re-cut; facts are 60 minutes / Lichess or Chess.com plus a call, or in
+  Yerevan / first lesson free. Photos: `chess-04-reset`, `chess-09-cascade`.
+- **Telegram opener:** *Hi! I'd like to book a free trial chess lesson.* The username ask
+  moved into the contact lede (*Send me your Lichess or Chess.com username…*): `updateCta()`
+  appends a who-row pick after the opener with ` — `, so an opener ending in *username:*
+  would have read *username: — My rating has been flat…*.
+- **Head:** own title, description (RU twin), og/twitter, hreflang, and WebPage +
+  BreadcrumbList + Service JSON-LD, as on `/english/`.
+
+Original order, for reference:
 
 Same skeleton.
 - **H1:** EN *Your rating has stalled. The pattern behind it hasn't.* / RU *Рейтинг встал. А
