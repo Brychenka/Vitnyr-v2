@@ -405,3 +405,25 @@ Original plan, for reference:
 6. "available 24/7" on Telegram: keep, or say what's true?
 7. Photos: one global view, or each page's own?
 8. Artifact: retire, or keep as a snapshot?
+
+### Igor's answers (2026-10-31)
+
+1. **Trial: 30 minutes.** Named "trial lesson" everywhere ("trial session" on `/climbing/`);
+   the sessions facts row reads *Trial lesson: 30 minutes, free, no strings attached*, the
+   contact ledes and meta descriptions say the same, and home's "We start with a call" became
+   "We start with a 30-minute trial lesson". Regular sessions stay 60 minutes.
+2. **No prices.** Nothing added.
+3. **Chess: kids and adults.** The sessions lede, meta description and Service JSON-LD say
+   *kids and adults under 1800*, and a fifth who-row speaks to parents (*You're looking for a
+   coach for your child*, own Telegram prefill).
+4. **Sharp chess line.** The stand-first opens with the original §03 sentence verbatim, EN
+   and RU (*A rating plateau is when chess stops being about learning and becomes a
+   procrastination device.*). The H1 is unchanged.
+5. **Chess/climbing testimonials:** Igor asked for a stand-in quote until real ones arrive.
+   Not done: an invented review on a live page would be the first fabricated claim on the
+   site (Real material only, CLAUDE.md) and reads to a visitor as a real student's words.
+   The PLACEHOLDER comments stay; the slot is filled the day real quotes come in.
+6. Still open (not asked this round).
+7. **Photos view:** Igor asked for a recommendation; keep the home gallery as it is.
+8. **Artifact:** the artifact host now serves extra pages, so the four-page site can be
+   published to the same URL with root-relative links rewritten. Done at merge time.
