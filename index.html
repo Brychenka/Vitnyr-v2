@@ -163,8 +163,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&family=Marck+Script&display=swap">
-<link rel="stylesheet" href="style.css?v=20261030c">
-<script src="theme.js?v=20261030c"></script>
+<link rel="stylesheet" href="style.css?v=20261031a">
+<script src="theme.js?v=20261031a"></script>
 <script>
 /* Render-blocking, like theme.js: if the URL already points at the collage,
    mark the document open BEFORE first paint so a deep link never shows the
@@ -746,6 +746,20 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <span class="door__line" data-l="ru">Для тех, кто лезет до 7a и застрял на одной категории.</span>
       <span class="door__facts" data-en="7c redpoint · 7C Kilter · 13 climbers to 7a in a year" data-ru="7c редпоинт · 7C Kilter · 13 скалолазов до 7a за год">7c redpoint · 7C Kilter · 13 climbers to 7a in a year</span>
       <span class="door__go" aria-hidden="true"><svg viewBox="0 0 26 8" aria-hidden="true"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg></span>
+    </a>
+  </div>
+  <!-- Entry to the photographs view (#collage), back on the home page after
+       Stage 1 dropped §03 with it: the doors above lead to one discipline,
+       this opens all of them. Same markup and router hook as before
+       (data-collage-open, initCollageView in main.js); a plain #collage
+       anchor with JS off. -->
+  <div class="proof reveal">
+    <a class="proof__link" href="#collage" data-collage-open data-magnetic>
+      <span class="proof__text" data-en="See me at work" data-ru="Посмотреть меня в деле">See me at work</span>
+      <span class="proof__arrow" aria-hidden="true">
+        <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        <svg aria-hidden="true" class="proof__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+      </span>
     </a>
   </div>
   <div class="origin__coda">
@@ -1572,6 +1586,6 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-<script src="main.js?v=20261030c"></script>
+<script src="main.js?v=20261031a"></script>
 </body>
 </html>

@@ -5784,3 +5784,51 @@ RU) and 375 touch (both), reduced motion, no console errors or overflow;
 299 passed + the known xfail.
 
 **Merged to `main` 2026-10-30; not republished.**
+
+## Discipline pages — home plus `/english/`, `/chess/`, `/climbing/` (2026-10-31, `feature/discipline-pages`)
+
+Igor's brief: the home page is the hero, then the method, then the mark,
+centred, sending people to a page per discipline; the copy re-cut in both
+languages so each page carries the weight the single page did. The work
+order, with an "as built" note per stage and the questions still open, is
+`DISCIPLINE-PAGES-PLAN.md`. In short:
+
+- **Stage 1, home.** Hero → method → the mark with three doors. The method's
+  examples are sorted under a label per discipline that links to that page's
+  `#method`. The mark's strokes and the doors are links; nothing is committed
+  on home any more, so the mark rests with all three strokes lit.
+- **Stages 2–4, the pages.** One skeleton: hero (own H1, credentials, a free
+  trial CTA, a photo) → specimens → method (core sentence + that discipline's
+  line) → who-rows (re-cut per discipline, own Telegram prefills) → sessions
+  → bridge (the one line naming the other two) → contact. Only `/english/`
+  has testimonials; chess and climbing carry a `PLACEHOLDER` comment until
+  real quotes exist. RU fixes made on the way are listed per stage in the plan.
+- **Stage 5, Google and old links.** Sitemap of eight URLs; per-page share
+  cards (`share-card.html?page=`); the edge function's canonical, og:url and
+  RU card follow the request path; the home page's `<head>` redirects old
+  `#chess` / `#specimen-chess-tilt`-style links to their page before first
+  paint, and a cold-loaded specimen permalink on a discipline page now lands
+  on the specimen and focuses it (`initSpecimenPermalinks`).
+- **Stage 6.** The "See me at work" door into the photos view is back on
+  home, under the doors (Stage 1 had dropped it with §03, which left the view
+  reachable only from the masthead icons and broke 45 tests). Tests: the
+  `open_site` fixture takes `path=`; specimen and who-row tests moved to the
+  pages; the commit/readout tests became door and redirect tests;
+  `tests/test_pages.py` covers each page's head, share card, JSON-LD,
+  sitemap, masthead, bridge and "the rule". Cross-document View Transitions
+  (see below). CLAUDE.md updated (four pages, live hosting, the superseded
+  one-file rule).
+
+The pages are generated once from the home page's markup by a scratch
+script and then committed as plain HTML; from here on each `index.html` is
+its own source, and a shared-shell change (masthead, footer, contact) has to
+be copied to all four by hand.
+
+Verified: all four pages at 1280 (Cream EN, Charcoal RU) and 375 touch
+(Charcoal EN, Cream RU) under reduced motion, no overflow, no hidden reveals,
+no console errors; specimen landing measured with motion on and off at both
+widths; `build.sh` produces `dist/` with the three folders. Suite: 331 passed
++ the known xfail (`specimen-register`), in about 7½ minutes.
+
+**Not merged, not pushed, artifact not republished** (Igor decides on the
+artifact; see the plan's Stage 6).

@@ -93,100 +93,30 @@ def test_every_reveal_eventually_resolves_visible(open_site):
     assert stuck == 0
 
 
-def test_origin_mark_keyboard_focus_previews_without_committing(open_site):
-    """Trifecta Order D / Stage D2 (2026-09-15): focus is now a PREVIEW, not
-    a selection — Igor's brief split "hover" from "click" into two feedback
-    levels, so tabbing to a hit-region lights the stroke and the readout
-    row's name but must not move the marker or touch aria-pressed; only a
-    commit (see the Enter test below) does that. Replaces
-    test_origin_mark_keyboard_focus_reveals_its_panel, which encoded the old
-    model where focus alone counted as a selection."""
+def test_door_keyboard_focus_previews_its_stroke(open_site):
+    """Discipline pages, Stage 1 (2026-10-31): the readout became three doors
+    and the mark's strokes became links, so nothing is committed on the home
+    page any more. What survives of D2 is the preview: tabbing to a door
+    lights its stroke, dims the other two, and leaves aria-pressed alone."""
     page, _ = open_site()
-    btn = page.locator('#origin .origin__hit[data-discipline="chess"]')
-    btn.focus()
+    door = page.locator('#origin .door[data-discipline="chess"]')
+    door.focus()
     page.wait_for_timeout(200)
-    assert btn.get_attribute("aria-pressed") == "false"
     assert page.locator("#origin .glyph__part--right").evaluate("el => el.classList.contains('is-active')")
-    item = page.locator('.origin__panel-item[data-discipline="chess"]')
-    assert item.evaluate("el => el.classList.contains('is-active')")
-    assert item.get_attribute("aria-pressed") == "false"
+    assert page.locator("#origin .glyph__part--left").evaluate("el => el.classList.contains('is-dim')")
+    assert door.evaluate("el => el.classList.contains('is-active')")
+    assert door.get_attribute("aria-pressed") is None
 
 
-def test_origin_mark_enter_commits_and_slides_the_marker(open_site):
-    """The commit half of D2's two-gesture model: Enter — a real <button>'s
-    native activation, no bespoke keydown handler needed — commits the
-    previewed discipline. aria-pressed moves to it on both the stroke and
-    its readout row, and .origin__marker slides to sit against that row."""
-    page, _ = open_site()
-    btn = page.locator('#origin .origin__hit[data-discipline="chess"]')
-    btn.focus()
-    page.keyboard.press("Enter")
-    page.wait_for_timeout(700)
-    assert btn.get_attribute("aria-pressed") == "true"
-    item = page.locator('.origin__panel-item[data-discipline="chess"]')
-    assert item.get_attribute("aria-pressed") == "true"
-    english_item = page.locator('.origin__panel-item[data-discipline="english"]')
-    assert english_item.get_attribute("aria-pressed") == "false"
-
-    marker = page.evaluate(
-        """() => {
-            const marker = document.querySelector('.origin__marker');
-            const item = document.querySelector('.origin__panel-item[data-discipline="chess"]');
-            const m = marker.style.transform.match(/translateY\\(([-\\d.]+)px\\)/);
-            return {
-                markerY: m ? parseFloat(m[1]) : null,
-                itemTop: item.offsetTop,
-                markerHeight: parseFloat(marker.style.height),
-                itemHeight: item.offsetHeight,
-            };
-        }"""
-    )
-    assert marker["markerY"] is not None, marker
-    assert abs(marker["markerY"] - marker["itemTop"]) < 1, marker
-    assert abs(marker["markerHeight"] - marker["itemHeight"]) < 1, marker
-
-
-def test_reading_only_swaps_on_commit_not_preview(open_site):
-    """Stage D3 (2026-09-15): D2's two-gesture split extends to the readout's
-    multi-row body — hover/focus previews ink only; only a commit "swaps
-    the readout" (D2's own words). Focusing chess must leave .reading on
-    English."""
-    page, _ = open_site()
-    page.locator('#origin .origin__hit[data-discipline="chess"]').focus()
-    page.wait_for_timeout(200)
-    value = page.locator('.reading__row').first.locator('.reading__value[data-discipline="english"]')
-    assert value.evaluate("el => el.classList.contains('is-active')")
-    assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
-
-
-def test_committing_chess_switches_the_reading_to_chess(open_site):
-    """Stage D4 (2026-09-15) gives every row a chess sibling, retiring D3's
-    interim "stays on English" safety net (its own test, edited here per
-    Standing Order 4 — see BUILD-NOTES). Committing chess must now switch
-    .reading's first row to chess's value and deactivate English's."""
-    page, _ = open_site()
-    page.locator('.origin__panel-item[data-discipline="chess"]').click()
-    page.wait_for_timeout(700)
-    row = page.locator('.reading__row').first
-    chess = row.locator('.reading__value[data-discipline="chess"]')
-    english = row.locator('.reading__value[data-discipline="english"]')
-    assert chess.evaluate("el => el.classList.contains('is-active')")
-    assert chess.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
-    assert not english.evaluate("el => el.classList.contains('is-active')")
-
-
-def test_committing_climbing_switches_the_reading_to_climbing(open_site):
-    """Symmetric to the chess case above — D4 ships chess and climbing
-    together (TRIFECTA-D-NAVIGATOR.md Stage D4)."""
-    page, _ = open_site()
-    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
-    page.wait_for_timeout(700)
-    row = page.locator('.reading__row').first
-    climbing = row.locator('.reading__value[data-discipline="climbing"]')
-    english = row.locator('.reading__value[data-discipline="english"]')
-    assert climbing.evaluate("el => el.classList.contains('is-active')")
-    assert climbing.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
-    assert not english.evaluate("el => el.classList.contains('is-active')")
+def test_door_enter_goes_to_its_page(open_site):
+    """The doors are links: Enter on one is navigation to that discipline's
+    page, keeping the language the reader chose."""
+    page, _ = open_site(lang="ru")
+    page.locator('#origin .door[data-discipline="climbing"]').focus()
+    with page.expect_navigation():
+        page.keyboard.press("Enter")
+    assert page.url.endswith("/climbing/")
+    assert page.evaluate("document.documentElement.dataset.lang") == "ru"
 
 
 def test_origin_mark_hover_previews_between_disciplines(open_site):
@@ -212,18 +142,17 @@ def test_origin_mark_hover_previews_between_disciplines(open_site):
     assert left.evaluate("el => el.classList.contains('is-dim')")
 
 
-def test_origin_mark_rests_on_english_before_any_interaction(open_site):
-    """C6: rest state is English lit, not neutral — English is the offer,
-    chess and climbing are proof it transfers, not equal-weight
-    alternatives. Checked immediately at load, with no scroll or hover, so
-    this can't pass by coincidence with the idle hint's own preview cycle
-    (which also starts with English, but only once the mark scrolls into
-    view — this is the state before that's even possible)."""
+def test_origin_mark_rests_with_all_three_strokes_lit(open_site):
+    """C6's English-lit rest state belonged to the single-page readout, where
+    English was the committed default. On the home page the mark is now a
+    set of three doors, none of them preselected, so it rests with all three
+    strokes at full ink (initOrigin's `navigates` case). Checked immediately
+    at load, before the idle hint can run."""
     page, _ = open_site()
     page.wait_for_timeout(100)
-    assert page.locator('#origin .glyph__part--left').evaluate("el => el.classList.contains('is-active')")
-    assert page.locator('#origin .glyph__part--right').evaluate("el => el.classList.contains('is-dim')")
-    assert page.locator('#origin .glyph__part--stem').evaluate("el => el.classList.contains('is-dim')")
+    for part in ("left", "right", "stem"):
+        assert not page.locator(f"#origin .glyph__part--{part}").evaluate(
+            "el => el.classList.contains('is-dim')"), part
 
 
 # --- J7 (Jury Pass II, 2026-09-12): the mark's two unlit strokes rested at
@@ -239,11 +168,15 @@ def test_origin_mark_rests_on_english_before_any_interaction(open_site):
      ("dark", "rgb(98, 74, 31)", "rgb(48, 73, 54)")],
 )
 def test_origin_mark_dim_strokes_use_the_raised_floor(open_site, theme, amber_dim, green_dim):
-    page, _ = open_site(theme=theme)
-    page.wait_for_timeout(100)
-    right_fill = page.locator("#origin .glyph__part--right").evaluate("el => getComputedStyle(el).fill")
+    """The raised floor now shows while a door is previewed, the only time
+    the home page's mark dims anything: previewing chess dims English's
+    amber stroke and climbing's green one."""
+    page, _ = open_site(theme=theme, reduced_motion=True)
+    page.locator('#origin .door[data-discipline="chess"]').focus()
+    page.wait_for_timeout(700)   # the fill eases over --t
+    left_fill = page.locator("#origin .glyph__part--left").evaluate("el => getComputedStyle(el).fill")
     stem_fill = page.locator("#origin .glyph__part--stem").evaluate("el => getComputedStyle(el).fill")
-    assert right_fill == amber_dim
+    assert left_fill == amber_dim
     assert stem_fill == green_dim
 
 
@@ -378,9 +311,10 @@ def test_progress_rule_switches_ink_at_origin(open_site, scheme):
     assert float(target.evaluate("el => getComputedStyle(el).opacity")) < 0.05
     assert "past-origin" not in (page.locator("html").get_attribute("class") or "")
 
-    # scrolled to #who: .past-origin is set and the target ink shows
+    # scrolled to the switch (#who; #origin on the home page since the
+    # discipline pages, where #who no longer exists): .past-origin is set
     switch_y = page.evaluate(
-        "document.getElementById('who').getBoundingClientRect().top"
+        "(document.getElementById('who') || document.getElementById('origin')).getBoundingClientRect().top"
         " + (window.__lenis ? window.__lenis.scroll : window.scrollY)"
     )
     page.evaluate(f"window.scrollTo(0, {switch_y} + 8)")
@@ -420,10 +354,12 @@ def test_cursor_takes_target_ink_over_the_contact_cta(open_site):
 def test_cursor_takes_specimen_ink_over_a_control_inside_specimen(open_site):
     """The delegated handler keys the dot's ink off `closest('#specimen')`.
     The specimen reveal's `.spec__prompt` button is the real control there."""
-    page, _ = open_site()
-    page.locator("#specimen").scroll_into_view_if_needed()
-    page.wait_for_timeout(1500)   # let the section's reveal settle so the button stops rising
+    page, _ = open_site(path="english/")
     prompt = page.locator("#specimen .spec__prompt").first
+    # the prompt itself, not just the section: on /english/ it sits below the
+    # fold, and hover() would otherwise scroll it in under a still pointer
+    prompt.scroll_into_view_if_needed()
+    page.wait_for_timeout(1500)   # let the reveal and Lenis settle so the button stops moving
     prompt.hover()
     page.wait_for_timeout(200)
 
@@ -565,10 +501,10 @@ def test_magnetic_pull_reaches_the_origin_mark(open_site):
     assert page.locator("#origin .origin__mark").evaluate(
         "el => el.style.transitionProperty"
     ) == "opacity"
-    # lighting still responds: hovering the chess stroke lights its panel line
+    # lighting still responds: hovering the chess stroke lights its door
     page.locator("#origin .origin__hit--right").hover()
     page.wait_for_timeout(200)
-    assert page.locator('.origin__panel-item[data-discipline="chess"]').evaluate(
+    assert page.locator('#origin .door[data-discipline="chess"]').evaluate(
         "el => el.classList.contains('is-active')"
     )
 
@@ -769,7 +705,7 @@ def test_specimen_reveal_holds_no_transform(open_site):
     """The reveal is a content swap, not motion — its own machinery
     (.spec__reveal and everything in it) never takes a transform, opened or
     closed. The .reveal rise on the .spec itself is a separate system."""
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     page.locator("#specimen").scroll_into_view_if_needed()
     page.wait_for_timeout(1500)   # let the .reveal rise finish
 
@@ -863,78 +799,38 @@ def test_origin_mark_holds_still_for_the_hover_states(open_site):
         "el => el.classList.contains('is-active')") is True
 
 
-# ---------- D5: deep links, and Back leaving the page rather than cycling ----------
+# ---------- D5's deep links, after the split (2026-10-31) ----------
+# #english/#chess/#climbing used to select a discipline in place on the one
+# page. They are now old links: the home page's <head> redirects them (and
+# every specimen permalink) to the page that holds them, before first paint.
 
-@pytest.mark.parametrize("name", ["chess", "climbing"])
-def test_deep_link_selects_the_discipline_on_cold_load(open_site, name):
-    """D5: #english/#chess/#climbing are the ids Order B reserved for its
-    future dossier sections — with none built yet, they act here as a
-    selector, not a scroll target of their own. A cold load of #chess or
-    #climbing must select that discipline instead of drifting to it from the
-    English default in a second, visible step."""
-    page, _ = open_site(hash="#" + name)
-    item = page.locator(f'.origin__panel-item[data-discipline="{name}"]')
-    english_item = page.locator('.origin__panel-item[data-discipline="english"]')
-    assert item.get_attribute("aria-pressed") == "true"
-    assert english_item.get_attribute("aria-pressed") == "false"
-    row = page.locator(".reading__row").first
-    assert "is-active" in (
-        row.locator(f'.reading__value[data-discipline="{name}"]').get_attribute("class") or ""
-    )
+@pytest.mark.parametrize("hash_,dest", [
+    ("#english", "/english/"), ("#chess", "/chess/"), ("#climbing", "/climbing/"),
+    ("#specimen-copula", "/english/#specimen-copula"),
+    ("#specimen-chess-tilt", "/chess/#specimen-chess-tilt"),
+    ("#specimen-climbing-beta", "/climbing/#specimen-climbing-beta"),
+])
+def test_old_hash_links_redirect_to_their_page(open_site, site_url, hash_, dest):
+    page, _ = open_site(hash=hash_)
+    page.wait_for_url(site_url + dest)
 
 
-def test_deep_link_focuses_the_readout_not_merely_scrolls_to_it(open_site):
-    """Scroll alone is not navigation (see the skip-link bug in BUILD-NOTES):
-    the reader has to land *inside* the readout, tabindex="-1" added if it was
-    absent."""
-    page, _ = open_site(hash="#chess")
-    assert page.evaluate(
-        "() => document.activeElement.classList.contains('origin__panel')"
-    )
-    assert page.locator(".origin__panel").get_attribute("tabindex") == "-1"
+def test_old_hash_redirect_keeps_the_language_and_replaces_history(open_site, site_url):
+    page, _ = open_site(query="?lang=ru", hash="#specimen-chess-tilt")
+    page.wait_for_url(site_url + "/chess/?lang=ru#specimen-chess-tilt")
+    assert page.evaluate("document.documentElement.dataset.lang") == "ru"
+    # location.replace: the dead URL is not left in history, so Back leaves
+    # (to the blank tab here) instead of landing on it and bouncing forward
+    page.go_back()
+    assert "index.html" not in page.url and "/chess/" not in page.url
 
 
-def test_committing_a_discipline_writes_the_hash_via_replacestate(open_site):
-    """The address bar stays shareable at all times, but a commit must never
-    push a new history entry — this is a selector, not a jump (a deliberate
-    correction to TRIFECTA-C-MARK-NAV.md's C1, which describes the #collage
-    jump, not this case)."""
-    page, _ = open_site()
-    before_length = page.evaluate("history.length")
-    page.locator('.origin__panel-item[data-discipline="chess"]').click()
-    assert page.evaluate("location.hash") == "#chess"
-    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
-    assert page.evaluate("location.hash") == "#climbing"
-    assert page.evaluate("history.length") == before_length
-
-
-def test_committing_a_discipline_never_fires_hashchange(open_site):
-    """Never assign location.hash directly for this — it would wake the
-    collage router's routeAfterHashChange() and trigger an unrelated View
-    Transition on every click. initOrigin() uses history.replaceState
-    instead, which — unlike a raw hash assignment — does not fire
-    hashchange."""
-    page, _ = open_site()
-    page.evaluate(
-        "() => { window.__hashchanges = 0; "
-        "window.addEventListener('hashchange', () => window.__hashchanges++); }"
-    )
-    page.locator('.origin__panel-item[data-discipline="chess"]').click()
-    page.wait_for_timeout(100)
-    assert page.evaluate("window.__hashchanges") == 0
-
-
-def test_committing_updates_the_hash_under_reduced_motion_too(open_site):
-    """This is navigation, not motion — wired before the reduced-motion
-    return in main.js, so the switch still works with only the animation
-    dropped."""
-    page, _ = open_site(reduced_motion=True)
-    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
-    assert page.evaluate("location.hash") == "#climbing"
-    row = page.locator(".reading__row").first
-    assert "is-active" in (
-        row.locator('.reading__value[data-discipline="climbing"]').get_attribute("class") or ""
-    )
+@pytest.mark.parametrize("hash_", ["#who", "#specimen"])
+def test_retired_section_hashes_land_on_the_doors(open_site, hash_):
+    page, _ = open_site(hash=hash_)
+    page.wait_for_timeout(300)
+    assert page.evaluate("location.hash") == "#origin"
+    assert page.url.split("#")[0].endswith("/index.html")
 
 
 # ---------- DP7/DP8 (DESIGN-PASS-III.md): every jump clears the fixed masthead ----------
@@ -943,15 +839,18 @@ def _masthead_height(page):
     return page.locator(".masthead").bounding_box()["height"]
 
 
-@pytest.mark.parametrize("target_id", ["origin", "method", "specimen", "who", "contact"])
-def test_quick_nav_lands_each_section_clear_of_the_fixed_masthead(open_site, target_id):
+@pytest.mark.parametrize("path,target_id", [
+    ("index.html", "method"), ("index.html", "origin"), ("index.html", "contact"),
+    ("english/", "specimen"), ("english/", "who"), ("english/", "sessions"),
+])
+def test_quick_nav_lands_each_section_clear_of_the_fixed_masthead(open_site, path, target_id):
     """DP7: scroll-margin-top computed to 0 on every one of the five sections
     against the fixed masthead, so a jump landed with the destination's own
     heading hidden underneath it — 134px of it, in the review's own
     measurement. Covers the Lenis-driven path (main.js's headerHeight()
     offset) via the masthead's own 01-05 quick-nav, which is desktop-only,
     hence the WIDE viewport."""
-    page, _ = open_site()
+    page, _ = open_site(path=path)
     page.locator(f'.tools__group--sections a.tool[href="#{target_id}"]').click()
     page.wait_for_timeout(1500)   # let the 1.2s Lenis tween settle
     top = page.locator(f"#{target_id}").bounding_box()["y"]
@@ -970,25 +869,19 @@ def test_hero_scrollcue_lands_origin_clear_of_the_fixed_masthead(open_site):
     assert top >= head_h - 2, f"#origin lands at y={top}, under a {head_h}px masthead"
 
 
-@pytest.mark.parametrize("specimen_id,discipline", [
-    ("specimen-chess-calculation", "chess"),
-    ("specimen-climbing-grip", "climbing"),
+@pytest.mark.parametrize("specimen_id,path", [
+    ("specimen-register", "english/"),
+    ("specimen-chess-calculation", "chess/"),
+    ("specimen-climbing-grip", "climbing/"),
 ])
-def test_specimen_permalink_cold_load_commits_its_discipline_and_lands_on_it(
-    open_site, specimen_id, discipline
-):
-    """DP8: all six chess/climbing specimen permalinks were dead on a cold
-    load — their .specimens-group is display:none until that discipline is
-    committed, so the browser had a 0x0 box to scroll to and landed mid-way
-    through the English list with no error. A specimen hash must now commit
-    its own discipline group first, exactly like a bare #chess/#climbing hash
-    already does (see test_deep_link_selects_the_discipline_on_cold_load)."""
-    page, _ = open_site(hash="#" + specimen_id)
-    item = page.locator(f'.origin__panel-item[data-discipline="{discipline}"]')
-    assert item.get_attribute("aria-pressed") == "true"
+def test_specimen_permalink_cold_load_lands_on_it_and_focuses_it(open_site, specimen_id, path):
+    """DP8, carried to the discipline pages: a cold load of a specimen
+    permalink (a shared link, or the home page's old-link redirect) lands the
+    specimen clear of the masthead and moves focus into it."""
+    page, _ = open_site(path=path, hash="#" + specimen_id)
     target = page.locator(f"#{specimen_id}")
-    assert target.is_visible(), "specimen's group never committed — still display:none"
-    page.wait_for_timeout(1500)   # let the 1.2s Lenis tween settle — "load" fires mid-scroll
+    assert target.is_visible()
+    page.wait_for_timeout(1500)
     box = target.bounding_box()
     assert box["y"] <= 400, f"{specimen_id} lands at y={box['y']}, not near the top of the viewport"
     head_h = _masthead_height(page)
@@ -996,16 +889,3 @@ def test_specimen_permalink_cold_load_commits_its_discipline_and_lands_on_it(
     assert page.evaluate(f"document.activeElement.id === '{specimen_id}'"), (
         "scroll alone is not navigation — the specimen itself must receive focus"
     )
-
-
-def test_browser_back_leaves_the_page_rather_than_cycling_disciplines(open_site):
-    """A reader who tries all three disciplines must need only one Back to
-    leave the page, not three — the classic tab-history bug replaceState is
-    chosen to avoid."""
-    page, _ = open_site()
-    page.locator('.origin__panel-item[data-discipline="chess"]').click()
-    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
-    assert page.evaluate("location.hash") == "#climbing"
-    page.go_back()
-    page.wait_for_timeout(300)
-    assert "index.html" not in (page.url or "")

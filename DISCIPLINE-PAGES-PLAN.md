@@ -345,7 +345,43 @@ Original plan, for reference:
   request indexing for the three new URLs, and point profiles at the specific page (Lichess →
   `/chess/`, Instagram → `/climbing/`, LinkedIn → `/english/`).
 
-## Stage 6 — Polish, tests, docs
+## Stage 6 — Polish, tests, docs  ✅ built on this branch
+
+**As built (2026-10-31):**
+
+- **View Transitions:** cross-document, `@view-transition { navigation: auto }` under
+  `prefers-reduced-motion: no-preference`, typed `page` so the masthead's own
+  `view-transition-name` applies only to page-to-page moves and never to the photos
+  view's same-document transitions. Root and masthead both run on `--t`/`--e`. The
+  result is a crossfade with the masthead holding still. **Not built:** the planned
+  morph of the clicked stroke into the next page's header. It needs a matching
+  named element on both sides and was more risk than this stage should carry; it's a
+  self-contained follow-up if Igor wants it.
+- **Photos view:** kept as the home page's routed `#collage` view (the default while
+  Igor decides). Its "See me at work" door is back on home, under the three doors:
+  Stage 1 had dropped it with §03, which left the view reachable only from the
+  masthead icons. Each discipline page also shows its own photos inline.
+- **Landing on a specimen:** a cold-loaded permalink on a discipline page (a shared
+  link, or the old-link redirect) now lands the specimen exactly under the masthead
+  and focuses it (`initSpecimenPermalinks`). It waits for `load` so the browser's own
+  fragment jump can't race it, measures from `offsetTop` so the reveal's rise can't
+  skew it, measures twice because the masthead is shorter at rest than once
+  scrolled, and holds the phone masthead so it doesn't slide away mid-jump.
+- **Tests:** `open_site(path=…)` opens any page. Specimen and who-row tests moved to
+  the pages; the readout/commit tests (retired with the readout) became door,
+  redirect and landing tests; the home title tests follow Stage 5's new title.
+  `tests/test_pages.py` covers each page's head, canonical, hreflang, share card,
+  JSON-LD, the sitemap, the masthead's page links, the bridge, the Telegram
+  openers, "the rule" (no other discipline named outside the bridge), and the
+  testimonial rule.
+- **Docs:** CLAUDE.md (four pages, live hosting, the superseded one-file rule, the
+  mark's new rest state) and a BUILD-NOTES entry.
+- **Asset URLs** bumped to `?v=20261031a` on all four pages.
+- **Artifact:** untouched. It's a single-file snapshot of the old one-page site and
+  can't hold four pages. **Igor decides:** retire it, or keep it as a home-only
+  snapshot.
+
+Original plan, for reference:
 
 - **Cross-document View Transitions** (`@view-transition { navigation: auto }`): the stroke
   you click grows into the top of the discipline page. Chrome and Safari animate; others just

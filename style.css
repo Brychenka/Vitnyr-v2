@@ -2058,6 +2058,22 @@ html.js.collage-open, html.js.collage-open body { overflow: hidden; }
   animation-timing-function: var(--e);
 }
 
+/* Discipline pages, Stage 6 (2026-10-31): moving between the four pages is a
+   cross-document View Transition. It reuses the root crossfade pinned just
+   above (one curve, one duration), and the masthead, which is the same on
+   every page, gets its own group so it holds still while the page under it
+   changes. Scoped by a transition type so the collage route's same-document
+   transitions never pick up the masthead's name. Chrome and Safari animate;
+   other browsers just navigate. Off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; types: page; }
+}
+html:active-view-transition-type(page) .masthead { view-transition-name: masthead; }
+::view-transition-group(masthead) {
+  animation-duration: var(--t);
+  animation-timing-function: var(--e);
+}
+
 /* ---------- collage lightbox (Stage 3) ----------
    A layer on top of the view, not a nested route (main.js's own note:
    moving #collage/#collage-en into hash-prefix matching would put 21

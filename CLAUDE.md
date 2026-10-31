@@ -4,15 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Vitnyr — a one-page marketing site for Igor Shatsev, an English coach in
+Vitnyr — a four-page marketing site (home, `/english/`, `/chess/`,
+`/climbing/`, since 2026-10-31) for Igor Shatsev, an English coach in
 Yerevan who also coaches chess and climbing as real disciplines in their own
 right (English leads; chess and climbing are weighted secondary offers, not
 proof-of-method — see "Content and positioning decisions" below).
 Static HTML/CSS/JS, no build step, no framework, no package.json. Built
 against a design guide called `onesignaturemove.pdf` (not in this repo);
 `BUILD-NOTES.md` has the full phase-by-phase log, deviations from that guide,
-and what's still outstanding (hosting for the registered domain
-`vitnyrcoach.com`, a below-the-hero visual check in a real browser).
+and what's still outstanding. The site is live at `vitnyrcoach.com` on
+Cloudflare Pages (`build.sh` copies the publishable files into `dist/`;
+`functions/_middleware.js` rewrites the `<head>` of any `?lang=ru` page for
+crawlers). `DISCIPLINE-PAGES-PLAN.md` is the work order behind the split
+into four pages, with what each stage built and what Igor still decides.
 
 Repo: https://github.com/Brychenka/Vitnyr-v2 (branch `main`). This
 `site-v2/` folder is the repo root — there is no v1 in this repo; an earlier
@@ -78,7 +82,8 @@ aren't clobbered.
 
 ## Running it
 
-No build or install step exists. Serve the folder statically and open it:
+No install step, and no build step for local work (`build.sh` only
+assembles `dist/` for Cloudflare Pages). Serve the folder statically and open it:
 
 ```
 python3 -m http.server
@@ -90,7 +95,9 @@ paths are worth checking under an actual server.
 
 There is no linter, but there is a test suite: `tests/` holds Playwright
 tests (pytest), run with `tests/.venv/bin/pytest tests -q` (about 5 minutes; it
-starts its own static server). It was brought back to fully green on 2026-09-21
+starts its own static server; `open_site(path="chess/")` opens a discipline
+page, and `tests/test_pages.py` covers what the split added). It was brought
+back to fully green on 2026-09-21, and again after the discipline-page split
 (one known xfail, `specimen-register` naming "please" in its visible
 explanation — see the reason in `tests/test_content.py`). Run it before and
 after a change and read every failure rather than bulk-updating. Tests are no
@@ -100,9 +107,16 @@ themes (Cream/Charcoal) and both languages (EN/RU), at both ~375px and
 
 ## Architecture
 
-Four files, each with one job:
+Four shared files, each with one job, plus one HTML file per page:
 
-- **`index.html`** — all content, in both languages inline (see i18n below).
+- **`index.html`, `english/index.html`, `chess/index.html`,
+  `climbing/index.html`** — each page's content, in both languages inline
+  (see i18n below). The discipline pages load the shared files by absolute
+  path (`/style.css`) and carry their own head, JSON-LD and share card. Their
+  masthead, footer and contact section are copies of the home page's, so a
+  change to one of those has to be copied to all four (DISCIPLINE-PAGES-PLAN.md,
+  architecture decision 4). `main.js` initialisers return early when their
+  section is missing, which is what lets one script serve all four pages.
   Sections are marked with `<!-- SWAPPABLE BLOCK -->` comments where a
   positioning change (Framing A vs. the current Framing B) is meant to be a
   copy edit, not a restructure — the hero and the "who this is for" section.
@@ -232,17 +246,17 @@ Search for `PLACEHOLDER`, `fill in`, and `.ch__todo`. The Telegram, LinkedIn
 and Instagram handles are live in `index.html`; `og:url`, `og:image`, the
 hreflang links, JSON-LD, `sitemap.xml` and `robots.txt` point at Igor's
 registered domain `https://vitnyrcoach.com/` (swapped in 2026-09-23 from the
-`vitnyr.example` placeholder) — it has **no hosting yet**, so those URLs
-don't resolve until the site is deployed there. There is
+`vitnyr.example` placeholder); the site is live there. There is
 deliberately **no static canonical** — `theme.js`'s `applyHead()` writes a
 self-referencing one per language (`/` or `/?lang=ru`) off the x-default
 alternate, plus the Russian `<title>`/description from their `data-head-ru`
 twins; a static `/` canonical contradicted the `?lang=ru` alternate
 (2026-09-23). The share card has two exports, `og-share.png` and
 `og-share-ru.png` (`assets/share/share-card.html`, `?lang=ru` for the second);
-only the English one is wired into `og:image`, because a crawler never runs
-`theme.js` — serving the Russian card to `?lang=ru` needs the real host
-(e.g. an edge rewrite) once the domain exists. `BUILD-NOTES.md` lists these plus
+each page wires its English card into `og:image` (`og-share.png` on home,
+`og-english.png` etc. on the discipline pages, all from the same source with
+`?page=`), and the edge function swaps in the `-ru` twin for `?lang=ru`,
+because a crawler never runs `theme.js`. `BUILD-NOTES.md` lists these plus
 what's been visually verified vs. only checked by measuring the DOM.
 
 ## Content and positioning decisions (already made — don't re-litigate)
@@ -275,11 +289,19 @@ the brand file, so nothing in the code will tell a new chat about them:
   in `index.html` mark where Framing A would be a copy edit — the general
   "who this is for" rows plus the promotable `.it-row` — should positioning
   ever pivot, but that pivot hasn't happened and shouldn't be assumed.
-- **Funnel/structure: single page, unified, trifecta in the hero headline.**
-  v1 (now gone, see above) tried separate pages per discipline; v2 followed
-  `onesignaturemove.pdf`'s one-page structure instead, and Igor approved
-  keeping the English/chess/climbing trifecta together in the hero headline
-  over a copywriter rewrite that would have led with English alone.
+- **Funnel/structure: a home page that sends people to a page per
+  discipline** (Igor's call, 2026-10-31, superseding the single page). Home
+  is the hero (trifecta still in the headline), then the method, then the
+  mark, centred, with three doors. Each discipline page carries that
+  discipline's specimens, method lines, who-rows and sessions. The rule that
+  decides where a sentence goes: every sentence on `/chess/` must make sense
+  to someone who only wants chess; one bridge line near the end of each page
+  is the only place the other two are named. v1 also had separate pages and
+  was retired; this split differs in keeping one shared method and one
+  design, and in sorting the copy by that rule rather than duplicating it.
+  English still leads (first door, the only page with testimonials). The
+  home mark now rests with all three strokes lit, because it navigates
+  instead of selecting: C6's English-lit rest belonged to the old readout.
 - **Positioning: chess and climbing are full disciplines, weighted behind
   English — not proof-of-method** (decided 2026-09-13, superseding the
   original credibility-anchor framing where the trifecta worked only as
@@ -300,7 +322,11 @@ the brand file, so nothing in the code will tell a new chat about them:
   since answered by Stage 5's real chess/climbing specimens, landing before
   the §04-into-§03 fold below — `#disciplines` no longer exists and contact
   is now §05, so read those two sentences as history, not current structure.)
-- **One *file*, even where there's more than one view.** Igor asked for the
+- **One *file*, even where there's more than one view** — *superseded
+  2026-10-31 for the discipline pages, which are real pages because Google
+  has to index them separately.* The photos view below is still a routed
+  view inside the home page. What happens to the single-file artifact is
+  Igor's call (DISCIPLINE-PAGES-PLAN.md, Stage 6). Original rule: Igor asked for the
   photo collage as a separate page (2026-09-04), which qualifies the rule
   above rather than reversing it. The constraint that decides the shape:
   the live artifact is a single self-contained HTML file, so a second

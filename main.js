@@ -1420,6 +1420,36 @@
         }
       });
     });
+
+    /* Discipline pages (2026-10-31): a cold load of a specimen permalink —
+       a shared link, or the home page's old-link redirect — lands on the
+       specimen and moves focus into it, the way DP8 lands one on the home
+       page's mark (initOrigin). Scroll alone is not navigation. The target
+       is measured from offsetTop, not the box: the specimen is a .reveal,
+       so its box still carries part of the 24px rise at this point and
+       would park it a few px under the masthead once the rise settles. The
+       jump runs twice: the masthead is shorter at rest than once the page is
+       scrolled (.is-scrolled), so the first pass measures the wrong height.
+       And it waits for load: the browser's own jump to the fragment lands
+       after this script runs, and Lenis would then ease between the two. */
+    var landed = document.getElementById((location.hash || '').slice(1));
+    if (landed && landed.classList.contains('spec') && !document.querySelector('.origin__mark')) {
+      if (!landed.hasAttribute('tabindex')) landed.setAttribute('tabindex', '-1');
+      landed.focus({ preventScroll: true });
+      var land = function () {
+        if (!lenis) return;   // reduced motion / no Lenis: the native jump and scroll-margin-top already land it
+        navLock = true;       // a downward jump: keep the phone masthead from sliding away (see jumpTo)
+        showMast();
+        for (var pass = 0; pass < 2; pass++) {
+          var y = 0;
+          for (var n = landed; n; n = n.offsetParent) y += n.offsetTop;
+          lenis.scrollTo(y - headerHeight(), { immediate: true, force: true });
+        }
+        requestAnimationFrame(releaseNav);
+      };
+      if (document.readyState === 'complete') land();
+      else window.addEventListener('load', function () { requestAnimationFrame(land); });
+    }
   }
 
   /* ---------- collage: a hash-routed full-screen view ----------

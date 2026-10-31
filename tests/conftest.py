@@ -86,7 +86,8 @@ def open_site(site_url, browser):
                 hash='',                      # e.g. '#collage'
                 reduced_motion=False,
                 viewport=WIDE,
-                has_touch=False)          # True => (pointer: coarse) matches
+                has_touch=False,          # True => (pointer: coarse) matches
+                path='index.html')        # or 'english/', 'chess/', 'climbing/'
 
     Returns (page, context). localStorage is seeded via an init script so the
     values are present on the very first execution of theme.js.
@@ -109,6 +110,7 @@ def open_site(site_url, browser):
         viewport=None,
         java_script_enabled=True,
         has_touch=False,
+        path="index.html",
     ):
         context = browser.new_context(
             viewport=viewport or WIDE,
@@ -128,7 +130,7 @@ def open_site(site_url, browser):
             context.add_init_script("try{" + "".join(seed) + "}catch(e){}")
 
         page = context.new_page()
-        page.goto(f"{site_url}/index.html{query}{hash}", wait_until="load")
+        page.goto(f"{site_url}/{path}{query}{hash}", wait_until="load")
         return page, context
 
     yield _open
