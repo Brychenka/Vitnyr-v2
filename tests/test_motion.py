@@ -53,7 +53,11 @@ def test_hero_foot_is_visible_at_rest_without_scrolling(open_site, height):
     require scrolling to appear. Regression for buildReveals() giving the
     hero its own rootMargin:0px observer instead of sharing the -20% one."""
     page, _ = open_site(viewport={"width": 1280, "height": height})
-    page.wait_for_timeout(400)
+    # 700, was 400 (2026-11-20). The cue is the hero's last stagger beat
+    # (.24s delay), and at 400ms main itself measured 0.954 against the 0.95
+    # bar, so the old wait was measuring easing jitter under suite load, not
+    # the bug below. A cue that never fires is still 0 at 700ms.
+    page.wait_for_timeout(700)
     for selector in (".scrollcue", ".stand:visible"):
         el = page.locator(selector)
         opacity = el.evaluate("el => parseFloat(getComputedStyle(el).opacity)")
@@ -383,7 +387,14 @@ def test_cursor_active_ink_follows_the_theme(open_site, scheme, active_token):
     page, _ = open_site(theme=scheme)
     dot = page.locator(".cursor__dot")
 
-    # generic control: the hero scrollcue link
+    # generic control: the hero scrollcue link. Wait for its reveal to land
+    # first: Playwright reads "stable" while the cue still sits out its
+    # stagger delay 24px low, hovers there, and the cue then rises out from
+    # under the pointer (mouseout) — a race in the test, not in the page.
+    page.wait_for_function(
+        "getComputedStyle(document.querySelector('.scrollcue')).transform === 'none'"
+        " || new DOMMatrix(getComputedStyle(document.querySelector('.scrollcue')).transform).f === 0"
+    )
     page.locator(".scrollcue").hover()
     page.wait_for_timeout(200)
     assert "cursor-active" in (page.locator("html").get_attribute("class") or "")
