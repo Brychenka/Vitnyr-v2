@@ -50,6 +50,19 @@ Each FT stage says which of these it needs. Ask them in one message.
 | Q8 | **Chess positions.** 2–3 positions from your own games (or students', with their permission) that show each of the three chess mistakes. A PGN or a Lichess link is enough. | FT4 |
 | Q9 | **Reviews.** Real chess / climbing quotes, whenever they come in. Until then, the home strip stays labelled "English students". | any |
 
+**Igor's answers (2026-11-20):** Q1 draft the options · Q2 **finish** dark
+mode · Q3 **"available 24/7" is true, keep it** (so 3.2 is dropped) · Q4
+later · Q5 Lichess **`yngvibrychenka`** · Q6 not yet (handles stay) · Q7
+later · Q8 later.
+
+**Done ahead of order (2026-11-20, `feature/ft2-hero-portrait`, 88b2e40,
+not merged):** Igor asked to "pull the picture to the top". The portrait
+moved from the contact section into the home hero (two columns at >=900px,
+between title and stand on phones); the hero's still-life vignette gave up
+its place, and the empty chair took the portrait's column in contact. This
+covers the portrait half of 2.1 and part of 2.4's intent on home; the About
+block's story lines still wait for Q4.
+
 ---
 
 ## FT1: Fix what looks unfinished
@@ -87,7 +100,7 @@ Each FT stage says which of these it needs. Ask them in one message.
 | # | Item | Where | What "done" looks like |
 |---|---|---|---|
 | 3.1 | **"What happens next" strip** | contact, all four | Three steps, no prices: *Message me → 30-minute trial → we agree on a plan.* Hairline rows, the page's own label style. |
-| 3.2 | **Reply time instead of 24/7** | contact + footer, all four | Per Q3. If it fits, tie it to the footer's Yerevan clock ("It's 23:23 in Yerevan, so expect a reply by morning"). Uses data that's already on the page; no new tracking. |
+| 3.2 | ~~**Reply time instead of 24/7**~~ dropped: Q3 says 24/7 is true | contact + footer, all four | Per Q3. If it fits, tie it to the footer's Yerevan clock ("It's 23:23 in Yerevan, so expect a reply by morning"). Uses data that's already on the page; no new tracking. |
 | 3.3 | **Channel notes per page** | contact, three discipline pages | Each page's notes about the three channels speak to that discipline (chess no longer says "I write about English here"). Order unchanged. |
 | 3.4 | **Proof links** | chess (+ climbing if Q5) | Lichess/Chess.com profile link next to "2100 · my rating". A real, checkable number. |
 | 3.5 | **FAQ** | three discipline pages | 4–5 questions each from Q7, as a native `<details>` list in the page's hairline style, plus `FAQPage` JSON-LD. Both languages. |
@@ -125,9 +138,9 @@ largest stage.*
 | Stage | Needs from Igor | Size | Status |
 |---|---|---|---|
 | FT0: answers | n/a | one message | **open** |
-| FT1: unfinished bits | Q2 | small | **open**, can start now except 1.6 |
-| FT2: face + first impression | Q1, Q4 | medium | **open**, can be drafted now; blocked on Q1/Q4 to finish |
-| FT3: trust + last step | Q3, Q5–Q7 | medium | **open**, 3.1 and 3.3 can start now |
+| FT1: unfinished bits | Q2 (answered: finish) | small | **open**, all of it can start now |
+| FT2: face + first impression | Q1 (draft), Q4 (later) | medium | **open**; hero portrait built (88b2e40), headline drafts next |
+| FT3: trust + last step | Q5 answered; Q6, Q7 later | medium | **open**, 3.1, 3.3 and 3.4 can start now |
 | FT4: signature moment | Q8 | large | **open**, blocked on Q8 |
 | FT5: polish + jury | n/a | small | **open**, runs last |
 
