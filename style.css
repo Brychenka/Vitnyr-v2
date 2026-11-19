@@ -909,6 +909,70 @@ html[data-lang="ru"] .hero__title em { font-size: .5em; letter-spacing: -.010em;
 html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
 html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 
+/* ---------- hero portrait (home) ----------
+   2026-11-20 (feature/ft2-hero-portrait): Igor's portrait moves up from the
+   contact section, so a stranger sees the person before anything else.
+   The file is the same graded 4:5 one (black point --fg, white point --bg),
+   so it needs no frame, no filter and no caption here either.
+   Phone/tablet: plain flow between the title and the stand, at the width
+   the contact section used, so the title stays the first thing read. */
+.hero__portrait { margin: 0; width: min(220px, 60%); }
+.hero__portrait img {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+/* .hero__head holds the eyebrow and the title together, so the portrait
+   beside them can't pull them apart. Its gap is .hero's own. */
+.hero__head { display: flex; flex-direction: column; gap: clamp(28px, 5vh, 60px); }
+/* >=900px: a two-column hero. .hero__head | the portrait, both hung from
+   the eyebrow's line; the stand under the title and the scroll cue under
+   the portrait on the last row, bottoms aligned. .hero__foot steps aside
+   (display: contents) so its two children can take those two cells.
+   The title can't keep its full-width 8.6vw: the italic trifecta line is
+   8.14em of the title size wide in EN, and .line's mask clips anything
+   wider than its column. So the size follows the text column instead:
+   (hero content width - portrait - gap) / 8.6, capped at 124px as before.
+   The content width is min(100vw, --maxw) - 2 x --gut, rather than
+   container units, so .hero doesn't take on layout containment for one
+   font size. 100vw counts a classic scrollbar (~17px), which makes the
+   title ~2px too big; the 8.6 divisor leaves .46em (EN) / .28em (RU) of
+   slack on the widest line, so it still fits.
+   The portrait's width is picked so its 4:5 height lands on the title's
+   last line at common sizes (head height = eyebrow + gap + 2.87 x the
+   title size, solved at 900, 1280 and 1600): ~21vw. Both the width and
+   the gap stop growing at --maxw (1320px: 21% is 277px), because the hero
+   stops widening there too; past that point a growing portrait could only
+   take its width out of the title (86px at 1920 when it was allowed to).
+   Net: the title runs ~95px from 1280 up, where the full-width hero had
+   110-124px. That's the price of the face sitting beside it. */
+@media (min-width: 900px) {
+  .hero--home {
+    --face-w: clamp(200px, 21vw, 277px);
+    --face-gap: clamp(40px, 5vw, 64px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--face-w);
+    grid-template-areas:
+      "head  face"
+      "stand cue";
+    align-content: center;
+    column-gap: var(--face-gap);
+    row-gap: clamp(28px, 5vh, 60px);
+  }
+  .hero--home > .hero__head { grid-area: head; align-self: start; }
+  .hero--home .hero__title {
+    font-size: min(124px, calc((min(100vw, var(--maxw)) - 2 * var(--gut) - var(--face-w) - var(--face-gap)) / 8.6));
+  }
+  .hero--home > .hero__portrait { grid-area: face; width: auto; align-self: start; }
+  .hero--home > .hero__foot { display: contents; }
+  .hero--home .stand { grid-area: stand; }
+  .hero--home .scrollcue { grid-area: cue; align-self: end; justify-self: start; }
+  /* RU's trifecta line at the global .5em is 9.04em of the title size,
+     past the 8.6 the column allows, so it wrapped inside its mask. .46em
+     brings it to 8.32 and keeps the title itself the same size in both
+     languages (the portrait's height is matched to it). */
+  html[data-lang="ru"] .hero--home .hero__title em { font-size: .46em; }
+}
+
 /* ---------- mechanisms ---------- */
 /* Foldable (2026-09-18, superseding P14's side-by-side desktop grid below):
    each item is now a header row (the .mech__toggle button, holding the
@@ -1103,13 +1167,6 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
   .vig .eng--alt { display: none; }
 }
 
-/* hero: between the paragraph and the scroll cue at >=900px; under the
-   paragraph, left-aligned, below that */
-.vig--still-life { height: clamp(120px, 34vw, 150px); }
-@media (min-width: 900px) {
-  .hero__foot { grid-template-columns: minmax(0, 1fr) auto auto; }
-  .vig--still-life { height: clamp(130px, 13vw, 190px); margin-bottom: -6px; }
-}
 /* §01: the note on the name, the stone beside it in the panel's column */
 .origin__coda { margin-top: clamp(32px, 5vw, 56px); display: grid; gap: clamp(24px, 4vw, 40px); }
 .origin__coda .origin__note { margin-top: 0; }
@@ -2616,6 +2673,19 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
     margin: calc(clamp(34px, 6.4vw, 88px) * .177) 0 0;
     width: auto;
   }
+}
+
+/* Home only (2026-11-20): the portrait moved up to the hero, so the empty
+   chair takes the right-hand column. Wider than the portrait's column,
+   because the engraving is 2:1; its floor line sits on the lede's last
+   line. */
+@media (min-width: 900px) {
+  .contact__head--chair {
+    grid-template-columns: minmax(0, 1fr) clamp(260px, 30vw, 400px);
+    align-items: end;
+  }
+  .contact__head--chair .vig--empty-chair { margin-top: 0; height: auto; }
+  .contact__head--chair .vig--empty-chair .vig__svg { width: 100%; height: auto; }
 }
 
 /* §04 pick feedback (2026-09-23). Built by initWhoRows(), so a no-JS reader

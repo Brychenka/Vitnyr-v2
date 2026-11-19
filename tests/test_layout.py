@@ -197,12 +197,71 @@ def test_hero_title_floor_is_raised_on_phone(open_site):
 def test_hero_title_clamp_curve_is_unchanged_above_its_floor(open_site):
     """Only the floor moved. Comfortably past where 8.6vw clears 52px on its
     own, the rendered size must match the untouched vw formula, not some
-    new constant introduced alongside the floor bump."""
-    page, _ = open_site(viewport={"width": 900, "height": 780})
+    new constant introduced alongside the floor bump. Checked at 800, below
+    the 900px two-column hero (2026-11-20), which sizes the title off its
+    own column instead (see the portrait tests below)."""
+    page, _ = open_site(viewport={"width": 800, "height": 780})
     size = page.locator(".hero__title").evaluate(
         "el => parseFloat(getComputedStyle(el).fontSize)"
     )
-    assert size == pytest.approx(900 * 0.086, abs=1)
+    assert size == pytest.approx(800 * 0.086, abs=1)
+
+
+# --- FT2 (2026-11-20): the portrait moved up from the contact section into
+# the home hero. At >=900px it takes its own column beside the title, so the
+# title is sized to (content width - portrait - gap) / 8.6. Every title line
+# sits in a single-line reveal mask (.line, overflow:hidden), so a line that
+# wraps or runs past its column is silently clipped: the widest line of each
+# language has to fit, at the narrow end, the --maxw cap and past it. ---
+
+@pytest.mark.parametrize("width", [900, 1280, 1920])
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_hero_title_lines_fit_beside_the_portrait(open_site, width, lang):
+    page, _ = open_site(lang=lang, viewport={"width": width, "height": 900})
+    page.wait_for_timeout(300)
+    rows = page.evaluate(
+        """(lang) => [...document.querySelectorAll(`.hero__title [data-l="${lang}"] .line__inner`)]
+            .map(el => {
+                // line-height is 1 on the title, so a wrapped line is ~2x its
+                // own font size tall. The italic third line is an <em> block
+                // with its own (smaller) size, so measure whichever is inside.
+                const box = el.querySelector('em') || el;
+                return box.getBoundingClientRect().height / parseFloat(getComputedStyle(box).fontSize);
+            })""",
+        lang,
+    )
+    for i, r in enumerate(rows):
+        assert r < 1.5, f"{lang} line {i + 1} wraps at {width}px ({r:.2f} line heights tall)"
+
+
+@pytest.mark.parametrize("width", [900, 1280, 1920])
+def test_hero_portrait_sits_beside_the_title_not_under_it(open_site, width):
+    page, _ = open_site(viewport={"width": width, "height": 900})
+    page.wait_for_timeout(1500)
+    t = page.locator(".hero__title").bounding_box()
+    f = page.locator(".hero__portrait").bounding_box()
+    e = page.locator(".eyebrow").bounding_box()
+    assert f["x"] >= t["x"] + t["width"], "the portrait overlaps the title's column"
+    assert abs(f["y"] - e["y"]) < 2, "the portrait's top should sit on the eyebrow's line"
+    assert f["width"] / f["height"] == pytest.approx(0.8, abs=0.01)
+
+
+def test_hero_portrait_is_on_the_first_phone_screen(open_site):
+    page, _ = open_site(viewport=NARROW)
+    page.wait_for_timeout(1500)
+    f = page.locator(".hero__portrait").bounding_box()
+    t = page.locator(".hero__title").bounding_box()
+    assert f["y"] > t["y"] + t["height"], "on a phone the title comes first"
+    # The face is the upper half of the 4:5 frame (head and shoulders); the
+    # frame's bottom edge may fall just past a short phone's fold (5px at
+    # 375x780), the face itself must not.
+    assert f["y"] + f["height"] * 0.6 <= NARROW["height"], "the face should be on the first screen"
+
+
+def test_home_contact_no_longer_repeats_the_portrait(open_site):
+    page, _ = open_site()
+    assert page.locator("#contact .contact__portrait").count() == 0
+    assert page.locator("#hero .hero__portrait").count() == 1
 
 
 # --- C9: the handle used to sit in its own grid column pinned to the far
