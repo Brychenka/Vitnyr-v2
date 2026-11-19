@@ -1,5 +1,9 @@
 # Finishing touches — work order
 
+> **Superseded on 2026-11-20 by `SITE-PLAN.md`**, which carries every item
+> below (same FT numbers in brackets) plus the council review. Kept for
+> history and for Igor's FT0 answers.
+
 **Date:** 2026-11-20. **Starts from:** `main` at `c3aee7e`, the four-page site
 (home + `/english/` `/chess/` `/climbing/`), live on vitnyrcoach.com and on the
 claude.ai artifact the same day.
