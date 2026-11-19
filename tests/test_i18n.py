@@ -254,7 +254,8 @@ def test_language_swap_degrades_to_instant_without_gsap(open_site):
 # clause in the new language, never a re-encoded English string. ---
 
 def test_row_selection_and_language_compose(open_site):
-    page, _ = open_site()
+    # the who-rows live on the discipline pages since 2026-10-31
+    page, _ = open_site(path="english/")
     row = page.locator(".rows > li").nth(1)
     row.locator(".row__pick").click()
 

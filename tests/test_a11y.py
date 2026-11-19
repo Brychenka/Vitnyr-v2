@@ -96,11 +96,16 @@ def test_specimen_rows_have_text_equivalent_for_correctness(open_site):
     line is grammatically fine, just badly pitched — so it carries its own
     "Reads as" / "Better as" pair instead of overstating it as "Incorrect".
     Stage 5 (2026-09-16) added six more real specimens (chess + climbing),
-    all "Incorrect"/"Correct" pairs like English's first two — 9 specimens
-    total, 2 labels each."""
-    page, _ = open_site()
+    all "Incorrect"/"Correct" pairs like English's first two. Discipline
+    pages (2026-10-31): each page carries its own three, 2 labels each."""
+    for path in ("chess/", "climbing/"):
+        other, _ = open_site(path=path)
+        labels = other.locator(".line-spec:not([data-l=\"ru\"]) .vh")
+        assert labels.count() == 6, path
+        assert {t.strip() for t in labels.all_text_contents()} == {"Incorrect:", "Correct:"}, path
+    page, _ = open_site(path="english/")
     vh = page.locator(".line-spec:not([data-l=\"ru\"]) .vh")
-    assert vh.count() == 18
+    assert vh.count() == 6
     # text_contents, not inner_texts: under JS the .wrong line is [hidden] (the
     # error moved behind the reveal button), so its label renders nothing — but
     # the equivalent is still in the DOM for the no-JS render and for AT once
@@ -140,48 +145,33 @@ def test_reduced_motion_shows_all_content_immediately(open_site):
     assert state == {"heroDone": True, "hiddenReveals": 0, "maskedLines": 0}, state
 
 
-def test_origin_mark_shows_all_disciplines_statically_without_js(open_site):
-    """No-JS floor: with the interaction mechanism unavailable, the three
-    discipline/stat pairs must all be visible at once, not hover-gated."""
+def test_doors_show_all_three_disciplines_statically_without_js(open_site):
+    """No-JS floor (discipline pages, 2026-10-31): the home page's three doors
+    replace the old readout. With no JS they must all be visible at once,
+    named, and real links to their pages."""
     page, _ = open_site(java_script_enabled=False)
-    items = page.locator(".origin__panel-item")
-    assert items.count() == 3
+    doors = page.locator("#origin .door")
+    assert doors.count() == 3
+    hrefs = []
     for i in range(3):
-        assert items.nth(i).evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
-    text = page.evaluate("() => document.querySelector('.origin__panel').innerText").lower()
-    assert "english" in text and "chess" in text and "climbing" in text
+        d = doors.nth(i)
+        assert d.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
+        assert d.locator(".door__name").inner_text().strip()
+        hrefs.append(d.get_attribute("href"))
+    assert sorted(hrefs) == ["/chess/", "/climbing/", "/english/"]
 
 
-def test_reading_shows_its_rows_statically_without_js(open_site):
-    """Stage D3's no-JS floor: with the commit/preview mechanism unavailable,
-    the readout's whole body (all rows) must render, not hover-gated — same
-    requirement as .origin__panel above, extended to its new body. Stage 6
-    (2026-09-17) cut the redundant Measured row, dropping the count from
-    four to three; a Years coaching row has since brought it back to four."""
-    page, _ = open_site(java_script_enabled=False)
-    rows = page.locator(".reading__row")
-    assert rows.count() == 4
-    for i in range(4):
-        value = rows.nth(i).locator(".reading__value").first
-        assert value.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
-
-
-def test_origin_mark_still_interactive_under_reduced_motion(open_site):
-    """Reduced motion removes the animation, not the interaction. Updated for
-    Stage D2 (2026-09-15): focusing a hit-region is a preview (lights the
-    discipline, no aria-pressed yet); Enter commits it — both must still work
-    with the idle hint and the marker's slide transition unable to run."""
+def test_origin_mark_strokes_are_links_to_the_pages(open_site):
+    """The mark's three strokes are plain links to the pages, kept out of the
+    tab order (the doors beside them are the keyboard route), so reduced
+    motion and no JS lose nothing: there is no commit state left to drive."""
     page, _ = open_site(reduced_motion=True)
-    btn = page.locator('#origin .origin__hit[data-discipline="climbing"]')
-    btn.focus()
-    page.wait_for_timeout(100)
-    assert btn.get_attribute("aria-pressed") == "false"
-    item = page.locator('.origin__panel-item[data-discipline="climbing"]')
-    assert item.evaluate("el => el.classList.contains('is-active')")
-    page.keyboard.press("Enter")
-    page.wait_for_timeout(100)
-    assert btn.get_attribute("aria-pressed") == "true"
-    assert item.get_attribute("aria-pressed") == "true"
+    for name in ("english", "chess", "climbing"):
+        hit = page.locator(f'#origin .origin__hit[data-discipline="{name}"]')
+        assert hit.evaluate("el => el.tagName") == "A"
+        assert hit.get_attribute("href") == f"/{name}/"
+        assert hit.get_attribute("tabindex") == "-1"
+    assert page.locator(".origin__panel, .reading__row").count() == 0
 
 
 def test_origin_mark_is_complete_under_reduced_motion(open_site):
@@ -316,7 +306,7 @@ def _spec_pair_readable(page):
 
 
 def test_specimen_static_pair_survives_without_js(open_site):
-    page, _ = open_site(java_script_enabled=False)
+    page, _ = open_site(java_script_enabled=False, path="english/")
     _spec_pair_readable(page)
     # nothing was built: no prompt button, the three real <del> pairs are it
     assert page.locator(".spec__prompt").count() == 0
@@ -330,7 +320,7 @@ def test_specimen_reveal_is_an_accessible_disclosure(open_site):
     itself and carries aria-expanded; the "Correct:" line stays visible; the
     static .wrong line is [hidden] (out of the a11y tree) until the button is
     activated, and activating it toggles the state back and forth."""
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     # Scoped to English: initSpecimenReveal() builds a prompt for every
     # .spec under #specimen regardless of group visibility (Stage 5,
     # 2026-09-16 added six more, chess + climbing), but this test's
@@ -362,7 +352,7 @@ def test_specimen_reveal_is_an_accessible_disclosure(open_site):
 def test_specimen_reveal_works_under_reduced_motion(open_site):
     """It is an affordance, not motion, so it is wired before the reduced-motion
     return: a reduced-motion reader still gets the button and can open it."""
-    page, _ = open_site(reduced_motion=True)
+    page, _ = open_site(reduced_motion=True, path="english/")
     page.wait_for_timeout(300)
     page.locator("#specimen").scroll_into_view_if_needed()
 
@@ -379,7 +369,7 @@ def test_specimen_reveal_works_under_reduced_motion(open_site):
 def test_specimen_mistake_is_hidden_until_hover_or_tap(open_site):
     """The point of the change: at rest the mistake isn't on screen. Hover the
     prompt to preview it, leave to hide it again; a click locks it open."""
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     btn = page.locator("#specimen .spec__prompt").first
     btn.scroll_into_view_if_needed()
     mistake = btn.locator(".spec__prompt-mistake")
@@ -406,10 +396,10 @@ def test_specimen_marks_are_proofreading_notation(open_site):
     six more real (all-delete) specimens after English's three, reusing the
     same two marks — English's own comparison below is unaffected since its
     specimens are still first in document order."""
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     ds = page.eval_on_selector_all(
         "#specimen .line-spec:not([data-l=\"ru\"]) .sig svg path", "els => els.map(e => e.getAttribute('d'))")
-    assert len(ds) == 18
+    assert len(ds) == 6
     assert not any("M1 1 L9 9" in d for d in ds), "old ✕ glyph still present"
     # specimen 3 (restructure) uses a different mark than specimens 1-2 (delete)
     assert ds[0] != ds[4] and ds[1] != ds[5]
@@ -419,7 +409,7 @@ def test_specimen_permalink_names_the_specimen_not_just_the_hash(open_site):
     """Spark Order S9A / move 09: the label link's accessible name is the
     specimen's own wording plus an intent phrase — never a bare "#". The
     decorative # glyph is hidden from assistive tech."""
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     a = page.locator("#specimen-reflexive .spec__permalink")
     name = a.evaluate("el => el.textContent.replace('#', '').trim()")
     assert name == "Reflexive carried across, link to this specimen"
@@ -433,7 +423,7 @@ def test_specimen_permalink_names_the_specimen_not_just_the_hash(open_site):
 def test_specimen_permalink_degrades_to_a_plain_anchor_without_js(open_site):
     """With main.js absent the label is still an ordinary in-page anchor to a
     real element id — the browser handles the jump, nothing is lost."""
-    page, _ = open_site(java_script_enabled=False)
+    page, _ = open_site(java_script_enabled=False, path="english/")
     for sid in ("specimen-reflexive", "specimen-copula", "specimen-register"):
         a = page.locator(f"#{sid} .spec__permalink")
         assert a.get_attribute("href") == f"#{sid}"

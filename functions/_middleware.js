@@ -1,7 +1,8 @@
 // Cloudflare Pages Function. Crawlers and link-preview bots (Yandex, Telegram,
 // LinkedIn) don't run theme.js, so /?lang=ru would look like the English page.
-// For that URL only, rewrite the <head> to Russian at the edge. Every other
-// request passes straight through to the static file.
+// For ?lang=ru on any page (/, /english/, /chess/, /climbing/), rewrite the
+// <head> to Russian at the edge, from the Russian twins that page itself
+// carries. Every other request passes straight through to the static file.
 const SITE = 'https://vitnyrcoach.com';
 
 export async function onRequest(context) {
@@ -22,13 +23,17 @@ async function handle(context, url) {
   if (url.searchParams.get('lang') !== 'ru' || !type.includes('text/html')) return res;
 
   const origin = SITE;
-  const ruUrl = origin + '/?lang=ru';
-  let title = '', desc = '';
+  // the page's own path (discipline pages, 2026-10-31), not always "/"
+  const path = url.pathname.replace(/index\.html$/, '');
+  const ruUrl = origin + path + '?lang=ru';
+  let title = '', desc = '', image = '';
 
-  // pass 1: read the Russian twins that index.html already carries
+  // pass 1: read the Russian twins that index.html already carries, and the
+  // page's own share card (og-english.png → og-english-ru.png, Stage 5)
   await new HTMLRewriter()
     .on('title[data-head-ru]', { element(e) { title = e.getAttribute('data-head-ru') || ''; } })
     .on('meta[name="description"][data-head-ru]', { element(e) { desc = e.getAttribute('data-head-ru') || ''; } })
+    .on('meta[property="og:image"]', { element(e) { image = (e.getAttribute('content') || '').replace(/\.png$/, '-ru.png'); } })
     .transform(res.clone())
     .arrayBuffer();
 
@@ -42,8 +47,8 @@ async function handle(context, url) {
     .on('meta[property="og:locale"]', set('content', 'ru_RU'))
     .on('meta[property="og:locale:alternate"]', set('content', 'en_US'))
     .on('meta[property="og:url"]', set('content', ruUrl))
-    .on('meta[property="og:image"]', set('content', origin + '/assets/share/og-share-ru.png'))
-    .on('meta[name="twitter:image"]', set('content', origin + '/assets/share/og-share-ru.png'))
+    .on('meta[property="og:image"]', set('content', image))
+    .on('meta[name="twitter:image"]', set('content', image))
     .on('head', { element(e) { e.append('<link rel="canonical" href="' + ruUrl + '">', { html: true }); } })
     .transform(res);
 }

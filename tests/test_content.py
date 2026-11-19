@@ -24,72 +24,43 @@ def test_name_is_still_igor_shatsev_in_russian(open_site):
     assert "Игорь Шацев" not in text
 
 
+PAGES = ("english/", "chess/", "climbing/")
+
+
 def test_chess_rating_is_stated_without_fide(open_site):
     # Igor's explicit correction: the 2100 rating is stated without "FIDE".
-    # \b so this doesn't trip on "confidence". The rating used to be visible
-    # by default on §04's chess domain card; that card was folded into §03
-    # 2026-09-18, so the figure now lives only in the origin readout's chess
-    # row, which needs the chess discipline committed to become visible.
-    for lang in ("en", "ru"):
-        page, _ = open_site(lang=lang)
-        page.locator('.origin__panel-item[data-discipline="chess"]').click()
-        text = visible_text(page)
-        assert "2100" in text
-        assert not re.search(r"\bFIDE\b", text, re.I), "'FIDE' must not appear"
+    # \b so this doesn't trip on "confidence". Discipline pages (2026-10-31):
+    # the figure is on the home page's chess door and in /chess/'s hero.
+    for path in ("index.html", "chess/"):
+        for lang in ("en", "ru"):
+            page, _ = open_site(lang=lang, path=path)
+            text = visible_text(page)
+            assert "2100" in text, (path, lang)
+            assert not re.search(r"\bFIDE\b", text, re.I), "'FIDE' must not appear"
 
 
 def test_climbing_grades_are_kept_distinct(open_site):
     # rendered text, not source: J2 (Jury Pass II) established that a
     # climbing grade's 7c/7C case must survive an uppercase ancestor rule.
-    # §04 "Three domains" (the original home of this check, .domain__stat)
-    # was folded into §03 2026-09-18; the same figures live on in the origin
-    # readout's climbing row, so the check moved with them. Only the
-    # committed discipline's .reading__value is visible, so commit climbing
-    # first — inner_text() of a non-active value reads as empty.
+    # The figures moved with the readout's retirement (discipline pages,
+    # 2026-10-31) to the home page's climbing door and /climbing/'s hero.
     page, _ = open_site()
-    page.locator('.origin__panel-item[data-discipline="climbing"]').click()
-    value = page.locator('.reading__value[data-discipline="climbing"]').first
-    assert value.inner_text() == "7c redpoint · 7C Kilter"
+    facts = page.locator(".door--climbing .door__facts").inner_text()
+    assert facts.startswith("7c redpoint · 7C Kilter")
+    page, _ = open_site(path="climbing/")
+    keys = page.locator(".creds .creds__k").all_inner_texts()
+    assert keys[:2] == ["7c", "7C"]
 
 
-def test_reading_rows_are_coaching_achieved_mistakes(open_site):
-    """Trifecta Order D / Stage D3 (2026-09-15): the readout's body is one
-    spec sheet whose values change, not three panels that swap — fixed row
-    order, per the plan's own table. Stage 6 (2026-09-17) cut the opening
-    Measured row: it only restated the .origin__panel-item stat directly
-    above it, in the same view, with no new information. Rendered text
-    (inner_text), since .reading__label is text-transform:uppercase."""
-    page, _ = open_site()
-    labels = page.locator(".reading__label").all_inner_texts()
-    # Stage 6 cut Measured; since then the readout became Credential / Years
-    # coaching / Achieved / Common problems (the 4th row renamed from "mistakes").
-    assert labels == ["CREDENTIAL", "YEARS COACHING", "ACHIEVED", "COMMON PROBLEMS"]
-
-
-def test_reading_value_keeps_its_case_not_forced_uppercase(open_site):
-    """Same regression J2 fixed for .domain__stat (test above): a value must
-    not inherit any ancestor's uppercase transform. Asserts rendered text —
-    text_content() would read the source and miss a CSS regression that
-    brings uppercase back. Called out explicitly in TRIFECTA-D-NAVIGATOR.md's
-    Stage D3 as "the single easiest regression in the order"."""
-    page, _ = open_site()
-    achieved = page.locator('.reading__row').nth(2).locator(
-        '.reading__value[data-discipline="english"]'
-    )
-    assert achieved.inner_text() == "100+ one-on-one clients"
-
-
-def test_reading_common_problems_row_is_terse_data(open_site):
-    """Register: data, not prose (D0.7). The row is a short list of problems
-    per discipline; it deliberately does not mirror §03's three specimen titles
-    (Igor declined that, DESIGN-PASS-III.md DP6 — leave the readout as is)."""
-    page, _ = open_site()
-    problems = page.locator('.reading__row').nth(3).locator(
-        '.reading__value[data-discipline="english"]'
-    ).inner_text()
-    assert "Carrying structure over from Russian" in problems
-    assert "fear of making a mistake" in problems
-    assert "." not in problems, "this row is data, not sentences"
+def test_credential_figures_keep_their_case_beside_uppercase_labels(open_site):
+    """The regression J2 fixed for .domain__stat, then pinned on the readout:
+    a figure must not inherit an uppercase transform. Each discipline page's
+    credential strip sets its label (.creds__v) in caps, so its figure
+    (.creds__k) is the one that must keep its case. Rendered text, not
+    source, so a CSS regression is what fails here."""
+    page, _ = open_site(path="english/")
+    keys = page.locator(".creds .creds__k").all_inner_texts()
+    assert keys[1:] == ["10 years", "100+"]
 
 
 def test_reading_chess_and_climbing_placeholders_are_flagged(open_site):
@@ -104,58 +75,24 @@ def test_reading_chess_and_climbing_placeholders_are_flagged(open_site):
     assert html.count("PLACEHOLDER (D0.6") == 0
 
 
-# --- Trifecta D follow-up (2026-09-15): §03 (Specimens) is now discipline-
-# scoped, the same way the origin readout is — English's three named
-# specimens are its own .specimens-group, and chess/climbing get their own
-# (currently placeholder) groups, swapped by the same commit() that drives
-# updateReading(). ---
+# --- Discipline pages (2026-10-31): §03 Specimens used to hold all three
+# disciplines' groups and swap them on a commit from the mark. Each page now
+# carries only its own group, shown with no commit at all. ---
 
-def test_english_specimens_are_the_default_before_any_commit(open_site):
-    page, _ = open_site()
+@pytest.mark.parametrize("path,name", [("english/", "english"), ("chess/", "chess"), ("climbing/", "climbing")])
+def test_each_page_shows_only_its_own_specimens(open_site, path, name):
+    page, _ = open_site(path=path)
     groups = page.locator("#specimen .specimens-group")
-    assert groups.count() == 3
-    assert page.locator(
-        '#specimen .specimens-group[data-discipline-group="english"]'
-    ).is_visible()
-    for name in ("chess", "climbing"):
-        assert not page.locator(
-            f'#specimen .specimens-group[data-discipline-group="{name}"]'
-        ).is_visible()
+    assert groups.count() == 1
+    assert groups.get_attribute("data-discipline-group") == name
+    assert groups.is_visible()
+    assert groups.locator(".spec").count() == 3
+    assert groups.locator(".spec__why").count() == 6  # en + ru per specimen
 
 
-@pytest.mark.parametrize("name", ["chess", "climbing"])
-def test_committing_a_discipline_swaps_the_specimens_group(open_site, name):
+def test_home_page_has_no_specimens_left(open_site):
     page, _ = open_site()
-    page.locator(f'.origin__panel-item[data-discipline="{name}"]').click()
-    assert page.locator(
-        f'#specimen .specimens-group[data-discipline-group="{name}"]'
-    ).is_visible()
-    assert not page.locator(
-        '#specimen .specimens-group[data-discipline-group="english"]'
-    ).is_visible()
-
-
-def test_committing_back_to_english_restores_its_specimens_group(open_site):
-    page, _ = open_site()
-    page.locator('.origin__panel-item[data-discipline="chess"]').click()
-    page.locator('.origin__panel-item[data-discipline="english"]').click()
-    assert page.locator(
-        '#specimen .specimens-group[data-discipline-group="english"]'
-    ).is_visible()
-    assert not page.locator(
-        '#specimen .specimens-group[data-discipline-group="chess"]'
-    ).is_visible()
-
-
-def test_chess_and_climbing_have_real_specimens(open_site):
-    """Stage 5 (2026-09-16) replaced the Trifecta D follow-up placeholders
-    with real named specimens, same format as English's three (wrong/right
-    pair + why, addressable by permalink)."""
-    page, _ = open_site()
-    for name in ("chess", "climbing"):
-        group = page.locator(f'#specimen .specimens-group[data-discipline-group="{name}"]')
-        assert group.locator(".spec").count() == 3
-        assert group.locator(".spec__why").count() == 6  # en + ru per specimen
+    assert page.locator("#specimen, .spec").count() == 0
 
 
 def test_contact_handles_are_real(open_site):
@@ -218,13 +155,13 @@ def test_russian_url_is_its_own_canonical_with_russian_head(open_site):
     assert page.locator('link[rel="canonical"]').count() == 1
     assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyrcoach.com/?lang=ru"
     assert page.locator("html").get_attribute("lang") == "ru"
-    assert page.title() == "Английский, шахматы и скалолазание в Ереване — коуч Igor Shatsev | Vitnyr"
+    assert page.title() == "Igor Shatsev — коуч по английскому, шахматам и скалолазанию в Ереване | Vitnyr"
     desc = page.locator('meta[name="description"]').get_attribute("content")
     assert "коуч" in desc and "Igor Shatsev" in desc
     assert page.locator('meta[name="description"]').evaluate("el => el.textContent") == ""
     page.locator(".masthead .langswitch").click()
     page.wait_for_function("document.documentElement.lang === 'en'")
-    assert page.title() == "English, Chess & Climbing Coach in Yerevan — Igor Shatsev | Vitnyr"
+    assert page.title() == "Igor Shatsev — English, Chess & Climbing Coach in Yerevan | Vitnyr"
     assert page.locator('link[rel="canonical"]').get_attribute("href") == "https://vitnyrcoach.com/"
     assert "коуч" not in page.locator('meta[name="description"]').get_attribute("content")
 
@@ -278,21 +215,21 @@ def test_real_chess_photos_carry_alt_text(open_site):
         assert img.get_attribute("alt").strip()
 
 
-def test_section_numbering_is_sequential(open_site):
-    page, _ = open_site()
+@pytest.mark.parametrize("path,count", [("index.html", 3), ("english/", 5), ("chess/", 5), ("climbing/", 5)])
+def test_section_numbering_is_sequential(open_site, path, count):
+    page, _ = open_site(path=path)
     nums = page.locator(".sec .label .num").all_inner_texts()
-    assert [n.strip() for n in nums] == ["01", "02", "03", "04", "05"]
+    assert [n.strip() for n in nums] == [f"{i:02d}" for i in range(1, count + 1)]
 
 
-def test_origin_is_the_first_section_and_carries_01(open_site):
-    """Trifecta Order D / Stage D1 (2026-09-15): the mark's section moved from
-    position 4 to position 1, directly after the hero, so it can act as the
-    page's navigator. Cheap regression guard against a later stage silently
-    moving or renumbering it back."""
+def test_home_runs_hero_method_then_the_doors(open_site):
+    """Discipline pages, Stage 1 (2026-10-31): Igor's order for the home
+    page is the hero, then the method, then the mark with its three doors.
+    Cheap regression guard against a later change moving them around."""
     page, _ = open_site()
-    first_sec = page.locator(".sec").first
-    assert first_sec.get_attribute("id") == "origin"
-    assert first_sec.locator(".label .num").inner_text().strip() == "01"
+    ids = page.locator(".sec[id]").evaluate_all("els => els.map(e => e.id)")
+    assert ids[:2] == ["method", "origin"]
+    assert page.locator("#origin .label .num").inner_text().strip() == "02"
 
 
 # --- Spark Order S9A / move 09: each specimen is addressable, and the claim it
@@ -307,43 +244,48 @@ SPECIMEN_IDS = [
 
 
 def test_no_invented_count_beside_the_finite_list_claim(open_site):
-    """"Real material only": section 02 is the one place on the page built to
-    tempt a fabricated statistic ("the average learner has N errors"). Its
+    """"Real material only": the specimens section is the one place on each
+    discipline page built to tempt a fabricated statistic ("the average learner has N errors"). Its
     prose — the heading, the lede, every specimen label and every "why" —
     carries no digit, in either language. Adding one fails here."""
-    for lang in ("en", "ru"):
-        page, _ = open_site(lang=lang)
-        prose = page.evaluate(
-            """() => {
-                const sec = document.getElementById('specimen');
-                const sel = '.sec__head h2, .sec__lede [data-l],'
-                          + ' .spec__label, .spec__why';
-                return [...sec.querySelectorAll(sel)]
-                    .map(el => el.textContent).join('  ');
-            }"""
-        )
-        # a hypothetical distance in a specimen's description ("only 2 moves
-        # into the attack") is not a statistic — only bare counts are barred
-        prose = re.sub(r"\b\d+ (moves?|ход\w*)", "", prose)
-        low = prose.lower()
-        assert len(low) > 200, "reading the wrong block — specimen prose is missing"
-        assert not re.search(r"\d", prose), f"a digit crept into the specimen prose: {prose!r}"
+    for path in PAGES:
+        for lang in ("en", "ru"):
+            page, _ = open_site(lang=lang, path=path)
+            prose = page.evaluate(
+                """() => {
+                    const sec = document.getElementById('specimen');
+                    const sel = '.sec__head h2, .sec__lede [data-l],'
+                              + ' .spec__label, .spec__why';
+                    return [...sec.querySelectorAll(sel)]
+                        .map(el => el.textContent).join('  ');
+                }"""
+            )
+            # a hypothetical distance in a specimen's description ("only 2 moves
+            # into the attack") is not a statistic — only bare counts are barred
+            prose = re.sub(r"\b\d+ (moves?|ход\w*)", "", prose)
+            low = prose.lower()
+            assert len(low) > 200, "reading the wrong block — specimen prose is missing"
+            assert not re.search(r"\d", prose), f"a digit crept into the specimen prose: {prose!r}"
 
 
 def test_each_specimen_is_addressable_by_its_own_permalink(open_site):
     """Every <article class="spec"> carries a stable, language-neutral id and a
     label that links to exactly that id — so a reader can send one specific
-    error, not the whole section."""
-    page, _ = open_site()
-    pairs = page.evaluate(
-        """() => [...document.querySelectorAll('.specs .spec')].map(a => ({
-            id: a.id,
-            href: a.querySelector('.spec__permalink') &&
-                  a.querySelector('.spec__permalink').getAttribute('href'),
-        }))"""
-    )
-    assert [p["id"] for p in pairs] == SPECIMEN_IDS
-    assert [p["href"] for p in pairs] == ["#" + i for i in SPECIMEN_IDS]
+    error, not the whole section. The ids survived the split unchanged, which
+    is what the home page's old-link redirect relies on."""
+    ids = []
+    for path in PAGES:
+        page, _ = open_site(path=path)
+        pairs = page.evaluate(
+            """() => [...document.querySelectorAll('.specs .spec')].map(a => ({
+                id: a.id,
+                href: a.querySelector('.spec__permalink') &&
+                      a.querySelector('.spec__permalink').getAttribute('href'),
+            }))"""
+        )
+        assert [p["href"] for p in pairs] == ["#" + p["id"] for p in pairs]
+        ids += [p["id"] for p in pairs]
+    assert ids == SPECIMEN_IDS
 
 
 # --- J6(b) (Jury Pass II, 2026-09-12): the reveal hides each specimen's
@@ -371,7 +313,7 @@ _REGISTER_SPOILS_PLEASE = pytest.mark.xfail(
     for k, v in SPOILED_WORDS.items()
 ])
 def test_specimen_why_no_longer_names_the_hidden_word(open_site, specimen_id, word):
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     why = page.locator(f"#{specimen_id} .spec__why:visible").inner_text().lower()
     assert word not in why, f"{specimen_id}: '{word}' still appears in the visible explanation"
 
@@ -380,7 +322,7 @@ def test_specimen_why_paragraphs_are_not_empty_in_either_language(open_site):
     """The RU rewrites are a first pass (Standing Order 9) but must still be
     real, non-empty prose, not a blank left behind by the edit."""
     for lang in ("en", "ru"):
-        page, _ = open_site(lang=lang)
+        page, _ = open_site(lang=lang, path="english/")
         for specimen_id in SPOILED_WORDS:
             text = page.locator(f"#{specimen_id} .spec__why:visible").inner_text().strip()
             assert text, f"{specimen_id}/{lang}: .spec__why is empty"
@@ -390,7 +332,7 @@ def test_specimen_permalink_updates_the_url_and_moves_focus(open_site):
     """Clicking a specimen's label writes that permalink to the address bar
     (so it can be copied and shared) and moves focus into the specimen, not
     just the scroll position. Back then clears it."""
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     page.locator("#specimen-copula .spec__permalink").click()
     page.wait_for_timeout(150)
     assert page.evaluate("location.hash") == "#specimen-copula"
@@ -409,8 +351,9 @@ def test_no_straight_apostrophes_in_visible_english_copy(open_site):
     ('). innerText mirrors what a reader sees — display:none RU text and any
     JS/attribute-only strings (hrefs, data-prefill-*) never enter it, so this
     can't be tripped by the things J1 was told not to touch."""
-    page, _ = open_site(lang="en")
-    assert "'" not in visible_text(page)
+    for path in ("index.html",) + PAGES:
+        page, _ = open_site(lang="en", path=path)
+        assert "'" not in visible_text(page), path
 
     # The #collage view is a separate visible state, not reachable from the
     # main-page innerText above — check it too.

@@ -62,7 +62,7 @@ def test_masthead_ground_turns_opaque_after_scroll(open_site):
 # with the sentence pair beside its explanation, not stacked above it. ---
 
 def test_specimen_pair_sits_beside_its_explanation_at_desktop_width(open_site):
-    page, _ = open_site(viewport=WIDE)
+    page, _ = open_site(viewport=WIDE, path="english/")
     first = page.locator(".spec").first
     lines_box = first.locator(".spec__lines").bounding_box()
     why_box = first.locator(".spec__why:visible").bounding_box()
@@ -73,7 +73,7 @@ def test_specimen_pair_sits_beside_its_explanation_at_desktop_width(open_site):
 
 
 def test_specimen_pair_stacks_above_its_explanation_at_mobile_width(open_site):
-    page, _ = open_site(viewport=NARROW)
+    page, _ = open_site(viewport=NARROW, path="english/")
     first = page.locator(".spec").first
     lines_box = first.locator(".spec__lines").bounding_box()
     why_box = first.locator(".spec__why:visible").bounding_box()
@@ -81,7 +81,7 @@ def test_specimen_pair_stacks_above_its_explanation_at_mobile_width(open_site):
 
 
 def test_specimen_sentence_pair_reads_at_showpiece_size(open_site):
-    page, _ = open_site(viewport=WIDE)
+    page, _ = open_site(viewport=WIDE, path="english/")
     # the visible half of the pair, and the reveal button that stands in for the
     # other half, both at the showpiece size
     for sel in ("#specimen .line-spec.right", "#specimen .spec__prompt"):
@@ -98,7 +98,7 @@ def test_wrong_and_right_lines_have_a_visible_gap(open_site):
     where the wrong/right distinction is the entire point of the device.
     Measured without JS, where both lines of the static pair are on screen."""
     lines = "#specimen .spec__lines"
-    page, _ = open_site(viewport=WIDE, java_script_enabled=False)
+    page, _ = open_site(viewport=WIDE, java_script_enabled=False, path="english/")
     wrong = page.locator(f"{lines} >> .wrong").first
     right = page.locator(f"{lines} >> .right").first
     wrong_box = wrong.bounding_box()
@@ -113,13 +113,14 @@ def test_wrong_and_right_lines_have_a_visible_gap(open_site):
 # padding — two rule widths with no stated relationship. Bled back out so
 # every hairline on the page is exactly one width. ---
 
-@pytest.mark.parametrize("container", [
-    "#method .mechanisms",
-    '#specimen .specimens-group[data-discipline-group="english"] .specs',
-    "#who .rows", "#contact .channels", "#specimen .proof",
+@pytest.mark.parametrize("container,path", [
+    ("#method .mechanisms", "index.html"),
+    ('#specimen .specimens-group[data-discipline-group="english"] .specs', "english/"),
+    ("#who .rows", "english/"), ("#contact .channels", "index.html"), ("#origin .proof", "index.html"),
+    ("#method .mechanisms", "chess/"), ("#contact .channels", "climbing/"),
 ])
-def test_row_dividers_are_flush_with_their_sections_own_rule(open_site, container):
-    page, _ = open_site(viewport=WIDE)
+def test_row_dividers_are_flush_with_their_sections_own_rule(open_site, container, path):
+    page, _ = open_site(viewport=WIDE, path=path)
     sec_box = page.locator(container.split(" ")[0]).bounding_box()
     inner_box = page.locator(container).bounding_box()
     assert abs(inner_box["x"] - sec_box["x"]) < 1, (container, inner_box, sec_box)
@@ -313,7 +314,7 @@ def _decoded_text(page, href):
 
 
 def test_selecting_a_row_rewrites_the_cta_prefill(open_site):
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     default_href = page.locator(_CTA).get_attribute("href")
     row = page.locator(".rows > li").nth(1)
     row.locator(".row__pick").click()
@@ -326,11 +327,11 @@ def test_selecting_a_row_rewrites_the_cta_prefill(open_site):
     clause = row.get_attribute("data-prefill-en")
     assert clause and clause in text
     # 2026-09-12: base offer text updated, see test_contact_cta_prefill_text_is_localized
-    assert text.startswith("Hi! I'd like to book a free trial lesson. — ")
+    assert text.startswith("Hi! I'd like to book a free trial English lesson. — ")
 
 
 def test_deselecting_restores_the_default_prefill(open_site):
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     default_href = page.locator(_CTA).get_attribute("href")
     pick = page.locator(".rows > li").first.locator(".row__pick")
     pick.click()
@@ -342,7 +343,7 @@ def test_deselecting_restores_the_default_prefill(open_site):
 
 
 def test_picking_a_second_row_replaces_the_first(open_site):
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     rows = page.locator(".rows > li")
     rows.nth(0).locator(".row__pick").click()
     rows.nth(2).locator(".row__pick").click()
@@ -357,7 +358,7 @@ def test_picking_a_second_row_replaces_the_first(open_site):
 def test_rows_are_keyboard_operable(open_site):
     """Tab to a row button, press Enter — it toggles, natively, because it is
     a real <button> (the origin mark's hit-regions are the house precedent)."""
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     pick = page.locator(".rows > li").first.locator(".row__pick")
     pick.focus()
     assert page.evaluate(
@@ -370,7 +371,7 @@ def test_rows_are_keyboard_operable(open_site):
 
 
 def test_who_rows_are_plain_and_cta_static_without_js(open_site):
-    page, _ = open_site(java_script_enabled=False)
+    page, _ = open_site(java_script_enabled=False, path="english/")
     assert page.locator(".row__pick").count() == 0
     cta = page.locator(_CTA)
     assert cta.get_attribute("href") == cta.get_attribute("data-href-en")
@@ -391,7 +392,7 @@ def _before_style(page, locator):
 
 
 def test_who_rows_show_a_quiet_resting_mark_that_brightens_when_picked(open_site):
-    page, _ = open_site()
+    page, _ = open_site(path="english/")
     row = page.locator(".rows > li").first
     rest = _before_style(page, row)
     assert rest["opacity"] == "1"
@@ -409,7 +410,7 @@ def test_who_rows_resting_mark_is_absent_without_js(open_site):
     test above); the resting mark that promises "this does something" must
     degrade with it, or a no-JS reader gets a mark for an interaction that
     isn't there."""
-    page, _ = open_site(java_script_enabled=False)
+    page, _ = open_site(java_script_enabled=False, path="english/")
     row = page.locator(".rows > li").first
     assert _before_style(page, row)["opacity"] == "0"
 
@@ -418,7 +419,8 @@ def test_who_section_has_no_lede_under_its_heading(open_site):
     """Reversal recorded, not a regression: J2 added a line under the §04 heading
     explaining that rows are clickable; 63792e0 removed it on purpose
     (DESIGN-PASS-III.md, W6: "do not restore the line"). Guards it staying gone."""
-    for lang in ("en", "ru"):
-        page, _ = open_site(lang=lang)
-        assert page.locator("#who .sec__lede").count() == 0
+    for path in ("english/", "chess/", "climbing/"):
+        for lang in ("en", "ru"):
+            page, _ = open_site(lang=lang, path=path)
+            assert page.locator("#who .sec__lede").count() == 0, (path, lang)
 

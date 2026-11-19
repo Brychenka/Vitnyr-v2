@@ -2058,6 +2058,22 @@ html.js.collage-open, html.js.collage-open body { overflow: hidden; }
   animation-timing-function: var(--e);
 }
 
+/* Discipline pages, Stage 6 (2026-10-31): moving between the four pages is a
+   cross-document View Transition. It reuses the root crossfade pinned just
+   above (one curve, one duration), and the masthead, which is the same on
+   every page, gets its own group so it holds still while the page under it
+   changes. Scoped by a transition type so the collage route's same-document
+   transitions never pick up the masthead's name. Chrome and Safari animate;
+   other browsers just navigate. Off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; types: page; }
+}
+html:active-view-transition-type(page) .masthead { view-transition-name: masthead; }
+::view-transition-group(masthead) {
+  animation-duration: var(--t);
+  animation-timing-function: var(--e);
+}
+
 /* ---------- collage lightbox (Stage 3) ----------
    A layer on top of the view, not a nested route (main.js's own note:
    moving #collage/#collage-en into hash-prefix matching would put 21
@@ -3001,4 +3017,272 @@ html.js .collage .reveal.is-in .collage__slot {
   /* Phone contact bar: opacity only, no rise. */
   html.js .dock { transform: none !important; }
   * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+/* ==========================================================================
+   Discipline pages, Stage 1 (2026-10-31) — the home page's way out.
+   Hero → §01 method → §02 the mark, centred, with a door per stroke. See
+   DISCIPLINE-PAGES-PLAN.md. Everything here uses the existing tokens and the
+   existing inks: amber for the two V arms (English, chess), green for the
+   stem (climbing), never as text — only as rules and underlines.
+   ========================================================================== */
+
+/* Hero: the italic line is three links. The word keeps the line's own grey;
+   on hover/focus it takes full --fg and its stroke's ink as an underline. */
+.hero__door {
+  --door-ink: var(--ink-specimen);
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: .045em;
+  text-underline-offset: .14em;
+  transition: color var(--t) var(--e), text-decoration-color var(--t) var(--e);
+}
+.hero__door[data-discipline="climbing"] { --door-ink: var(--ink-target); }
+.hero__door:hover,
+.hero__door:focus-visible { color: var(--fg); text-decoration-color: var(--door-ink); }
+
+/* §01 method: each principle opens to its core, then one line per
+   discipline, the label linking to that discipline's own page. */
+.mech__panel-inner p.mech__core { color: var(--fg); }
+.mech__cases {
+  margin: clamp(16px, 2vw, 22px) 0 0;
+  border-top: 1px solid var(--rule);
+  max-width: 980px;
+}
+.mech__case {
+  --case-ink: var(--ink-specimen);
+  display: grid; gap: 4px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.mech__case:last-child { border-bottom: 0; padding-bottom: 0; }
+.mech__case--climbing { --case-ink: var(--ink-target); }
+@media (min-width: 700px) {
+  .mech__case { grid-template-columns: 9.5em minmax(0, 1fr); gap: clamp(16px, 3vw, 32px); align-items: baseline; }
+}
+.mech__case dt a {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg);
+  text-decoration: underline; text-decoration-color: var(--case-ink);
+  text-decoration-thickness: 1.5px; text-underline-offset: 5px;
+}
+.mech__case dd { margin: 0; color: var(--fg2); max-width: var(--measure); }
+
+/* §02 the mark, centred, with its three doors. Phones: the mark first, then
+   the doors as a big-type index. >=900px: each door in its stroke's corner —
+   English by the top-left arm, chess by the top-right arm, climbing under
+   the stem — so the drawing itself is the map. Placement is grid areas,
+   never transforms (the reveal owns the transform channel). */
+.sec--doors .label { justify-content: center; }
+.doors__head {
+  max-width: 48ch; margin: 0 auto;
+  display: grid; gap: 18px; text-align: center;
+}
+.doors__head h2 {
+  font-size: clamp(32px, 4.6vw, 64px); font-weight: 500;
+  line-height: 1.06; letter-spacing: -.022em;
+}
+.doors__head p { color: var(--fg2); }
+/* #origin .origin__hint (above) pins the old hint over the readout column at
+   >=900px; the doors' hint is centred over the mark instead, so it needs the
+   same id-level weight to undo that. */
+#origin .doors__hint {
+  justify-content: center;
+  margin: clamp(32px, 5vw, 56px) 0 clamp(12px, 2vw, 20px);
+}
+.doors {
+  --mark-w: clamp(190px, 54vw, 280px);
+  display: grid; justify-items: stretch;
+  max-width: 1180px; margin-inline: auto;
+}
+.doors__mark { order: -1; justify-self: center; width: var(--mark-w); margin: 0 0 clamp(32px, 7vw, 48px); }
+
+.door {
+  --door-ink: var(--ink-specimen);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 16px; row-gap: 6px;
+  padding: 20px 0 22px;
+  border-top: 1px solid var(--rule);
+  color: var(--fg);
+  -webkit-tap-highlight-color: transparent;
+}
+.door:last-child { border-bottom: 1px solid var(--rule); }
+.door--climbing { --door-ink: var(--ink-target); }
+.door__name {
+  position: relative; justify-self: start;
+  font-family: var(--serif); font-weight: 500;
+  font-size: clamp(32px, 4.2vw, 56px); line-height: 1.04; letter-spacing: -.022em;
+}
+.door__name::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.08em;
+  height: 2px; background: var(--door-ink);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.door__line { grid-column: 1; color: var(--fg2); max-width: 34ch; }
+.door__facts {
+  grid-column: 1;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .02em; color: var(--fg2);
+}
+.door__go {
+  grid-column: 2; grid-row: 1 / span 3; align-self: center;
+  color: var(--fg2);
+  transition: transform var(--t) var(--e), color var(--t) var(--e);
+}
+.door__go svg { display: block; width: 26px; height: 8px; overflow: visible; }
+.door:hover .door__name::after,
+.door:focus-visible .door__name::after,
+.door.is-active .door__name::after { transform: scaleX(1); }
+.door:hover .door__go,
+.door:focus-visible .door__go,
+.door.is-active .door__go { color: var(--fg); transform: translateX(6px); }
+.door:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 8px; }
+
+@media (min-width: 900px) {
+  .doors {
+    --mark-w: clamp(250px, 26vw, 370px);
+    grid-template-columns: minmax(0, 1fr) var(--mark-w) minmax(0, 1fr);
+    grid-template-areas:
+      "en mark ch"
+      ".  cl   .";
+    column-gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .doors__mark { grid-area: mark; margin: 0; }
+  .door {
+    grid-template-columns: none; justify-items: start;
+    max-width: 32ch; padding: calc(var(--mark-w) * .1) 0 0; border: 0;
+  }
+  .door:last-child { border: 0; }
+  .door__line, .door__facts, .door__go { grid-column: auto; grid-row: auto; }
+  .door__go { align-self: auto; margin-top: 6px; }
+  .door--english { grid-area: en; justify-self: end; justify-items: end; text-align: right; }
+  .door--english .door__name { justify-self: end; }
+  .door--english .door__name::after { transform-origin: right; }
+  .door--chess { grid-area: ch; justify-self: start; }
+  .door--climbing {
+    grid-area: cl; justify-self: center; justify-items: center; text-align: center;
+    padding-top: clamp(12px, 1.6vw, 24px);
+  }
+  .door--climbing .door__name { justify-self: center; }
+  .door--climbing .door__name::after { transform-origin: center; }
+}
+.sec--doors .origin__coda { margin-top: clamp(56px, 8vw, 110px); }
+
+/* ==========================================================================
+   Discipline pages, Stage 2 (2026-10-31): the parts a discipline page has
+   that the home page doesn't. Shared by /english/ now and /chess/ and
+   /climbing/ next, so nothing below names a discipline except the inks.
+   ========================================================================== */
+
+/* The masthead's photo shortcuts become the three pages on a sub-page. The
+   current page wears the same underline a section link gets when it's in
+   view (.tool.is-active), so "you are here" uses a cue the page already has. */
+.tool[aria-current="page"] { color: var(--fg); }
+.tool[aria-current="page"]::after { transform: scaleX(1); }
+
+/* Hero: the home hero's line-mask title and its timing, smaller, because a
+   discipline page's H1 is a sentence, not three words. */
+.hero--page .hero__title { font-size: clamp(40px, 6vw, 88px); }
+/* Not a full-screen statement like the home hero: the offer and the CTA
+   have to be on the first screen at 1280x800, so the hero sizes to its
+   content and starts right under the masthead. */
+.hero.hero--page { min-height: 0; justify-content: flex-start; padding-top: calc(var(--head) + clamp(28px, 5vh, 64px)); }
+.eyebrow__home { color: inherit; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: .3em; transition: text-decoration-color var(--t) var(--e), color var(--t) var(--e); }
+.eyebrow__home:hover, .eyebrow__home:focus-visible { color: var(--fg); text-decoration-color: currentColor; }
+.page-hero__foot { align-items: end; }
+@media (min-width: 900px) {
+  .hero__foot.page-hero__foot { grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); }
+}
+.page-hero__text { display: grid; gap: clamp(24px, 3vw, 36px); }
+.page-hero__photo { margin: 0; min-width: 0; }
+.page-hero__photo .collage__slot { aspect-ratio: 3 / 2; }
+
+/* One image rule for every photo a discipline page shows inline: the
+   collage view's treatment (grayscale per theme, cover-fit in a reserved
+   ratio box), without the collage's lightbox or hover zoom. */
+.page-hero__photo img, .page-photos img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; filter: var(--collage-filter);
+}
+.page-hero__photo figcaption, .page-photos figcaption {
+  margin-top: 12px; font-size: 13px; color: var(--fg2); letter-spacing: .01em;
+}
+
+/* Credential strip: the facts the home page's readout used to carry, one
+   hairline row. Numbers in the serif at body size, their gloss in the label
+   voice. */
+.creds { display: flex; flex-wrap: wrap; gap: 14px clamp(24px, 3.4vw, 44px); border-top: 1px solid var(--rule); padding-top: 16px; }
+.creds li { display: grid; gap: 2px; }
+.creds__k { font-family: var(--serif); font-weight: 500; font-size: clamp(19px, 1.6vw, 22px); color: var(--fg); letter-spacing: -.01em; }
+.creds__v { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+
+.page-hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px clamp(28px, 4vw, 48px); }
+.page-cta {
+  position: relative; display: inline-flex; align-items: center; gap: 14px;
+  font-family: var(--serif); font-weight: 500; font-size: clamp(22px, 2vw, 28px);
+  color: var(--fg); padding-bottom: 6px;
+}
+.page-cta::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--ink-target); transform: scaleX(.18); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.page-cta svg { width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
+.page-cta:hover::after, .page-cta:focus-visible::after { transform: scaleX(1); }
+.page-cta:hover svg, .page-cta:focus-visible svg { transform: translateX(6px); }
+
+/* Method on a discipline page: the core sentence, then this discipline's
+   line only — set off by a hairline in the discipline's ink, the way the
+   home page's labelled cases are. */
+.mech__here {
+  margin-top: .9em; padding-left: 16px;
+  border-left: 2px solid var(--page-ink, var(--ink-specimen));
+}
+
+/* Session facts: three label/value pairs. */
+.facts { display: grid; border-top: 1px solid var(--rule); margin-top: clamp(32px, 5vw, 64px); }
+.facts > div { display: grid; gap: 4px; padding: 16px 0 18px; border-bottom: 1px solid var(--rule); }
+.facts dt { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+.facts dd { margin: 0; font-family: var(--serif); font-weight: 500; font-size: clamp(19px, 1.7vw, 24px); color: var(--fg); }
+@media (min-width: 700px) {
+  .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
+}
+
+.page-photos { display: grid; gap: 32px clamp(16px, 3vw, 40px); margin-top: clamp(48px, 7vw, 96px); }
+.page-photos .collage__fig { margin: 0; }
+@media (min-width: 600px) {
+  .page-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 860px; margin-left: auto; }
+}
+
+/* Bridge: one line to the other two pages, then out. Centred, like the
+   home page's doors, because it is the same move in miniature. */
+.bridge {
+  max-width: var(--maxw); margin-inline: auto; padding: clamp(40px, 8vh, 110px) var(--gut);
+  text-align: center;
+}
+.bridge__line {
+  font-family: var(--serif); font-weight: 500; font-size: clamp(23px, 2.7vw, 38px);
+  line-height: 1.25; letter-spacing: -.015em; max-width: 32ch; margin-inline: auto;
+}
+.bridge__links { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px clamp(32px, 5vw, 64px); margin-top: clamp(24px, 3vw, 36px); }
+.bridge__link {
+  --link-ink: var(--ink-specimen);
+  position: relative; display: inline-flex; align-items: center; gap: 12px;
+  font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg); padding-bottom: 6px;
+}
+.bridge__link--climbing { --link-ink: var(--ink-target); }
+.bridge__link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--link-ink); transform: scaleX(.3); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.bridge__link svg { width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
+.bridge__link:hover::after, .bridge__link:focus-visible::after { transform: scaleX(1); }
+.bridge__link:hover svg, .bridge__link:focus-visible svg { transform: translateX(6px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-cta svg, .bridge__link svg, .page-cta::after, .bridge__link::after { transition: none; }
 }
