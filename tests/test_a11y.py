@@ -324,7 +324,7 @@ def test_specimen_reveal_is_an_accessible_disclosure(open_site):
     # Scoped to English: initSpecimenReveal() builds a prompt for every
     # .spec under #specimen regardless of group visibility (Stage 5,
     # 2026-09-16 added six more, chess + climbing), but this test's
-    # assertions (e.g. "myself") are specific to English's specimens.
+    # assertions (e.g. "am agree") are specific to English's specimens.
     english = '#specimen .specimens-group[data-discipline-group="english"] '
     prompts = page.locator(f"{english}.spec__prompt")
     rights = page.locator(f"{english}.line-spec.right")
@@ -342,11 +342,11 @@ def test_specimen_reveal_is_an_accessible_disclosure(open_site):
     btn0 = prompts.first
     btn0.click()
     assert btn0.get_attribute("aria-expanded") == "true"
-    assert "myself" in btn0.inner_text()                     # the error is now shown, in place
+    assert "am agree" in btn0.inner_text()                   # the error is now shown, in place
     assert rights.first.is_visible()                          # the fix never went away
     btn0.click()
     assert btn0.get_attribute("aria-expanded") == "false"
-    assert "myself" not in btn0.inner_text()
+    assert "am agree" not in btn0.inner_text()
 
 
 def test_specimen_reveal_works_under_reduced_motion(open_site):

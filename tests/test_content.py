@@ -236,8 +236,10 @@ def test_home_runs_hero_method_then_the_doors(open_site):
 # sits under ("Your errors are a finite list") never gets a fabricated number
 # put beside it. S0 decided that line is the whole claim; no figure is invented. ---
 
+# English order: copula first, so the first specimen under the plate is the
+# sentence the plate draws ("I am agree"). SITE-PLAN B2, 2026-11-20.
 SPECIMEN_IDS = [
-    "specimen-reflexive", "specimen-copula", "specimen-register",
+    "specimen-copula", "specimen-reflexive", "specimen-register",
     "specimen-chess-calculation", "specimen-chess-memory", "specimen-chess-tilt",
     "specimen-climbing-grip", "specimen-climbing-legs", "specimen-climbing-beta",
 ]
