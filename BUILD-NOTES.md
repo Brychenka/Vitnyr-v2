@@ -5885,3 +5885,170 @@ Cloudflare Web Analytics' beacon (static.cloudflareinsights.com) is on every
 page, so SITE-PLAN A1 is on: visitor numbers start from 2026-11-20. It is
 added at the edge, not in the repo, so the local "no third parties" test
 doesn't see it.
+
+## Notes — Igor's LinkedIn posts as `/notes/` (2026-11-20, `feature/notes`)
+
+Igor asked for a page that keeps his LinkedIn posts on the site to bring in
+more readers. This is SITE-PLAN.md's **H4, the library of mistakes** (its
+open question N11 answered by the request), built off `main` in its own
+worktree so `feature/s1-clean-up` and the uncommitted
+`feature/theme-follows-system` were never touched. `NOTES-PLAN.md` holds
+the brainstorm, the ambitious v1, the cold-eyes table that cut it down
+(no cards, no carousel images, no text-to-speech, no feed embed, no
+filters, no masthead item yet), the v2 that was built, the checklist for
+adding the next note, and the questions only Igor can answer.
+
+- **`/notes/`** — a ledger of corrected proofs: one hairline row per note,
+  each carrying its own correction in mono (amber mistake, green fix, the
+  sanctioned `.mark--specimen` / `.mark--target` exception), then a
+  "follow on LinkedIn" line and the English contact section.
+- **`/notes/au/`** ("Two letters, one sound") and
+  **`/notes/noun-verb-stress/`** ("The weight of stress"): hero with a
+  typeset figure in the photo slot (hairline Scrabble tiles where the green
+  `ɔː` spans the two amber letters' columns; the stressed syllable set
+  large so the type's weight is the stress), the correction as a
+  `.line-spec` pair outside `#specimen` (so the specimen reveal leaves it
+  showing), the word list as a real `<table>`, why Russian pulls it there,
+  practice sentences, a pager, contact. Lists align to `.sec__head`'s own
+  two columns at ≥900px (Russian/noun under the heading, English/verb under
+  the lede); the table's last column is 45.5%, which is that split's share
+  from 900px to `--maxw`.
+- **Shell:** masthead, contact and footer are the English page's own blocks
+  (generated once by a scratch script, then committed as plain HTML, the
+  same way the discipline pages were). No discipline is `aria-current`;
+  each page has its own section links.
+- **CSS:** one block appended to `style.css`; only the notes pages load the
+  new key (`?v=20261120n`). The four existing pages use none of the new
+  selectors, so their heads (and cache keys) are unchanged. The English
+  page's link into the notes reuses `.bridge__link`, so it needs no new CSS.
+- **Head / sharing:** own title, `data-head-ru`, description, hreflang trio,
+  og/twitter, JSON-LD (`CollectionPage` + `ItemList`; `Article` with
+  `author → #igor`). Six share cards (`share-card.html?page=notes|note-au|
+  note-noun-verb-stress`, EN and RU — the edge middleware swaps `.png` for
+  `-ru.png`); a note's card carries its correction. The `english` selector
+  in `share-card.html` became `~=` so its facts line can be shared; the
+  English card re-exports identically.
+- **Deploy:** `build.sh` copies `notes/`; `sitemap.xml` lists the three
+  pages in both languages.
+- **Content:** the Russian is Igor's posts, lightly cleaned (из-за, и т. д.,
+  всё); the English is a translation marked as a draft. The `au` practice
+  sentences are drafts (not in his post); one stress action sentence was
+  hidden on the screenshot and is a stand-in. Kelly & Bock (1988) checked:
+  *Stress in time*, JEP: HPP 14(3), 389–403. The "по-русски" column of his
+  register slide was unreadable and is left out. The posts' own URLs and
+  the stress post's exact date are pending (the source line links to his
+  LinkedIn activity page and says "November 2026").
+- **Tests:** `tests/test_notes.py` discovers note folders on disk and fails
+  if one is missing from the ledger, the JSON-LD list, the sitemap, the
+  build or the share cards, or lacks its own head in both languages; also
+  masthead/footer drift against `/english/`, section-link targets, Telegram
+  prefills naming English, the correction showing both lines, phone width
+  in RU dark, and no-JS reading. `test_pages.py`'s sitemap test was renamed
+  `test_sitemap_lists_every_page_in_two_languages` and now expects the notes
+  — a deliberate change to what it protects.
+
+Verified: all three pages at 1280 (Cream EN, Charcoal RU) and at 375 and
+320 touch (Charcoal RU, Cream EN), reduced motion, JS off; no console
+errors, no overflow, no hidden reveals; in the browser, the language switch
+(title, canonical, Telegram prefill, hero replay), section jumps with the
+active underline, and the dock. Suite: 357 passed + the known xfail;
+`test_hero_foot_is_visible_at_rest_without_scrolling` failed at 800/1080
+in the full run (opacity 0.93 vs 0.95, read 400ms after load while the
+reveal fades over 0.9s). It passes on this branch alone and fails the same
+way on untouched `main`, so it is a pre-existing timing flake on the home
+page, not this change.
+
+A dry-run merge into `feature/s1-clean-up`'s committed state is clean. When
+that branch's masthead/footer changes land, copy them into the three notes
+pages too; the drift test fails until they match.
+
+**Not merged, not pushed, artifact not republished** — waiting on Igor
+(NOTES-PLAN.md §8).
+
+## Notes, stage N1: the new shell, a generator, the Notes link (2026-11-20, `feature/notes-v2`)
+
+`main` moved to SITE-PLAN stages 1–5 while the notes were being built, and
+the three notes pages fell a version behind (CDN fonts and scripts, no
+"Photos", no "What happens next"). `NOTES-COUNCIL.md` is the review that
+followed; this is its stage N1 plus K8, after Igor's answers.
+
+- **Branch.** `feature/notes-v2` is cut from `main` `de3bfd6`, with the four
+  `feature/notes` commits replayed on top (only BUILD-NOTES conflicted; both
+  entries kept). The first `feature/notes` is left as it was.
+- **K2, the generator.** `tools/notes/`: `build.py` (pages, ledger, pagers,
+  sitemap block with `<lastmod>`, the share card's notes block),
+  `lib.py` (frame and pieces), one module per note (`au.py`,
+  `noun_verb_stress.py`), `export_cards.py` (PNGs, its own local server).
+  The masthead, contact section, footer, dock, stylesheet and scripts are
+  cut from `english/index.html` on every run, so the notes can't drift; a
+  new test re-runs the generator on a copy and fails if any output is stale.
+  The pager is now one link, to the next note down the ledger (the oldest
+  wraps to the newest).
+- **K1** comes free with K2: self-hosted fonts and scripts, current cache
+  keys, "Photos", "What happens next". The contact block keeps no
+  voice-message step on a note (Igor said no to K5).
+- **K3:** "mispronounce au" (not "the au cluster"); an accent footnote under
+  the au table (British /ɔː/, many Americans /ɑː/; a draft); "CONflict and
+  conFLICT" instead of a bare reference to an earlier post; "trial lesson"
+  no longer twice in a row.
+- **K4:** a by-line under each note's standfirst: "Igor Shatsev, English
+  coach · C2 · IELTS 9 · 10 years · 100+ one-on-one clients" (`.note-byline`).
+- **K8:** "Notes" in every footer (after "Photos") and in the masthead
+  (after "Photos") from 1240px: measured, a discipline page's masthead wraps
+  to a second row with it up to 1220px. On a notes page it carries
+  `aria-current="page"`. `style.css` key bumped to `20261121n` on all pages.
+- **Share card:** which blocks show is now decided by its script
+  (`note-*` matches every note), so a new note needs no CSS there. The
+  re-exported PNGs differed from the committed ones only by anti-aliasing
+  (mean 0.01/255), so the committed PNGs were kept.
+- `tools/notes/RECORDINGS.md` lists what Igor records for K6.
+
+Not merged, not pushed, artifact not republished.
+
+## Notes, K7 preview: the three English specimens as notes (2026-11-20, `feature/notes-specimens`)
+
+Igor on NOTES-COUNCIL C5: "show me how it looks and then we'll decide". So
+this is a preview branch on top of `feature/notes-v2`, not for merging until
+he says so.
+
+- Three notes, generated like the others (`tools/notes/agree.py`,
+  `feel.py`, `could_you.py`), first in the ledger, the same order as the
+  English page: `/notes/agree/` "A state or an action?", `/notes/feel/`
+  "Nothing to add.", `/notes/could-you/` "Please isn't enough."
+- Each standfirst reuses its specimen's approved explanation; the forms,
+  look-alikes, practice lines and Russian are drafts for Igor. Each has a
+  new hero figure, `.ladder`: one sentence per row, from the Russian through
+  the habit to the English, with the culprit and the fix in the same inks
+  as `.note-spec`.
+- The slugs leave out the word each specimen hides until asked ("am",
+  "myself", "please"; W1, J6(b)), because each specimen on `/english/` now
+  links to its note ("The full note", reusing `.bridge__link`).
+- Not all notes started on LinkedIn any more, so the index's "Each one
+  starts as a post on LinkedIn" now appears only while that is true (the
+  generator checks), and these notes show a date without a LinkedIn link.
+- Found while writing `feel`: the English page explains "I feel myself" as a
+  Russian "reflexive ending built into the verb". чувствую себя uses a
+  separate reflexive word (себя), not an ending (that would be -ся). The note
+  says "reflexive word"; the English page's sentence is Igor's approved copy
+  and is left for him.
+
+Not merged, not pushed, artifact not republished.
+
+## Notes merged: two specimen notes in, "I am agree" parked (2026-11-20)
+
+After the preview Igor said: "for now let's put i'm agree back to where it
+was. i'll decide later. after the reverse. merge the rest of the changes".
+
+- `/notes/agree/` is out: `tools/notes/agree.py`, its page, its share cards
+  and `/english/`'s "The full note" link under "I am agree" are removed, so
+  that specimen is back to how it was before K7. The whole note is kept on
+  `feature/notes-agree` (`c4e6e17`); bringing it back is a revert of this
+  removal commit.
+- The rest went to `main`: stage N1 (generator in `tools/notes/`, shell
+  re-synced), K8 (Notes link in the footers and the desktop masthead from
+  1240px), and `/notes/feel/` and `/notes/could-you/` with their links on
+  `/english/`. The ledger now lists four notes.
+- Still open for Igor: the notes' practice lines and Russian (not yet
+  line-edited), the post URLs (Q5), the stress post's date (Q6), conSOLE
+  (Q7), "95%" (Q2), the recordings (K6), and the English page's "reflexive
+  ending" wording.
