@@ -50,7 +50,7 @@ testing nothing.
 | `test_collage_nav_icons.py` | chess/carabiner/book icons: structure, glyph fidelity, ink tokens, lockup's 176px floor, the 600px wrap, 44px touch targets, no click wiring yet |
 | `test_motion.py` | hero plays + lands, reveal rhythm, facts row counts its numbers up as separate instruments (`-m slow`) |
 | `test_collage.py` | hash routing, deep link, browser back, inert background, focus, scroll restore |
-| `test_content.py` | name in both languages, 2100-without-FIDE, distinct 7c/7C, contact handles real, OG tags flagged |
+| `test_content.py` | name in both languages, 2100 peak rating (never FIDE) linked to Lichess, distinct 7c/7C, contact handles real, OG tags flagged |
 
 ## When placeholders get filled
 

@@ -21,11 +21,10 @@
   }
   function save(key, v) { try { localStorage.setItem(key, v); } catch (e) {} }
 
-  /* The reader's OS setting picks the pair (Igor, 2026-09-29 — reversing the
-     2026-09-07 cream-always default): a dark system opens on charcoal, anything
-     else on cream. A choice made with the theme control is stored and wins
-     over the OS from then on. The attribute is always stamped, so style.css
-     keeps a single `[data-theme="dark"]` branch and no media-query twin. */
+  /* The reader's OS setting picks the pair: a dark system opens on charcoal,
+     anything else on cream. A choice made with the theme control is stored and
+     wins from then on. The attribute is always stamped, so style.css keeps one
+     [data-theme="dark"] branch. */
   var darkMQ = null;
   try { darkMQ = window.matchMedia('(prefers-color-scheme: dark)'); } catch (e) {}
   function effectiveTheme() {
@@ -44,9 +43,8 @@
     if (!btns.length) return;
     var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
     var lang = document.documentElement.getAttribute('data-lang') || 'en';
-    /* The control is an icon now (a disc, half filled; it turns over when the
-       theme does — see .themeswitch in style.css), so there is no visible word
-       to swap: the name and the tooltip carry the language. */
+    /* The control is an icon (a disc, half filled, that turns over with the
+       theme), so the name and the tooltip carry the language. */
     var names = { en: { light: 'Switch to the light theme', dark: 'Switch to the dark theme' },
                   ru: { light: 'Переключить на светлую тему', dark: 'Переключить на тёмную тему' } };
     var titles = { en: { light: 'Cream', dark: 'Charcoal' },
@@ -68,17 +66,14 @@
     d.setAttribute('lang', l);
     var nodes = document.querySelectorAll('[data-en][data-ru]');
     for (var i = 0; i < nodes.length; i++) nodes[i].textContent = nodes[i].dataset[l];
-    /* P8 (Stage 6, 2026-09-06): same generic-attribute-copy idea as the loop
-       above, for a link whose destination text differs per language (the
-       Telegram deep link pre-fills a message, so it reads as the right
-       language before the reader even sends it) rather than its label. */
+    /* The same idea for links whose destination differs per language (the
+       Telegram links prefill a message in the reader's language). */
     var hrefNodes = document.querySelectorAll('[data-href-en][data-href-ru]');
     for (var h = 0; h < hrefNodes.length; h++) {
       hrefNodes[h].setAttribute('href', hrefNodes[h].dataset['href' + (l === 'ru' ? 'Ru' : 'En')]);
     }
     /* More than one .langswitch: the masthead's, plus the one in the collage
-       view's bar (which sits above the masthead when that view is open) —
-       same reason labelTheme() below loops over every .themeswitch. */
+       view's bar. */
     var sws = document.querySelectorAll('.langswitch');
     for (var j = 0; j < sws.length; j++) {
       sws[j].textContent = (l === 'ru') ? 'EN' : 'RU';
@@ -90,12 +85,11 @@
     document.dispatchEvent(new CustomEvent('vitnyr:langchange', { detail: l }));
   }
 
-  /* 2026-09-23: the <head> follows the language too. The static HTML carries
-     the English title/description with a data-ru twin (index.html), and no
-     canonical of its own: a static canonical of "/" contradicted the
-     ?lang=ru hreflang alternate and got the Russian URL dropped. So the
-     canonical is written here, self-referencing per language, off the
-     x-default alternate's href (the one place the domain lives). */
+  /* The <head> follows the language too. The HTML carries the English
+     title/description with data-head-ru twins and no canonical of its own (a
+     static "/" canonical contradicted the ?lang=ru alternate). The canonical
+     is written here, self-referencing per language, off the x-default
+     alternate's href, the one place the domain lives. */
   var headEn = null;   /* the static English title/description. Their Russian
                           twins are data-head-ru, not data-ru, so applyLang's
                           [data-en][data-ru] textContent loop never touches them */
@@ -112,15 +106,10 @@
     c.href = base.getAttribute('href') + (l === 'ru' ? '?lang=ru' : '');
   }
 
-  /* P2 (Stage 6, 2026-09-06): language lived only in localStorage — the URL
-     a Russian reader copies and sends opens in English for everyone else,
-     since ?lang= was read on load but never written back. Called only from
-     the switch handler below, not from the initial applyLang() call, so a
-     plain visit never rewrites the address bar on its own; a link someone
-     actually shares after switching does. Wrapped like every other
-     history/URL call here: the live artifact runs this page inside a
-     cross-origin iframe, where replaceState can throw. Also what gives
-     hreflang (index.html) something real to point at. */
+  /* Writes ?lang= back into the URL, so a link a Russian reader shares opens
+     in Russian. Called only from the switch, never on a plain visit. Wrapped
+     because inside the artifact's cross-origin iframe replaceState can
+     throw. */
   function syncLangUrl(l) {
     try {
       var url = new URL(location.href);
@@ -161,12 +150,9 @@
       var next = document.documentElement.getAttribute('data-lang') === 'ru' ? 'en' : 'ru';
       lang = next;
       save(LANG_KEY, next);
-      /* The swap itself. main.js may wrap this in a crossfade of #app by
-         installing window.__vitnyrLangFade (Spark Order S4 / move 05) — a
-         hook, not an interception. If nothing installed it (main.js absent,
-         GSAP missing, reduced motion) the swap runs straight through, exactly
-         as before; the required degradation is that theme.js still switches
-         instantly on its own. */
+      /* The swap itself. main.js may wrap it in a crossfade by installing
+         window.__vitnyrLangFade; without it (no main.js, no GSAP, reduced motion)
+         the swap runs straight through, instantly. */
       var swap = function () { applyLang(next); syncLangUrl(next); };
       if (typeof window.__vitnyrLangFade === 'function') window.__vitnyrLangFade(swap);
       else swap();

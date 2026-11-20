@@ -30,8 +30,8 @@ happening; the words carry the claims.
 layout/motion stages before the shoot, with stock stand-ins swapped for real
 photos later. So temporary non-Igor placeholders are allowed **in the repo and
 local preview only** — never on the republished live artifact, which waits for
-real photos of Igor. Provenance and the swap contract:
-`assets/collage/PLACEHOLDERS.md`; rationale: `BUILD-NOTES.md` → "Collage
+real photos of Igor. Provenance and the swap contract were in
+`assets/collage/PLACEHOLDERS.md` (removed 2026-11-21, in git history); rationale: `BUILD-NOTES.md` → "Collage
 Stage 3 — placeholder images". The rule above is what the shipped page holds
 to; this is a scaffold with an expiry, not a repeal.
 

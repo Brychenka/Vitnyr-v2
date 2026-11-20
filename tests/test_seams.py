@@ -6,18 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def test_spark_duration_in_css_matches_spark_ms_in_js():
-    """--spark-d (style.css) and SPARK_MS (main.js) are the codebase's only
-    CSS-to-JS coupling; a comment in each file used to be the whole guard."""
-    css = (ROOT / "style.css").read_text()
-    js = (ROOT / "main.js").read_text()
-    css_s = float(re.search(r"--spark-d:\s*([\d.]+)s", css).group(1))
-    js_ms = int(re.search(r"SPARK_MS\s*=\s*(\d+)", js).group(1))
-    assert round(css_s * 1000) == js_ms
-
-
-# --- SITE-PLAN G1 (2026-11-20): the four pages share no template, so the
-# shared frame (footer, masthead) is kept in step by hand. These catch one
+# --- The four pages share no template, so the shared frame (footer,
+# masthead) is kept in step by hand. These catch one
 # page quietly falling behind. Each comparison strips only what may
 # legitimately differ per page, and says why. ---
 

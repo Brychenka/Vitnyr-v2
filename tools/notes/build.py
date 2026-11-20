@@ -12,7 +12,7 @@ english/index.html on every run (lib.py), so change them there, then re-run
 this. Share-card PNGs are a separate step: tools/notes/export_cards.py.
 
 To add a note: copy a note module, fill it in, add it to ORDER (newest
-first), run this, then export_cards.py, then the tests. NOTES-PLAN.md §7.
+first), run this, then export_cards.py, then the tests. The checklist is in SITE-PLAN.md, under H4.
 """
 import importlib
 import re
@@ -149,7 +149,7 @@ def build_index(notes):
   </p>
 </section>"""
     page(path="/notes/",
-         comment="/notes/ (NOTES-PLAN.md). SITE-PLAN.md H4, the library of mistakes: one real mistake per note. Not a blog.",
+         comment="/notes/: the library of mistakes, one real mistake per note. Not a blog.",
          title_en="Notes on English for Russian speakers — Igor Shatsev",
          title_ru="Заметки об английском для русскоязычных — Igor Shatsev",
          desc_en="The English mistakes Russian speakers make, taken apart one at a time: pronunciation, stress, grammar. Why Russian pulls them in and how it should sound. By Igor Shatsev, English coach.",

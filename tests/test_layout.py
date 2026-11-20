@@ -339,7 +339,7 @@ def test_contact_cta_prefill_text_is_localized(open_site):
     cta = page.locator(".contact__big .contact__cta")
     en_href = cta.get_attribute("href")
     # 2026-09-12: base offer text updated to Igor's own CTA wording; 2026-09-24
-    # "screening" dropped (DESIGN-PASS-III Q4) — the offer is a free trial lesson.
+    # "screening" dropped (2026-09-24) — the offer is a free trial lesson.
     assert "book%20a%20free%20trial%20lesson" in en_href
 
     page.locator(".masthead .langswitch").click()
@@ -478,7 +478,7 @@ def test_who_rows_resting_mark_is_absent_without_js(open_site):
 def test_who_section_has_no_lede_under_its_heading(open_site):
     """Reversal recorded, not a regression: J2 added a line under the §04 heading
     explaining that rows are clickable; 63792e0 removed it on purpose
-    (DESIGN-PASS-III.md, W6: "do not restore the line"). Guards it staying gone."""
+    (Igor, 2026-09-23: "do not restore the line"). Guards it staying gone."""
     for path in ("english/", "chess/", "climbing/"):
         for lang in ("en", "ru"):
             page, _ = open_site(lang=lang, path=path)

@@ -1,6 +1,6 @@
 """/notes/au/: Igor's LinkedIn post about the au sound (November 2026).
 The Russian is his post, lightly cleaned; the English is a translation, a
-DRAFT for Igor (NOTES-PLAN.md Q4). The practice sentences are drafts (Q3)."""
+DRAFT for Igor (SITE-PLAN.md NQ4). The practice sentences are drafts (NQ3)."""
 from lib import hit, practice, pull, register, section, head2, spec_pair, tile
 
 OO = '<span class="mark--target">ɔː</span>'
@@ -43,7 +43,7 @@ def body(note):
         register("Six words with au, and how each one sounds", "Шесть слов с au и как каждое звучит",
                  [("Word", "Слово"), ("Sound", "Звучание")],
                  [[hit(w, "au"), ("register__ipa", ipa.format(OO))] for w, ipa in WORDS]),
-        # NOTES-COUNCIL K3: the accent footnote. DRAFT for Igor (not in the post).
+        # the accent footnote. DRAFT for Igor (not in the post).
         '  <p class="note-cite reveal"><span data-l="en">That is British /ɔː/; many Americans say /ɑː/. '
         'Either way it is one vowel, never two.</span><span data-l="ru">Это британское /ɔː/; многие американцы '
         'говорят /ɑː/. В любом случае это один гласный, а не два.</span></p>',
@@ -58,7 +58,7 @@ def body(note):
         head2("Say it out loud.", "Скажите вслух.",
               "One sound wherever the line is. No а, no у, no в.",
               "Там, где черта, — один звук. Без «а», без «у», без «в»."),
-        practice(PRACTICE, "DRAFT for Igor (NOTES-PLAN.md Q3): these six sentences are not from the LinkedIn post."),
+        practice(PRACTICE, "DRAFT for Igor (SITE-PLAN.md NQ3): these six sentences are not from the LinkedIn post."),
     ]))
     return "\n\n".join([words, why, say])
 
@@ -81,7 +81,7 @@ NOTE = dict(
     stand_en="95% of my IT clients mispronounce au: automate, auction, cause, launch, fault, authenticate. They come out as “автомейт”, “аутомейт”, “лаунч”, “аусентикейт”. To make them sound right, drop the а, the у and the в: [[you need one sound only, /ɔː/]].",
     stand_ru="95% моих IT-клиентов ошибаются в произношении сочетания au: automate, auction, cause, launch, fault, authenticate. Произносят эти слова как «автомейт», «аутомейт», «лаунч», «аусентикейт». Чтобы звучало красиво, надо убрать «а», «у» и «в»: [[нужен только один звук, /ɔː/]].",
     figure=FIGURE,
-    comment="/notes/au/ (NOTES-PLAN.md). Igor's LinkedIn post about the au sound, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a DRAFT for Igor (Q4).",
+    comment="/notes/au/: Igor's LinkedIn post about the au sound, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="How to pronounce au: automate, launch, cause — Igor Shatsev",
     title_ru_head="Как произносить au: automate, launch, cause — Igor Shatsev",
     desc_en="Russian speakers say launch as “лаунч” and automate as “автомейт”. Six IT words, one sound: /ɔː/. Why Russian pulls the wrong sound in, and how it should sound.",

@@ -67,7 +67,7 @@ def test_three_icon_links_after_a_divider(open_site):
             : el.className)"""
     )
     # the caption opens the cluster, right before the icons it names; the
-    # gallery link and the notes link (NOTES-COUNCIL K8) close it
+    # gallery link and the notes link close it
     assert order == ["label", "icon", "icon", "icon", "photos", "notes"]
 
 
