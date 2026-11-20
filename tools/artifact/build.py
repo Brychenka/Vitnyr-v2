@@ -34,7 +34,7 @@ def relink(s):
     s = re.sub(r'(href|src)="/?(style\.css|theme\.js|main\.js)\?v=[^"]*"', r'\1="\2"', s)
     for d in PAGES:
         s = s.replace(f'href="/{d}/#', f'href="{d}.html#').replace(f'href="/{d}/"', f'href="{d}.html"')
-    s = s.replace('href="/"', 'href="index.html"')
+    s = s.replace('href="/"', 'href="index.html"').replace('href="/#', 'href="index.html#')
     s = s.replace('="/assets/', '="assets/').replace(', /assets/', ', assets/')
     # the host supplies its own favicon
     s = re.sub(r'<link rel="(icon|apple-touch-icon)"[^>]*>\n?', '', s)

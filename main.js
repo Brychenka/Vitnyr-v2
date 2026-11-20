@@ -175,6 +175,7 @@
   }
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     if (a.hasAttribute('data-collage-open')) return;   // the collage router owns this one
+    if (a.hasAttribute('data-collage-link')) return;   // and these (SITE-PLAN C4)
     if (a.hasAttribute('data-permalink')) return;      // initSpecimenPermalinks owns these
     if (a.classList.contains('footmark-home')) return; // initCollageView owns this one too
     a.addEventListener('click', function (e) {
@@ -1466,6 +1467,10 @@
     var title = document.getElementById('collage-title');
     var backBtn = view.querySelector('.view__back');
     var homeLink = view.querySelector('.footmark-home');
+    // The door (the "See me at work" band) is the one opener that morphs into
+    // the view. SITE-PLAN C4's "Photos" links (masthead, footer) carry
+    // data-collage-link instead and open with the ordinary cross-fade; they
+    // are wired on their own below.
     var opener = document.querySelector('[data-collage-open]');
     // The view's own "Photographs" label — always the first .label in
     // view__body, always in the viewport the moment the view opens — is the
@@ -1656,6 +1661,15 @@
       if (history.pushState) history.pushState(null, '', '#collage');
       else location.hash = 'collage';
       openWithDoorMorph();
+    });
+    document.querySelectorAll('[data-collage-link]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (location.hash === '#collage') return;
+        if (history.pushState) history.pushState(null, '', '#collage');
+        else location.hash = 'collage';
+        routeAfterHashChange();
+      });
     });
 
     /* The masthead glyph icons (chess / carabiner / book) are shortcuts into

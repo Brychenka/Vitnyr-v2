@@ -163,7 +163,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&family=Marck+Script&display=swap">
-<link rel="stylesheet" href="style.css?v=20261121d">
+<link rel="stylesheet" href="style.css?v=20261121g">
 <script src="theme.js?v=20261121a"></script>
 <script>
 /* Render-blocking, like theme.js: if the URL already points at the collage,
@@ -250,12 +250,14 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
          upstream of everything that holds position on a language toggle, so
          the nav icons sit downstream of it where its width swing cancels.
 
-         Collage nav icons — design handoff in reference/design_handoff_collage_nav_icons/
+         Discipline icons — design handoff in reference/design_handoff_collage_nav_icons/
          (chess / screw-lock carabiner / open book). SVG paths pasted verbatim per that
-         spec. Each is a shortcut into the #collage view: data-collage-jump opens the
-         view (if closed) and smooth-scrolls to that domain's group — wired in main.js
-         initCollageView(). The same glyph is echoed on that group's label so the icon
-         visibly lands where it points.
+         spec. SITE-PLAN C4 (2026-11-20): one meaning per icon on every page. They used
+         to jump into the #collage view here and go to the discipline pages
+         everywhere else; now they are links to /english/, /chess/, /climbing/ on all
+         four pages, captioned "Coaching", and "Photos" is a plain text link to the
+         gallery after them (desktop; on a phone the "See me at work" band is the way
+         in). The gallery keeps its own in-view switcher (data-collage-jump, below).
 
          P10 (2026-09-06): these three used to carry no visible label at
          all — aria-label and a title tooltip, neither of which a touch
@@ -274,31 +276,26 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <button class="tool langswitch" type="button" data-magnetic>RU</button>
     </div>
     <span class="tools__rule" aria-hidden="true"></span>
-    <div class="tools__group tools__group--nav">
-      <span class="tools__label" data-en="Photos" data-ru="Фото">Photos</span>
-      <button class="tool tool--icon" type="button" aria-label="Jump to the English coaching photographs" title="English" data-collage-jump="en" data-magnetic>
+    <div class="tools__group tools__group--nav tools__group--disciplines">
+      <span class="tools__label" data-en="Coaching" data-ru="Направления">Coaching</span>
+      <a class="tool tool--icon" href="/english/" title="English" data-magnetic>
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4.5 5.5c2-1 4.5-1 6.8 0v13.2c-2.3-1-4.8-1-6.8 0z"/>
           <path d="M19.5 5.5c-2-1-4.5-1-6.8 0v13.2c2.3-1 4.8-1 6.8 0z"/>
         </svg>
-      </button>
-      <button class="tool tool--icon" type="button" aria-label="Jump to the chess photographs" title="Chess" data-collage-jump="chess" data-magnetic>
-        <!-- P21: back to the checkerboard — two diagonal squares filled, two
-             outlined — which is what reads as "chess". P20's all-outline 2x2
-             read as a plain grid. Squares enlarged 6.25 -> 7.5 (the 1.5 seam
-             between them kept), recentred in the 24 box, so the glyph carries
-             the same optical weight as the carabiner and book beside it.
-             stroke-width for the two outlined squares comes from
-             .tool--icon svg in style.css. -->
+        <span class="vh" data-en="English" data-ru="Английский">English</span>
+      </a>
+      <a class="tool tool--icon" href="/chess/" title="Chess" data-magnetic>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <rect x="3.75" y="3.75" width="7.5" height="7.5" fill="currentColor"/>
           <rect x="12.75" y="3.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
           <rect x="3.75" y="12.75" width="7.5" height="7.5" fill="none" stroke="currentColor"/>
           <rect x="12.75" y="12.75" width="7.5" height="7.5" fill="currentColor"/>
         </svg>
-      </button>
-      <button class="tool tool--icon" type="button" aria-label="Jump to the climbing photographs" title="Climbing" data-collage-jump="climb" data-magnetic>
+        <span class="vh" data-en="Chess" data-ru="Шахматы">Chess</span>
+      </a>
+      <a class="tool tool--icon" href="/climbing/" title="Climbing" data-magnetic>
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16.9 8.4C17.7 5.7 16.1 3.6 13.3 3 10.7 2.4 7.7 3.2 6.3 5.4 5 7.5 4.8 10.4 5 13.2 5.2 16.4 6.1 19 7.9 20.5 9.4 21.8 11.5 21.6 12.7 20.1 13.3 19.4 13.6 18.9 13.9 18.4"/>
@@ -306,7 +303,9 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
           <path d="M14.74 15.6 13.9 18.4"/>
           <path d="M14.95 10.21 17.53 10.99 16.21 15.39 13.63 14.61Z" stroke-linejoin="miter"/>
         </svg>
-      </button>
+        <span class="vh" data-en="Climbing" data-ru="Скалолазание">Climbing</span>
+      </a>
+      <a class="tool tools__photos" href="#collage" data-collage-link data-magnetic><span data-en="Photos" data-ru="Фото">Photos</span></a>
     </div>
     <!-- Section quick-nav (2026-09-19). Desktop only (>=900px, see style.css) —
          the phone masthead is already at capacity (see the 400/602px comments
@@ -1187,6 +1186,7 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
         <span>Igor Shatsev · Vitnyr · © 2026</span>
         <span class="foot__place"><span data-en="Yerevan" data-ru="Ереван">Yerevan</span><span class="foot__clock" hidden> · <time class="foot__time"></time> <span data-en="local time" data-ru="по местному времени">local time</span></span></span>
       </p>
+      <a class="tool foot__photos" href="#collage" data-collage-link data-magnetic><span data-en="Photos" data-ru="Фото">Photos</span></a>
       <a class="tool foot__top" href="#top" data-magnetic>
         <span data-en="Back to top" data-ru="Наверх">Back to top</span>
       </a>
@@ -1584,6 +1584,6 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-<script src="main.js?v=20261031a"></script>
+<script src="main.js?v=20261121b"></script>
 </body>
 </html>

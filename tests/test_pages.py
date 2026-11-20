@@ -101,7 +101,8 @@ def test_home_doors_and_mark_lead_to_the_three_pages(open_site):
 @pytest.mark.parametrize("slug", PAGES)
 def test_masthead_links_the_pages_and_marks_the_current_one(open_site, slug):
     page, _ = open_site(path=f"{slug}/")
-    links = page.locator(".tools__group--disciplines a.tool")
+    # a.tool--icon: SITE-PLAN C4 put the "Photos" text link in this group too
+    links = page.locator(".tools__group--disciplines a.tool--icon")
     assert links.count() == 3
     hrefs = [a.get_attribute("href") for a in links.all()]
     assert hrefs == ["/english/", "/chess/", "/climbing/"]
