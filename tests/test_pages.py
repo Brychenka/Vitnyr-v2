@@ -101,7 +101,8 @@ def test_home_doors_and_mark_lead_to_the_three_pages(open_site):
 @pytest.mark.parametrize("slug", PAGES)
 def test_masthead_links_the_pages_and_marks_the_current_one(open_site, slug):
     page, _ = open_site(path=f"{slug}/")
-    links = page.locator(".tools__group--disciplines a.tool")
+    # a.tool--icon: SITE-PLAN C4 put the "Photos" text link in this group too
+    links = page.locator(".tools__group--disciplines a.tool--icon")
     assert links.count() == 3
     hrefs = [a.get_attribute("href") for a in links.all()]
     assert hrefs == ["/english/", "/chess/", "/climbing/"]
@@ -212,3 +213,18 @@ def test_footer_readings_link_to_the_other_disciplines(open_site, path, here):
     deco = page.evaluate(
         "() => getComputedStyle(document.querySelector('.foot__link .foot__text')).textDecorationLine")
     assert deco == "none"
+
+
+# --- SITE-PLAN E1 (2026-11-20): every contact section says what happens after
+# the message — three plain steps, no prices, in both languages. ---
+
+@pytest.mark.parametrize("path", ["index.html"] + [f"{s}/" for s in PAGES])
+def test_contact_says_what_happens_next(open_site, path):
+    for lang, first, last in (("en", "You message me", "plan"), ("ru", "Вы пишете мне", "план")):
+        page, _ = open_site(path=path, lang=lang)
+        items = page.locator("#contact .steps li")
+        assert items.count() == 3
+        texts = [items.nth(i).inner_text() for i in range(3)]
+        assert first in texts[0] and "30" in texts[1] and last in texts[2]
+        assert not re.search(r"[$€₽֏]|AMD|USD|руб|драм", " ".join(texts), re.I), "no prices"
+        assert page.locator("#steps-title").text_content().strip()

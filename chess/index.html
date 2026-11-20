@@ -90,7 +90,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&family=Marck+Script&display=swap">
-<link rel="stylesheet" href="/style.css?v=20261121c">
+<link rel="stylesheet" href="/style.css?v=20261121i">
 <script src="/theme.js?v=20261121a"></script>
 </head>
 <body>
@@ -165,6 +165,7 @@
         </svg>
         <span class="vh" data-en="Climbing" data-ru="Скалолазание">Climbing</span>
       </a>
+      <a class="tool tools__photos" href="/#collage" data-magnetic><span data-en="Photos" data-ru="Фото">Photos</span></a>
     </div>
     <span class="tools__rule tools__rule--sections" aria-hidden="true"></span>
     <div class="tools__group tools__group--sections">
@@ -512,7 +513,7 @@
       <div class="collage__slot">
         <img src="/assets/collage/chess-04-reset@2x.jpg"
              srcset="/assets/collage/chess-04-reset.jpg 450w, /assets/collage/chess-04-reset@2x.jpg 900w"
-             sizes="(min-width: 700px) 40vw, 100vw"
+             sizes="(min-width: 600px) 46vw, 100vw"
              width="900" height="1125" loading="lazy" decoding="async"
              alt="Igor Shatsev placing a white piece on the board mid-game, eyes on the position.">
       </div>
@@ -522,7 +523,7 @@
       <div class="collage__slot">
         <img src="/assets/collage/chess-09-cascade@2x.jpg"
              srcset="/assets/collage/chess-09-cascade.jpg 450w, /assets/collage/chess-09-cascade@2x.jpg 900w"
-             sizes="(min-width: 700px) 40vw, 100vw"
+             sizes="(min-width: 600px) 46vw, 100vw"
              width="900" height="1125" loading="lazy" decoding="async"
              alt="Igor Shatsev on a wooden bench at the Cascade in Yerevan, hand in his hair, smiling down at a chess board and a phone clock; a hand-lettered “Let’s Play Chess” sign beside him, his opponent at the edge of the frame.">
       </div>
@@ -565,6 +566,12 @@
   <div class="sec__lede">
     <p class="reveal" data-l="en">Send me your Lichess or Chess.com username and tell me where your games go wrong. <strong class="mark">The 30-minute trial lesson is free, and you owe me nothing after it</strong>. Online or in Yerevan.</p>
     <p class="reveal" data-l="ru">Пришлите ник на Lichess или Chess.com и напишите, где ваши партии идут не так. <strong class="mark">Пробное занятие — 30 минут, бесплатно и ни к чему не обязывает</strong>. Онлайн или в Ереване.</p>
+    <!-- SITE-PLAN E3 (2026-11-20, drafts for Igor): a first step smaller than a
+         lesson, done in Telegram, with its own prefilled message. The
+         message names the discipline in both languages (A2: Igor sees which
+         page sent it); theme.js swaps the href with the language. -->
+    <p class="reveal" data-l="en">Not ready for a lesson? <a class="lede__link" href="https://t.me/yngvil?text=Hi%21%20Here%27s%20a%20chess%20game%20I%20lost%20from%20a%20winning%20position%3A" data-href-en="https://t.me/yngvil?text=Hi%21%20Here%27s%20a%20chess%20game%20I%20lost%20from%20a%20winning%20position%3A" data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%92%D0%BE%D1%82%20%D1%88%D0%B0%D1%85%D0%BC%D0%B0%D1%82%D0%BD%D0%B0%D1%8F%20%D0%BF%D0%B0%D1%80%D1%82%D0%B8%D1%8F%2C%20%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%83%D1%8E%20%D1%8F%20%D0%BF%D1%80%D0%BE%D0%B8%D0%B3%D1%80%D0%B0%D0%BB%20%D0%B8%D0%B7%20%D0%B2%D1%8B%D0%B8%D0%B3%D1%80%D0%B0%D0%BD%D0%BD%D0%BE%D0%B9%20%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D0%B8%3A" target="_blank" rel="noopener" data-magnetic>Send me one game you lost from a winning position</a>, and I’ll tell you the pattern I see in it.</p>
+    <p class="reveal" data-l="ru">Не готовы к занятию? <a class="lede__link" href="https://t.me/yngvil?text=Hi%21%20Here%27s%20a%20chess%20game%20I%20lost%20from%20a%20winning%20position%3A" data-href-en="https://t.me/yngvil?text=Hi%21%20Here%27s%20a%20chess%20game%20I%20lost%20from%20a%20winning%20position%3A" data-href-ru="https://t.me/yngvil?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%92%D0%BE%D1%82%20%D1%88%D0%B0%D1%85%D0%BC%D0%B0%D1%82%D0%BD%D0%B0%D1%8F%20%D0%BF%D0%B0%D1%80%D1%82%D0%B8%D1%8F%2C%20%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%83%D1%8E%20%D1%8F%20%D0%BF%D1%80%D0%BE%D0%B8%D0%B3%D1%80%D0%B0%D0%BB%20%D0%B8%D0%B7%20%D0%B2%D1%8B%D0%B8%D0%B3%D1%80%D0%B0%D0%BD%D0%BD%D0%BE%D0%B9%20%D0%BF%D0%BE%D0%B7%D0%B8%D1%86%D0%B8%D0%B8%3A" target="_blank" rel="noopener" data-magnetic>Пришлите одну партию, проигранную из выигранной позиции</a>, — я скажу, какой паттерн в ней вижу.</p>
   </div>
   <figure class="vig vig--empty-chair reveal" aria-hidden="true">
 <svg class="vig__svg" viewBox="0 0 640 320" preserveAspectRatio="xMidYMid meet" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -604,6 +611,16 @@
          alt="Igor Shatsev, тренер по английскому, шахматам и скалолазанию, в Ереване">
   </figure>
   </div>
+
+  <!-- SITE-PLAN E1 (2026-11-20): what happens after the message, in the
+       facts row's own voice. No prices; the trial is the same 30 minutes the
+       lede promises. -->
+  <p class="vh" id="steps-title" data-en="What happens next" data-ru="Что будет дальше">What happens next</p>
+  <ol class="steps reveal" aria-labelledby="steps-title">
+    <li><span class="steps__k" data-en="First" data-ru="Сначала">First</span><span class="steps__v" data-en="You message me" data-ru="Вы пишете мне">You message me</span></li>
+    <li><span class="steps__k" data-en="Then" data-ru="Затем">Then</span><span class="steps__v" data-en="A free 30-minute trial" data-ru="Бесплатное пробное занятие, 30&nbsp;минут">A free 30-minute trial</span></li>
+    <li><span class="steps__k" data-en="After" data-ru="Дальше">After</span><span class="steps__v" data-en="If it fits, we agree on a plan" data-ru="Если подходит — составляем план">If it fits, we agree on a plan</span></li>
+  </ol>
 
   <ul class="channels">
     <li class="reveal">
@@ -687,6 +704,7 @@
         <span>Igor Shatsev · Vitnyr · © 2026</span>
         <span class="foot__place"><span data-en="Yerevan" data-ru="Ереван">Yerevan</span><span class="foot__clock" hidden> · <time class="foot__time"></time> <span data-en="local time" data-ru="по местному времени">local time</span></span></span>
       </p>
+      <a class="tool foot__photos" href="/#collage" data-magnetic><span data-en="Photos" data-ru="Фото">Photos</span></a>
       <a class="tool foot__top" href="#top" data-magnetic>
         <span data-en="Back to top" data-ru="Наверх">Back to top</span>
       </a>
@@ -708,6 +726,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-<script src="/main.js?v=20261031a"></script>
+<script src="/main.js?v=20261121b"></script>
 </body>
 </html>

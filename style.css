@@ -352,10 +352,14 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
    centres in that box. .themeswitch is left as-is: pinning it would only
    stretch its hover hairline (.tool::after spans the box) past "Cream"/
    "Уголь". */
+/* SITE-PLAN C4 (2026-11-20): the caption is "Coaching"/"Направления" on all
+   four pages now, so it reserves the Russian width (the wider one) and sits
+   flush right, against the icons it names. */
 .langswitch, .tools__label { text-align: center; }
 .langswitch::before,
+.tools__photos::before,
 .tools__label::before {
-  content: "Photos";
+  content: "Направления";
   display: block;
   height: 0;
   overflow: hidden;
@@ -363,6 +367,16 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
   pointer-events: none;
 }
 .langswitch::before { content: "RU"; }
+/* "Photos" — the gallery, as a plain text link after the discipline icons
+   (C4). Same .tool type and hover line as RU/EN; reserves "Photos" (wider
+   than "Фото") so a language switch doesn't move the row. Only from 1140px:
+   measured, it is the width at which a discipline page's five numerals,
+   the caption and this link share one row at every width up from there
+   (900-910 and 1100-1130 wrapped). Below that the footer's own "Photos"
+   link and, on home, the "See me at work" band are the way in. */
+.tools__photos { margin-left: 8px; text-align: left; }
+.tools__photos::before { content: "Photos"; }
+@media (max-width: 1139.98px) { .tools__photos { display: none; } }
 
 /* ---------- progress hairline (Spark Order S3 / move 20) ----------
    A 1px rule on the masthead's bottom edge. left/right:0 pins it to the
@@ -604,39 +618,10 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
    scroll tracking: html.is-scrolled never appears, so a no-JS reader keeps
    the roomier always-labelled layout, which degrades safely in the
    direction of showing more, not less. */
-@media (max-width: 400px) {
-  html:not(.is-scrolled) .tools {
-    flex-wrap: wrap;
-    row-gap: 10px;
-  }
-  html:not(.is-scrolled) .tools__group--util,
-  html:not(.is-scrolled) .tools__group--nav {
-    flex-basis: 100%;
-    justify-content: flex-end;
-  }
-  html:not(.is-scrolled) .tools__rule { display: none; }
-  html.is-scrolled .tools__label { display: none; }
-
-  /* --head clears the masthead for the hero's own padding-top (see .hero),
-     which only ever matters before the reader has scrolled — after that the
-     hero is already off-screen. So it's sized for the taller, unscrolled,
-     three-row masthead this stage adds below 400px, not the scrolled
-     compact one. The 602px breakpoint's own +54px was calibrated to the
-     COARSE-pointer two-row height, with fine-pointer rows riding the same
-     constant a bit short of their real height — harmless there since the
-     gap was small (~11px). A flat +54 for this second row would repeat
-     that shortfall on top of itself and push fine-pointer clearance past
-     what P13's "hero copy starts well above a third of the viewport" test
-     allows. Measured separately instead, each keyed to its own pointer
-     type the same way .tool's own coarse-pointer padding already is:
-     +90px clears the real fine-pointer masthead height, +102px the real
-     coarse-pointer one, each with the same ~11px buffer the 602px
-     breakpoint's own constant carries. */
-  :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 86px); }
-}
-@media (max-width: 400px) and (pointer: coarse) {
-  :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 102px); }
-}
+/* SITE-PLAN C5 (2026-11-20) retired the rules this note explains: below 400px
+   the caption used to get a third row before the reader scrolled and vanish
+   after. The two-row masthead at the end of this section has room for it at
+   every width, scrolled or not. */
 /* At 320 with English labels, three 44px targets and a divider genuinely do
    not fit on the scrolled, single-row layout; the divider goes too (with the
    caption gone there, words-vs-glyphs already separates the two clusters)
@@ -645,7 +630,6 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
    targets here, and still the difference between a reachable control and
    one that is not on screen. */
 @media (max-width: 340px) {
-  .tools { gap: 12px; }
   .tools__rule { display: none; }
 }
 
@@ -677,6 +661,52 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
     transition: background var(--t) var(--e), border-color var(--t) var(--e), transform var(--t) var(--e);
   }
   html.mast-hidden .masthead { transform: translateY(-100%); }
+}
+
+/* SITE-PLAN C5 (2026-11-20): the phone masthead is two rows, not three.
+   Before: lockup / theme + language / caption + icons, ~194px at 375 until
+   the reader scrolled (J4 gave the caption a row of its own so the icons kept
+   a visible name, then hid it again once scrolled). Now row 1 is the lockup
+   with the theme and language toggles beside it, row 2 the caption and the
+   three discipline icons, right-aligned: ~140px, and the caption never has to
+   step aside, because row 2 has room for it at every width down to 320 in
+   both languages. Every target keeps its 44px coarse-pointer box: nothing
+   here touches .tool / .tool--icon padding, which is what holds J4's floor.
+   How: .masthead becomes a two-column grid and .tools spans both rows on a
+   subgrid, so its two groups land in different rows without leaving the
+   <nav> (no display: contents, which still drops landmark semantics in some
+   screen readers). .tools' own box overlaps the lockup's cell, so it passes
+   pointer events through and only its groups take them. Placement only,
+   never transform. */
+@media (max-width: 602px) {
+  .masthead {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 16px;
+    row-gap: 10px;
+  }
+  .lockup { grid-column: 1; grid-row: 1; }
+  .tools {
+    grid-column: 1 / -1; grid-row: 1 / span 2;
+    display: grid;
+    grid-template-columns: subgrid; grid-template-rows: subgrid;
+    gap: normal;
+    align-items: center;
+    pointer-events: none;
+  }
+  .tools > * { pointer-events: auto; }
+  .tools__group--util { grid-column: 2; grid-row: 1; justify-self: end; }
+  .tools__group--nav { grid-column: 1 / -1; grid-row: 2; justify-self: end; }
+  .tools__rule { display: none; }
+}
+/* Just over the phone breakpoint the one-row bar is 5px short since C4's
+   caption ("Coaching", holding the width of "Направления") replaced "Photos":
+   603-607px wrapped the nav under the toggles. The between-cluster gap
+   tightens a little in this band only; nothing changes elsewhere. */
+@media (min-width: 603px) and (max-width: 680px) {
+  .tools { gap: 14px; }
 }
 
 /* ---------- in-copy emphasis ----------
@@ -768,6 +798,15 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
 .sec__head h2 { font-size: clamp(27px, 3.6vw, 48px); font-weight: 500; line-height: 1.12; letter-spacing: -.02em; }
 .sec__lede { max-width: var(--measure); color: var(--fg2); }
 .sec__lede p + p { margin-top: 1em; }
+/* SITE-PLAN E3: a link inside lede copy. Theme ink with a hairline underline
+   in --rule that firms to the text colour on hover/focus, the same move as
+   .eyebrow__home; no accent as text. */
+.lede__link {
+  color: var(--fg); text-decoration: underline; text-decoration-color: var(--rule);
+  text-underline-offset: .22em; text-decoration-thickness: 1px;
+  transition: text-decoration-color var(--t) var(--e);
+}
+.lede__link:hover, .lede__link:focus-visible { text-decoration-color: currentColor; }
 @media (min-width: 900px) {
   .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
@@ -2956,6 +2995,10 @@ html.js .foot__in { flex: 1; width: 100%; }
 }
 .foot__time { font-variant-numeric: tabular-nums; }
 /* .foot__top reuses .tool wholesale (P15) — no rules of its own. */
+/* SITE-PLAN C4: the gallery's one link on every page and every width, beside
+   "Back to top" and in the same .tool voice; margin-left:auto keeps the pair
+   together on the right when the row wraps. */
+.foot__photos { margin-left: auto; }
 
 /* The mark shape (#collage view bar). */
 .footmark { width: 48px; height: 48px; flex: none; }
@@ -3358,10 +3401,29 @@ html.js .collage .reveal.is-in .collage__slot {
   .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
 }
 
+/* SITE-PLAN E1 (2026-11-20): "what happens next" in the contact section of
+   all four pages. The facts row's exact voice (hairline rows, small caps
+   label, serif value), so it reads as the same kind of thing: plain facts
+   about how this works, not a sales block. */
+.steps {
+  display: grid; list-style: none; padding: 0;
+  margin: clamp(36px, 5vw, 64px) 0 0;
+  border-top: 1px solid var(--rule);
+}
+.steps li { display: grid; gap: 4px; padding: 16px 0 18px; border-bottom: 1px solid var(--rule); }
+.steps__k { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+.steps__v { font-family: var(--serif); font-weight: 500; font-size: clamp(19px, 1.7vw, 24px); color: var(--fg); }
+@media (min-width: 700px) {
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
+}
+
 .page-photos { display: grid; gap: 32px clamp(16px, 3vw, 40px); margin-top: clamp(48px, 7vw, 96px); }
 .page-photos .collage__fig { margin: 0; }
+/* SITE-PLAN C3 (2026-11-20): the pair splits the full content width (it
+   used to stop at 860px, pushed right, which left the left third of the
+   section empty under a full-width facts row). */
 @media (min-width: 600px) {
-  .page-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 860px; margin-left: auto; }
+  .page-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* Bridge: one line to the other two pages, then out. Centred, like the
