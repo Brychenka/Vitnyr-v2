@@ -36,6 +36,8 @@ def relink(s):
         s = s.replace(f'href="/{d}/#', f'href="{d}.html#').replace(f'href="/{d}/"', f'href="{d}.html"')
     s = s.replace('href="/"', 'href="index.html"').replace('href="/#', 'href="index.html#')
     s = s.replace('="/assets/', '="assets/').replace(', /assets/', ', assets/')
+    # the notes aren't in the bundle: send their links to the live site
+    s = s.replace('href="/notes/', 'href="https://vitnyrcoach.com/notes/')
     # the host supplies its own favicon
     s = re.sub(r'<link rel="(icon|apple-touch-icon)"[^>]*>\n?', '', s)
     # home's old-hash redirect (#chess -> /chess/)
