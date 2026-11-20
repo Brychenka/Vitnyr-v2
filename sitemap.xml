@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Four pages x two languages (discipline pages, Stage 5, 2026-10-31). Each
-     language URL lists both alternates plus x-default, as Google asks. -->
+     language URL lists both alternates plus x-default, as Google asks.
+     Then the notes (feature/notes, 2026-11-20): the index, then each note,
+     newest first, the same pair each. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
@@ -50,5 +52,41 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/climbing/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/climbing/?lang=ru"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/climbing/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/?lang=ru</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/au/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/au/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/au/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/au/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/au/?lang=ru</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/au/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/au/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/au/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/noun-verb-stress/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/noun-verb-stress/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/noun-verb-stress/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/noun-verb-stress/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/noun-verb-stress/?lang=ru</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/noun-verb-stress/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/noun-verb-stress/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/noun-verb-stress/"/>
   </url>
 </urlset>

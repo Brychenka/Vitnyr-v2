@@ -30,6 +30,13 @@
     page=english    og-english.png    og-english-ru.png
     page=chess      og-chess.png      og-chess-ru.png
     page=climbing   og-climbing.png   og-climbing-ru.png
+
+  2026-11-20 (feature/notes, NOTES-PLAN.md): the notes. One card for the
+  index and one per note; a note's card carries its own correction in mono,
+  amber for the mistake and green for the fix, the same as the page:
+    page=notes                  og-notes.png                  og-notes-ru.png
+    page=note-au                og-note-au.png                og-note-au-ru.png
+    page=note-noun-verb-stress  og-note-noun-verb-stress.png  og-note-noun-verb-stress-ru.png
 -->
 <html>
 <head>
@@ -37,7 +44,7 @@
 <title>Vitnyr share card source</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Lora:ital,wght@0,500;0,600;1,500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&display=swap">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -57,8 +64,15 @@
     padding-bottom: 8px; border-bottom: 2px solid var(--tag-ink, #B07C24); /* --amber */
   }
   [data-page] { display: none !important; }
-  html[data-page-on="home"] [data-page="home"], html[data-page-on="english"] [data-page="english"],
-  html[data-page-on="chess"] [data-page="chess"], html[data-page-on="climbing"] [data-page="climbing"] { display: revert !important; }
+  html[data-page-on="home"] [data-page="home"], html[data-page-on="english"] [data-page~="english"],
+  html[data-page-on="chess"] [data-page="chess"], html[data-page-on="climbing"] [data-page="climbing"],
+  html[data-page-on="notes"] [data-page~="notes"], html[data-page-on="note-au"] [data-page~="note-au"],
+  html[data-page-on="note-noun-verb-stress"] [data-page~="note-noun-verb-stress"] { display: revert !important; }
+  /* a note's correction, under its headline */
+  .spec { margin-top: 26px; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 30px; color: #A8ABA9; letter-spacing: -.01em; }
+  .spec .x { color: #B07C24; }   /* --amber-text, charcoal pair */
+  .spec .ok { color: #578C5E; }  /* --green-text, charcoal pair */
+  .spec .to { margin: 0 .35em; }
   .lockup svg.mark { width: 46px; height: 46px; flex: none; }
   .lockup .wm {
     font-family: Lora, Georgia, serif; font-size: 34px; font-weight: 600;
@@ -96,7 +110,7 @@
   <script>
     var q = new URLSearchParams(location.search);
     document.documentElement.setAttribute('data-lang', q.get('lang') === 'ru' ? 'ru' : 'en');
-    document.documentElement.setAttribute('data-page-on', ['english', 'chess', 'climbing'].indexOf(q.get('page')) !== -1 ? q.get('page') : 'home');
+    document.documentElement.setAttribute('data-page-on', ['english', 'chess', 'climbing', 'notes', 'note-au', 'note-noun-verb-stress'].indexOf(q.get('page')) !== -1 ? q.get('page') : 'home');
   </script>
   <div class="card">
    <div class="top">
@@ -113,6 +127,7 @@
     <span class="tag" data-page="english"><span data-l="en">English</span><span data-l="ru">Английский</span></span>
     <span class="tag" data-page="chess"><span data-l="en">Chess</span><span data-l="ru">Шахматы</span></span>
     <span class="tag" data-page="climbing" style="--tag-ink:#4C7A52"><span data-l="en">Climbing</span><span data-l="ru">Скалолазание</span></span>
+    <span class="tag" data-page="notes note-au note-noun-verb-stress"><span data-l="en">Notes</span><span data-l="ru">Заметки</span></span>
    </div>
 
     <!-- the hero's own headline (index.html .hero__title), both languages -->
@@ -134,13 +149,29 @@
       <p class="headline" data-l="ru">Большинство плато — это привычки, <em>которых вы пока не видите.</em></p>
     </div>
 
+    <!-- the notes (notes/index.html and each note's H1) -->
+    <div data-page="notes">
+      <p class="headline" data-l="en">Notes from the lessons. <em>English mistakes, one at a time.</em></p>
+      <p class="headline" data-l="ru">Заметки с занятий. <em>Ошибки в английском, по одной.</em></p>
+    </div>
+    <div data-page="note-au">
+      <p class="headline" data-l="en">Two letters, <em>one sound.</em></p>
+      <p class="headline" data-l="ru">Две буквы — <em>один звук.</em></p>
+      <p class="spec">launch: л<span class="x">ау</span>нч<span class="to">→</span>/l<span class="ok">ɔː</span>ntʃ/</p>
+    </div>
+    <div data-page="note-noun-verb-stress">
+      <p class="headline" data-l="en">The weight <em>of stress.</em></p>
+      <p class="headline" data-l="ru">О весе <em>ударения.</em></p>
+      <p class="spec">my current pro<span class="x">JECT</span><span class="to">→</span><span class="ok">PRO</span>ject</p>
+    </div>
+
     <div class="foot">
       <span class="who">Igor Shatsev</span>
       <span data-page="home">
         <span class="facts" data-l="en"><b>10</b> years coaching &nbsp;·&nbsp; <b>100+</b> one-on-one clients &nbsp;·&nbsp; Yerevan</span>
         <span class="facts" data-l="ru"><b>10</b> лет &nbsp;·&nbsp; <b>100+</b> учеников индивидуально &nbsp;·&nbsp; Ереван</span>
       </span>
-      <span data-page="english">
+      <span data-page="english notes note-au note-noun-verb-stress">
         <span class="facts" data-l="en"><b>C2</b> · IELTS 9 &nbsp;·&nbsp; <b>10</b> years &nbsp;·&nbsp; <b>100+</b> one-on-one clients</span>
         <span class="facts" data-l="ru"><b>C2</b> · IELTS 9 &nbsp;·&nbsp; <b>10</b> лет &nbsp;·&nbsp; <b>100+</b> учеников один на один</span>
       </span>

@@ -3724,3 +3724,265 @@ html.js .collage .reveal.is-in .collage__slot {
 @media (prefers-reduced-motion: reduce) {
   .page-cta svg, .bridge__link svg, .page-cta::after, .bridge__link::after { transition: none; }
 }
+
+/* ============================================================
+   Notes (/notes/, feature/notes, 2026-11-20; NOTES-PLAN.md).
+   SITE-PLAN.md H4, the library of mistakes: Igor's LinkedIn posts set as
+   notes. One block, appended, so it merges cleanly past other branches
+   that edit this file; only the notes pages load the ?v= key that carries
+   it, and no rule here reaches an element the other pages have.
+   Nothing new in kind: amber/green only on the mistake and the fix (the
+   sanctioned .mark--specimen / .mark--target exception, or as non-text
+   ink: underlines, tile borders), hairline structure, square corners, the
+   page's own three faces, the one curve. No motion beyond .reveal and the
+   arrow nudge every CTA on the site already has.
+   ============================================================ */
+
+/* Hero: the note's figure takes more of the row than a discipline page's
+   photo, because it is type that has to stay legible. */
+@media (min-width: 900px) {
+  .hero--note .hero__foot.page-hero__foot { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
+}
+.note-source {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .3em .6em;
+  font-size: 13px; color: var(--fg2); letter-spacing: .01em;
+}
+.note-source .sep { color: var(--fg2); }
+.note-source__link {
+  color: inherit; text-decoration: underline; text-decoration-color: var(--rule);
+  text-underline-offset: .3em;
+  transition: text-decoration-color var(--t) var(--e), color var(--t) var(--e);
+}
+.note-source__link:hover, .note-source__link:focus-visible { color: var(--fg); text-decoration-color: currentColor; }
+
+.note-fig { margin: 0; min-width: 0; }
+.note-fig figcaption { margin-top: 14px; font-size: 13px; color: var(--fg2); letter-spacing: .01em; }
+
+/* The au figure: Igor's Scrabble slide in the site's own terms. Hairline
+   tiles, square, no shadow. The two amber tiles are the letters that make
+   the mistake; the one green tile spans both their columns, because two
+   letters are one sound. Letters >= 24px at every width, so the accent
+   ink is allowed as text here, and they still take the text-safe shades. */
+.tiles { display: grid; gap: clamp(12px, 1.6vw, 20px); }
+.tiles__row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(6px, .8vw, 10px); }
+.tile {
+  position: relative; display: grid; place-items: center;
+  aspect-ratio: 1; border: 1px solid var(--fg2); color: var(--fg);
+}
+.tile__ch { font-family: var(--serif); font-weight: 500; font-size: clamp(24px, 3vw, 40px); line-height: 1; }
+.tile__v {
+  position: absolute; right: 9%; bottom: 7%;
+  font-family: var(--mono); font-size: 10px; line-height: 1; color: var(--fg2);
+}
+.tile--specimen { border-color: var(--ink-specimen); color: var(--amber-text); }
+.tile--target { border: 2px solid var(--ink-target); color: var(--green-text); }
+.tile--merged { grid-column: span 2; aspect-ratio: auto; }
+/* ɔ is a lowercase letter: at the caps' size it sits at x-height and reads
+   small beside them. Sized up until its bowl matches the caps' height. */
+.tile--merged .tile__ch { font-size: clamp(34px, 4.2vw, 56px); }
+
+/* The stress figure: the weight of the type is the stress. */
+.weights { display: grid; gap: clamp(16px, 2vw, 24px); }
+.weights__row {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 6px 16px; padding-bottom: 14px; border-bottom: 1px solid var(--rule);
+}
+.weights__word { font-family: var(--serif); line-height: 1; letter-spacing: -.01em; }
+.weights__heavy {
+  font-weight: 600; font-size: clamp(52px, 6.4vw, 92px); color: var(--fg);
+  text-decoration: underline; text-decoration-color: var(--ink-target);
+  text-decoration-thickness: 2px; text-underline-offset: .12em;
+}
+.weights__light { font-weight: 500; font-size: clamp(22px, 2.4vw, 32px); color: var(--fg2); }
+.weights__role {
+  font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+}
+
+/* The correction, as a .line-spec pair outside #specimen, so the specimen
+   reveal (which only binds there) leaves both lines showing: on a note the
+   mistake is the subject, not a spoiler. */
+.note-spec { max-width: 760px; margin-bottom: clamp(36px, 5vw, 60px); }
+.note-spec__as {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  margin-inline: .5em;
+}
+
+/* The trap letters: a specimen-ink underline, non-text ink, so the letters
+   themselves keep body contrast. */
+.hit {
+  text-decoration: underline; text-decoration-color: var(--ink-specimen);
+  text-decoration-thickness: 2px; text-underline-offset: .28em;
+}
+
+/* Word list: a real table, set like the carousel's register. */
+.register {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--mono); font-size: clamp(16px, 1.6vw, 19px); line-height: 1.5;
+}
+.register th, .register td {
+  text-align: left; font-weight: 400; vertical-align: baseline;
+  padding: 14px 16px 14px 0; border-bottom: 1px solid var(--rule);
+}
+.register thead th {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
+  padding-top: 0; border-bottom-color: var(--fg2);
+}
+.register > caption.vh { white-space: normal; }   /* .vh's nowrap would lay the clipped text out as one line past the viewport */
+.register__n { width: 3em; font-size: 13px; color: var(--fg2); }
+/* The last column starts where .sec__head's lede column does: its share of
+   the row, (W - gap) / 2.05, holds at ~45.5% from 900px to --maxw. */
+@media (min-width: 900px) {
+  .register th:last-child, .register td:last-child { width: 45.5%; }
+}
+.register__w { color: var(--fg); }
+.register__ipa { color: var(--fg2); }
+.register--pairs .register__w { color: var(--fg2); }
+.register b { font-weight: 400; color: var(--fg); }
+.register--pairs b {
+  text-decoration: underline; text-decoration-color: var(--ink-target);
+  text-decoration-thickness: 2px; text-underline-offset: .28em;
+}
+
+/* Why: the Russian look-alikes, each beside the English word it drags:
+   Russian under the heading's column, English under the lede's. */
+.pull { border-top: 1px solid var(--rule); }
+.pull__row {
+  display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  align-items: baseline; gap: 4px 16px;
+  padding: 16px 0; border-bottom: 1px solid var(--rule);
+}
+@media (min-width: 900px) {
+  .pull__row { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); }
+}
+.pull__from { display: flex; align-items: center; gap: clamp(12px, 2vw, 24px); }
+.pull__to { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 18px; }
+.pull__ru { font-family: var(--serif); font-weight: 500; font-size: clamp(21px, 2.2vw, 28px); line-height: 1.2; }
+.pull__arrow { color: var(--fg2); }
+.pull__arrow svg { display: block; width: 26px; height: 8px; overflow: visible; }
+.pull__en { font-family: var(--mono); font-size: clamp(16px, 1.6vw, 19px); }
+.pull__ipa { font-family: var(--mono); font-size: clamp(15px, 1.5vw, 17px); color: var(--fg2); }
+
+/* Two figures from the stress post, set as display numerals. */
+.note-stats {
+  display: grid; gap: clamp(24px, 4vw, 56px); margin: 0;
+  border-top: 1px solid var(--rule); padding-top: clamp(24px, 3vw, 36px);
+}
+@media (min-width: 700px) { .note-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .note-stats { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); } }
+.note-stats > div { display: grid; gap: 10px; align-content: start; }
+.note-stats dt {
+  font-family: var(--serif); font-weight: 500; font-size: clamp(56px, 7vw, 96px);
+  line-height: 1; letter-spacing: -.02em; color: var(--fg);
+}
+.note-stats dd { margin: 0; color: var(--fg2); max-width: 32ch; }
+.note-cite { margin-top: clamp(24px, 3vw, 36px); font-size: 13px; color: var(--fg2); max-width: var(--measure); }
+
+/* Practice: numbered like the carousel's slides (i–vi). */
+.practice-pair { display: grid; gap: clamp(44px, 6vw, 80px); }
+@media (min-width: 900px) { .practice-pair { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); } }
+.practice-wrap { min-width: 0; }
+.practice__h {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .3em 1em;
+  font-weight: 500; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2;
+  margin-bottom: 18px;
+}
+.practice__rule { font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+.practice { border-top: 1px solid var(--rule); }
+.practice li {
+  display: grid; grid-template-columns: 2.6em minmax(0, 1fr); align-items: baseline;
+  padding: 14px 0; border-bottom: 1px solid var(--rule);
+}
+.practice__n { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 15px; color: var(--fg2); }
+.practice__s { font-family: var(--mono); font-size: clamp(16px, 1.7vw, 20px); line-height: 1.5; color: var(--fg); }
+.practice__s b {
+  font-weight: 400;
+  text-decoration: underline; text-decoration-color: var(--ink-target);
+  text-decoration-thickness: 2px; text-underline-offset: .28em;
+}
+
+/* Pager: back to the ledger, on to the next note. */
+.note-pager {
+  max-width: var(--maxw); margin-inline: auto;
+  padding: clamp(8px, 2vh, 24px) var(--gut) clamp(56px, 9vh, 110px);
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 28px clamp(32px, 5vw, 64px);
+}
+.note-pager__all {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg2); transition: color var(--t) var(--e);
+}
+.note-pager__all svg { width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
+.note-pager__all:hover, .note-pager__all:focus-visible { color: var(--fg); }
+.note-pager__all:hover svg, .note-pager__all:focus-visible svg { transform: translateX(-6px); }
+.note-pager__next { display: grid; gap: 6px; justify-items: end; text-align: right; margin-left: auto; }
+.note-pager__k { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+.note-pager__t {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-family: var(--serif); font-weight: 500; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.2; color: var(--fg);
+}
+.note-pager__t svg { flex: none; width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
+.note-pager__next:hover .note-pager__t svg, .note-pager__next:focus-visible .note-pager__t svg { transform: translateX(6px); }
+
+/* The index: a ledger of corrected proofs. One hairline row per note, the
+   whole row one link; rules bleed to the section edge like .specs (C12). */
+.ledger { border-top: 1px solid var(--rule); margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); }
+.ledger__item { border-bottom: 1px solid var(--rule); }
+.ledger__link {
+  display: grid; gap: 14px 24px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "meta meta" "main main" "date arrow";
+  padding: clamp(26px, 3.6vw, 44px) 0; color: var(--fg);
+}
+@media (min-width: 900px) {
+  .ledger__link {
+    grid-template-columns: minmax(0, .75fr) minmax(0, 2.25fr) auto auto;
+    grid-template-areas: "meta main date arrow";
+    align-items: baseline; column-gap: clamp(24px, 4vw, 56px);
+  }
+}
+.ledger__meta { grid-area: meta; display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+@media (min-width: 900px) { .ledger__meta { display: grid; } }
+.ledger__kind { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+.ledger__count { font-family: var(--mono); font-size: 13px; color: var(--fg2); }
+.ledger__main { grid-area: main; display: grid; gap: 12px; min-width: 0; }
+.ledger__title {
+  font-family: var(--serif); font-weight: 500; font-size: clamp(28px, 3.4vw, 46px);
+  line-height: 1.1; letter-spacing: -.02em; text-wrap: balance;
+  text-decoration: underline; text-decoration-color: transparent;
+  text-decoration-thickness: 1px; text-underline-offset: .14em;
+  transition: text-decoration-color var(--t) var(--e);
+}
+.ledger__spec { font-family: var(--mono); font-size: clamp(15px, 1.5vw, 18px); line-height: 1.5; color: var(--fg2); }
+.ledger__spec del, .ledger__spec ins { text-decoration: none; }
+.ledger__to { margin-inline: .25em; }
+.ledger__date { grid-area: date; font-size: 13px; color: var(--fg2); white-space: nowrap; }
+.ledger__arrow { grid-area: arrow; justify-self: end; color: var(--fg2); }
+.ledger__arrow svg { display: block; width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e), color var(--t) var(--e); }
+.ledger__link:hover .ledger__title, .ledger__link:focus-visible .ledger__title { text-decoration-color: currentColor; }
+.ledger__link:hover .ledger__arrow, .ledger__link:focus-visible .ledger__arrow { color: var(--fg); }
+.ledger__link:hover .ledger__arrow svg, .ledger__link:focus-visible .ledger__arrow svg { transform: translateX(6px); }
+.ledger__more {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 24px;
+  margin-top: clamp(28px, 4vw, 44px); color: var(--fg2);
+}
+.ledger__follow {
+  position: relative; display: inline-flex; align-items: center; gap: 12px;
+  font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg); padding-bottom: 6px;
+}
+.ledger__follow::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--ink-target); transform: scaleX(.3); transform-origin: left;
+  transition: transform var(--t) var(--e);
+}
+.ledger__follow svg { width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
+.ledger__follow:hover::after, .ledger__follow:focus-visible::after { transform: scaleX(1); }
+.ledger__follow:hover svg, .ledger__follow:focus-visible svg { transform: translateX(6px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .note-pager__all svg, .note-pager__t svg, .ledger__arrow svg, .ledger__title,
+  .ledger__follow svg, .ledger__follow::after, .note-source__link { transition: none; }
+}
