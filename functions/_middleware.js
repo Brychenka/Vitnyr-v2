@@ -23,13 +23,13 @@ async function handle(context, url) {
   if (url.searchParams.get('lang') !== 'ru' || !type.includes('text/html')) return res;
 
   const origin = SITE;
-  // the page's own path (discipline pages, 2026-10-31), not always "/"
+  // the page's own path, not always "/"
   const path = url.pathname.replace(/index\.html$/, '');
   const ruUrl = origin + path + '?lang=ru';
   let title = '', desc = '', image = '';
 
-  // pass 1: read the Russian twins that index.html already carries, and the
-  // page's own share card (og-english.png → og-english-ru.png, Stage 5)
+  // pass 1: read the Russian twins the page carries, and its share card
+  // (og-english.png -> og-english-ru.png)
   await new HTMLRewriter()
     .on('title[data-head-ru]', { element(e) { title = e.getAttribute('data-head-ru') || ''; } })
     .on('meta[name="description"][data-head-ru]', { element(e) { desc = e.getAttribute('data-head-ru') || ''; } })

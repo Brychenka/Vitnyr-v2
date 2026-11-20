@@ -32,9 +32,9 @@ def test_chess_rating_is_a_peak_stated_without_fide(open_site):
     # 1950-2100), never "FIDE". \b so this doesn't trip on "confidence".
     # The figure is on the home page's chess door and in /chess/'s hero.
     for path in ("index.html", "chess/"):
-        for lang, peak in (("en", "peak rating"), ("ru", "пиковый рейтинг")):
+        for lang, peak in (("en", "peak rating"), ("ru", "пик рейтинга")):
             page, _ = open_site(lang=lang, path=path)
-            text = visible_text(page)
+            text = visible_text(page).replace("\xa0", " ")
             assert "2100" in text, (path, lang)
             assert peak in text.lower(), (path, lang)
             assert not re.search(r"\bFIDE\b", text, re.I), "'FIDE' must not appear"

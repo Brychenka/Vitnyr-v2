@@ -2,7 +2,7 @@
 
 The masthead, contact section, footer, dock and scripts are not written here:
 they are cut out of english/index.html every time the generator runs, so a
-note can never fall behind the shared frame (NOTES-COUNCIL.md K1/K2). Only
+note can never fall behind the shared frame. Only
 what a note owns is written here: its head, hero, sections and Telegram
 prefills.
 """
@@ -13,7 +13,7 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parents[2]
 SITE = "https://vitnyrcoach.com"
 LINKEDIN = "https://www.linkedin.com/in/vitnyrcoach/"
-# PLACEHOLDER until Igor sends each post's own URL (NOTES-PLAN.md Q5)
+# PLACEHOLDER until Igor sends each post's own URL (SITE-PLAN.md NQ5)
 LINKEDIN_ACTIVITY = "https://www.linkedin.com/in/vitnyrcoach/recent-activity/all/"
 
 SRC = (ROOT / "english" / "index.html").read_text(encoding="utf-8")
@@ -37,10 +37,10 @@ THEME_TAG = re.search(r'<script src="/theme\.js\?v=[^"]+"></script>', SRC).group
 EN_TG = re.search(r'class="contact__cta"[^>]*?data-href-en="([^"]+)"', SRC, re.S).group(1)
 RU_TG = re.search(r'class="contact__cta"[^>]*?data-href-ru="([^"]+)"', SRC, re.S).group(1)
 
-# no discipline is "current" on a notes page; the Notes link is (K8)
+# no discipline is "current" on a notes page; the Notes link is
 assert MAST.count(' aria-current="page"') == 1, "english/index.html: expected one aria-current"
 MAST = MAST.replace(' aria-current="page"', "")
-assert 'class="tool tools__notes" href="/notes/"' in MAST, "masthead has no Notes link (K8)"
+assert 'class="tool tools__notes" href="/notes/"' in MAST, "masthead has no Notes link"
 MAST = MAST.replace('class="tool tools__notes" href="/notes/"', 'class="tool tools__notes" href="/notes/" aria-current="page"')
 SECTIONS_OLD = between(MAST, '<div class="tools__group tools__group--sections">', '<a class="tools__hint"', include_end=False)
 
@@ -188,7 +188,7 @@ def article_ld(path, headline, desc, crumb, iso, card):
 
 # -------------------------------------------------------------- page pieces
 def byline():
-    """K4: who wrote this, in the confirmed facts only (CLAUDE.md)."""
+    """Who wrote this, in the confirmed facts only (CLAUDE.md)."""
     return """      <p class="note-byline reveal">
         <span data-en="Igor Shatsev, English coach" data-ru="Igor Shatsev, коуч по английскому">Igor Shatsev, English coach</span>
         <span class="sep" aria-hidden="true">·</span>

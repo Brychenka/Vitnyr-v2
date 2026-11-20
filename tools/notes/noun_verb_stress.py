@@ -1,5 +1,5 @@
 """/notes/noun-verb-stress/: Igor's LinkedIn post on noun/verb stress
-(LinkedIn showed "2w" on 2026-11-20; the exact date is NOTES-PLAN.md Q6).
+(LinkedIn showed "2w" on 2026-11-20; the exact date is SITE-PLAN.md NQ6).
 The Russian is his post, lightly cleaned; the English is a translation, a
 DRAFT for Igor (Q4). The practice lines are transcribed from his carousel
 slides "О вещах" and "О действиях"; action ii was hidden on the screenshot
@@ -62,7 +62,7 @@ def body(note):
 
 NOTE = dict(
     slug="noun-verb-stress",
-    iso="2026-11",  # PLACEHOLDER (Q6): LinkedIn showed "2w" on 2026-11-20
+    iso="2026-11",  # PLACEHOLDER (SITE-PLAN.md NQ6): LinkedIn showed "2w" on 2026-11-20
     date_short_en="Nov 2026", date_short_ru="ноябрь 2026",
     date_long_en="November 2026", date_long_ru="ноябрь 2026",
     linkedin=None,
@@ -78,7 +78,7 @@ NOTE = dict(
     stand_en="Another set of words my IT clients trip over, the same way they do with CONflict and conFLICT. [[As a noun, the weight sits on the first syllable. As a verb, it moves to the second.]]",
     stand_ru="Собрал ещё ряд слов, на ударении в которых спотыкаются мои IT-клиенты, как с CONflict и conFLICT. [[У существительного вес на первом слоге, у глагола — на втором.]]",
     figure=FIGURE,
-    comment="/notes/noun-verb-stress/ (NOTES-PLAN.md). Igor's LinkedIn post on noun/verb stress, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a DRAFT for Igor (Q4).",
+    comment="/notes/noun-verb-stress/: Igor's LinkedIn post on noun/verb stress, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="PROject or proJECT? Noun and verb stress in English — Igor Shatsev",
     title_ru_head="PROject или proJECT? Ударение в существительных и глаголах — Igor Shatsev",
     desc_en="OBject or obJECT, PROject or proJECT: nine IT words that move their stress when the noun becomes a verb, and why Russian pulls it to the wrong syllable.",

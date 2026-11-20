@@ -844,7 +844,7 @@ def test_retired_section_hashes_land_on_the_doors(open_site, hash_):
     assert page.url.split("#")[0].endswith("/index.html")
 
 
-# ---------- DP7/DP8 (DESIGN-PASS-III.md): every jump clears the fixed masthead ----------
+# ---------- every jump clears the fixed masthead ----------
 
 def _masthead_height(page):
     return page.locator(".masthead").bounding_box()["height"]

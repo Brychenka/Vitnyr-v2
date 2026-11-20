@@ -60,7 +60,7 @@ for root, _, files in os.walk(os.path.join(repo, 'assets')):
     for fn in files:
         src = os.path.join(root, fn)
         rel = os.path.relpath(src, repo)
-        if rel.startswith('assets/share') or fn in ('PLACEHOLDERS.md',) or fn.startswith('.'):
+        if rel.startswith('assets/share') or fn.startswith('.'):
             continue
         os.makedirs(os.path.dirname(os.path.join(out, rel)), exist_ok=True)
         shutil.copy(src, os.path.join(out, rel))

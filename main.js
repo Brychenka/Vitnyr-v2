@@ -1,14 +1,9 @@
 /* ============================================================
-   Vitnyr — v2 motion
-   One easing curve everywhere: cubic-bezier(.16, 1, .3, 1).
-   One reveal rhythm: fade + 24px rise, 0.9s, 0.08s stagger, once.
-   Pointer feedback: one dot that rides the pointer everywhere and answers a
-   control by easing its fill to the page's accent ink — colour, not size, and
-   no magnetic pull (both retired at C14). Not "the signature move" — from the
-   Spark Order's S6 correction on, that performed edit is the page's one move;
-   the cursor is just the pointer answering back.
-   Everything degrades: no JS, no GSAP, reduced motion, touch, or a
-   tab opened in the background all end with the same readable page.
+   Vitnyr motion
+   One easing curve (cubic-bezier(.16, 1, .3, 1)) and one reveal rhythm
+   (fade and a 24px rise, 0.9s, 0.08s stagger, once). Everything degrades:
+   no JS, no GSAP, reduced motion, touch or a background tab all end with
+   the same readable page.
    ============================================================ */
 (function () {
   'use strict';
@@ -24,30 +19,21 @@
   var EASE = 'power4.out';
   if (window.CustomEase) { CustomEase.create('brand', '.16, 1, .3, 1'); EASE = 'brand'; }
 
-  /* Six durations, and nothing between them. Every ANIMATION timing on the
-     page comes from this table so the whole thing reads as one instrument.
-     Scrolling is separate: Lenis's own duration (1.1) and the two scrollTo
-     calls (1.2) are scroll physics, not animation, and live outside the table.
-       micro   — a thing appearing or disappearing outright
-       state   — a hover, a magnet, a theme settling (this is --t in the sheet)
-       follow  — the pointer catching up: a lag, not a duration
-       correct — the specimen reflowing closed over a deleted word (S6)
-       count   — a measured number running up to its value; the reference
-                 length, scaled per number so each reads as its own instrument
-       hero    — the single longest move on the page, used once
+  /* Every animation timing comes from this table, so the page reads as one
+     instrument. Scrolling is separate: Lenis's duration and the scrollTo
+     calls are scroll physics.
+       micro: a thing appearing or disappearing outright
+       state: a hover, a magnet, a theme settling (--t in the sheet)
+       hero:  the single longest move on the page, used once
+       draw:  the rating line drawing itself in, once
      The reveal's own 0.9s lives in the stylesheet, where the transition is. */
-  var D = { micro: 0.3, state: 0.6, follow: 0.45, correct: 0.8, hero: 1.05,
-            draw: 1.4 };   // SITE-PLAN F2: the rating line drawing itself in, once
+  var D = { micro: 0.3, state: 0.6, hero: 1.05, draw: 1.4 };
   var STAGGER = 0.08;
 
   /* ---------- first-frame gate ----------
-     A tab that loads hidden has rAF suspended: gsap.ticker never advances and
-     anything tween-driven sits at its from-state until the tab is looked at.
-     So nothing time-based starts until a frame has actually been rendered.
-     The test is rAF itself rather than document.hidden, because rAF is the
-     thing the tweens need — it is deferred for a hidden tab and released the
-     moment the page paints, whatever the visibility API happens to report
-     (embedded panes and prerendered documents don't always agree with it). */
+     A tab that loads hidden has rAF suspended, so tweens would sit at their
+     from-state. Nothing time-based starts until a frame has rendered; rAF
+     itself is the test, because it is what the tweens need. */
   function whenRendering(fn) { requestAnimationFrame(function () { fn(); }); }
 
   /* ---------- smooth scroll ---------- */
@@ -62,29 +48,13 @@
   // Drives the masthead's opaque ground — see .is-scrolled in the stylesheet.
   function setStuck(y) { root.classList.toggle('is-scrolled', y > 4); }
 
-  /* The progress hairline (move 20) rides the SAME scroll source — no second
-     listener. trackProgress scales .progress off document depth and, once the
-     reader crosses the ink switch, flips .past-origin so the rule's ink
-     crossfades from specimen to target (the CSS owns the crossfade; this only
-     picks the side). Trifecta Order D / Stage D1 (2026-09-15): the switch
-     used to anchor to #origin, which sat 4-of-6 down the page; #origin has
-     moved to position 1, so anchoring there would flip the gauge on arrival
-     and destroy the signal. Re-anchored to #disciplines, which inherited
-     #origin's old page depth and read well: the gauge turned from specimen
-     to target exactly where the page stopped examining errors (§03) and
-     started showing results in three fields. 2026-09-18: §04 "Three
-     domains" (the old #disciplines) was folded into §03 — see CLAUDE.md's
-     "Content and positioning decisions" — so the switch is re-anchored again,
-     to #who, the next section boundary after §03 now that specimen and
-     domains share one section; the reading stays the same, just shifted one
-     boundary later. The .past-origin class name is unchanged — renaming it
-     would touch CSS and tests for no behavioural gain. INK_SWITCH_EL's page
-     offset is measured once and re-measured on resize and language switch,
-     not read on every scroll frame. */
+  /* The progress hairline rides the same scroll source. trackProgress scales
+     .progress off document depth and flips .past-origin once the reader
+     crosses the ink switch, so the rule crossfades from specimen to target
+     (the CSS owns the crossfade; this only picks the side). */
   var progressEl = document.querySelector('.progress');
-  // Discipline pages, Stage 1 (2026-10-31): #who left the home page; there
-  // the switch lands at the mark (#origin), where the page stops explaining
-  // the method and starts sending people to a discipline.
+  // The switch sits at #who on a discipline page and at the mark (#origin) on
+  // home: where the page stops explaining and starts sending people on.
   var INK_SWITCH_EL = document.getElementById('who') || document.getElementById('origin');
   var inkSwitchY = 0;
   function scrollPos() { return lenis ? lenis.scroll : (window.scrollY || 0); }
@@ -98,17 +68,12 @@
     progressEl.style.setProperty('--progress', p.toFixed(4));
     if (INK_SWITCH_EL) root.classList.toggle('past-origin', y + window.innerHeight * 0.5 >= inkSwitchY);
   }
-  /* Phone masthead: out of the way while reading (2026-09-23,
-     feature/conversion-ux). At <=602px the masthead holds ~118px scrolled and
-     ~194px at rest — J4 settled that its rows never wrap and its 44px targets
-     never shrink, so the room comes back by moving the whole bar instead:
-     scroll down past 120px and it slides up out of view (.mast-hidden, its
-     own transform — .masthead carries no reveal and no layout transform);
-     any scroll up brings it straight back. Never hidden near the top, while
-     focus is inside it, while the collage view is open, or during a jump
-     from an in-page link (navLock, set by jumpTo() above) — those all scroll
-     downward, and hiding mid-jump would leave headerHeight()'s offset as an
-     empty band over the destination. */
+  /* Phone masthead, out of the way while reading: scroll down past 120px and
+     the bar slides up (.mast-hidden, its own transform); any scroll up brings
+     it back. Never hidden near the top, while focus is inside it, while the
+     collage view is open, or during a jump from an in-page link (navLock, set
+     by jumpTo()), since hiding mid-jump would leave headerHeight()'s offset
+     as an empty band over the destination. */
   var mastEl = document.querySelector('.masthead');
   var phoneMast = window.matchMedia('(max-width: 602px)');
   var navLock = false, lastY = 0, downRun = 0, upRun = 0;
@@ -144,25 +109,17 @@
     requestAnimationFrame(function () { measureInkSwitch(); onScroll(scrollPos()); });
   });
 
-  /* DP7 (DESIGN-PASS-III.md): every in-page destination needs to land clear
-     of the fixed masthead, not at its own top edge. `scroll-margin-top` on
-     .sec/.spec (style.css) covers the browser's OWN fragment navigation —
-     a typed #hash, Back/Forward, or the no-Lenis/no-JS fallback below — but
-     Lenis computes its target from getBoundingClientRect() and has no idea
-     CSS scroll-margin exists, so every Lenis-driven jump needs the same
-     clearance passed by hand as a negative offset. Measured live off the
-     masthead's own rendered height (same technique jumpToGroup() below uses
-     for the collage view's sticky bar) rather than read from --head, which
-     getComputedStyle can't resolve back into a used pixel value for a
-     custom property built out of calc()/clamp(). */
+  /* Every in-page destination lands clear of the fixed masthead. CSS
+     scroll-margin-top covers the browser's own fragment jumps; Lenis ignores
+     it, so Lenis jumps pass the same clearance as a negative offset, measured
+     off the masthead's rendered height. */
   function headerHeight() {
     var el = document.querySelector('.masthead');
     return el ? el.getBoundingClientRect().height : 0;
   }
 
-  // In-page links go through Lenis so the easing stays consistent.
-  // jumpTo() is also what links built later by JS (the §04 pick status) use,
-  // since they don't exist yet when the loop below binds.
+  // In-page links go through Lenis so the easing stays consistent. Links that
+  // JS builds later (the pick status) use jumpTo() too.
   function jumpTo(target) {
     navLock = true;
     showMast();
@@ -176,7 +133,7 @@
   }
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     if (a.hasAttribute('data-collage-open')) return;   // the collage router owns this one
-    if (a.hasAttribute('data-collage-link')) return;   // and these (SITE-PLAN C4)
+    if (a.hasAttribute('data-collage-link')) return;   // and these
     if (a.hasAttribute('data-permalink')) return;      // initSpecimenPermalinks owns these
     if (a.classList.contains('footmark-home')) return; // initCollageView owns this one too
     a.addEventListener('click', function (e) {
@@ -199,19 +156,14 @@
   initSpecimenPermalinks();
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
-  initEarTest();          // SITE-PLAN F1: an affordance, not motion
-  initRatingCheck();      // SITE-PLAN F2: same; its one draw-in checks `reduce` itself
-  initSectionNav();       // wayfinding, not motion — same reasoning as the three lines above
+  initEarTest();          // an affordance, not motion
+  initRatingCheck();      // same; its one draw-in checks `reduce` itself
+  initSectionNav();       // wayfinding, not motion
 
-  /* ---------- masthead section quick-nav: active-section tracking ----------
-     Scrollspy for the numeral links added in index.html. IntersectionObserver,
-     not the scroll-position math trackProgress() uses above — five zones read
-     more reliably off "which section is crossing a band near the middle of
-     the viewport" than off scroll-offset arithmetic, and it's the same tool
-     buildReveals() already uses elsewhere in this file. A thin band
-     (-45%/-50% margins collapse the viewport to a ~5% strip near its centre)
-     rather than the whole section, so the active link changes when a section
-     is actually in reading position, not the instant its top edge appears. */
+  /* ---------- masthead section numerals: active-section tracking ----------
+     An IntersectionObserver on a thin band near the middle of the viewport
+     (-45%/-50% margins), so a link lights when its section is in reading
+     position, not the moment its top edge appears. */
   function initSectionNav() {
     var links = document.querySelectorAll('.tools__group--sections .tool[href^="#"]');
     if (!links.length || !('IntersectionObserver' in window)) return;
@@ -233,35 +185,19 @@
     document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
     gsap.set('.line__inner', { y: '0%' });
     root.classList.add('hero-done');
-    // Unlike cursor/magnetic (pure decoration, nothing lost by skipping
-    // them), the origin panel is the only way — short of no-JS — to see
-    // which stroke maps to which discipline. Reduced motion drops the
-    // animation, not the content, so this still has to wire up: initOrigin()
-    // already gates its own idle-hint animation behind `reduce` internally.
+    // Reduced motion drops the animation, not the content: the mark's hover
+    // and focus still work (initOrigin gates its own idle hint).
     initOrigin();
     return;
   }
 
-  /* ---------- language crossfade (Spark Order S4 / move 05) ----------
-     theme.js does the language swap synchronously inside its own click
-     handler, so main.js can't slot a fade in front of it without racing.
-     The hook inverts the control: theme.js calls window.__vitnyrLangFade
-     with the swap as a callback when it exists, and runs the swap bare
-     otherwise (no main.js, no GSAP, reduced motion — an instant switch,
-     which test_seeded_language_applies_before_paint and the no-JS path
-     both depend on). Installed here, past the reduced-motion return, so it
-     is only ever present when GSAP is loaded and motion is allowed.
-
-     The swap runs synchronously the moment we're called, then #app is cut
-     to transparent and fades back over D.state on the brand ease — a
-     page-wide transition rather than a hard text swap. It is not deferred
-     to the bottom of a fade-out: there is no second, old-language layer to
-     fade out (that needs S6's clone/FLIP machinery), and deferring it
-     would desync every existing i18n test that asserts on the same tick as
-     the click — which S4 must keep green. #app only: the masthead switch
-     the reader just pressed stays solid so they see it answer. A second
-     click mid-fade re-runs its own swap and retargets the one tween, so a
-     double-click can never strand the page faded with the old language. */
+  /* ---------- language crossfade ----------
+     theme.js swaps the language inside its own click handler, so it calls
+     window.__vitnyrLangFade with the swap as a callback when one exists, and
+     runs the swap bare otherwise (no main.js, no GSAP, reduced motion: an
+     instant switch). Installed past the reduced-motion return, so it exists
+     only when motion is allowed. The swap runs at once, then #app is cut to
+     transparent and fades back over D.state. */
   var appEl = document.getElementById('app');
   if (appEl) {
     var langFadeTween = null;
@@ -329,8 +265,8 @@
       y: '0%', duration: D.hero, ease: EASE, stagger: 0.09, delay: 0.15,
       onComplete: function () {
         root.classList.add('hero-done');
-        // D2.5: the §04 mark sequences its own draw-in after this, listening
-        // for the event rather than initOrigin() reaching into this tween.
+        // The mark sequences its own draw-in after this, listening for the event
+        // rather than reaching into this tween.
         document.dispatchEvent(new CustomEvent('vitnyr:heroin'));
       }
     });
@@ -351,18 +287,14 @@
   }
 
   /* ---------- the reveal rhythm ----------
-     One pattern for the whole page: 24px rise + fade, 0.9s, the brand curve,
-     staggered 0.08s, fired once when the element itself is 20% into view.
-     Observed per element rather than per section: a section boundary is not
-     something the reader can see, and observing whole sections meant items a
-     thousand pixels below the fold had already finished animating by the time
-     they were scrolled to. */
-  var REVEAL_CAP = 4;   // past four beats a stagger stops reading as rhythm and
-                        // starts reading as lag, so the chain restarts its count
+     One pattern for the whole page: 24px rise and fade, 0.9s, the brand
+     curve, staggered 0.08s, fired once when the element itself is 20% into
+     view. Observed per element, not per section, so items far below the fold
+     haven't finished before they are seen. */
+  var REVEAL_CAP = 4;   // past four beats a stagger reads as lag, so the count restarts
 
-  // The one place a batch of .reveal targets turns into a staggered entrance.
-  // Shared so the collage view's own observer (armCollageReveals) runs the
-  // exact same rhythm as the page's, off a different scroll root.
+  // The one place a batch of .reveal targets becomes a staggered entrance,
+  // shared with the collage view's observer (armCollageReveals).
   function fireReveals(entries, io) {
     var shown = [];
     entries.forEach(function (e) { if (e.isIntersecting) shown.push(e); });
@@ -379,11 +311,9 @@
   }
 
   function buildReveals() {
-    // The collage tiles are .reveal too, but they live in a display-toggled
-    // fixed view that is never scrolled *into* — the page observer's viewport
-    // root would fire them all at load while the view is hidden. They start
-    // .is-in in the markup and are handed to their own observer on first open
-    // (armCollageReveals). Everything else is the page's to reveal.
+    // Collage tiles are .reveal too, but in a hidden fixed view the page's
+    // observer would fire them all at load. They ship .is-in and get their own
+    // observer on first open (armCollageReveals).
     var items = [];
     document.querySelectorAll('.reveal').forEach(function (el) {
       if (!el.closest('#collage')) items.push(el);
@@ -392,20 +322,13 @@
       items.forEach(function (el) { el.classList.add('is-in'); });
       return;
     }
-    // The hero is on screen at load, not something the reader scrolls down
-    // to — the -20% margin below is for content that isn't there yet. Left
-    // on the hero, that margin instead cuts a dead zone across the bottom
-    // fifth of the viewport, and .scrollcue lives in exactly that band: the
-    // one element whose job is to invite scrolling sat un-rendered until the
-    // reader had already started (measured stuck at 800/900/1080 viewport
-    // heights). The hero gets its own observer against the true viewport;
-    // -20% stays correct for everything below it.
+    // The hero is on screen at load, so it gets its own observer against the
+    // true viewport; the -20% margin is for everything below it (on the hero it
+    // cut a dead band where .scrollcue lives).
     var hero = [], rest = [];
     items.forEach(function (el) {
-      // D2.5: the §04 mark is still in `items` above (so a no-IO browser
-      // still force-shows it via the fallback), but its own .is-in is
-      // sequenced after the hero by initOrigin() rather than fired on
-      // ordinary scroll visibility — leave it out of both queues here.
+      // The mark stays in `items` (so a no-IO browser force-shows it), but its
+      // .is-in is sequenced after the hero by initOrigin(), not fired here.
       if (el.classList.contains('origin__mark')) return;
       (el.closest('.hero') ? hero : rest).push(el);
     });
@@ -422,23 +345,15 @@
     hero.forEach(function (el) { heroIo.observe(el); });
   }
 
-  /* The collage view's tiles run the page's reveal rhythm off the view's own
-     overflow:auto root. Wired on first open, not at load: the view is
-     position:fixed + visibility:hidden until then, so a viewport-rooted
-     observer would report every tile as "in view" and burn the whole
-     entrance while nobody is looking. Tiles ship .is-in (visible with JS
-     absent, under reduced motion, and while the view is closed); this strips
-     it back off so the observer can stagger them in. Fires once. */
-  /* The 18 collage figures shipped src/srcset directly, so every one of them
-     downloaded on ordinary page load even though the view sits hidden
-     (opacity:0, not display:none — the browser's native loading="lazy" goes
-     by viewport distance, and a position:fixed panel over the same viewport
-     reads as close enough to fetch anyway; measured at 1,231 KB of images no
-     visit ever displays). They ship as data-src/data-srcset instead — inert
-     to the browser's own loader — and are only promoted to real attributes
-     here, on first open. A <noscript> copy alongside each keeps the no-JS
-     page whole. Fires once; reopening finds the real attributes already in
-     place. */
+  /* The collage tiles run the page's reveal rhythm off the view's own
+     overflow: auto root, wired on first open (until then the view is fixed and
+     hidden, and a viewport observer would burn the whole entrance). Tiles
+     ship .is-in; this strips it so the observer can stagger them in. Once. */
+  /* The figures ship data-src/data-srcset, inert to the browser's loader, so
+     a hidden view doesn't download every photo on page load (native lazy
+     loading treats a fixed panel over the viewport as near enough to fetch).
+     Promoted to real attributes here, on first open; a <noscript> copy keeps
+     the no-JS page whole. */
   var collageImagesPromoted = false;
   function promoteCollageImages(view) {
     if (collageImagesPromoted) return;
@@ -467,32 +382,12 @@
     armFailsafe();   // belt-and-braces: force-show any tile the observer misses
   }
 
-  /* ---------- collage lightbox (Stage 3) ----------
-     Reverses Stage 5's "add nothing to the tiles" ruling (BUILD-NOTES,
-     collage-plan.md) now that Igor has asked for click-to-enlarge: a tile
-     is a real control, so the affordance stops being a lie. Every bit of
-     it — the per-tile <button> and the dialog itself — is built here at
-     runtime, the same way initSpecimenReveal() builds its "+ Show the
-     common mistake" control: absent this file, the no-JS document keeps
-     15 plain <figure>s and ships zero dead buttons.
-
-     Routing stays outside location.hash on purpose (see the plan): Escape
-     closes the lightbox, closing it returns focus to the tile that opened
-     it, and browser Back still closes the whole #collage view — the
-     router's own keydown handler below checks the shared lightboxOpen
-     flag and no-ops while this is open, so Escape only ever closes one
-     layer at a time. The focus trap reuses the view's own inert idea
-     rather than a hand-rolled one: .view__bar and .view__body go inert
-     while the box is open, so Tab can only reach the lightbox's own
-     controls (main.js:750-758 already proved this pattern for #app).
-
-     Accessible name comes straight off the figure's own <figcaption> — the
-     dialog's aria-labelledby and the caption node both point at real
-     bilingual text that already carries data-en/data-ru, so theme.js's
-     existing applyLang() loop (`[data-en][data-ru]`) keeps every language
-     switch in sync for free; no bespoke vitnyr:langchange handler needed
-     here, which is the same "don't invent a third i18n mechanism" rule
-     CLAUDE.md states for markup applied to runtime-built markup instead. */
+  /* ---------- collage lightbox ----------
+     Click a tile to enlarge it. The per-tile <button> and the dialog are
+     built here at runtime, so the no-JS document keeps plain <figure>s.
+     Routing stays outside location.hash: Escape closes the lightbox, closing
+     returns focus to the tile that opened it, and browser Back still closes
+     the whole #collage view. */
   var lightboxOpen = false;
   var lightboxArmed = false;
   function initCollageLightbox(view) {
@@ -529,9 +424,7 @@
     count.className = 'lightbox__count';
     count.setAttribute('aria-hidden', 'true');
 
-    // Icon-only controls: plain English aria-label, matching the masthead's
-    // own icon-nav (data-collage-jump), which is aria-label without a
-    // bilingual pair too — no new pattern introduced.
+    // Icon-only controls: plain English aria-label, like the masthead icons.
     function iconButton(cls, label, path) {
       var b = document.createElement('button');
       b.type = 'button';
@@ -559,9 +452,8 @@
     var returnFocusTo = null;
     function isRu() { return root.getAttribute('data-lang') === 'ru'; }
 
-    // Re-run on open and on every prev/next step. Language itself is left
-    // to theme.js's own applyLang() loop (see comment above) — this only
-    // ever sets the pair fresh for the newly-shown photo.
+    // Re-run on open and on every prev/next step; theme.js's applyLang() does
+    // the language.
     function render() {
       var fig = figures[index];
       var srcImg = fig.querySelector('img');
@@ -578,13 +470,9 @@
       count.textContent = (index + 1) + ' / ' + figures.length;
     }
 
-    // Open/close motion: additive only, same rule as every other animation
-    // in this file (see the reveal/motion comment block above buildReveals).
-    // With GSAP absent or prefers-reduced-motion, open() just flips `hidden`
-    // as before — nothing here is load-bearing for the dialog to work.
-    // canAnimate is re-checked on every call rather than cached once, and
-    // killBoxTween guards a rapid double-click from stacking two tweens on
-    // the same element, same pattern as langFadeTween above.
+    // Open/close motion is additive: with GSAP absent or reduced motion, open()
+    // just flips `hidden`. canAnimate is re-checked on every call, and
+    // killBoxTween stops a double-click stacking two tweens.
     function canAnimate() { return !reduce && window.gsap; }
     var boxTween = null;
     function killBoxTween() { if (boxTween) { boxTween.kill(); boxTween = null; } }
@@ -596,10 +484,8 @@
       render();
       box.hidden = false;
       root.classList.add('lightbox-open');
-      // No hover on touch, so the colour reveal (style.css) fires here
-      // instead, gated the same way every other fine-pointer-only flourish
-      // in this file is (see finePointer above). Set on open, cleared on
-      // close, so the reveal replays every time a photo opens.
+      // Touch has no hover, so the colour reveal fires here on open and clears on
+      // close.
       if (!finePointer) box.classList.add('is-colour');
       if (canInert) {
         if (bar) bar.inert = true;
@@ -609,14 +495,10 @@
 
       if (canAnimate()) {
         killBoxTween();
-        // The photo grows in from wherever the tile that opened it actually
-        // sat, not from a fixed centre — the one cheap trick that makes a
-        // "grow to full view" read as a photo *responding to the click*
-        // rather than a generic dialog. transform-origin is relative to
-        // media's own box, so the opener's rect has to be re-measured
-        // against media's rect *after* box.hidden flips (geometry is live
-        // synchronously the same frame, same assumption jumpToGroup makes
-        // above) rather than reused from any earlier read.
+        // The photo grows from where its tile sat, so it reads as the photo
+        // answering the click. transform-origin is relative to media's own box, so
+        // the opener's rect is measured against media's rect after box.hidden
+        // flips.
         var mediaRect = media.getBoundingClientRect();
         var openerRect = opener ? opener.getBoundingClientRect() : null;
         if (openerRect && mediaRect.width && mediaRect.height) {
@@ -633,16 +515,9 @@
           .to(media, { opacity: 1, scale: 1, duration: D.state, ease: EASE }, 0);
       }
     }
-    // Close stays synchronous, unlike open() — Escape/close-button/prev-
-    // trigger-click all read .lightbox's `hidden` state and focus location
-    // back out immediately (test_escape_closes_only_the_lightbox_and_
-    // restores_focus_to_its_tile asserts this with no wait), and a
-    // keyboard user tabbing right after Escape has to land back on real,
-    // reachable content the instant this returns, not one tween later.
-    // The open-only motion still reads as intentional rather than
-    // lopsided: an entrance you watch happen invites a beat of attention; a
-    // dismissal doesn't need one, and instant-close is the normal feel for
-    // this exact interaction (most native image viewers close immediately).
+    // Close stays synchronous: Escape and the buttons read `hidden` and the
+    // focus back at once, and a keyboard user tabbing right after Escape must
+    // land on reachable content. Only the entrance animates.
     function close() {
       if (!lightboxOpen) return;
       lightboxOpen = false;
@@ -664,12 +539,8 @@
       render();
     }
 
-    // Wraps each figure's existing .collage__slot in a real button — the
-    // slot's own border/ratio/grayscale styling is untouched, only now
-    // reachable by click and by Enter/Space (native <button> behaviour,
-    // no extra key handling needed for that half). Flat figure order
-    // (querySelectorAll above) already includes the climbing group's
-    // .collage__pair__fig pair, so prev/next crosses it for free.
+    // Wraps each figure's .collage__slot in a real button, so click, Enter and
+    // Space work natively. Prev/next follow the flat figure order.
     figures.forEach(function (fig, i) {
       var slot = fig.querySelector('.collage__slot');
       var cap = fig.querySelector('figcaption');
@@ -699,398 +570,84 @@
   }
 
   /* ---------- origin: interactive mark ----------
-     Trifecta Order D / Stage D2 (2026-09-15): the dial (the three strokes)
-     is wired to the readout (the three panel rows) with two distinct
-     gestures, per Igor's brief. Hover (fine pointer) or keyboard focus is a
-     PREVIEW: ink only — the stroke lights, the row's name lights — and it
-     reverts to the committed discipline the moment the pointer leaves or
-     focus moves on. Click, Enter, Space, or tap is a COMMIT: it moves
-     .origin__marker to that row and flips aria-pressed, and it sticks until
-     the next commit. Both the three glyph hit-buttons and the three panel
-     rows share one preview()/commit() pair, so a hybrid device never gets
-     two handlers fighting over the same element, and the mapping between a
-     stroke and its row is symmetric in both directions.
-     The panel rows used to be hidden-until-active under html.js (a
-     cross-fade overlay); Stage D2 removed that, so all three are now always
-     visible and aria-hidden is never touched here — there is nothing left
-     to hide.
-     The idle hint below shares paint() with preview()/commit() rather than
-     defining its own visual language — a real engagement and the hint
-     produce identical-looking states, just triggered differently. */
+     Home page only. The mark's three strokes and the three doors below it
+     are links to the discipline pages. Hovering or focusing either one
+     lights that stroke, shows its sigil and lights its door; leaving puts
+     the mark back to rest (all three strokes at full ink). */
   function initOrigin() {
-    // `mark` stays the single §01 figure — it's the only one the S7 draw-in
-    // and the idle hint below key off (see drawThenHint()). `marks` is every
-    // instance of the control that exists (§01's, plus §03's specimen-switch
-    // mini added 2026-09-17, if present) — hits/parts/sigils are queried
-    // document-wide below so a single paint()/previewSigil()/sparkSigil()
-    // call updates whichever of these actually exist, in sync, without the
-    // mini needing its own copy of any of this logic.
     var mark = document.querySelector('.origin__mark');
     if (!mark) return;
-    var marks = document.querySelectorAll('.origin__mark');
     var hits = document.querySelectorAll('.origin__hit');
-    var parts = document.querySelectorAll('.glyph__part');
-    var panel = document.querySelector('.origin__panel');
-    // Stage 1 (2026-10-31): on the home page the readout is gone and the
-    // three .door links take its place as the mark's labelled partners.
-    var panelItems = panel ? panel.querySelectorAll('.origin__panel-item') : document.querySelectorAll('.door');
-    // Doors navigate; nothing is ever "committed" there, so the mark rests
-    // with all three strokes at full ink instead of one lit and two dimmed.
-    var navigates = !panel;
-    // §03's text switch (2026-09-23): three more controls on the same
-    // committed state, treated exactly like the readout rows below.
-    var switchItems = document.querySelectorAll('.specimen-switch__item');
-    var marker = panel ? panel.querySelector('.origin__marker') : null;
-    // D3 (2026-09-15): the readout's body — see .reading in style.css and
-    // index.html. Queried once here rather than re-queried per commit; a
-    // row with no matching value for the newly-committed discipline (every
-    // row, until D4 adds chess/climbing) is simply left showing whatever it
-    // already had, which today is always English.
-    var readingValues = panel ? panel.querySelectorAll('.reading__value') : [];
-    // Trifecta D follow-up (2026-09-15): §03 (Specimens) is now one of three
-    // discipline-scoped groups, swapped the same way updateReading() swaps
-    // the readout's values. Queried once here, same reasoning as
-    // readingValues above.
-    var specimenGroups = document.querySelectorAll('#specimen .specimens-group');
     if (!hits.length) return;
-
-    // Specimen sigils (2026-09-17): the small masthead-icon copies at each
-    // stroke's tip (index.html), on every mark instance — see the `marks`
-    // comment above.
-    var sigils = document.querySelectorAll('.origin__sigil');
-
+    var parts = mark.querySelectorAll('.glyph__part');
+    var sigils = mark.querySelectorAll('.origin__sigil');
+    var doors = document.querySelectorAll('.door');
     var idleTl = null;
-    // True the instant any real engagement happens (preview or commit),
-    // permanently. Checked by every idle-timeline step, rather than trusting
-    // .kill() alone to be synchronous: a step already queued on GSAP's
-    // ticker for the current frame can still fire after .kill() is called
-    // mid-frame, which without this guard could paint a stale idle
-    // discipline right over a real one landing in the same frame.
+    // Set by any real hover or focus. The idle hint checks it on every step
+    // as well as being killed, because a step already queued for this frame
+    // can still fire after .kill().
     var engaged = false;
 
-    // C6 (2026-09-06): rest state is English lit, not neutral — English is
-    // the offer, chess and climbing are proof it transfers, not equal-weight
-    // alternatives. committed tracks whichever discipline was last actually
-    // clicked/tapped/entered; it starts on 'english' to match the HTML's own
-    // default aria-pressed="true" on that row.
-    var committed = navigates ? null : 'english';
-
-    // The visual half of activation — glyph active/dim plus which panel
-    // row's name is lit — shared by preview, commit, and the idle hint
-    // below, so none of the three can drift into a differently-styled
-    // "active" state.
-    function paint(name) {
+    // The strokes and sigils only; the idle hint uses this on its own.
+    function paintGlyph(name) {
       parts.forEach(function (el) {
         var on = el.dataset.discipline === name;
         el.classList.toggle('is-active', on);
         el.classList.toggle('is-dim', !!name && !on);
       });
-      panelItems.forEach(function (el) {
-        el.classList.toggle('is-active', el.dataset.discipline === name);
-      });
-      switchItems.forEach(function (el) {
-        el.classList.toggle('is-active', el.dataset.discipline === name);
-      });
-    }
-
-    function clearPaint() {
-      paint(committed);
-    }
-
-    // The idle hint's own paint: the §01 figure's strokes and sigils only.
-    // paint() above is document-wide (it also drives §03's mini-mark and
-    // switch buttons, and the readout rows' names), and the hint lighting a
-    // readout row while the values beside it still showed the committed
-    // discipline read as a mismatch — Chess lit next to "C2 level · IELTS 9".
-    // So the hint names each stroke with its sigil instead and never
-    // touches the readout, the rows, the marker, or any aria state.
-    var markParts = mark.querySelectorAll('.glyph__part');
-    var markSigils = mark.querySelectorAll('.origin__sigil');
-    function paintGlyph(name) {
-      markParts.forEach(function (el) {
-        var on = el.dataset.discipline === name;
-        el.classList.toggle('is-active', on);
-        el.classList.toggle('is-dim', !!name && !on);
-      });
-      markSigils.forEach(function (el) {
+      sigils.forEach(function (el) {
         el.classList.toggle('is-preview', el.dataset.discipline === name);
       });
     }
     function endIdle() {
       if (idleTl) { idleTl.kill(); idleTl = null; }
-      markSigils.forEach(function (el) { el.classList.remove('is-preview'); });
     }
-
-    // Specimen sigils: deliberately NOT folded into paint() above. paint()
-    // runs on load and on every blur/pointerleave-back-to-committed, and a
-    // sigil must stay invisible through both of those — it only shows for
-    // an actual, current hover/keyboard-focus preview, never as a
-    // persistent "this is the committed one" indicator (the glyph's own
-    // dim/lit fill already carries that job). previewSigil(null) hides all
-    // three.
-    function previewSigil(name) {
-      sigils.forEach(function (el) {
-        el.classList.toggle('is-preview', el.dataset.discipline === name);
-      });
-    }
-
-    // One-shot flourish at the instant of commit, not a lit state — the
-    // class is removed again after SPARK_MS (kept in sync with --spark-d /
-    // the sigil-spark keyframes in style.css) so a repeat commit of the
-    // same discipline (e.g. re-clicking the already-committed stroke)
-    // retriggers the pop instead of being a no-op class toggle.
-    var SPARK_MS = 500;
-    var sparkTimers = {}; // keyed by discipline name — committing a second
-    // discipline before the first's timer fires must not leave the first
-    // sigil's class stuck; each name cleans up only its own timer.
-    function sparkSigil(name) {
-      sigils.forEach(function (el) {
-        if (el.dataset.discipline !== name) return;
-        if (sparkTimers[name]) clearTimeout(sparkTimers[name]);
-        el.classList.remove('is-spark');
-        el.offsetWidth; // restart the animation even on a repeat commit
-        el.classList.add('is-spark');
-        sparkTimers[name] = setTimeout(function () {
-          el.classList.remove('is-spark');
-          sparkTimers[name] = null;
-        }, SPARK_MS);
-      });
-    }
-
-    // D3: swaps the readout's body — only ever called from commit(), never
-    // preview(), per D2's own split (hover is ink-only; a commit is what
-    // "swaps" the readout). A row with no value for `name` is left as-is:
-    // there is nothing to switch to for chess/climbing until D4 gives every
-    // row a sibling .reading__value for them.
-    function updateReading(name) {
-      var exists = false;
-      readingValues.forEach(function (el) { if (el.dataset.discipline === name) exists = true; });
-      if (!exists) return;
-      readingValues.forEach(function (el) {
-        var on = el.dataset.discipline === name;
-        el.classList.toggle('is-active', on);
-        el.setAttribute('aria-hidden', on ? 'false' : 'true');
-        el.inert = !on;
-      });
-    }
-
-    // Swaps §03's discipline-scoped group. Unlike updateReading(), every
-    // discipline always has a group to switch to (no partial-rollout guard
-    // needed) — all three shipped together this stage.
-    function updateSpecimens(name) {
-      specimenGroups.forEach(function (el) {
-        el.classList.toggle('is-active', el.dataset.disciplineGroup === name);
-      });
-    }
-
-    // Slides .origin__marker to sit against the named row. Measures the
-    // row's real offsetTop/offsetHeight against the panel rather than
-    // assuming a fixed height, since that height differs across the EN/RU
-    // languages and the <900px stacked layout. animate=false is used for the
-    // initial placement and for resize/language reflows, so the marker
-    // never visibly slides for a reason the reader didn't cause.
-    function positionMarker(name, animate) {
-      if (!marker) return;
-      var item = null;
-      panelItems.forEach(function (el) { if (el.dataset.discipline === name) item = el; });
-      if (!item) return;
-      var prevTransition = marker.style.transition;
-      if (!animate) marker.style.transition = 'none';
-      marker.style.transform = 'translateY(' + item.offsetTop + 'px)';
-      marker.style.height = item.offsetHeight + 'px';
-      if (!animate) {
-        marker.offsetHeight; // force reflow before restoring the transition
-        marker.style.transition = prevTransition;
-      }
-    }
-
-    // PREVIEW: ink only, never sticks, never touches aria-pressed.
     function preview(name) {
       engaged = true;
-      // D2.5: a real engagement shows the mark outright, regardless of
-      // whether the hero-gated draw sequence has started yet — a reader who
-      // tabs in during that wait must not land on an invisible control.
+      // a reader who tabs in before the draw-in has started must not land
+      // on an invisible control
       mark.classList.add('is-in');
       endIdle();
-      paint(name);
-    }
-
-    // D5 (2026-09-15): #english/#chess/#climbing are the ids Order B reserved
-    // for its future dossier sections — with none built yet, they act here as
-    // a plain selector rather than a scroll target. Kept a selector, not a
-    // jump: syncHash uses replaceState so the address bar stays shareable
-    // without stacking history entries a reader would have to Back through
-    // one at a time. Never assign location.hash directly — that fires
-    // hashchange, which wakes the collage router's routeAfterHashChange()
-    // (main.js) on every commit; initSpecimenPermalinks() above is the
-    // pattern this copies, pushState swapped for replaceState because this is
-    // a selector, not a jump (a correction to what TRIFECTA-C-MARK-NAV.md's
-    // C1 recommends for the jump case).
-    function press(el, on) { if (el.tagName === 'BUTTON') el.setAttribute('aria-pressed', on ? 'true' : 'false'); }
-
-    var HASH_NAMES = ['english', 'chess', 'climbing'];
-    // DP8 (DESIGN-PASS-III.md): a specimen permalink's id names no discipline
-    // directly (`#specimen-chess-calculation`), but sits inside a
-    // .specimens-group that does. Cold-loading one of those six chess/climbing
-    // permalinks left `committed` at its English default, so the target group
-    // was still `display: none` — a 0×0 box the browser can't scroll to,
-    // which is why those six landed mid-English-list with no error. Resolving
-    // the id's own ancestor group here means a specimen hash commits that
-    // discipline exactly like a bare #chess/#climbing hash already did.
-    function groupFromSpecimenHash(id) {
-      var target = id && document.getElementById(id);
-      var group = target && target.closest('.specimens-group[data-discipline-group]');
-      return group ? group.dataset.disciplineGroup : null;
-    }
-    function nameFromHash() {
-      var id = (location.hash || '').slice(1);
-      if (HASH_NAMES.indexOf(id) !== -1) return id;
-      return groupFromSpecimenHash(id);
-    }
-    function syncHash(name) {
-      if (window.history.replaceState) window.history.replaceState(null, '', '#' + name);
-    }
-
-    // COMMIT: sticks, moves the marker, and is the only thing that writes
-    // aria-pressed — which now means "committed", not "currently previewed".
-    function commit(name) {
-      engaged = true;
-      mark.classList.add('is-in');   // see preview() above
-      endIdle();
-      committed = name;
-      paint(name);
-      updateReading(name);
-      updateSpecimens(name);
-      positionMarker(name, true);
-      syncHash(name);
-      sparkSigil(name);
-      hits.forEach(function (el) {
-        press(el, el.dataset.discipline === name);
-      });
-      panelItems.forEach(function (el) {
-        press(el, el.dataset.discipline === name);
-      });
-      switchItems.forEach(function (el) {
-        press(el, el.dataset.discipline === name);
+      paintGlyph(name);
+      doors.forEach(function (el) {
+        el.classList.toggle('is-active', el.dataset.discipline === name);
       });
     }
-
-    // A cold load of #chess/#climbing selects that discipline before the
-    // resting default below ever paints English — so committed starts as the
-    // deep-linked discipline instead of drifting to it in a second, visible
-    // step.
-    var deepLinked = nameFromHash();
-    if (deepLinked) committed = deepLinked;
-
-    // Establishes the resting default from the first frame — covers reduced
-    // motion (the idle hint below never runs there) and the gap before the
-    // hint's own IntersectionObserver fires.
-    clearPaint();
-    updateReading(committed);
-    updateSpecimens(committed);
-    positionMarker(committed, false);
-    hits.forEach(function (el) {
-      press(el, el.dataset.discipline === committed);
-    });
-    panelItems.forEach(function (el) {
-      press(el, el.dataset.discipline === committed);
-    });
-    switchItems.forEach(function (el) {
-      press(el, el.dataset.discipline === committed);
-    });
-
-    // The reader lands *inside* the readout, not merely near it — scroll
-    // alone is not navigation (see the skip-link bug in BUILD-NOTES). This
-    // only applies to a bare #english/#chess/#climbing hash: a specimen
-    // hash (DP8, below) has its own, more specific destination and must not
-    // also land here first. preventScroll because #origin is already the
-    // scroll target below; without it, focus() would fight that scroll with
-    // its own native jump. offset clears the fixed masthead (DP7) — see
-    // headerHeight() near the top of this file.
-    var hashId = (location.hash || '').slice(1);
-    if (HASH_NAMES.indexOf(hashId) !== -1 && panel) {
-      var origin = document.getElementById('origin');
-      if (origin) {
-        if (lenis) lenis.scrollTo(origin, { offset: -headerHeight(), immediate: reduce });
-        else origin.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-      }
-      if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '-1');
-      panel.focus({ preventScroll: true });
-    }
-
-    // DP8, continued: the group above is now committed and visible, so the
-    // specimen itself is a real, measurable target — land on it the same
-    // way the bare-hash case lands on the readout.
-    var deepLinkedSpecimen = HASH_NAMES.indexOf(hashId) === -1 ? document.getElementById(hashId) : null;
-    if (deepLinkedSpecimen && deepLinkedSpecimen.classList.contains('spec')) {
-      if (lenis) lenis.scrollTo(deepLinkedSpecimen, { offset: -headerHeight(), immediate: reduce });
-      else deepLinkedSpecimen.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-      if (!deepLinkedSpecimen.hasAttribute('tabindex')) deepLinkedSpecimen.setAttribute('tabindex', '-1');
-      deepLinkedSpecimen.focus({ preventScroll: true });
-    }
-
     function wire(el) {
       var name = el.dataset.discipline;
-      if (el.tagName !== 'A') el.addEventListener('click', function () { commit(name); });
-      el.addEventListener('focus', function () { preview(name); previewSigil(name); });
-      el.addEventListener('blur', function () { preview(committed); previewSigil(null); });
+      el.addEventListener('focus', function () { preview(name); });
+      el.addEventListener('blur', function () { preview(null); });
       if (finePointer) {
-        el.addEventListener('pointerenter', function () { preview(name); previewSigil(name); });
-        el.addEventListener('pointerleave', function () { preview(committed); previewSigil(null); });
+        el.addEventListener('pointerenter', function () { preview(name); });
+        el.addEventListener('pointerleave', function () { preview(null); });
       }
     }
     hits.forEach(wire);
-    panelItems.forEach(wire);
-    switchItems.forEach(wire);
+    doors.forEach(wire);
 
-    // Row heights can change under the reader without a commit happening —
-    // a resize crossing the 900px breakpoint, or a language switch changing
-    // how far RU text wraps. Re-measure without animating either way.
-    window.addEventListener('resize', function () { positionMarker(committed, false); }, { passive: true });
-    document.addEventListener('vitnyr:langchange', function () { positionMarker(committed, false); });
-
-    // One-shot hint, not a loop: walks the §01 figure's three strokes once
-    // when the section first scrolls into view — chess, climbing, then back
-    // to the committed one, so the settle is not a jump. Each stroke shows
-    // its sigil while lit, and the sigil is what names it: the hint used to
-    // light the readout rows too, but the values beside them never swapped
-    // (a hint must not rewrite proof figures under a reader's eyes), so
-    // Chess sat lit next to English's numbers. paintGlyph() stays inside
-    // the §01 mark — no rows, no readout, no marker, no aria, no spark.
-    // Skipped outright under reduced motion; the real interaction above
-    // still works either way.
+    // One-shot hint when the section first scrolls into view: the strokes
+    // light in turn (each with its sigil), then the mark comes back to rest.
+    // It never touches the doors. Skipped under reduced motion.
     if (reduce || !('IntersectionObserver' in window)) return;
-    // S7 move 03: the mark draws its three strokes on the reveal (~0.9s of
-    // CSS, keyed off .is-in). Hold the idle preview until that has finished
-    // so the draw and the hint never drive the same strokes in one frame.
+    // The draw-in (~0.9s of CSS, keyed off .is-in) finishes before the hint
+    // starts, so the two never drive the same strokes in one frame.
     var DRAW_HOLD = 1.0;
-    // D2.5: at position 1 the mark is on screen at load, same as the hero —
-    // racing its draw-in against the hero's line-mask reads as four timed
-    // systems firing in the same viewport. Sequence instead: hero lands,
-    // then the mark draws, then the hint walks. buildReveals() no longer
-    // queues .origin__mark (see there), so this is the only place that adds
-    // its .is-in. Never reach into playHero() itself — it already carries a
-    // NaN-transform-cache scar from an earlier coupling attempt — just listen
-    // for the completion event it emits, or fall back on a fixed wait if
-    // that event is somehow missed (e.g. the mark only becomes visible after
-    // a late scroll, once the one-time event has already fired).
+    // The mark waits for the hero to land (the vitnyr:heroin event), with a
+    // fixed fallback in case that one-time event fired before the mark was
+    // seen. Never reach into playHero() itself: see the NaN-transform note
+    // in BUILD-NOTES.
     var HERO_WAIT_MS = 1800;
     function drawThenHint() {
       if (engaged || mark.classList.contains('is-in')) return;
       mark.classList.add('is-in');
-      if (engaged) return;   // a real interaction can land in the same tick
-      var order = ['english', 'chess', 'climbing'].filter(function (n) { return n !== committed; });
-      order.push(committed);
       var tl = gsap.timeline({
         delay: DRAW_HOLD,
         onComplete: function () {
           idleTl = null;
-          if (engaged) return;
-          paintGlyph(committed);
-          markSigils.forEach(function (el) { el.classList.remove('is-preview'); });
+          if (!engaged) paintGlyph(null);
         }
       });
-      order.forEach(function (name) {
+      ['english', 'chess', 'climbing'].forEach(function (name) {
         tl.call(function () { if (!engaged) paintGlyph(name); }).to({}, { duration: 1 });
       });
       idleTl = tl;
@@ -1112,18 +669,10 @@
   }
 
   /* ---------- pointer: the dot ----------
-     C14 (2026-09-07): a single dot rides the pointer everywhere on a
-     fine-pointer device — it IS the cursor now (cursor:none is page-wide in
-     the sheet under .has-cursor), not a flourish that only turns up over
-     links. It never changes size. The one signal it gives is colour: its
-     fill eases from --fg to --ink-target green over a control, or to
-     --ink-specimen amber over a control inside #specimen — the same
-     token-to-token crossfade the progress hairline uses, declared in the
-     stylesheet off the same --ink-* tokens (no hex here). The 3x balloon that
-     used to fire here is gone for good (C14); the magnetic pull came back at
-     C16 but lives in initMagnetic() below and only on non-text controls, not
-     on this size/colour path. Everything still degrades — no JS, no GSAP,
-     reduced motion or touch all keep the native cursor and no dot. */
+     On a fine pointer one dot is the cursor (cursor: none is page-wide under
+     .has-cursor). It never changes size; its one signal is colour, easing to
+     an accent over a control (the colours live in the stylesheet). The
+     magnetic pull lives in initMagnetic(), on non-text controls only. */
   function initCursor() {
     if (!finePointer) return;
     var el = document.querySelector('.cursor');
@@ -1154,8 +703,8 @@
     window.addEventListener('mousemove', function (e) {
       mx = e.clientX; my = e.clientY;
       if (!shown) {
-        // First real move: arm .has-cursor, which both suppresses the native
-        // pointer page-wide and fades the dot in (opacity lives in the sheet).
+        // First real move: .has-cursor hides the native pointer page-wide and fades
+        // the dot in (the opacity is the sheet's).
         shown = true;
         cx = mx; cy = my;
         gsap.set(el, { x: mx, y: my });
@@ -1165,22 +714,18 @@
       kick();
     }, { passive: true });
 
-    /* The dot is the pointer now, so it has to answer the pointer leaving the
-       window — otherwise it strands at the last edge it saw. mouseleave on the
-       root fires as the pointer crosses out; mouseenter and the next mousemove
-       both clear it. Opacity is the sheet's (html.has-cursor.cursor-out). */
+    /* The dot is the pointer, so it answers the pointer leaving the window
+       instead of stranding at the last edge; mouseenter and the next mousemove
+       clear it. */
     root.addEventListener('mouseleave', function () { root.classList.add('cursor-out'); });
     root.addEventListener('mouseenter', function () { root.classList.remove('cursor-out'); });
 
-    /* The one signal is colour: .cursor-active plus the two ink variants.
-       No size change here — the sheet owns every visual, this only says which
-       state the dot is in. Move 02 (Spark Order S4): over a control inside
-       #specimen the dot takes specimen amber (the error under examination),
-       over the contact CTA it takes target green (the outcome); off the
-       stylesheet's --ink-* tokens, no hex here. */
+    /* The one signal is colour: .cursor-active plus the two ink variants. Over
+       a control inside #specimen the dot takes amber, elsewhere the target ink.
+       The sheet owns every visual; this only names the state. */
     var HOT = 'a, button, [data-magnetic]';
-    // The footer grounds in the other theme pair, so the dot flips its ink
-    // there (.on-foot — the sheet owns the colour).
+    // The footer grounds in the other pair, so the dot flips its ink there
+    // (.on-foot).
     document.addEventListener('mouseover', function (e) {
       el.classList.toggle('on-foot', !!(e.target.closest && e.target.closest('.foot')));
     });
@@ -1200,41 +745,19 @@
   }
 
   /* ---------- pointer: magnetic pull on controls ----------
-     C16 (2026-09-07): the hover pull is back, but only where C14's note said
-     it could return — non-text controls: the Cream/RU switches, the collage
-     icon-nav buttons, the footer "Back to top", the collage "Back". Never on
-     running copy or standalone text links (that was the half Igor flagged as
-     "the way the cursor gets over letters"), so this keys off the control
-     classes .tool / .view__back, not the broad [data-magnetic] hint the dot's
-     colour still reads. Same field as before: a 60px halo, ≤12px displacement,
-     peaking halfway out and back to zero at the rim so it's continuous where
-     the field ends. Past the reduced-motion return, so a reduce reader never
-     sees it.
-
-     C17 (2026-09-07): the §04 origin mark (the interactive V glyph — three
-     real <button> hit-regions, already focusable, already answers hover by
-     lighting a stroke) joins the set. It is also a .reveal target, so the
-     transform channel is shared with the one-shot rise: the reveal uses it
-     for 0.9s, once, then leaves it at `none` forever (CLAUDE.md's motion
-     note — a transient transform is allowed to hand the channel back). The
-     first mouseenter here is always well after §04 has revealed and settled,
-     so on that first enter we drop `transform` from the element's transition
-     list — GSAP's quickTo then owns the channel unopposed, with no CSS
-     transform-transition double-easing every nudge. The lighting/panel path
-     (initOrigin) is untouched. */
+     Non-text controls only (.tool, .view__back, the home mark), never running
+     copy or text links. A 60px halo, up to 12px of displacement, peaking
+     halfway out and back to zero at the rim. Past the reduced-motion return.
+     The home mark is also a .reveal, so on first hover it drops `transform`
+     from its transition list and quickTo owns the channel from then on. */
   /* ---------- in their words: the testimonials marquee ----------
-     Past the reduced-motion return, so a reduce reader keeps the static grid
-     the CSS draws by default. The list is cloned once (aria-hidden + inert,
-     so a screen reader and the tab order meet each quote exactly once) and
-     the track drifts by one list-width, then wraps — seamless because the
-     clone starts exactly where the original did.
-     Speed and direction come from the page's own scroll: scrolling down
-     pushes the row left and faster, scrolling up swings it right, and it
-     eases back to a slow drift in whichever direction it was last sent.
-     Velocity is read off scrollPos() deltas rather than lenis.velocity, so
-     touch scrolling (which Lenis leaves native) steers it too. Hover holds
-     it; the Pause control stops it outright. The ticker returns early while
-     the band is off screen. */
+     Past the reduced-motion return, so reduced motion keeps the static grid.
+     The list is cloned once (aria-hidden and inert, so screen readers and the
+     tab order meet each quote once) and the track drifts one list-width, then
+     wraps. The page's scroll steers it: down pushes it left and faster, up
+     swings it right, then it eases back to a slow drift. Velocity comes from
+     scrollPos() deltas, so native touch scrolling steers it too. Hover holds
+     it, Pause stops it, and it idles while off screen. */
   function initVoices() {
     var band = document.querySelector('.voices__band');
     var track = band && band.querySelector('.voices__track');
@@ -1363,38 +886,25 @@
     });
   }
 
-  /* ---------- masthead mark: draw-in (P22) ----------
-     The V/Y symbol assembles from its three strokes — left arm of the V, then
-     the right, then the stem (see style.css). It plays exactly ONCE, a short
-     beat after load, then holds — no hover replay: a wordmark is a fixed point
-     on the page, not something that re-performs every time the pointer crosses
-     it. Pure decoration: wired past the reduced-motion return, so a reduce
-     reader never reaches it and the stylesheet pins the clip rects open for
-     them instead.
-
-     .is-drawing on .lockup is all the CSS needs; the three rects sit at
-     `forwards`, so the finished mark holds once the class is on. Because it is
-     added once and never removed, no restart/guard machinery is needed. */
-  var LOCKMARK_INTRO = 150;   // ms after this runs before the one-time draw starts
+  /* ---------- masthead mark: draw-in ----------
+     The V/Y assembles from its three strokes once, a beat after load, then
+     holds; no hover replay. Past the reduced-motion return (the stylesheet
+     pins it open there). .is-drawing is all the CSS needs and is never
+     removed. */
+  var LOCKMARK_INTRO = 150;
   function initLockmark() {
     var lockup = document.querySelector('.lockup');
     if (!lockup) return;
-    // A short beat, not frame 0, so it reads as deliberate rather than a
-    // glitch. failsafe() is the backstop if this timer never fires.
+    // A short beat, not frame 0, so it reads as deliberate. failsafe() is the
+    // backstop if this never fires.
     setTimeout(function () { lockup.classList.add('is-drawing'); }, LOCKMARK_INTRO);
   }
 
-  /* ---------- specimen permalinks (Spark Order S9A / move 09) ----------
-     Each <article class="spec"> carries a stable id, and its label is an
-     anchor to that id — so a reader who recognises one of the three errors
-     as their own can link straight to it. A click also drops the full URL on
-     the clipboard and says so, briefly, in the page's own two languages.
-     Everything here is enhancement over a plain in-page anchor: with this
-     file absent the label is still <a href="#specimen-...">, the browser
-     still jumps, and the status line stays hidden. Wired before the
-     reduced-motion return because it is navigation, not motion — the only
-     concession to reduced motion is an instant scroll instead of a smooth
-     one, which is the same rule the generic #-anchor handler above follows. */
+  /* ---------- specimen permalinks ----------
+     Each specimen has a stable id and its label links to it, so a reader can
+     share the one mistake that is theirs. A click also copies the URL and
+     says so briefly. With this file absent the label is still a plain anchor.
+     Navigation, not motion: reduced motion only makes the scroll instant. */
   function initSpecimenPermalinks() {
     var links = document.querySelectorAll('.spec__permalink[data-permalink]');
     if (!links.length) return;
@@ -1406,9 +916,8 @@
         var target = id && document.getElementById(id);
         if (!target) return;   // nothing to route to — let the browser decide
         e.preventDefault();
-        /* The address bar becomes the shareable link. pushState (not a raw
-           hash assignment) keeps Back working and does NOT fire hashchange,
-           so the collage router's routeAfterHashChange stays out of it. */
+        /* pushState keeps Back working and doesn't fire hashchange, so the collage
+           router stays out of it. */
         if (window.history.pushState) window.history.pushState(null, '', '#' + id);
         else location.hash = id;
         if (lenis) lenis.scrollTo(target, { offset: -headerHeight(), duration: 1.2 });
@@ -1425,24 +934,18 @@
       });
     });
 
-    /* Discipline pages (2026-10-31): a cold load of a specimen permalink —
-       a shared link, or the home page's old-link redirect — lands on the
-       specimen and moves focus into it, the way DP8 lands one on the home
-       page's mark (initOrigin). Scroll alone is not navigation. The target
-       is measured from offsetTop, not the box: the specimen is a .reveal,
-       so its box still carries part of the 24px rise at this point and
-       would park it a few px under the masthead once the rise settles. The
-       jump runs twice: the masthead is shorter at rest than once the page is
-       scrolled (.is-scrolled), so the first pass measures the wrong height.
-       And it waits for load: the browser's own jump to the fragment lands
-       after this script runs, and Lenis would then ease between the two. */
+    /* A cold load of a specimen permalink lands on the specimen and moves focus
+       into it; scroll alone is not navigation. Measured from offsetTop, since
+       the .reveal's box still carries part of its rise. The jump runs twice
+       because the masthead is shorter at rest than once scrolled, and it waits
+       for load, after the browser's own jump to the fragment. */
     var landed = document.getElementById((location.hash || '').slice(1));
     if (landed && landed.classList.contains('spec') && !document.querySelector('.origin__mark')) {
       if (!landed.hasAttribute('tabindex')) landed.setAttribute('tabindex', '-1');
       landed.focus({ preventScroll: true });
       var land = function () {
         if (!lenis) return;   // reduced motion / no Lenis: the native jump and scroll-margin-top already land it
-        navLock = true;       // a downward jump: keep the phone masthead from sliding away (see jumpTo)
+        navLock = true;       // a downward jump: keep the phone masthead from sliding away
         showMast();
         for (var pass = 0; pass < 2; pass++) {
           var y = 0;
@@ -1457,13 +960,11 @@
   }
 
   /* ---------- collage: a hash-routed full-screen view ----------
-     One file, but #collage behaves like its own page. location.hash is the
-     single source of truth, so the browser back and forward buttons work for
-     free: back drops the hash, hashchange fires, the view closes. Entering it
-     makes #app and the masthead inert (focus can't wander behind the view,
-     the page behind can't scroll), moves focus to the heading, and parks the
-     Lenis scroll. With this whole file absent the view is the last section of
-     the document and the "See the work" link is an ordinary anchor to it. */
+     #collage behaves like its own page. location.hash is the single source of
+     truth, so Back and Forward work: Back drops the hash, hashchange fires,
+     the view closes. Opening makes #app and the masthead inert, moves focus to
+     the heading and parks the Lenis scroll. With this file absent the view is
+     the last section of the document. */
   function initCollageView() {
     var view = document.getElementById('collage');
     if (!view) return;
@@ -1471,18 +972,14 @@
     var backBtn = view.querySelector('.view__back');
     var homeLink = view.querySelector('.footmark-home');
     // The door (the "See me at work" band) is the one opener that morphs into
-    // the view. SITE-PLAN C4's "Photos" links (masthead, footer) carry
-    // data-collage-link instead and open with the ordinary cross-fade; they
-    // are wired on their own below.
+    // the view. The "Photos" links carry data-collage-link and open with the
+    // plain crossfade, wired below.
     var opener = document.querySelector('[data-collage-open]');
-    // The view's own "Photographs" label — always the first .label in
-    // view__body, always in the viewport the moment the view opens — is the
-    // door's morph target (S7 Stage 2). The group labels further down share
-    // the class but sit later in document order, so the first match is this one.
+    // The view's own "Photographs" label, the first .label in the view, is the
+    // door's morph target.
     var doorLabel = view.querySelector('.label');
     var canInert = 'inert' in HTMLElement.prototype;
-    // everything that is NOT the view — made inert while it is open so focus
-    // can't wander behind it and the skip link can't jump into inert content
+    // everything that is not the view, made inert while it is open
     var behind = [
       document.getElementById('app'),
       document.querySelector('.masthead'),
@@ -1491,9 +988,8 @@
     function setBehindInert(on) { if (canInert) behind.forEach(function (el) { el.inert = on; }); }
     var returnFocus = null;
     var savedScroll = 0;   // where the site was when the view opened
-    var applied = false;   // have the open side-effects run? (the .collage-open
-                           // class can already be set by the <head> script on a
-                           // deep link, so the class alone isn't the test)
+    var applied = false;   // have the open side-effects run? The <head> script can set .collage-open on
+                           // a deep link, so the class alone isn't the test.
 
     function bgScroll() { return lenis ? lenis.scroll : (window.scrollY || 0); }
     function bgScrollTo(y) {
@@ -1501,15 +997,10 @@
       else window.scrollTo(0, y);
     }
 
-    // Stage 2 pitfall: a warm open's own click also lands #collage in the URL,
-    // and the browser's native scroll-to-fragment for it turns out not to be
-    // pushState-exempt after all — it still runs, just on a delayed task
-    // (invisible before Stage 2, whose warm opens always ran applyOpen() in
-    // the very same tick as the click, before that task got a turn). Wrapping
-    // the open in a View Transition gives it a real gap to land in, so the
-    // scroll/focus snapshot has to be taken here — synchronously, before
-    // withTransition() ever schedules the deferred half — not inside
-    // applyOpen() itself, which now sometimes runs a frame or more later.
+    // A warm open's click also puts #collage in the URL, and the browser's
+    // scroll-to-fragment for it still runs on a later task. The open runs inside
+    // a View Transition, so the scroll and focus snapshot is taken here,
+    // synchronously, before withTransition() defers the rest.
     var openCaptured = false;
     function captureOpenState(cold) {
       returnFocus = (document.activeElement && document.activeElement !== document.body)
@@ -1534,19 +1025,16 @@
       setBehindInert(true);
       if (lenis) lenis.stop();
       view.scrollTop = 0;
-      promoteCollageImages(view);   // first open: let the 18 figures actually fetch
+      promoteCollageImages(view);   // first open: let the figures fetch
       armCollageReveals(view);   // first open: hand the tiles to their own observer
       initCollageLightbox(view);   // first open: wrap the tiles in real controls
-      // Synchronous: the view is visible the moment the class lands, and rAF
-      // can be suspended in a background tab (see whenRendering above) — a
-      // deferred focus move is a focus move that might never happen.
+      // Synchronous: rAF can be suspended in a background tab, and a deferred
+      // focus move might never happen.
       if (title) title.focus({ preventScroll: true });
-      /* On a deep link the browser runs its own scroll-to-fragment after this,
-         and because html.js .view is an overflow:auto scroll container it is
-         browser-focusable — so the fragment step lands focus on #collage (an
-         unlabelled wrapper) instead of the heading, and undoes the line above.
-         Re-assert the heading once the document has settled, and reset the
-         saved scroll so the way back still returns to the top. */
+      /* On a deep link the browser's own scroll-to-fragment runs after this and
+         focuses #collage (an overflow: auto container is focusable), undoing the
+         line above. Re-assert the heading once the document settles, and reset
+         the saved scroll so the way back returns to the top. */
       if (cold) {
         var settle = function () {
           if (!applied) return;
@@ -1569,37 +1057,23 @@
       if (lenis) lenis.start();
       bgScrollTo(savedScroll);
       if (returnFocus && returnFocus.focus) returnFocus.focus({ preventScroll: true });
-      // Reopen lands on a settled view, not a half-run stagger: put every tile
-      // back to .is-in. Any the observer hasn't fired yet stay observed and
-      // will still catch up on scroll.
+      // Reopening lands on a settled view: every tile back to .is-in. Any the
+      // observer hasn't fired stay observed.
       view.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
     }
 
     function sync(cold) { (location.hash === '#collage') ? applyOpen(cold) : applyClose(); }
 
-    /* S7 move 04, extended at Stage 2 — animate the route with a View
-       Transition on BOTH directions. Closing already proved this safe: focus
-       returns to the opener and every close test settles first. Opening used
-       to be excluded because applyOpen() focuses the heading synchronously
-       and startViewTransition defers its update callback ~1 frame — a
-       deferred focus is a focus that might never land, a bug this view has
-       shipped once already (see BUILD-NOTES). Stage 2's fix isn't to avoid
-       the callback, it's to keep living inside it: applyOpen()'s class flip
-       and focus move are two lines apart and both run synchronously *within*
-       whichever call fires them, VT callback or not, so the one thing that
-       changes is which frame that pair happens on — never whether they stay
-       adjacent to each other. withTransition()'s failsafe below covers the
-       one real risk (the callback never running at all). */
+    /* Both directions animate with a View Transition. applyOpen()'s class flip
+       and focus move stay adjacent and synchronous inside whichever call runs
+       them; withTransition()'s failsafe covers the callback never running. */
     function canTransition() {
       return typeof document.startViewTransition === 'function' && !reduce
         && document.visibilityState === 'visible';
     }
-    // Shared by every VT-eligible route. `mutate` is always one of sync()'s
-    // two idempotent halves (applyOpen/applyClose each guard on `applied`),
-    // so if startViewTransition's update callback is merely slow rather than
-    // lost, racing a direct call after a short failsafe costs nothing — the
-    // real call either already ran (the direct call is a no-op) or is about
-    // to (the deferred callback's own call becomes the no-op instead).
+    // Shared by every route that transitions. `mutate` is one of sync()'s two
+    // idempotent halves, so racing a direct call after a short failsafe costs
+    // nothing if the update callback is merely slow.
     function withTransition(mutate) {
       if (!canTransition()) { mutate(); return null; }
       var t = document.startViewTransition(mutate);
@@ -1610,10 +1084,8 @@
       return t;
     }
     function routeAfterHashChange() {
-      // Only an actual open<->closed flip takes the transition — otherwise
-      // sync() is a no-op and wrapping a no-op update in startViewTransition
-      // just fires an invisible cross-fade on every unrelated in-page hash
-      // (the specimen permalinks, #top, #method).
+      // Only a real open/closed flip takes the transition; otherwise every
+      // unrelated in-page hash would fire an invisible crossfade.
       var opening = !applied && location.hash === '#collage';
       var closing = applied && location.hash !== '#collage';
       if (opening) captureOpenState(false);   // before the transition's own delay, see applyOpen
@@ -1621,18 +1093,10 @@
       else sync(false);
     }
 
-    /* The door: "See the work" morphs into the view's own "Photographs"
-       label, so the way in reads as one element moving and growing rather
-       than a swap-and-fade — the shared-element move Stage 2 adds on top of
-       the plain cross-fade every other route gets. Both ends carry the same
-       view-transition-name only for the life of one transition: the source
-       before the call (tagging its pre-transition snapshot), the destination
-       inside the callback (tagging its post-transition snapshot), cleared
-       again once the transition settles so neither element carries a stale
-       name into some later, unrelated transition. Only this one entry point
-       gets the named morph — the masthead glyph jumps keep their existing
-       smooth scroll and plain cross-fade (their destinations sit off-screen
-       at capture time; see BUILD-NOTES for why that morph doesn't work). */
+    /* The door: "See me at work" morphs into the view's "Photographs" label, so
+       the way in reads as one element moving. Both ends carry the same
+       view-transition-name for one transition only (the source before the call,
+       the destination inside the callback), cleared once it settles. */
     var DOOR_NAME = 'collage-door';
     function openWithDoorMorph() {
       if (!canTransition() || !opener || !doorLabel) { sync(false); return; }
@@ -1675,15 +1139,10 @@
       });
     });
 
-    /* The masthead glyph icons (chess / carabiner / book) are shortcuts into
-       the view: open it if it's closed, then slide that domain group's label
-       to the top and move focus onto its heading. Native smooth scroll on the
-       view's own overflow:auto container — Lenis is parked while the view is
-       open — and it drops to an instant jump under prefers-reduced-motion.
-       Done synchronously, not in a rAF: applyOpen has already flipped
-       .collage-open (visibility/opacity only, so geometry is live), and a
-       deferred frame can be suspended in a background tab — same reason
-       applyOpen focuses synchronously. */
+    /* Jumps into a domain group of the view: open it if it's closed, slide that
+       group's label to the top and focus its heading. Native smooth scroll on
+       the view's own container (Lenis is parked), instant under reduced motion.
+       Synchronous, not in a rAF, for the same reason as applyOpen's focus. */
     var jumpers = document.querySelectorAll('[data-collage-jump]');
     var bar = view.querySelector('.view__bar');
     var JUMP_GAP = 16;   // breathing room left between the sticky bar and the landed label
@@ -1691,10 +1150,8 @@
       var heading = document.getElementById('collage-' + key);
       if (!heading) return;
       var group = heading.closest('.view__group');
-      /* Land the group's label under the sticky bar — it carries the glyph
-         that was clicked, so it's what should arrive at the top. Scrolling to
-         the group's own edge instead would park it below the 40–90px of
-         inter-group padding that only reads right when you scroll in. */
+      /* Land the group's label under the sticky bar: it carries the glyph that
+         was clicked. */
       var anchor = (group && group.querySelector('.label')) || heading;
       var barH = bar ? bar.getBoundingClientRect().height : 0;
       var top = anchor.getBoundingClientRect().top
@@ -1709,9 +1166,8 @@
       btn.addEventListener('click', function (e) {
         e.preventDefault();
         var key = btn.getAttribute('data-collage-jump');
-        // Focus the button first so applyOpen captures it as returnFocus and
-        // Back lands here — a plain mouse click doesn't focus a <button> in
-        // every browser (Safari), which would otherwise send Back to the opener.
+        // Focus the button first so applyOpen records it for Back; Safari doesn't
+        // focus a <button> on a mouse click.
         btn.focus({ preventScroll: true });
         if (location.hash !== '#collage') {
           if (history.pushState) history.pushState(null, '', '#collage');
@@ -1723,16 +1179,10 @@
     });
 
     if (backBtn) backBtn.addEventListener('click', leave);
-    // The mark, unlike Back, always goes to the top of the main page rather
-    // than wherever the view was opened from — same "click the logo" contract
-    // as the masthead's own .lockup. A plain #top anchor click would fall
-    // into the generic #-anchor handler above (Lenis-scrolling to a #top
-    // that's still hidden behind this view without ever closing it), so this
-    // is handled here instead: park the URL at #top (pushState, not a raw
-    // hash write, so it doesn't fire hashchange and double-run the close),
-    // force the close to land at the very top rather than the saved scroll
-    // position applyClose() would otherwise restore, and let it run through
-    // the same view-transition path routeAfterHashChange uses.
+    // The mark always goes to the top of the main page, like the masthead's
+    // .lockup. A plain #top link would fall into the generic #-anchor handler
+    // and never close the view, so: pushState #top (no hashchange), force the
+    // close to land at the very top, and run the usual transition path.
     if (homeLink) homeLink.addEventListener('click', function (e) {
       e.preventDefault();
       if (history.pushState) history.pushState(null, '', '#top');
@@ -1743,9 +1193,8 @@
     });
     window.addEventListener('hashchange', function () { routeAfterHashChange(); });
     document.addEventListener('keydown', function (e) {
-      // Stage 3: the lightbox is a layer on top of this view, with its own
-      // Escape handler (initCollageLightbox) — this one no-ops while that
-      // flag is set, so Escape closes one layer at a time rather than both.
+      // The lightbox sits on top with its own Escape handler; this one waits, so
+      // Escape closes one layer at a time.
       if ((e.key === 'Escape' || e.key === 'Esc') && applied && !lightboxOpen) {
         e.preventDefault(); leave();
       }
@@ -1754,16 +1203,12 @@
     sync(true);   // deep-link path; the <head> script already set .collage-open
   }
 
-  /* ---------- who: the rows answer the question (Spark Order S5 / move 19) ----
-     Section 05 asks "which of these is you?" and, until now, gave no way to
-     say. Each row gets an invisible overlay <button> (built here, so a no-JS
-     reader still sees four plain rows and the CTA keeps its static href).
-     Picking a row is single-choice and toggleable; it composes a first-person
-     clause from the row's own data-prefill-* onto the section 06 Telegram CTA,
-     so Igor receives the answer without the reader having to phrase it.
-     Selection and language compose through one writer, updateCta(), which
-     reads both every time — never the href built in two places. Wired before
-     the reduced-motion return: this is interaction, not decoration. */
+  /* ---------- who: the rows answer the question ----------
+     Each row gets an invisible overlay <button> (built here, so a no-JS
+     reader sees plain rows and a static CTA). Picking is single-choice and
+     toggleable; it adds a first-person clause from the row's data-prefill-*
+     to the Telegram message. Interaction, not decoration: wired before the
+     reduced-motion return. */
   function initWhoRows() {
     var cta = document.querySelector('.contact__cta');
     var rows = document.querySelectorAll('.rows > li');
@@ -1779,15 +1224,10 @@
       var i = h.indexOf('?text=');
       return i < 0 ? '' : decodeURIComponent(h.slice(i + 6));
     }
-    // The one place the CTA href is written. No selection: hand it back to
-    // theme.js's plain per-language default (applyLang sets the same value on
-    // a switch — this keeps them in step between switches). A selection:
-    // baseMessage + " — " + the row's clause, in the current language.
-    // 2026-09-23: writes every Telegram link that carries the offer — the
-    // CTA and the phone contact bar (.dock) — plus the §05 draft preview, so
-    // all three are composed here and nowhere else. 2026-09-26: the footer's
-    // "Your move" line (.foot__move) carries the same offer, so it's written
-    // here too.
+    // The one place the offer's Telegram links are written: the CTA, the phone
+    // contact bar (.dock), the footer's "Your move" line and the draft preview.
+    // No pick: theme.js's per-language default. A pick: the base message, " — ",
+    // and the row's clause in the current language.
     var targets = document.querySelectorAll('.contact__cta, .dock, .foot__move, .page-cta');
     var draft = document.querySelector('.contact__draft');
     function updateCta() {
@@ -1814,10 +1254,8 @@
       }
     }
 
-    // The pick status under the rows: confirms a pick and points at §05,
-    // where the draft above now shows what will be sent. Says nothing at
-    // rest — this is not the instruction line 63792e0 removed. aria-live,
-    // so the confirmation is announced; the draft itself is not.
+    // The pick status under the rows: silent at rest; confirms a pick and points
+    // at the contact section. aria-live, so the confirmation is announced.
     var list = document.querySelector('.rows');
     var status = document.createElement('p');
     status.className = 'rows__status';
@@ -1861,11 +1299,9 @@
       btn.type = 'button';
       btn.className = 'row__pick';
       btn.setAttribute('aria-pressed', 'false');
-      /* Named by a visually-hidden span carrying the heading's own
-         data-en/data-ru — the exact shape .origin__hit uses, so theme.js's
-         applyLang() keeps the label in the right language for free. Set the
-         initial text here because applyLang has already run by the time
-         main.js builds this. */
+      /* Named by a visually hidden span carrying the heading's own data-en/data-ru,
+         so applyLang() keeps it in the right language. applyLang has already run,
+         so the first text is set here. */
       var vh = document.createElement('span');
       vh.className = 'vh';
       if (h3.dataset.en) vh.setAttribute('data-en', h3.dataset.en);
@@ -1883,18 +1319,15 @@
       picks.push(btn);
     });
 
-    // A language switch re-sets the default href and fires this; re-run the
-    // one writer so a live selection recomposes in the new language.
+    // A language switch resets the default href and fires this; the one writer
+    // recomposes a live pick in the new language.
     document.addEventListener('vitnyr:langchange', updateCta);
   }
 
   /* ---------- phone contact bar ----------
-     Shows .dock (index.html) once the hero has scrolled away above the
-     viewport, and hides it while #contact or the footer is on screen — so
-     it never doubles the real CTA and never covers "Back to top". The
-     bottom rootMargin is the bar's own height: #contact counts as on screen
-     the moment it reaches the bar's top edge. Visibility only, not motion,
-     so it's wired before the reduced-motion return (CSS drops the rise). */
+     Shows .dock once the hero has scrolled away and hides it while #contact
+     or the footer is on screen, so it never doubles the real CTA. Visibility,
+     not motion: wired before the reduced-motion return. */
   function initDock() {
     var dock = document.querySelector('.dock');
     var hero = document.getElementById('hero');
@@ -1916,15 +1349,11 @@
     io.observe(hero); io.observe(contact); if (foot) io.observe(foot);
   }
 
-  /* ---------- footer: Yerevan clock + keyboard reach ----------
-     The small print's "Yerevan · 14:32 local time" — so a reader abroad can
-     tell whether a message lands at a sensible hour. Hidden until JS fills
-     it; re-arms on each minute boundary rather than polling.
-
-     The curtain keeps the footer pinned beneath <main> until the page's end
-     uncovers it, so a Tab into it from higher up would focus a link the
-     reader can't see — and the browser won't scroll, because geometrically
-     it's already in the viewport. On focus, go to the bottom first. */
+  /* ---------- footer: Yerevan clock and keyboard reach ----------
+     "Yerevan · 14:32 local time", so a reader abroad can tell whether a
+     message lands at a sensible hour; re-arms on each minute boundary. The
+     footer is pinned under <main>, so a Tab into it from above would focus a
+     link the reader can't see: on focus, go to the bottom first. */
   function initFoot() {
     var foot = document.querySelector('.foot');
     if (!foot) return;
@@ -1955,13 +1384,11 @@
     });
   }
 
-  /* The engraved chess clock above "Your move": the reader's dial (the
-     raised button — Igor has just moved) keeps Yerevan time, read the same
-     way as the small print's clock. Igor's dial is stopped, its hands baked
-     into the SVG. The hands are SVG transform attributes on <g>s inside the
-     drawing, not CSS transforms, so nothing here touches a reveal. Under
-     reduced motion the second hand is hidden (style.css) and the dial moves
-     once a minute. */
+  /* The engraved chess clock: the reader's dial (the raised button) keeps
+     Yerevan time; Igor's dial is stopped, its hands baked into the SVG. The
+     hands are SVG transform attributes, not CSS transforms, so nothing here
+     touches a reveal. Under reduced motion the second hand is hidden and the
+     dial moves once a minute. */
   function initFootClock(foot) {
     var hands = foot.querySelectorAll('.vig__hand[data-side="you"]');
     if (!hands.length || !window.Intl) return;
@@ -1989,20 +1416,12 @@
   }
 
   /* ---------- the specimen reveal ----------
-     Rest state is the "Correct:" line plus a prompt where the error used to
-     be — "+ Show the common mistake", an amber-ruled control with an
-     underline (and the pointer dot's own specimen ink over it, since HOT
-     includes <button>). Hover, tap or keyboard focus opens it: the prompt's
-     content swaps to the error sentence itself — the cloned .sig glyph and
-     the <del> word in amber — and the marker flips to "−". A tap or Enter
-     locks it open; a plain hover closes again on leave.
-
-     No transform, nothing time-based, no scroll trigger, so this is wired
-     before the reduced-motion return, same as the collage router and the
-     origin panel: an affordance, not motion. With no JS the button is never
-     built and the untouched static <del>/<ins> pair is the whole of it — the
-     real .wrong line stays in the DOM (only `hidden` under JS) so that render
-     and every box-measuring test keep their source of truth. */
+     At rest: the "Correct:" line and a "+ Show the common mistake" prompt
+     where the error was. Hover, tap or focus opens it: the prompt becomes the
+     error sentence (the cloned glyph and the <del> word in amber) and the
+     marker flips to "−". A tap or Enter locks it open; a hover closes on
+     leave. An affordance, not motion. With no JS the static <del>/<ins> pair
+     is the whole of it; the real .wrong line stays in the DOM, only hidden. */
   function initSpecimenReveal() {
     var specs = document.querySelectorAll('#specimen .spec');
     if (!specs.length) return;
@@ -2010,14 +1429,12 @@
 
     specs.forEach(function (spec) {
       var lines = spec.querySelector('.spec__lines');
-      // Some specimens carry one .line-spec.wrong (English-only grammar
-      // examples); others carry two, one per data-l — pick whichever
-      // matches the live language so the hover preview never freezes on
-      // whichever language happened to be first in the DOM.
+      // Some specimens carry one .line-spec.wrong, others one per language: pick
+      // the one for the live language.
       var wrongs = spec.querySelectorAll('.line-spec.wrong');
       if (!lines || !wrongs.length) return;
-      // SITE-PLAN F4: the Russian source line travels with the mistake —
-      // folded away with it, shown when it is.
+      // The Russian source line travels with the mistake: folded with it, shown
+      // with it.
       var srcs = spec.querySelectorAll('.line-spec__src');
       function currentWrong() {
         if (wrongs.length === 1) return wrongs[0];
@@ -2071,9 +1488,8 @@
 
       document.addEventListener('vitnyr:langchange', fillReveal);
 
-      // hover previews it; a click/tap/Enter locks it open or shut. Keyboard
-      // is the lock alone (Tab to the button, Enter) — no focus-preview, so a
-      // mouse click that leaves the button focused can't wedge it open.
+      // Hover previews; a click, tap or Enter locks it open or shut. No focus
+      // preview, so a click that leaves the button focused can't wedge it open.
       var st = { hover: false, lock: false };
       function render() {
         var open = st.hover || st.lock;
@@ -2097,14 +1513,13 @@
     });
   }
 
-  /* ---------- SITE-PLAN F1: "Test your ear" (English page) ----------
-     The reader toggles the sentences that sound right (aria-pressed), then
-     checks. Each row then shows its verdict and, for the wrong ones, the
-     natural form; the score and the habits behind the misses read out in
-     a polite live region, and the "Send me your score" link carries the
-     score into a prefilled Telegram message. Nothing is stored or sent
-     anywhere else. Re-renders on a language switch. An affordance, not
-     motion: wired before the reduced-motion return. */
+  /* ---------- "Test your ear" (English page) ----------
+     The reader toggles the sentences that sound right, then checks. Each row
+     shows its verdict and, for the wrong ones, the natural form; the score and
+     the habits behind the misses read out in a polite live region, and "Send
+     me your score" carries the score into a prefilled Telegram message.
+     Nothing is stored. Re-renders on a language switch. Wired before the
+     reduced-motion return. */
   function initEarTest() {
     var root = document.querySelector('.ear');
     if (!root) return;
@@ -2202,16 +1617,15 @@
     document.addEventListener('vitnyr:langchange', render);
   }
 
-  /* ---------- SITE-PLAN F2: "Is your rating actually stuck?" (chess page) ----------
+  /* ---------- "Is your rating actually stuck?" (chess page) ----------
      The username goes from this browser straight to Lichess's public API
-     (rating-history, CORS open to any site) and nowhere else; nothing is
-     stored. Of Bullet / Blitz / Rapid / Classical, the pool with the most
-     rated days in the last 12 months is drawn as an inline SVG in the
-     plates' hand, with the year's low-to-high range bracketed in amber. The
-     words say only what the data says: the range, and whether it is narrow
-     enough (120 points or less) to call a plateau. With motion allowed the
-     line draws in once on the one curve (D.draw); reduced motion shows it
-     whole. A language switch re-labels everything without re-drawing. */
+     (rating-history, open to any site) and nowhere else; nothing is stored.
+     Of Bullet, Blitz, Rapid and Classical, the pool with the most rated days
+     in the last 12 months is drawn as an inline SVG, with the year's range
+     bracketed in amber. The words say only what the data says: the range,
+     and whether it is narrow enough (120 points or less) to call a plateau.
+     The line draws in once (D.draw); reduced motion shows it whole. A
+     language switch relabels without redrawing. */
   function initRatingCheck() {
     var root = document.querySelector('.rating');
     if (!root) return;
@@ -2273,10 +1687,9 @@
     }
 
     function parse(json) {
-      // A bare [] is Lichess not serving the history at all (an account with
-      // no games still gets its pools, each with empty points). Seen for every
-      // username from one network on 2026-11-20; say so rather than claim the
-      // visitor hasn't played.
+      // A bare [] is Lichess not serving the history at all (an account with no
+      // games still gets its pools, with empty points). Say so rather than claim
+      // the visitor hasn't played.
       if (Array.isArray(json) && !json.length) return { key: 'nohistory' };
       var now = Date.now(), since = now - 365 * DAY, best = null;
       (Array.isArray(json) ? json : []).forEach(function (pool) {
@@ -2408,21 +1821,16 @@
     });
   }
 
-  /* ---------- mechanism fold (§02) ----------
-     Independent disclosures, not an exclusive accordion — opening one
-     doesn't close the others. All start collapsed (aria-expanded set here,
-     not in the HTML, so a no-JS reader never sees a "closed" attribute with
-     no script able to open it back up — style.css only clips .mech__panel
-     under html.js, so the un-set default renders fully open there). The
-     +/− swap mirrors initSpecimenReveal()'s mark; the panel's own open/close
-     is CSS alone, reading this same aria-expanded via :has(). */
+  /* ---------- method fold ----------
+     Independent disclosures, not an exclusive accordion. aria-expanded is set
+     here, not in the HTML, so a no-JS reader never sees a closed panel with
+     no way to open it. The panel's open/close is CSS, reading the same
+     aria-expanded via :has(). */
   function initMechanismFold() {
     var toggles = document.querySelectorAll('.mech__toggle');
     if (!toggles.length) return;
-    // DESIGN-PASS-III Q5 (2026-09-23): mechanism 01 ships open, so a reader
-    // who never clicks still gets one paragraph of the argument and sees
-    // what the fold does; the other four stay folded (the 2026-09-18 length
-    // decision stands). A starting state, not a new mechanism.
+    // The first principle ships open, so a reader who never clicks still gets
+    // one and sees what the fold does.
     toggles.forEach(function (btn, i) {
       var startOpen = i === 0;
       btn.setAttribute('aria-expanded', startOpen ? 'true' : 'false');
@@ -2452,13 +1860,12 @@
       if (r.top < line && r.bottom > 0 && parseFloat(getComputedStyle(el).opacity) < 0.05) stuck.push(el);
     });
     stuck.forEach(function (el) { el.classList.add('is-in'); });
-    // The hero carries no .reveal class, so the sweep above cannot reach it —
-    // armHeroGuard() covers it, on every play rather than only this one.
+    // The hero has no .reveal class, so the sweep can't reach it; armHeroGuard()
+    // covers it.
     if (!heroStarted) showHeroNow();
-    // The masthead mark is not a .reveal target (it must not rise), so the
-    // sweep can't reach it either. If initLockmark() never armed the draw its
-    // clip rects are still collapsed under html.js — show it outright. Guarded,
-    // so a mark that drew normally is left alone (no re-draw 2.5s in).
+    // The masthead mark isn't a .reveal either. If initLockmark() never armed
+    // the draw, its clip rects are still collapsed under html.js: show it
+    // outright. A mark that drew normally is left alone.
     var lm = document.querySelector('.lockup');
     if (lm && !lm.classList.contains('is-drawing')) lm.classList.add('is-drawing');
   }
@@ -2476,8 +1883,7 @@
 
   whenRendering(function () {
     /* Hold the hero until the display face is real, so the lines don't rise in
-       a fallback and reflow at the top of the page — but never longer than
-       1.5s, because a slow font CDN must not hold the headline hostage. */
+       a fallback and reflow, but never longer than 1.5s. */
     var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
     var timeout = new Promise(function (r) { setTimeout(r, 1500); });
     Promise.race([ready, timeout]).then(playHero);

@@ -1,5 +1,5 @@
 """/notes/could-you/: "Send me the report, please", the third specimen on
-/english/ (NOTES-COUNCIL K7; Igor kept it, merged 2026-11-20). The standfirst reuses
+/english/ (Igor kept it). The standfirst reuses
 the specimen's approved explanation; the rest was written for the note. The
 slug leaves out "please", which /english/ keeps hidden until asked (W1)."""
 from lib import both, head2, hit, ladder, practice, pull, register, section, spec_pair
@@ -59,7 +59,7 @@ def body(note):
         head2("Say it out loud.", "Скажите вслух.",
               "Questions, not orders. please is optional now.",
               "Вопросы, а не приказы. please теперь — по желанию."),
-        practice(PRACTICE, "i. is the specimen's own line; ii.–vi. were written for the note (K7)."),
+        practice(PRACTICE, "i. is the specimen's own line; ii.–vi. were written for the note."),
     ]))
     return "\n\n".join([words, why, say])
 
@@ -81,7 +81,7 @@ NOTE = dict(
     stand_en="“Send me the report today, please” is one of the three mistakes I hear most often, and it isn’t grammar. The sentence is grammatically fine and still lands closer to a command. Russian softens a direct command with a single added word, пожалуйста; [[in English, please isn’t enough]].",
     stand_ru="«Send me the report today, please» — одна из трёх ошибок, которые я слышу чаще всего, и это не грамматика. Фраза грамматически в порядке и всё равно звучит ближе к команде. В русском команду смягчает одно добавленное слово, «пожалуйста»; [[в английском please недостаточно]].",
     figure=FIGURE,
-    comment="/notes/could-you/ (NOTES-COUNCIL K7). The English page's third specimen as a note.",
+    comment="/notes/could-you/: the English page's third specimen as a note.",
     title="Why “please” isn’t enough in English requests — Igor Shatsev",
     title_ru_head="Почему please не делает просьбу вежливой — Igor Shatsev",
     desc_en="“Send me the report, please” still sounds like an order. Why Russian speakers lean on please, and how English actually asks: could you, would you mind, when you get a chance.",

@@ -1,4 +1,4 @@
-"""The three discipline pages (DISCIPLINE-PAGES-PLAN.md, 2026-10-31): each one
+"""The three discipline pages (2026-10-31): each one
 is a real page with its own head, its own share card and its own place in the
 sitemap, reached from the home page's doors and the masthead, and written so
 that every sentence makes sense to a reader who only wants that discipline."""

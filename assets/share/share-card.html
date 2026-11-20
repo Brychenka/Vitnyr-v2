@@ -1,43 +1,22 @@
 <!doctype html>
 <!--
-  P1 (Stage 6, 2026-09-06): source for the 1200×630 Open Graph / Twitter
-  share-card image (og-share.png in this same folder). Not part of the
-  site — rendered once in a real browser at exactly 1200×630 and exported
-  as a flat raster, because social crawlers (Telegram especially — the
-  site's first contact channel, and the one that renders link previews
-  most aggressively) need a static image, not live SVG/CSS.
+  Source for the 1200x630 share-card images in this folder. Not part of the
+  site: rendered in a real browser at exactly 1200x630 and exported as flat
+  PNGs, because social crawlers (Telegram especially) need a static image.
 
-  Every color, the mark's path data and the wordmark's per-letter glyph
-  colors are copied verbatim from index.html / style.css (the fixed
-  --bg/--amber/--green/--fg charcoal-pair tokens, and the .lockup SVG) —
-  this must never drift into its own palette. Regenerate by opening this
-  file at a 1200×630 viewport and re-exporting, whenever the wordmark,
-  the facts, or the charcoal-pair tokens change.
+  Every colour, the mark's path data and the wordmark's glyph colours are
+  copied from index.html / style.css (the charcoal pair); never let it drift
+  into its own palette. Re-export whenever the wordmark, the facts or the
+  charcoal tokens change. ?lang=ru gives the Russian card ("Igor Shatsev"
+  stays in Latin in both).
 
-  2026-09-23: re-exported. The old card still said 8 years (10 since
-  feature/ten-years-coaching), sat on the retired cool charcoal #14181A,
-  carried a headline no longer on the page, and set its facts in IBM Plex
-  Mono, which the site never loads. Now: the warm charcoal pair, the hero's
-  own headline, Inter for the facts line. One source, two languages:
-  open with ?lang=ru for og-share-ru.png (the name stays "Igor Shatsev" in
-  both, per CLAUDE.md).
-
-  2026-10-31 (discipline pages, Stage 5): one card per page. ?page=english,
-  chess or climbing swaps the headline for that page's own H1, the facts for
-  its own credentials, and adds the discipline's name beside the wordmark;
-  no ?page is the home card, unchanged. Exports, all 1200×630:
-    (none)          og-share.png      og-share-ru.png
-    page=english    og-english.png    og-english-ru.png
-    page=chess      og-chess.png      og-chess-ru.png
-    page=climbing   og-climbing.png   og-climbing-ru.png
-
-  2026-11-20 (feature/notes, NOTES-PLAN.md): the notes. One card for the
-  index and one per note; a note's card carries its own correction in mono,
-  amber for the mistake and green for the fix, the same as the page:
-    page=notes                  og-notes.png                  og-notes-ru.png
-    page=note-<slug>            og-note-<slug>.png            og-note-<slug>-ru.png
-  The per-note blocks are written by tools/notes/build.py (from each note's
-  card_* fields) and the PNGs by tools/notes/export_cards.py.
+  ?page= picks the card, each exported as <name>.png and <name>-ru.png:
+    (none)              og-share          the home card
+    english/chess/climbing  og-<page>     that page's H1 and credentials
+    notes               og-notes
+    note-<slug>         og-note-<slug>    the note's own correction
+  The per-note blocks are written by tools/notes/build.py and those PNGs by
+  tools/notes/export_cards.py.
 -->
 <html>
 <head>
@@ -197,7 +176,7 @@
       </span>
       <span data-page="chess">
         <span class="facts" data-l="en">Peak rating <b>2100</b> &nbsp;·&nbsp; <b>30</b> students to 1800+ &nbsp;·&nbsp; Yerevan &amp; online</span>
-        <span class="facts" data-l="ru">Пиковый рейтинг <b>2100</b> &nbsp;·&nbsp; <b>30</b> учеников до 1800+ &nbsp;·&nbsp; Ереван и онлайн</span>
+        <span class="facts" data-l="ru">Пик рейтинга <b>2100</b> &nbsp;·&nbsp; <b>30</b> учеников до 1800+ &nbsp;·&nbsp; Ереван и онлайн</span>
       </span>
       <span data-page="climbing">
         <span class="facts" data-l="en"><b>7c</b> redpoint &nbsp;·&nbsp; <b>7C</b> Kilter &nbsp;·&nbsp; <b>13</b> climbers to 7a in a year</span>

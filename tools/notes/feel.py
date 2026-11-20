@@ -1,5 +1,5 @@
 """/notes/feel/: "I feel myself good", the second specimen on /english/
-(NOTES-COUNCIL K7; Igor kept it, merged 2026-11-20). Written for the note,
+(Igor kept it). Written for the note,
 not yet line-edited by Igor. Note: the English page explains this one as a Russian "reflexive
 ending built into the verb"; чувствую себя uses a separate reflexive word
 (себя), not an ending, so this note says "reflexive word". The slug leaves
@@ -61,7 +61,7 @@ def body(note):
         head2("Say it out loud.", "Скажите вслух.",
               "feel, then the feeling. The last two are actions, so they keep -\u2060self.",
               "feel — и сразу ощущение. Последние две — действия, поэтому -\u2060self остаётся."),
-        practice(PRACTICE, "i. is the specimen's own line; ii.–vi. were written for the note (K7)."),
+        practice(PRACTICE, "i. is the specimen's own line; ii.–vi. were written for the note."),
     ]))
     return "\n\n".join([words, why, say])
 
@@ -83,7 +83,7 @@ NOTE = dict(
     stand_en="“I feel myself good” is one of the three mistakes I hear most often. Russian says it with a reflexive word, чувствую себя, so the instinct is to bolt the same thing onto the English, [[onto a verb that was never missing it]]. In English, feel already carries the feeling.",
     stand_ru="«I feel myself good» — одна из трёх ошибок, которые я слышу чаще всего. По-русски — «чувствую себя», с возвратным словом, и рефлекс — приставить то же самое и в английском, [[к глаголу, которому это не нужно]]. В английском feel уже несёт ощущение сам.",
     figure=FIGURE,
-    comment="/notes/feel/ (NOTES-COUNCIL K7). The English page's second specimen as a note.",
+    comment="/notes/feel/: the English page's second specimen as a note.",
     title="“I feel myself good”? Just “I feel good” — Igor Shatsev",
     title_ru_head="I feel myself good или I feel good? Лишнее «себя» в английском — Igor Shatsev",
     desc_en="Why Russian speakers say “I feel myself good” (чувствую себя), six phrases where the extra myself creeps in, and when English does use -self.",

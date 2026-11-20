@@ -1,33 +1,14 @@
-/* ============================================================
-   Vitnyr — v2
-   Palette, type and hard rules follow the Vitnyr brand identity:
-   two fixed pairs, never mixed, no third colour, flat colour only,
-   no gradients, no shadows, no cards. Structure is whitespace and
-   hairline rules.
+/* Vitnyr. Two colour pairs (cream, charcoal), swapped whole by data-theme.
+   Amber = the specimen (the mistake). Green = the target (the right form,
+   interaction, an outcome). No third colour, no gradients, shadows or cards;
+   structure is whitespace and hairline rules. Accents are ink (rules,
+   glyphs, display numerals), never text under 24px, except .mark--specimen
+   and .mark--target, which use text-safe shades. One easing curve: --e. */
 
-   Amber = the specimen (the thing under examination).
-   Green = the target (interaction, progression, achieved outcome).
-   Accent colour is ink — rules, bars, glyphs, display numerals —
-   almost never text below 24px, because the two accents swap contrast
-   roles between the pairs (amber fails body on cream, green fails
-   body on charcoal). The one exception is the exact word that IS a
-   specimen or IS a target, never a decorative "key word" — see
-   .mark--specimen / .mark--target — and even that exception colours
-   from tuned text-safe shades, not the ink hex, so both still clear
-   4.5:1 in both pairs.
-
-   One easing curve on everything, per the build guide.
-   ============================================================ */
-
-/* ---------- fonts, served from the site (SITE-PLAN G4, 2026-11-20) ----------
-   The same woff2 files Google Fonts served Chrome for this site's request
-   (Inter 400/500, JetBrains Mono 400, Lora 500/600 + italic 500, Marck
-   Script), Latin and Cyrillic subsets only (every character the four pages
-   and main.js render falls in those two), with Google's own unicode-range
-   and font-display values, so the browser fetches exactly what it did
-   before. Versioned file names: /assets/* is cached for a year. URLs are
-   relative to this stylesheet, so they resolve from every page and in the
-   artifact. theme.js still waits for Lora before showing the wordmark. */
+/* ---------- fonts ----------
+   Self-hosted woff2, Latin and Cyrillic, with Google's unicode-range, so a
+   page fetches only what it renders. Relative URLs resolve from every page
+   and in the artifact. */
 /* cyrillic */
 @font-face {
   font-family: 'Inter';
@@ -156,96 +137,46 @@
 }
 
 :root {
-  /* Cream pair. theme.js stamps data-theme from the reader's OS setting, or
-     from their stored choice once they use the theme control (2026-09-29);
-     the charcoal values live in `:root[data-theme="dark"]` below and nowhere
-     else. Cream is also what renders with JS absent. */
+  /* Cream pair, also the no-JS default. The charcoal values live in
+     :root[data-theme="dark"] below. */
   --bg:     #EFEBE3;
-  /* Amber is fixed, not theme-swapped: Igor picked the single darker value
-     (#B07C24) over the brighter one the charcoal pair used to carry, so one
-     shade of the mark's yellow now ships everywhere (2026-09-05). It still
-     clears the >=3:1 non-text-ink floor on both backgrounds (3.07:1 on
-     cream, 4.9:1 on charcoal) — see the in-copy-emphasis comment below. */
+  /* One amber for both pairs. It clears the 3:1 non-text floor on both
+     grounds (3.07:1 cream, 4.9:1 charcoal). */
   --amber:  #B07C24;
   --green:  #3D6543;
   --fg:     #1D2224;
   --fg2:    #5A5F60;
-  /* P12 (2026-09-06): "structure is whitespace and hairline rules" only
-     holds if the hairline survives a real screen. This alpha is tuned to
-     land ~2:1 against the cream bg — the charcoal pair's alpha is tuned
-     separately (in the dark block below) to hit the same ~2:1, not to
-     match this number: the two bases don't share one alpha that works on
-     both. */
+  /* Tuned to about 2:1 on cream so the hairline survives a real screen; the
+     dark block tunes its own. */
   --rule:   rgba(29,34,36,0.33);
 
   --ink-specimen: var(--amber);
   --ink-target:   var(--green);
 
-  /* The pointer dot's active ink — the fill it eases to over any control
-     (C15, 2026-09-07). Specimen amber on cream (the default), Igor's call —
-     green read muddy on the warm ground and amber carries; the dark block
-     below swaps it to target green on charcoal. The generic active state
-     and .is-target both read from this, so the contact CTA follows the
-     theme too. .is-specimen stays wired straight to --ink-specimen — "the
-     error under examination" is not a per-theme idea. */
+  /* The pointer dot's fill over a control: amber on cream, green on charcoal
+     (set in the dark block). */
   --cursor-active-ink: var(--ink-specimen);
 
-  /* Text-safe variants for the one exception to "accent never sits on text
-     under 24px" — see .mark--specimen / .mark--target below. Amber already
-     clears 4.5:1 as text on this bg (4.9:1, since the 2026-09-05 fix to a
-     single fixed --amber — was 7.41:1 against the old per-theme #D99B3F)
-     so it's reused as-is; green doesn't (3.58:1), so this is the same hue
-     lightened to exactly 4.5:1. Kept off --ink-target/--amber so every
-     non-text use (borders, glyphs, the wordmark) is completely unaffected.
-     Added 2026-09-05. On the default cream pair it is the reverse — amber
-     fails 4.5:1 as body text on cream and green clears it — so the base
-     values below are the cream-safe ones and the dark block re-swaps. */
+  /* Text-safe shades for the one place an accent is text (.mark--specimen /
+     .mark--target): both clear 4.5:1. The dark block swaps them. */
   --amber-text: #8C631D;
   --green-text: var(--green);
 
-  /* C5 (2026-09-06): the origin mark's "dimmed" stroke was opacity: .32, not
-     a colour — which blends with whatever renders behind it. Mostly that's
-     just --bg, but the amber and green shapes overlap at the mark's shared
-     vertex, so a dimmed stroke sitting under the active one alpha-blended
-     with it too, muddying that seam further (the keyline below, added in
-     the same pass, cuts the rest of it). Explicit solid tokens instead:
-     chosen to land close to the old opacity look on this bg (same
-     ~32%-toward---bg blend, computed then hand-set), so the interaction
-     reads the same, but as a real colour that can't bleed
-     into a neighbouring shape. These are the cream-pair blends (the default);
-     the dark block below carries the charcoal ones. */
-  /* J7 (Jury Pass II, 2026-09-12): raised from a ~32%-toward-bg blend to a
-     ~50% one — Igor's middle option at J0. C6 stands (English rests lit,
-     the other two rest dim, not neutral); this only moves how dim "dim"
-     is, so the two unlit strokes read as present-but-quiet next to the
-     lit one rather than washed out next to the same mark at full ink in
-     the header above. Contrast checked against --bg: 1.68/2.12 here, well
-     under the full ink's own 3.07/5.62 and nowhere near 4.5:1 — still
-     reads as accent, not text. */
+  /* The mark's dimmed strokes are solid blends, about halfway to --bg, not
+     opacity, so a dimmed stroke can't bleed into the lit one where they overlap. */
   --amber-dim: #D0B484;
   --green-dim: #96A893;
 
   --serif: Lora, Georgia, "Times New Roman", serif;
   --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  /* One-off marginalia voice for the §04 "choose a discipline" hint only —
-     not a fourth system typeface. Marck Script carries real Cyrillic
-     glyphs (unlike most script webfonts), so the RU string doesn't fall
-     back to a mismatched face. Also each engraved plate's one
-     annotation (.plate .lab) — a margin note, same voice. */
+  /* Marck Script, for hand-written margin notes only. It has real Cyrillic. */
   --hand:  "Marck Script", cursive;
 
   --e: cubic-bezier(.16, 1, .3, 1);
   --t: .6s;
   --t-draw: 2.2s;   /* the engraved plates' print wipe (.plate) — slower than any state change on purpose */
-  /* Specimen sigils' one-shot commit flourish (main.js sparkSigil()). Its
-     own duration, not --t: the sigil is a discrete pop-and-fade, not the
-     fade-only pattern --t times everywhere else. Kept in sync by hand with
-     SPARK_MS in main.js — no CSS-to-JS read-back exists anywhere else in
-     this codebase either. */
-  --spark-d: .5s;
-  /* One deliberate turn of the footer mark on hover — well slower than --t so
-     the full rotation reads, not a snap: a turn you're meant to watch finish. */
+  /* One slow turn of the footer mark on hover, slow enough to watch finish. */
   --t-turn: 1.2s;
 
   --gut:  clamp(20px, 5vw, 80px);
@@ -257,60 +188,35 @@
   --maxw: 1320px;
   --measure: 62ch;
 
-  /* Collage grid gaps — one place to tune the spacing between tiles inside
-     each domain group. Not per-theme, and NOT offsets: the three groups are
-     plain repeating grids now (no overlap), so layout never touches the
-     transform channel Stage 4's reveal needs. */
+  /* Collage grid gaps. Plain grids, no offsets: layout never takes the
+     transform channel. */
   --collage-gap-x:    clamp(14px, 2.2vw, 30px);
   --collage-gap-y:    clamp(28px, 4vw, 52px);
 
-  /* Collage photos are dropped to grayscale so uncontrolled colour — climbing
-     holds, skin, branded clothing, a chessboard's black-and-white — never
-     competes with the two semantic accents (amber = specimen, green =
-     target). Grayscale/contrast/brightness only: no sepia() or hue-rotate(),
-     which would tint the photo toward a hue the brand reserves and make it
-     read as a specimen.
-
-     One conversion, not two: contrast(1.08) gives an editorial, full-range
-     black-and-white with a real black point — flat indoor source material
-     wants the punch, and a milky lifted shadow is the tell of a weak B&W.
-     The 1px --rule frame around each figure does the job of separating the
-     photo from the page, so the filter doesn't need a brightness lift to
-     keep the darks off the ground. The only per-theme move is a symmetric
-     +/-2% brightness (below) so the image carries equal visual weight on
-     the luminous cream ground and on charcoal. Judged against en-01 in both
-     pairs at 375 and 1280; Stage 3 re-checks once chess + climbing (very
-     different luminance profiles) are in. -2% vs charcoal: equal weight on
-     the luminous cream ground. */
+  /* Collage photos go grayscale so their colour never competes with the two
+     accents (no sepia or hue-rotate: those tint toward a reserved hue).
+     contrast(1.08) gives a real black point; the dark block nudges brightness
+     so a photo weighs the same on both grounds. */
   --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
 }
 
 /* ---------- charcoal pair ----------
-   Applied when theme.js stamps data-theme="dark": the reader's OS is set to
-   dark, or they picked charcoal with the theme control (2026-09-29). No CSS
-   prefers-color-scheme branch — theme.js decides, before first paint. Every value here is the charcoal
-   counterpart of a token defined on :root above; nothing new is introduced. */
+   Applied when theme.js stamps data-theme="dark" (the OS setting or the
+   reader's choice). Every value is the counterpart of a :root token above. */
 :root[data-theme="dark"] {
-  /* Shipped (feature/dark-theme-color-exploration, merged — keep it; do not
-     revert as leftover experiment): the old
-     #14181A is a neutral-cool near-black, while the cream pair's --bg
-     (#EFEBE3) is warm. Swapping to a warm near-black puts both theme pairs
-     in the same warmth family — same "paper", inverted — instead of reading
-     as a generic cool dark-mode invert. All contrast ratios re-checked
-     against this bg below; every pairing still clears its floor. */
+  /* A warm near-black: both pairs are the same paper, inverted. */
   --bg:     #171310;
   --green:  #4C7A52;
   --fg:     #F2EFE8;
   --fg2:    #A8ABA9;
-  --rule:   rgba(242,239,232,0.235);   /* P12: tuned separately to land ~2:1 against this pair's bg */
+  --rule:   rgba(242,239,232,0.235);   /* tuned to about 2:1 against this ground */
   --amber-text: var(--amber);   /* ink amber already clears 4.5:1 as text on charcoal (4.9:1) */
   --green-text: #578C5E;         /* ink green fails 4.5:1 here (3.58:1); same hue lightened to exactly 4.5:1 */
-  /* J7: same ~50% floor as the cream pair's dim tokens above, blended
-     against this pair's own --bg and --green. */
+  /* the same halfway blend as the cream pair's dim tokens, against this ground */
   --amber-dim: #624A1F;
   --green-dim: #304936;
   --collage-filter: grayscale(1) contrast(1.08) brightness(1.02);
-  --cursor-active-ink: var(--ink-target);   /* C15: green over controls on charcoal */
+  --cursor-active-ink: var(--ink-target);   /* green over controls on charcoal */
 }
 
 /* Georgia carries no Cyrillic on most systems, so a Russian headline in the
@@ -387,10 +293,8 @@ html.is-scrolled .masthead {
   background: var(--bg);
   border-bottom-color: var(--rule);
 }
-/* flex-shrink:0 — without it, a full .tools row (once the collage icons are
-   added) forces flexbox to shrink the mark itself below --lockup's 176px
-   floor rather than let .tools overflow, quietly eating the brand's
-   mandated clear space. The mark must hold its width; .tools gives way. */
+/* flex: none holds the mark at its 176px floor (the brand's clear space);
+   .tools gives way instead. */
 .lockup { display: block; width: var(--lockup); flex: none; }
 .lockup svg { display: block; width: 100%; height: auto; }
 /* The wordmark is live SVG text at Lora's own hardcoded advances, so during the
@@ -400,36 +304,12 @@ html.is-scrolled .masthead {
 .lockup .wm { opacity: 0; transition: opacity .3s var(--e); }
 html.lora-ready .lockup .wm { opacity: 1; }
 
-/* P22 — the V/Y mark draws itself in ONCE, a beat after load (initLockmark()
-   in main.js adds .is-drawing and never removes it — no hover replay). Three
-   strokes, in the order §04's copy names them: left arm top->vertex, right arm
-   vertex->tip, then the stem down from the vertex.
-
-   Reads as a pen tracing the mark, so two things differ from §04's S7 draw:
-
-   1. Easing is `linear`, NOT --e. A traced line moves at constant speed; --e
-      is a hard ease-out that fires each stroke ~80% in a blink then crawls the
-      rest — pop / hang / pop, with the velocity slamming to near-zero right at
-      the vertex where the next stroke starts. linear removes the discontinuity:
-      left and right arms are one even sweep through the vertex. It is the
-      absence of a character curve, not a second one beside --e (the .scrollcue
-      loop is likewise `ease-in-out` for its own reason).
-   2. Own @keyframes over tight clip bounds. §04 clips each arm to a 100-unit
-      half-box, but the V arms only ink y≈15..57 — a full-height clip spends
-      half the run revealing empty space, so the stroke "appears then finishes"
-      in a burst mid-timeline. lockmark-arm-l/-r grow a 42-unit band (y15..57)
-      instead, so 0..100% of the run maps to 0..100% of the visible stroke. The
-      stem's §04 box (y42, h44) was already close to its ink, so it keeps
-      glyph-draw-stem.
-
-   Fully sequential: each animation-delay is the previous plus a whole run
-   (0 / 1s / 2s), so a stroke starts exactly as the one before it ends — no
-   overlap, no gap. Per-stroke run 1s. Total ~3s. This is a bespoke tempo
-   for the mark-draw, not a second reveal rhythm.
-
-   Presentation only: markup keeps the clip rects full-size, so with JS off
-   (html:not(.js)) the finished mark just shows. The rects sit at `forwards`,
-   so once .is-drawing is on the finished mark holds for good. */
+/* The V/Y mark draws itself once after load (initLockmark() adds
+   .is-drawing): left arm, right arm, stem, 1s each, back to back. linear,
+   not --e: a traced line moves at constant speed, and --e would stall at the
+   vertex. The arms grow over a band clipped to their ink (y 15..57) so the
+   whole run shows stroke. With JS off the clip rects stay full size and the
+   finished mark shows. */
 html.js .lockup #lockClipLeft  rect { height: 0; }
 html.js .lockup #lockClipRight rect { y: 57px; height: 0; }
 html.js .lockup #lockClipStem  rect { height: 0; }
@@ -439,32 +319,23 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 @keyframes lockmark-arm-l { from { height: 0; }             to { height: 42px; } }
 @keyframes lockmark-arm-r { from { y: 57px; height: 0; }    to { y: 15px; height: 42px; } }
 
-/* gap here is the BETWEEN-cluster gap; the WITHIN-cluster gap lives on
-   .tools__group and is deliberately ~2.5x tighter, so proximity alone reads
-   nav (Photos + the collage jumps) and toggles (theme, language) as two
-   things. wrap lets the two groups drop as whole units in the 600-900 band
-   rather than clip; below 600 they re-join on one line (see media query). */
+/* The gap between clusters. .tools__group's gap inside a cluster is about
+   2.5x tighter, so nav and toggles read as two things. wrap drops the groups
+   as whole units in the 600-900 band. */
 .tools { display: flex; align-items: center; flex-wrap: wrap; gap: clamp(18px, 2.6vw, 30px); }
 .tools__group { display: flex; align-items: center; flex-wrap: nowrap; gap: 10px; }
 .tools__group--util { gap: clamp(12px, 1.6vw, 18px); }
 .tool {
   background: none; border: 0; padding: 4px 0; cursor: pointer;
   color: var(--fg2);
-  /* P18 (2026-09-07): 12px read too faint in this row — the whole strip goes
-     to 13px (an existing rung: .channels, the mechanism numbers). One size
-     across the row on purpose; the util-vs-nav hierarchy is carried by ink
-     (see .tools__label / .tool--icon at --fg below), not a 1px size split
-     that would read as a mistake. Tracking eased .1em -> .09em: what opened
-     the caps nicely at 12 over-spaces them at 13. */
+  /* one size across the row; the hierarchy is carried by ink, not a 1px split */
   font-family: var(--sans); font-size: 13px; font-weight: 500;
   letter-spacing: .09em; text-transform: uppercase;
   position: relative;
   flex-shrink: 0;   /* a touch target is a floor, not something flexbox gets to negotiate down */
   transition: color var(--t) var(--e);
 }
-/* P18: land CHARCOAL / RU at >=24px height on a mouse too — the coarse-pointer
-   rule below already gives touch its 44px, but fine pointers were left at the
-   ~23px the 13px line-box measures. Mirrors the (pointer: coarse) block. */
+/* a 24px-tall target on a mouse too (touch gets 44px below) */
 @media (pointer: fine) { .tool { padding-block: 6px; } }
 .tool::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0;
@@ -475,22 +346,11 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 .tool:hover { color: var(--fg); }
 .tool:hover::after { transform: scaleX(1); }
 
-/* The language switch swaps every word in .tools at once, and each label is
-   content-sized, so the swap resizes .tools. Because .tools is right-anchored
-   (space-between on .masthead) the cluster then reflows and RU/EN visibly
-   jumps sideways. .themeswitch is upstream of .langswitch in a flex-start
-   row, so its own width change cancels out of RU/EN's position — what moves
-   RU/EN is the Photos/Фото caption downstream shifting the right anchor, plus
-   RU/EN's own sub-pixel R-vs-E difference. Pin both: a zero-height ::before
-   carries the widest string the element can ever show, so the reserved width
-   is whatever the real font renders (text-transform and letter-spacing reach
-   the pseudo too) rather than a hand-tuned pixel value. The shorter label
-   centres in that box. .themeswitch is left as-is: pinning it would only
-   stretch its hover hairline (.tool::after spans the box) past "Cream"/
-   "Уголь". */
-/* SITE-PLAN C4 (2026-11-20): the caption is "Coaching"/"Направления" on all
-   four pages now, so it reserves the Russian width (the wider one) and sits
-   flush right, against the icons it names. */
+/* The language switch changes every label's width at once, and .tools is
+   right-anchored, so RU/EN would jump sideways. A zero-height ::before
+   carrying the widest string a label can show reserves that width. */
+/* The caption reserves the Russian width (the wider one) and sits flush
+   right, against the icons it names. */
 .langswitch, .tools__label { text-align: center; }
 .langswitch::before,
 .tools__photos::before,
@@ -504,35 +364,25 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
   pointer-events: none;
 }
 .langswitch::before { content: "RU"; }
-/* "Photos" — the gallery, as a plain text link after the discipline icons
-   (C4). Same .tool type and hover line as RU/EN; reserves "Photos" (wider
-   than "Фото") so a language switch doesn't move the row. Only from 1140px:
-   measured, it is the width at which a discipline page's five numerals,
-   the caption and this link share one row at every width up from there
-   (900-910 and 1100-1130 wrapped). Below that the footer's own "Photos"
-   link and, on home, the "See me at work" band are the way in. */
+/* "Photos": a plain text link after the discipline icons. Reserves
+   "Photos" (wider than "Фото"). Only from 1140px, where it fits on one row on
+   every page; below that the footer's link, and on home the "See me at
+   work" band, are the way in. */
 .tools__photos { margin-left: 8px; text-align: left; }
 .tools__photos::before { content: "Photos"; }
 @media (max-width: 1139.98px) { .tools__photos { display: none; } }
-/* NOTES-COUNCIL K8 (2026-11-20, Igor: yes): "Notes" beside "Photos", the
-   same plain text link. Reserves "Заметки" (wider than "Notes") so a
-   language switch doesn't move the row. Only from 1240px: measured, a
-   discipline page's masthead wraps to a second row with it up to 1220px
-   (home's up to 1160px). Below that the footer's "Notes" is the way in. */
+/* "Notes" beside "Photos", the same pattern; reserves "Заметки". Only from
+   1240px, where it fits on one row on every page; below that the footer's
+   link is the way in. */
 .tools__notes { text-align: left; }
 .tools__notes::before { content: "Заметки"; }
 @media (max-width: 1239.98px) { .tools__notes { display: none; } }
 
-/* ---------- progress hairline (Spark Order S3 / move 20) ----------
-   A 1px rule on the masthead's bottom edge. left/right:0 pins it to the
-   masthead's own box, so it is exactly as wide as the masthead border-bottom
-   it sits on — one hairline width, not two (C12). --progress (0–1) is set
-   from the one scroll handler in main.js; both fills scale off it. Two
-   stacked fills, not one bar whose colour is tweened: the specimen ink sits
-   underneath and the target ink fades in over it as .past-origin lands, so
-   the change is a crossfade in time, not an amber→green interpolation across
-   hues (a third colour by the back door — banned). transform on the fills is
-   animation using the channel legitimately; the container carries no layout. */
+/* ---------- progress hairline ----------
+   A 1px rule on the masthead's bottom edge; main.js sets --progress (0-1).
+   Two stacked fills, not one tweened bar: the green fades in over the amber
+   as .past-origin lands, a crossfade in time rather than a blend of hues
+   (which would make a third colour). */
 .progress {
   position: absolute;
   left: 0;
@@ -557,117 +407,47 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 html.past-origin .progress__fill--target { opacity: 1; }
 
 /* ---------- collage nav icons ---------- */
-/* P10: a caption for the three icons that follow, in the exact type the
-   rest of .tools already uses — not a new label style, and not interactive
-   (no cursor, no hover state, no underline), so it can't be mistaken for a
-   fourth control. */
-/* P20 (2026-09-07): the caption leads the cluster now — 13 -> 14px (one rung
-   over the 13px utility row, the smallest step that reads deliberate), so the
-   nav's prominence rides on scale, not on ink or stroke weight. Tracking eased
-   .09em -> .08em: what opened the caps at 13 over-spaces them at 14. Back to
-   --fg2 at rest (P18 had lifted it to --fg): size + .tools__rule + the tight
-   proximity gap already mark this as the one nav control, so the ink lift on
-   top was the redundant heaviness Igor flagged. */
+/* A caption for the icons that follow, in the row's own type and not
+   interactive, so it can't read as a control. */
 .tools__label {
   font-family: var(--sans); font-size: 14px; font-weight: 500;
   letter-spacing: .08em; text-transform: uppercase; color: var(--fg2);
   white-space: nowrap; flex-shrink: 0;
 }
 .tools__rule { width: 1px; height: 14px; background: var(--rule); flex-shrink: 0; }
-/* P20 (2026-09-07): the nav cluster (this caption + the three glyphs) is the
-   masthead's one navigational control — a jump into the #collage view. P18
-   marked it primary with weight (glyph 22px, stroke 2, resting --fg) and it
-   read heavy; P20 moves that job to scale and lets the weight go light. Glyph
-   -> 24px (1:1 with the 0 0 24 viewBox, so the stroke lands exact). stroke-width
-   1.5 here and in each <svg>'s own attribute (kept in sync) — below the old
-   1.8, not just back to it, so the strokes read as one light set. The chess
-   glyph keeps its checkerboard (two filled squares, two 1.5 outlines) — P21
-   put that back after a brief all-outline version stopped reading as chess;
-   its outlines take this same 1.5. No colour override: .tool--icon inherits
-   .tool's --fg2 at rest and lifts to --fg on hover/focus through .tool:hover,
-   same as the toggles. */
+/* The discipline icons: 24px glyphs, 1:1 with the 0 0 24 viewBox so strokes
+   land exact; stroke 1.5 here and in each <svg> (keep the two in sync). They
+   inherit .tool's --fg2 at rest and --fg on hover/focus. */
 .tool--icon { display: inline-flex; padding: 4px; flex-shrink: 0; }
 .tool--icon svg { display: block; width: 24px; height: 24px; stroke-width: 1.5; }
-/* The theme control is an icon (Igor, 2026-09-21), drawn on the same 24px /
-   1.5-stroke grid as the collage jumps beside it: a ring with its left half
-   filled. It holds one drawing and turns it over — half a turn on the one
-   curve, --e — when the charcoal pair is on, so the filled side says which
-   pair you are in without a second glyph. The turn is a transform on the svg,
-   not on the button, so the magnetic pull (which owns the button's transform)
-   never fights it. */
+/* The theme control: a ring with its left half filled, on the icons' 24px /
+   1.5 grid. It turns half over on charcoal, so the filled side says which
+   pair is on. The turn is on the svg, not the button, whose transform
+   belongs to the magnetic pull. */
 .themeswitch svg { transition: transform var(--t-turn) var(--e); }
 html[data-theme="dark"] .themeswitch svg { transform: rotate(180deg); }
 
-/* P17 (2026-09-07): the row is two clusters now — the theme/language toggles
-   first, then .tools__rule, then .tools__group--nav (Photos caption + the
-   three collage jumps); order and rationale in index.html. A uniform gap had
-   made all six controls read as one strip; the tight within-cluster gap does
-   the grouping. P19 (2026-09-07): the resting hairline this cluster used to
-   carry (a 1px --rule underline lifting to target ink on hover/focus) was
-   dropped at Igor's call — the tight gap plus P18's --fg/--fg2 contrast step
-   already mark it as one primary control, and the line read as clutter under
-   the photo/icon zone. */
-/* .themeswitch/.langswitch measured 76x23 / 19x23 at rest — both fail WCAG
-   2.2's 24px touch-target minimum on height, the language switch on both
-   axes (two letters, no room to grow but sideways), while the three glyph
-   icons beside them are a calculated 44x44. padding-block does the height for
-   both controls without moving the flex row's own height/baseline; the
-   small padding-inline addition only matters for the two-letter language
-   switch, but costs nothing on "Cream"/"Charcoal" either. Order matters:
-   .tool--icon's own coarse rule below has to come after this one, or its
-   uniform 12.5px would be overwritten by .tool's values here. */
+/* Touch: 44px-tall targets without moving the row's height or baseline.
+   .tool--icon's own coarse rule must come after this one. */
 @media (pointer: coarse) { .tool { padding-block: 11px; padding-inline: 4px; } }
-/* Handoff specified 13px 10px for this, commented as a 44px target — with a
-   17px glyph that's actually 37x43, short on the horizontal axis. The glyph
-   was since nudged to 19px, then 22px (P18), then 24px (P20 — 1:1 with the
-   viewBox); padding tracks it down 12.5 -> 11 -> 10 so the outer target still
-   hits exactly 44 (24 + 10 + 10). The phone row's width is unchanged across
-   all of these — the glyph grew inside a fixed 44px target — so --head's
-   two-line-header calc below needs no adjustment. */
+/* 24 + 10 + 10 = a 44px target */
 @media (pointer: coarse) { .tool--icon { padding: 10px; } }
 
-/* Photos + the three icon buttons + Cream/RU, at coarse-pointer touch-target
-   padding, don't fit next to a lockup held at its 176px floor below ~600px —
-   the header would either clip .tools (overflow-x:hidden hides it silently)
-   or shrink the mark (see .lockup above). Below that width .tools (the whole
-   nav — Photos caption, three icons, divider, Cream, RU, its two clusters
-   re-joined on one line via flex-wrap:nowrap) drops to its own line under the
-   lockup instead of splitting internally; --head grows to match so the hero's
-   top padding still clears the taller, two-line header. The +54px is sized
-   for the real case here (phones = coarse pointers = 44px targets + 10px
-   row-gap); a mouse-narrowed desktop window lands a touch more generous, not
-   tight, which is the safe side to be on. */
-/* ---------- masthead section quick-nav (2026-09-19) ----------
-   Numeral links into the page's own 01-05 sections, reusing .tool wholesale
-   (same 13px caps, same hover underline, same hover-pull via initMagnetic's
-   existing `.tool` selector) so this reads as one more control in the
-   existing bar, not a bolted-on addition. Desktop only: the phone masthead
-   below 900px is already at capacity (see the 602/400/340px rules below,
-   each the record of a real clipping bug), and this group's role — a
-   convenience for a reader who has already scrolled past the point a
-   sticky nav matters most on a short phone viewport — doesn't justify
-   re-opening that budget. */
+/* ---------- masthead section numerals ----------
+   Links into the page's own numbered sections, reusing .tool. Desktop only:
+   the phone masthead has no room. */
 .tools__group--sections { gap: 10px; }
-/* The permanent version of .tool::after's hover line — same ink, same
-   rule, just left switched on rather than re-triggered by :hover, so the
-   current section reads as "already pointed at" without a second visual
-   language. Higher specificity than the bare .tool::after rule above, so
-   it wins whether or not the pointer happens to be over the link too. */
+/* The current section keeps .tool's hover line switched on. */
 .tool.is-active::after { transform: scaleX(1); }
 @media (max-width: 899.98px) {
   .tools__rule--sections, .tools__group--sections { display: none; }
 }
 
-/* "message me" — a handwritten aside above the last numeral, pointing down at
-   05 (the way into #contact). Same voice as .origin__hint (--hand, tilted,
-   a small hand-drawn swash) but turned the other way: clockwise, +5deg where
-   the §01 note leans -5. Sits above the row, out of flow (absolute), so it
-   adds nothing to the masthead's height and the row doesn't move. The tilt is a
-   transform on the inner text only — the box itself is placed with inset, never
-   translate, so nothing here takes the transform channel from another animation.
-   --green-text, not the ink hex: this IS text (see .origin__hint). It is an
-   invitation for a reader who has just arrived, so it steps aside as soon as
-   the page moves and returns at the top. */
+/* "message me": a hand-written aside by the last numeral, pointing at the
+   way into #contact. Out of flow (absolute), so the row doesn't move; placed
+   with inset, with the tilt on the inner text, so no transform channel is
+   taken. --green-text because it is text. It steps aside once the page
+   moves and comes back at the top. */
 .tools__group--sections { position: relative; }
 .tools__hint {
   position: absolute;
@@ -688,12 +468,8 @@ html[data-theme="dark"] .themeswitch svg { transform: rotate(180deg); }
 .tools__hint-arrow { width: 30px; height: auto; flex-shrink: 0; margin-bottom: 1px; }
 html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, so the invisible note can't be clicked or tabbed to */
 
-/* Where there is room (>=1100px) the note sits to the RIGHT of 05, level with
-   the row, its swash turned to point back left at the numeral. The gutter alone
-   (--gut, 64px at 1280) is too narrow for it, so the sections group reserves the
-   width as a margin — the nav shifts left by that much and the note lives in
-   the space it left. It stays put on scroll here: it is part of the row, not
-   floating over the page, and animating a margin would make the nav slide. */
+/* From 1100px the note sits to the right of the last numeral, level with
+   the row; the sections group reserves its width as a margin. */
 @media (min-width: 1100px) {
   /* One value for both languages, sized for the Russian note: the language
      switch must not move the nav (test_language_switch_button_does_not_move). */
@@ -713,94 +489,36 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   html.is-scrolled .tools__hint { opacity: 1; visibility: visible; }
 }
 
-
 @media (max-width: 602px) {
   .masthead { flex-wrap: wrap; row-gap: 10px; }
   .tools { flex-basis: 100%; justify-content: flex-end; flex-wrap: nowrap; }
   :root { --head: calc(var(--lockup) * 0.2762 + 2 * clamp(18px, 2.4vw, 30px) + 54px); }
-  /* P20: the 14px caption (P20, for desktop prominence) has no room to spare
-     on this single flush line — at 375px the last icon lands hard against the
-     viewport edge. The phone row is a utility strip, not where the caption
-     needs to lead, so it drops back to the 13px it was before P20 and the row
-     keeps the ~5px edge margin it had. */
+  /* the phone row has no room for the 14px caption */
   .tools__label { font-size: 13px; letter-spacing: .09em; }
-  /* 2026-09-10: the between-cluster gap's 18px floor was the last 3px keeping
-     the English row from fitting at 375 — over the floor, .tools__group--nav
-     (flex-shrink:1) absorbed the difference, so EN->RU visibly slid the whole
-     nav cluster 3.3px sideways. Floor drops to 16 and climbs back to 18 by
-     ~419px, where there is room again. */
+  /* a 16px floor, so the English row fits at 375 without the nav sliding on
+     a language switch */
   .tools { gap: clamp(16px, 4.3vw, 18px); }
 }
 
-/* 2026-09-10 — the phone row was clipping its own controls.
-   P20 took the icons to 24px, and on a COARSE pointer each one also carries
-   11px of touch padding, so the real phone row is ~36px wider than the same
-   width measured with a mouse. Past that budget the row does not wrap (the
-   rule above is flex-wrap:nowrap by design) and does not scroll the document
-   (.masthead is overflow-clipped) — it simply ran off the right edge, taking
-   the collage jumps with it: at 375px/EN the book icon sat 35px outside the
-   viewport, at 320px two of the three were gone. Silent, and invisible to a
-   scrollWidth check, which is why it outlived every other layout guard.
-   The caption yielded first, for the reason the P20 note above gives — this
-   row is a utility strip, and dropping it was the fastest way to stop three
-   44px targets running off-screen.
-
-   J4 (Jury Pass II, 2026-09-12): dropping it silenced the icons' one visible
-   label below 400px — a touch reader never sees aria-label or title, so on
-   the phone widths most readers actually carry, the three collage jumps had
-   no name at all. Measured (see BUILD-NOTES): there is no room to keep the
-   caption on this same dense line at any width down to 320 without reducing
-   a 44px touch target, which is not on the table. So it doesn't share the
-   line any more — .tools__group--util and .tools__group--nav each get a
-   full-width row of their own, which is room enough for the caption at any
-   width this breakpoint covers, EN or RU. That only holds before the reader
-   has scrolled, though: this is a "here's what these icons are" hint for
-   someone still finding their feet, not something worth a permanent second
-   row while they read. Once scrolled (html.is-scrolled, ~4px in), it
-   collapses straight back to the single dense nowrap row this breakpoint
-   has shipped since 2026-09-10 — same clip, same fit, caption included —
-   so the fix that must survive is untouched in that state. No JS, no
-   scroll tracking: html.is-scrolled never appears, so a no-JS reader keeps
-   the roomier always-labelled layout, which degrades safely in the
-   direction of showing more, not less. */
-/* SITE-PLAN C5 (2026-11-20) retired the rules this note explains: below 400px
-   the caption used to get a third row before the reader scrolled and vanish
-   after. The two-row masthead at the end of this section has room for it at
-   every width, scrolled or not. */
-/* At 320 with English labels, three 44px targets and a divider genuinely do
-   not fit on the scrolled, single-row layout; the divider goes too (with the
-   caption gone there, words-vs-glyphs already separates the two clusters)
-   and the gap drops to its tightest. That width clears the edge by ~2px
-   rather than the ~20px the wider phones keep — the honest floor for 44px
-   targets here, and still the difference between a reachable control and
-   one that is not on screen. */
+/* At 320 in English the scrolled single row doesn't fit with the divider,
+   so it goes and the gap drops to its tightest; every 44px target stays on
+   screen. */
 @media (max-width: 340px) {
   .tools__rule { display: none; }
 }
 
-/* J4 (Jury Pass II, 2026-09-12): the sticky phone masthead held a permanent
-   127.6px — 16% of a 780px viewport — for controls that are not why anyone
-   scrolled here (theme, language, three collage jumps). Restoring the
-   caption above made the unscrolled header taller still, which is the
-   right trade at the top of the page but the wrong one to carry into
-   reading. So the reduction lands where the reader actually spends their
-   time: once scrolled, sticky, this breakpoint's own padding and row-gap
-   tighten below what they've ever been, on top of the caption already
-   collapsing away above. Touch targets are untouched — the saving comes
-   from the masthead's own frame, never from .tool/.tool--icon's padding,
-   which is what holds the 44px floor. */
+/* Once scrolled, the sticky phone masthead tightens its own padding and row
+   gap. The 44px targets are untouched. */
 @media (max-width: 602px) {
   html.is-scrolled .masthead {
     padding-block: clamp(10px, 1.4vw, 16px);
     row-gap: 6px;
   }
 }
-/* Out of the way while reading (2026-09-23): main.js (trackMast) adds
-   .mast-hidden on a downward scroll past 120px and drops it on any scroll
-   up, on focus inside the bar, and during in-page jumps. The whole bar
-   slides up by its own height — its own transform channel (no reveal, no
-   layout offset lives on .masthead). Deliberately no visibility:hidden, so
-   a keyboard reader can still Tab into it, which brings it back. */
+/* Out of the way while reading: main.js (trackMast) adds .mast-hidden on a
+   downward scroll past 120px and drops it on any scroll up, on focus inside
+   the bar and during in-page jumps. No visibility: hidden, so Tab still
+   reaches the bar and brings it back. */
 @media (max-width: 602px) {
   .masthead {
     transition: background var(--t) var(--e), border-color var(--t) var(--e), transform var(--t) var(--e);
@@ -808,21 +526,13 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   html.mast-hidden .masthead { transform: translateY(-100%); }
 }
 
-/* SITE-PLAN C5 (2026-11-20): the phone masthead is two rows, not three.
-   Before: lockup / theme + language / caption + icons, ~194px at 375 until
-   the reader scrolled (J4 gave the caption a row of its own so the icons kept
-   a visible name, then hid it again once scrolled). Now row 1 is the lockup
-   with the theme and language toggles beside it, row 2 the caption and the
-   three discipline icons, right-aligned: ~140px, and the caption never has to
-   step aside, because row 2 has room for it at every width down to 320 in
-   both languages. Every target keeps its 44px coarse-pointer box: nothing
-   here touches .tool / .tool--icon padding, which is what holds J4's floor.
-   How: .masthead becomes a two-column grid and .tools spans both rows on a
-   subgrid, so its two groups land in different rows without leaving the
-   <nav> (no display: contents, which still drops landmark semantics in some
-   screen readers). .tools' own box overlaps the lockup's cell, so it passes
-   pointer events through and only its groups take them. Placement only,
-   never transform. */
+/* The phone masthead is two rows: the lockup with the toggles beside it,
+   then the caption and the discipline icons, right-aligned. .masthead is a
+   two-column grid and .tools spans both rows on a subgrid, so its groups
+   land in different rows without leaving the <nav> (display: contents would
+   drop landmark semantics in some screen readers). .tools overlaps the
+   lockup's cell, so it passes pointer events through. Placement only, never
+   transform. */
 @media (max-width: 602px) {
   .masthead {
     display: grid;
@@ -846,46 +556,22 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   .tools__group--nav { grid-column: 1 / -1; grid-row: 2; justify-self: end; }
   .tools__rule { display: none; }
 }
-/* Just over the phone breakpoint the one-row bar is 5px short since C4's
-   caption ("Coaching", holding the width of "Направления") replaced "Photos":
-   603-607px wrapped the nav under the toggles. The between-cluster gap
-   tightens a little in this band only; nothing changes elsewhere. */
+/* 603-680px: the one-row bar is a few px short, so the gap between the
+   clusters tightens. */
 @media (min-width: 603px) and (max-width: 680px) {
   .tools { gap: 14px; }
 }
 
 /* ---------- in-copy emphasis ----------
-   Body copy is 17px and every paragraph is --fg2, so the default lift is to
-   full-strength foreground, not colour: no single accent clears 4.5:1 as
-   text in BOTH pairs at once (amber 3.07:1 on cream, green 3.58:1 on
-   charcoal). fg-against-fg2 is 2.02:1 on charcoal and 2.48:1 on cream — a
-   real step that costs nothing. Weight 500 is deliberate: <strong> defaults
-   to 700, which isn't loaded and would synthesise. One plain mark per
-   section, six on the page — the sixth lives in the collage view, added in
-   the 2026-09-05 copy/colour audit so that view echoes the rating/gravity
-   motif the same way the Disciplines section states it, without adding a
-   second coloured mark. */
+   Body copy is --fg2, so emphasis lifts to --fg rather than to a colour: no
+   accent clears 4.5:1 as text in both pairs. Weight 500, because 700 isn't
+   loaded and would be synthesised. */
 .mark { color: var(--fg); font-weight: 500; }
 
-/* Colour-as-text — the one exception to the block above, and only where a
-   word IS the specimen or IS the fix, never decoration on an arbitrary "key"
-   word (2026-09-05 design pass; an earlier draft coloured the hero and a
-   mechanisms paragraph too and both were dropped as decoration wearing this
-   pair's costume). Two uses:
-     - combined with .mark (class="mark mark--target"), on the Method
-       section's one target phrase — the page's literal referent for what
-       green means. No underline: colour alone carries it.
-     - standalone, on the exact culprit/fix word inside each specimen
-       wrong/right line (.line-spec below) — there it inherits that line's
-       own mono weight instead of .mark's 500, because JetBrains Mono 500
-       isn't loaded and font-synthesis: none means asking for it would do
-       nothing.
-   Both read from --amber-text / --green-text (defined per theme, top of
-   file), tuned stand-ins wherever the ink hex would fail as text: amber is
-   reused as-is in dark (7.41:1) but darkened for light (was 3.07:1, now
-   4.5:1); green is reused as-is in light (5.62:1) but lightened for dark
-   (was 3.58:1, now 4.5:1). The ink hex itself is untouched, so every
-   non-text use — rules, glyphs, the wordmark — is unaffected. */
+/* Colour as text, only where a word IS the specimen or IS the fix:
+   .mark--target on the method's one target phrase, and the culprit/fix word
+   inside each specimen line (where it keeps the line's mono weight). Both
+   read the text-safe --amber-text / --green-text, never the ink hex. */
 .mark--specimen { color: var(--amber-text); }
 .mark--target   { color: var(--green-text); }
 
@@ -923,13 +609,9 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   margin-left: 14px;
 }
 
-/* DP7 (DESIGN-PASS-III.md): this computed to 0 on every section against the
-   fixed masthead, so any jump that lands here the BROWSER'S OWN way — a
-   typed #hash, Back/Forward, or scrollIntoView() when Lenis/GSAP is absent —
-   surfaced under it, hiding the section's own heading. Lenis-driven jumps
-   don't read this property at all (it has no notion of CSS scroll-margin),
-   so main.js's headerHeight() supplies the same clearance by hand for those;
-   this rule is the other half, for every path that isn't Lenis. */
+/* Clears the fixed masthead for jumps the browser makes itself (a typed
+   hash, Back/Forward, scrollIntoView without Lenis). Lenis jumps use
+   headerHeight() in main.js instead. */
 .sec {
   padding-block: clamp(90px, 13vh, 190px);
   border-top: 1px solid var(--rule);
@@ -943,9 +625,8 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
 .sec__head h2 { font-size: clamp(27px, 3.6vw, 48px); font-weight: 500; line-height: 1.12; letter-spacing: -.02em; }
 .sec__lede { max-width: var(--measure); color: var(--fg2); }
 .sec__lede p + p { margin-top: 1em; }
-/* SITE-PLAN E3: a link inside lede copy. Theme ink with a hairline underline
-   in --rule that firms to the text colour on hover/focus, the same move as
-   .eyebrow__home; no accent as text. */
+/* A link inside lede copy: theme ink with a hairline underline that firms
+   on hover/focus. */
 .lede__link {
   color: var(--fg); text-decoration: underline; text-decoration-color: var(--rule);
   text-underline-offset: .22em; text-decoration-thickness: 1px;
@@ -956,9 +637,7 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
 
-/* §02 method (2026-09-18): centred single column, not the shared two-up
-   split above — Igor's call on this head specifically, not a change to
-   .sec__head itself, so every other section keeps the split. */
+/* the method head is a centred single column */
 #method .sec__head { text-align: center; }
 #method .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
 #method .sec__lede { margin-inline: auto; }
@@ -966,23 +645,16 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   #method .sec__head { grid-template-columns: none; }
 }
 
-/* §04 who (2026-09-19): the lede explaining the rows were clickable is gone
-   (the rows' own first-person copy carries that now), so the head is just
-   the h2 — centred single column, same pattern as #method above. */
+/* the who head is a centred single column too */
 #who .sec__head { text-align: center; }
 #who .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
 @media (min-width: 900px) {
   #who .sec__head { grid-template-columns: none; }
 }
 
-/* C12 (2026-09-06): .sec's own top rule spans its full 1320px box, but
-   .mechanisms/.specs/.rows/.channels/.proof sit inside that box's
-   padding-inline and so drew their own rules --gut narrower on each side —
-   two rule widths with no stated relationship between them, off by however
-   much --gut happens to be at a given viewport. Bleeding these back out
-   to the section's own edge (and re-adding the same inset as padding, so
-   the text inside them doesn't move) makes every horizontal rule on the
-   page exactly one width, which is the actual point of a hairline system. */
+/* These blocks sit inside the section's padding, so they bleed back out to
+   its edge (and re-add the inset as padding): every hairline on the page is
+   one width. */
 .mechanisms, .specs, .rows, .channels, .proof {
   margin-inline: calc(var(--gut) * -1);
   padding-inline: var(--gut);
@@ -997,18 +669,9 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
   padding-top: calc(var(--head) + clamp(32px, 7vh, 90px));
   padding-bottom: clamp(40px, 8vh, 90px);
 }
-/* P13 (2026-09-06): at 390x844 the two-line header above already spends
-   ~140px — the brand's clear-space floor on the mark and a genuine 44px
-   touch-target row, neither of which has room left to give. What was
-   giving nothing back was .hero's own justify-content:center: on a short
-   mobile viewport the header eats into the space .hero centres within, so
-   the *remaining* slack gets split top-and-bottom, pushing real copy down
-   by more than the header itself. Anchoring hero content to the top and
-   trimming its own breathing room (was clamp(32px,7vh,90px), same as
-   desktop) moves the first line up by over 100px without touching the
-   header, the mark's clear space, or any touch target. Comes after the
-   base .hero rule on purpose — same specificity, so source order is what
-   makes this win under 600px instead of silently losing to the rule above. */
+/* Phones: hero content anchored to the top with less breathing room, so the
+   two-row header doesn't push the first line down. After the base rule on
+   purpose (same specificity). */
 /* 602, not 600: --head takes its two-line value in the masthead block above,
    and this padding has to change on exactly the same tick or the hero pads
    for a one-line header the masthead has already stopped drawing. */
@@ -1018,11 +681,7 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
     padding-top: calc(var(--head) + clamp(20px, 3vh, 40px));
   }
 }
-/* J4 (Jury Pass II, 2026-09-12): 42px was the floor before this — the
-   phone hero read as a modest blog header where the same clamp gives
-   desktop a 110px statement at 1280. Raised to 52px, still a floor only:
-   the 8.6vw middle of the curve and the 124px cap are unchanged, so nothing
-   above ~605px width (where 8.6vw first clears 52px) moves at all. */
+/* a 52px floor on phones; the curve and the 124px cap are unchanged */
 .hero__title {
   font-size: clamp(52px, 8.6vw, 124px);
   font-weight: 500;                  /* 600 fills Lora's serifs in at display size */
@@ -1054,12 +713,8 @@ html.js:not(.hero-done) .line__inner { will-change: transform; }
   .hero__foot { grid-template-columns: minmax(0, 1fr) auto; }
 }
 .stand { max-width: var(--measure); color: var(--fg2); }
-/* The Russian intro sentence is longer than the English one and wraps to
-   5 lines at --measure's 62ch inside .hero__foot's ≥900px two-column squeeze
-   (English holds it in 4) — one more line of height English never carries.
-   68ch is the narrowest width that folds it back to 4 lines at this font
-   size; a language-specific override rather than widening --measure itself,
-   since --measure feeds unrelated body copy across the page. */
+/* At 68ch the Russian intro holds the same four lines as the English one.
+   Language-specific because --measure feeds other copy too. */
 html[data-lang="ru"] .stand { max-width: 68ch; }
 
 .scrollcue {
@@ -1079,26 +734,16 @@ html[data-lang="ru"] .stand { max-width: 68ch; }
 /* Cyrillic tolerates less negative tracking than Latin, and Lora's ш is
    830/1000 em, so Russian display lines run long. */
 html[data-lang="ru"] .hero__title    { letter-spacing: -.018em; }
-/* .58em (the pre-2026-09-22 value) fit "English, chess, climbing."'s Latin
-   letterforms but not the wider "Английский, шахматы, скалолазание." — past
-   ~1300px viewport width it silently wrapped onto a second line inside
-   .line's single-line reveal mask, adding ~47px the layout never accounted
-   for. Measured against the actual rendered width at 1024/1280/1440/1920
-   (a laptop's Chrome window is rarely maximized to full screen height, so
-   that extra height was enough to push .hero__foot's scroll cue below the
-   fold): the tightest fit needs .517em; .5em keeps a safety margin and
-   still reads clearly as the trifecta line under the two lines above it. */
+/* The Russian trifecta line is wider, so it is set smaller to stay on one
+   line inside .line's single-line mask. */
 html[data-lang="ru"] .hero__title em { font-size: .5em; letter-spacing: -.010em; }
 html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
 html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 
 /* ---------- hero portrait (home) ----------
-   2026-11-20 (feature/ft2-hero-portrait): Igor's portrait moves up from the
-   contact section, so a stranger sees the person before anything else.
-   The file is the same graded 4:5 one (black point --fg, white point --bg),
-   so it needs no frame, no filter and no caption here either.
-   Phone/tablet: plain flow between the title and the stand, at the width
-   the contact section used, so the title stays the first thing read. */
+   The graded 4:5 portrait (black point --fg, white point --bg): no frame,
+   filter or caption. On phones and tablets it sits in plain flow between
+   the title and the stand. */
 .hero__portrait { margin: 0; width: min(220px, 60%); }
 .hero__portrait img {
   display: block; width: 100%; height: auto; aspect-ratio: 4 / 5;
@@ -1107,27 +752,13 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 /* .hero__head holds the eyebrow and the title together, so the portrait
    beside them can't pull them apart. Its gap is .hero's own. */
 .hero__head { display: flex; flex-direction: column; gap: clamp(28px, 5vh, 60px); }
-/* >=900px: a two-column hero. .hero__head | the portrait, both hung from
-   the eyebrow's line; the stand under the title and the scroll cue under
-   the portrait on the last row, bottoms aligned. .hero__foot steps aside
-   (display: contents) so its two children can take those two cells.
-   The title can't keep its full-width 8.6vw: the italic trifecta line is
-   8.14em of the title size wide in EN, and .line's mask clips anything
-   wider than its column. So the size follows the text column instead:
-   (hero content width - portrait - gap) / 8.6, capped at 124px as before.
-   The content width is min(100vw, --maxw) - 2 x --gut, rather than
-   container units, so .hero doesn't take on layout containment for one
-   font size. 100vw counts a classic scrollbar (~17px), which makes the
-   title ~2px too big; the 8.6 divisor leaves .46em (EN) / .28em (RU) of
-   slack on the widest line, so it still fits.
-   The portrait's width is picked so its 4:5 height lands on the title's
-   last line at common sizes (head height = eyebrow + gap + 2.87 x the
-   title size, solved at 900, 1280 and 1600): ~21vw. Both the width and
-   the gap stop growing at --maxw (1320px: 21% is 277px), because the hero
-   stops widening there too; past that point a growing portrait could only
-   take its width out of the title (86px at 1920 when it was allowed to).
-   Net: the title runs ~95px from 1280 up, where the full-width hero had
-   110-124px. That's the price of the face sitting beside it. */
+/* >=900px: two columns, .hero__head beside the portrait, with the stand and
+   the scroll cue on the last row, bottoms aligned (.hero__foot steps aside
+   with display: contents). .line's mask clips anything wider than its
+   column, so the title's size follows the text column: (content width -
+   portrait - gap) / 8.6, capped at 124px. The portrait (~21vw) is sized so
+   its 4:5 height lands on the title's last line; both stop growing at
+   --maxw, as the hero does. */
 @media (min-width: 900px) {
   .hero--home {
     --face-w: clamp(200px, 21vw, 277px);
@@ -1157,20 +788,13 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 }
 
 /* ---------- mechanisms ---------- */
-/* Foldable (2026-09-18, superseding P14's side-by-side desktop grid below):
-   each item is now a header row (the .mech__toggle button, holding the
-   number/title/mark) plus a collapsible .mech__panel — stacked at every
-   width, since a column can't "slide down" the way a row can. The 80px
-   number + 1fr title + auto mark grid lives on the button itself instead of
-   the <li>, so it no longer needs a breakpoint: it read fine narrow (headings
-   here are short) and dropping the media query removes a second layout to
-   keep in sync with the panel's own full-width row below it. */
+/* Each item is a header row (the .mech__toggle button: number, title, mark)
+   and a collapsible .mech__panel, stacked at every width. */
 .mechanisms { display: grid; gap: 0; border-top: 1px solid var(--rule); }
 .mechanisms > li { border-bottom: 1px solid var(--rule); }
 .mech__head { margin: 0; }
-/* SITE-PLAN D2 (2026-11-20): home's method lists the five names only. Same
-   grid and type as an accordion row's header, without the button or the
-   "+", and a little less padding: a quiet index, not five closed doors. */
+/* Home's method lists the five names only: an accordion row's grid and type
+   without the button or the "+". */
 .mech__row {
   margin: 0;
   display: grid; grid-template-columns: 80px 1fr; align-items: baseline;
@@ -1200,19 +824,10 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 .mech__toggle:focus-visible .mech__toggle-mark { color: var(--fg); }
 .mech__panel-inner p { color: var(--fg2); max-width: var(--measure); }
 .mech__panel-inner { padding-bottom: clamp(26px, 3vw, 40px); }
-/* Collapse only exists under html.js — same gate as .reveal (style.css,
-   "html.js .reveal { opacity: 0 ... }"): with JS absent or failed, .mech__panel
-   is a plain block, always in flow, every paragraph always visible. The
-   :has() read of the button's own aria-expanded (already used once, on
-   .origin__mark, above) means initMechanismFold() in main.js only has to
-   flip that one attribute — no class bookkeeping, no measuring. Animating
-   grid-template-rows (not transform) keeps this out of the reveal's
-   transform channel per the motion rules at the top of this file, and the
-   0fr/1fr pair plus overflow:hidden is the standard height-auto workaround —
-   but min-height:0 on the grid item only overrides its automatic *content*
-   minimum, not padding, which keeps contributing to the box regardless. The
-   inner's own padding-bottom has to collapse to 0 right alongside the row
-   track, or a collapsed panel still shows a padding-height sliver. */
+/* The fold exists only under html.js; without JS every panel is plain and
+   open. main.js flips aria-expanded and :has() reads it. grid-template-rows
+   0fr/1fr animates the height without the transform channel; the inner's
+   padding collapses with the track, or a closed panel would show a sliver. */
 html.js .mech__panel {
   display: grid; grid-template-rows: 0fr; overflow: hidden;
   transition: grid-template-rows var(--t) var(--e);
@@ -1228,50 +843,23 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
   padding-bottom: clamp(26px, 3vw, 40px);
 }
 
-/* ---------- specimens (the showpiece) ----------
-   C10 (2026-09-06): three cramped, narrow columns for the one part of the
-   page that's supposed to be the showpiece — the wrong/right sentence pair
-   sat at 14px mono, a third of a 1320px page wide. Rebuilt as full-width
-   rows, same shape as .rows in section 05: a hairline stack, the specimen
-   itself (label + pair) in one column, the explanation beside it rather
-   than stacked below, so the sentence pair can actually run at size. */
-/* Trifecta D follow-up (2026-09-15): §03 is one of three discipline-scoped
-   groups now (english/chess/climbing), swapped by main.js's updateSpecimens()
-   the same way updateReading() swaps the origin readout. .is-active is
-   hardcoded on the English group in the markup, not gated behind html.js, so
-   the no-JS/pre-init default is a real, fully-readable section rather than
-   nothing. */
+/* ---------- specimens ----------
+   Full-width rows: the specimen (label and wrong/right pair) in one column,
+   the explanation beside it. */
+/* .is-active is set in the markup, so the group shows without JS. */
 .specimens-group { display: none; }
 .specimens-group.is-active { display: block; }
 
 /* ---------- the engraved plates (English, chess, climbing) ----------
-   Victorian-engraving illustrations between a specimens group's head and its
-   specimens — in a band of their own, never under a line of copy. Climbing:
-   a ruled sky, a great roof, a climber hanging off its lip
-   (tools/engraving/engrave.py). Chess: Staunton queen, knight and king, the
-   knight forking the other two (tools/engraving/staunton.py). English: a
-   lesson at a table, one person writing, the other asking
-   (tools/engraving/lesson.py); its two people are the climber's own stroke
-   figure, hence the shared .person. All three inlined:
-   every weight class is ONE <path>, so a plate is ~30 KB rather than
-   hundreds of nodes.
-
-   Two inks only: the plate is --fg at per-weight opacities (engraving lines
-   in place of shading — the page has no gradients), the rope is
-   --ink-target (as are the knight's two jumps and the coach's question),
-   the struck "am" is --ink-specimen, the labels are --hand text in --fg2 with a --bg halo so
-   it stays legible over the ruled sky. Bleeds to the section edge like
-   .specs (C12), so the drawing and the hairlines share one width.
-
-   Reveal: the figure is a .reveal, so the existing observer, the failsafe
-   sweep and the reduced-motion "show the finished state" all reach it with
-   no new JS. On .is-in the plate is pulled left-to-right with a clip-path
-   wipe (not a per-line dash draw: ~1,500 subpaths animating their
-   dashoffset would stutter on a phone, and clip-path is not the transform
-   channel the reveal itself uses), then the climber and rope (or the
-   knight's jumps) and the label ink in. Chess pieces are filled with --bg
-   (.plate__paper) so the ruled ground stops at their edges.
-   The hidden state exists only under html.js and with motion allowed. */
+   Engraving-style drawings between a specimens group's head and its
+   specimens, made by tools/engraving/ (engrave.py, staunton.py, lesson.py).
+   Each weight class is one <path>, so a plate is ~30 KB. Two inks: --fg at
+   per-weight opacities, --ink-target for the rope, the knight's jumps and
+   the coach's question, --ink-specimen for the struck "am"; labels are
+   --hand in --fg2 with a --bg halo. The figure is a .reveal; on .is-in a
+   clip-path wipe prints the plate left to right (a dash draw over ~1,500
+   subpaths would stutter on a phone), then the accents ink in. Hidden
+   states exist only under html.js with motion allowed. */
 .plate {
   margin: calc(clamp(48px, 7vw, 96px) * -0.55) calc(var(--gut) * -1) clamp(18px, 2.5vw, 34px);
   height: clamp(190px, 27vw, 360px);
@@ -1332,25 +920,16 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 }
 /* ---- end plates ---- */
 
-/* ---------- the vignettes (2026-10-30) ----------
-   Six small engravings in the plates' hand, one per section outside §03:
-   a still life in the hero (books, a knight, a coil of rope), a runestone
-   cut with the mark beside §01's note on the name, a chain with one weak
-   link under §02's headline, a figure at a mirror over §04's question, a
-   table with an empty chair under §05's ask, and a chess clock in the
-   footer. Generated by tools/engraving/vignettes.py; the engraving weights
-   are the plates' own rules above. No labels — pictures, not notes.
-
-   Inks: --fg; the rope and the clock's second hand --ink-target; the weak
-   link --ink-specimen (it is the thing under examination). Sizes are set
-   by height, the SVG's own aspect ratio gives the width. Every placement
-   is grid/flex/margin — the figure is a .reveal, so its transform is the
-   reveal's. The print wipe is the plates' (below); the footer's clock is
-   not a .reveal at all, because the curtain is what reveals it. */
+/* ---------- the vignettes ----------
+   Small engravings in the plates' hand (tools/engraving/vignettes.py), no
+   labels. Inks: --fg, --ink-target for rope and the clock's hand,
+   --ink-specimen for the weak link. Sized by height; placed with grid, flex
+   or margin only, since each figure is a .reveal. The footer's clock is not
+   a .reveal: the curtain uncovers it. */
 .vig { margin: 0; color: var(--fg); pointer-events: none; }
 .vig__svg { display: block; width: auto; height: 100%; max-width: 100%; overflow: visible; }
 .vig .eng--faint { fill: none; stroke: currentColor; stroke-width: .7; stroke-opacity: .4; stroke-linecap: round; }
-.vig__coil { stroke-width: 2.6; }
+
 .vig__weak { fill: none; stroke: var(--ink-specimen); stroke-width: 1; stroke-opacity: .9; stroke-linecap: round; }
 .vig__weakline { fill: none; stroke: var(--ink-specimen); stroke-width: 1.8; stroke-linecap: round; }
 .vig__handink { fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: round; }
@@ -1360,7 +939,7 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
   .vig .eng--alt { display: none; }
 }
 
-/* §01: the note on the name, the stone beside it in the panel's column */
+/* §01: the note on the name, with the stone beside it */
 .origin__coda { margin-top: clamp(32px, 5vw, 56px); display: grid; gap: clamp(24px, 4vw, 40px); }
 .origin__coda .origin__note { margin-top: 0; }
 .vig--runestone { height: clamp(150px, 40vw, 190px); justify-self: center; }
@@ -1376,8 +955,7 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
    cropped (slice) to the middle, where the weak link hangs */
 .vig--chain { height: clamp(96px, 15vw, 186px); max-width: 980px; margin: 0 auto clamp(24px, 4vw, 48px); }
 .vig--chain .vig__svg { width: 100%; }
-/* §04: a headpiece over the question */
-.vig--mirror { height: clamp(140px, 17vw, 210px); display: flex; justify-content: center; margin-bottom: clamp(16px, 2.4vw, 28px); }
+
 /* §05: under the lede, in the text column beside the portrait */
 .vig--empty-chair { height: clamp(130px, 16vw, 200px); margin-top: clamp(28px, 4vw, 48px); }
 /* footer: at the end of the notes row, beside "1… The board is waiting."
@@ -1400,154 +978,18 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 }
 /* ---- end vignettes ---- */
 
-/* Specimen switch, repositioned (2026-09-17): the label + mini mark used to
-   sit above all three .specimens-group as its own stacked line; Igor asked
-   for it beside the section label instead, over the lede column, bigger.
-   .specimen-top carries the "03 Specimens" label in its left column and
-   the switch in its right one — the SAME grid-template-columns/gap as
-   .sec__head below it (kept in sync by comment, not a shared variable,
-   same precedent as --mark-w), so the mark lines up with the lede text it
-   sits above rather than an independently-chosen offset that would drift
-   the moment either grid's own breakpoints change. justify-self: end
-   (not justify-content, since .specimen-top's children are grid items
-   here, not flex ones) pins the switch to the column's right edge, per
-   Igor's screenshot. Below 900px .sec__head drops to one stacked column,
-   so this does too, in the same order fields already read top-to-bottom
-   elsewhere on narrow layouts. */
-/* Vertical gap added (2026-09-17): this row had no bottom margin at all,
-   so the mark's own edge and "Your errors are..." touched with 0px between
-   them (confirmed by measuring both rects — .specimen-top's bottom equalled
-   .sec__head's top to the pixel). Same clamp shape as .sec__head's own
-   margin-bottom just below in this file, but with a lower ceiling: this
-   gap separates a kicker line from the headline it sits above, not a
-   headline from its body copy, so it reads as related-but-distinct rather
-   than a full section break. align-items: center (was end): the row's
-   height is set by the mark (the tallest item, ~65-92px), and bottom-
-   aligning a short text line against that made "03 Specimens" hang off the
-   row's floor with dead air above it; centering both items against the
-   mark's own height reads as one deliberate horizontal line instead of two
-   independently-anchored corners. */
-.specimen-top {
-  display: grid; gap: clamp(24px, 4vw, 56px);
-  align-items: center;
-  margin-bottom: clamp(48px, 7vw, 88px);
-}
-@media (min-width: 900px) {
-  .specimen-top { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
-}
-/* Below 900px (2026-09-23): the mini-mark sits beside "03 Specimens" and the
-   three text buttons take their own full-width line beneath, spread edge to
-   edge — at 375 the RU labels need ~333 of 335px, so wrapping at 320 is
-   load-bearing, not decorative. */
-@media (max-width: 899.98px) {
-  .specimen-top { grid-template-columns: minmax(0, 1fr) auto; row-gap: 12px; column-gap: 16px; }
-  .specimen-top > .specimen-switch { display: contents; }   /* beats the base .specimen-switch rule below */
-  .specimen-switch .origin__mark--mini { grid-area: 1 / 2; }
-  /* contain: inline-size — a spanning item otherwise hands its whole
-     min-content width to the mark's auto column, squeezing the label to 0. */
-  .specimen-switch__items { grid-area: 2 / 1 / 3 / 3; justify-content: space-between; column-gap: 10px; contain: inline-size; }
-  /* No separators and a slightly tighter track here: the RU labels
-     (АНГЛИЙСКИЙ · ШАХМАТЫ · СКАЛОЛАЗАНИЕ) must hold one line at 375; at
-     320 they wrap, so the wrap packs left instead of spreading ragged. */
-  .specimen-switch__sep { display: none; }
-  .specimen-switch__item { letter-spacing: .06em; }
-}
-@media (max-width: 359.98px) {
-  .specimen-switch__items { justify-content: flex-start; column-gap: 20px; }
-}
-.specimen-switch {
-  display: flex; align-items: center; gap: 18px;
-  justify-self: start;
-}
-@media (min-width: 900px) {
-  /* Horizontal position re-checked (2026-09-17), kept as-is: measured this
-     against the masthead's own rightmost icon (the collage/pointer/reading
-     icon cluster in the header) and .sec__lede's own text-wrap edge below
-     it — both land on the exact same x-coordinate as this switch's right
-     edge. That's not a coincidence to undo; it's what makes the mark read
-     as anchored to the page's shared right margin rather than floating at
-     an arbitrary offset. Tried centering it in the column instead: it lost
-     that shared edge and looked like it was drifting in dead space above
-     the lede, so end stays. */
-  .specimen-switch { justify-self: end; }
-}
-/* §03's text switch (2026-09-23): the three disciplines named outright, in
-   the page's small-caps label voice (.origin__panel-item's own 12px/.1em),
-   pressed one in --fg with the channels list's drawn underline at 1px in
-   target ink. Replaces the 11px "Switch discipline" instruction. */
-.specimen-switch__items { display: flex; align-items: center; flex-wrap: wrap; }
-.specimen-switch__item {
-  position: relative;
-  margin: 0; padding: 12px 0; border: 0; background: none; appearance: none;
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-  transition: color var(--t) var(--e);
-}
-@media (pointer: coarse) { .specimen-switch__item { min-height: 44px; } }
-.specimen-switch__item:hover,
-.specimen-switch__item:focus-visible,
-.specimen-switch__item.is-active { color: var(--fg); }
-.specimen-switch__item::after {
-  content: ""; position: absolute; left: 0; right: .1em; bottom: 8px; height: 1px;
-  background: var(--ink-target);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform var(--t) var(--e);
-}
-.specimen-switch__item[aria-pressed="true"]::after { transform: scaleX(1); }
-.specimen-switch__sep { color: var(--fg2); opacity: .5; margin-inline: 10px; }
-/* .label's own margin-bottom (clamp(28px, 4vw, 56px), set globally for
-   every other .sec__head's kicker line) is dead weight here: this .label
-   isn't stacked directly above a heading any more, .specimen-top is — so
-   that margin was never producing real spacing in this instance, only
-   throwing off align-items: center by fattening the label's box on one
-   side. Zeroed so the label centers against the mark's actual height. */
-.specimen-top > .label { margin-bottom: 0; }
-
-/* Discoverability pulse (2026-09-17): Igor wants this control to
-   occasionally call attention to itself — it's easy to land on §03 and
-   never notice the switch sits there. Text only, not the mark (tried
-   glowing both — Igor asked the mark left alone). Kept off the label's
-   actual fill: the label was 11px, and CLAUDE.md's color rule
-   forbids --amber/--green as text under 24px (fails 4.5:1 in one theme or
-   the other) — that's about text fill, not a shadow behind still-solid
-   text, so the glow lives in text-shadow, never in `color`. Amber and
-   green because those are already this control's two inks (the mark's own
-   arms), not a new color introduced for the hint.
-   Each glow holds for ~2s (fade in 0-1s, fade out 1-2s) rather than a
-   quick flash — Igor's call after the first pass read as too brief to
-   register. 10s loop, amber at the start, green at the midpoint, so in
-   practice something glows roughly every 5s, alternating which ink —
-   never both at once, which would read as alarm rather than a nudge.
-   Brand's own --e easing (no second curve per the motion rules), and
-   killed entirely under reduced motion below rather than left to the
-   generic .01ms override, since an infinite text-shadow loop left
-   spinning at that speed would flicker rather than stop. */
-/* 2026-09-23: the glow moved with the label's job — onto the switch's
-   buttons that aren't pressed, each in its own stroke's ink (English and
-   chess are the V's amber arms, climbing the green stem), offset half a
-   cycle so the two unpressed ones never glow together. Same 10s rhythm,
-   same ~2s hold, same text-shadow-not-fill rule as before. */
-@keyframes specimen-label-glow {
-  0%, 20%, 100% { text-shadow: 0 0 0 transparent; }
-  10% { text-shadow: 0 0 5px var(--glow); }
-}
-.specimen-switch__item { --glow: var(--ink-specimen); }
-.specimen-switch__item[data-discipline="climbing"] { --glow: var(--ink-target); }
-.specimen-switch__item:not([aria-pressed="true"]) { animation: specimen-label-glow 10s var(--e) infinite; }
-.specimen-switch__item[data-discipline="chess"]:not([aria-pressed="true"]) { animation-delay: -5s; }
 .specs { border-top: 1px solid var(--rule); }
 .spec {
   padding-block: clamp(32px, 4.5vw, 60px);
   border-bottom: 1px solid var(--rule);
   display: grid; gap: clamp(18px, 2.4vw, 28px);
-  scroll-margin-top: var(--head);   /* DP8: same reasoning as .sec's own rule above */
+  scroll-margin-top: var(--head);   /* the same masthead clearance as .sec's */
 }
 @media (min-width: 900px) {
   .spec { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: start; }
 }
 
-.spec__lines { min-width: 0; position: relative; }   /* positioning context for .spec__perform (S6) */
+.spec__lines { min-width: 0; position: relative; }   /* positioning context for .spec__perform */
 .spec__label {
   font-family: var(--sans); font-size: 13px; font-weight: 500;
   letter-spacing: .01em; text-transform: none; color: var(--fg2);
@@ -1555,11 +997,9 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
   padding-bottom: 16px; margin-bottom: 18px;
   border-bottom: 1px solid var(--rule);
 }
-/* Spark Order S9A / move 09 — the label is a permalink to the specimen's own
-   id. Hairline vocabulary: a mono # in secondary ink, the label underlining
-   only on hover/focus, a mono confirmation that shows for ~1.8s. No box, no
-   fill, no accent-as-text (the # is theme ink, not amber/green). The focus
-   ring is the shared :focus-visible rule. */
+/* The label is a permalink to the specimen's own id: a mono # in secondary
+   ink, the label underlined only on hover/focus, and a mono confirmation for
+   about 1.8s. No accent as text. */
 .spec__permalink { color: inherit; text-decoration: none; }
 .spec__permalink-mark { font-family: var(--mono); font-weight: 400; margin-right: .45em; }
 .spec__permalink:hover .spec__permalink-text,
@@ -1577,31 +1017,20 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
   letter-spacing: .02em; text-transform: none; color: var(--fg2);
   margin-left: .7em;
 }
-/* The border and the marker glyph carry the specimen/target signal in
-   non-text ink, both >=3:1 in each pair, same as always. The one word
-   actually responsible for the error, and the one word that fixes it, are
-   also coloured directly (.mark--specimen / .mark--target, 2026-09-05) —
-   everything else in the sentence stays neutral fg2/fg, so the sentence as
-   a whole still holds 4.5:1 throughout regardless. */
+/* The border and the marker glyph carry the wrong/right signal in non-text
+   ink; only the culprit word and the fix word are coloured (.mark--specimen
+   / .mark--target), so the sentence as a whole holds 4.5:1. */
 .line-spec {
   font-family: var(--mono); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55;
   display: flex; gap: 12px; align-items: baseline;
   border-left: 2px solid transparent;
   padding: 5px 0 5px 14px;
 }
-/* C11 (2026-09-06): .wrong's border sat flush against .right's — two
-   adjacent boxes with no margin between them, so a 2px amber rule ran
-   straight into a 2px green one with zero gap and read as one stroke
-   changing colour halfway down, right where the wrong/right distinction is
-   the entire point of the device. Margin between the two, not padding
-   inside either one, so the gap is real space rather than more of each
-   line's own box. */
+/* a real gap between the wrong and right lines, so the amber and green
+   rules don't read as one stroke changing colour */
 .line-spec + .line-spec { margin-top: 12px; }
-/* ✕ and ✓ exist in none of the three loaded faces — not even Lora's symbols
-   subset — so they rendered from a different system font on every platform,
-   in the accent colour, next to a 2px accent rule. Drawn instead. Sized in
-   em so the glyph keeps pace with .line-spec's own larger, fluid type size
-   instead of sitting fixed-small next to it. */
+/* ✕ and ✓ exist in none of the loaded faces, so they are drawn. Sized in em
+   to keep pace with .line-spec's fluid type. */
 .line-spec .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; }
 .line-spec .sig svg { display: block; width: .68em; height: .68em; }
 .wrong { border-left-color: var(--ink-specimen); }
@@ -1609,28 +1038,22 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 .wrong .sig { color: var(--ink-specimen); }
 .right .sig { color: var(--ink-target); }
 .spec__why { font-size: 15px; color: var(--fg2); max-width: var(--measure); }
-/* No Inter italic is loaded, so this was a synthesised oblique. These words
-   are always English specimens quoted inside prose — which is exactly what the
-   mono now means, and it keeps them distinct from .mark emphasis. */
+/* No Inter italic is loaded. These words are English quoted inside prose,
+   which is what the mono means here. */
 .spec__why em {
   font-family: var(--mono); font-style: normal; font-size: .92em;
   color: var(--fg);
 }
-/* Spark Order S6 / move 06: <del>/<ins> now carry the wrong/right diff
-   semantically. The ink stays the only sighted signal (--amber-text /
-   --green-text, the 2026-09-05 contrast-tuned exception for these two
-   tokens), so the browser's default strike/underline is suppressed — a
-   no-JS or reduced-motion reader gets exactly today's appearance. */
+/* <del>/<ins> carry the diff semantically; the ink stays the only sighted
+   signal, so the browser's strike and underline are off. */
 .line-spec del, .line-spec ins { text-decoration: none; }
 
-/* ---------- SITE-PLAN F1 (2026-11-20): "Test your ear" (English page) ----------
+/* ---------- "Test your ear" (English page) ----------
    Eight sentences as toggle buttons (aria-pressed), in the specimens' mono.
-   Before the check nothing hints at the answer: the culprit is a plain span.
-   After it, each row takes the specimens' own device — a 2px rule in the
-   specimen or target ink, the culprit in --amber-text and struck, the
-   natural form under it with the fix in --green-text — so this reads as the
-   specimens made interactive, not a quiz widget. The tick box is a hairline
-   square (no rounding) that fills with --fg. JS-only: hidden with no JS. */
+   Before the check nothing hints at the answer. After it, each row takes
+   the specimens' own device: a 2px rule in specimen or target ink, the
+   culprit struck in --amber-text, the natural form under it with the fix in
+   --green-text. JS only: hidden without JS. */
 html:not(.js) .sec--ear { display: none; }
 .ear__list { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--rule); }
 @media (min-width: 900px) {
@@ -1674,19 +1097,18 @@ html:not(.js) .sec--ear { display: none; }
 .ear__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px clamp(28px, 4vw, 48px); margin-top: clamp(28px, 4vw, 44px); }
 button.page-cta { -webkit-appearance: none; appearance: none; background: none; border: 0; padding: 0 0 6px; cursor: pointer; text-align: left; }
 /* :not([hidden]) / [hidden]: .page-cta's inline-flex and this grid would
-   otherwise out-specify the UA [hidden] rule (the .spec__prompt-mistake trap). */
+   otherwise out-specify the UA [hidden] rule. */
 .ear__result:not([hidden]) { margin-top: clamp(24px, 3vw, 36px); display: grid; gap: 10px; max-width: var(--measure); }
 .ear__actions [hidden] { display: none; }
 .ear__score { font-family: var(--serif); font-weight: 500; font-size: clamp(22px, 2.2vw, 30px); color: var(--fg); outline: none; }
 .ear__habit { color: var(--fg2); }
 .ear__send { justify-self: start; }
 
-/* ---------- SITE-PLAN F2 (2026-11-20): "Is your rating actually stuck?" ----------
-   A username field in the page's own hairline voice (a single rule under the
-   input, no box, no rounding), the CTA's serif button, and a chart drawn the
-   way the plates are: a 1px theme-ink line, --rule hairline axes, 11px mono
-   labels in --fg2, and one amber bracket marking the year's low-to-high
-   range (non-text ink). JS-only: hidden with no JS. */
+/* ---------- "Is your rating actually stuck?" (chess page) ----------
+   A username field in the hairline voice (one rule under the input, no
+   box), the CTA's serif button, and a chart drawn like the plates: a 1px
+   theme-ink line, --rule axes, 11px mono labels in --fg2, and one amber
+   bracket for the year's low-to-high range. JS only: hidden without JS. */
 html:not(.js) .sec--rating { display: none; }
 .rating__form { display: grid; gap: 12px; max-width: 640px; }
 .rating__label { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
@@ -1715,21 +1137,17 @@ html:not(.js) .sec--rating { display: none; }
 .rating__verdict { color: var(--fg2); max-width: var(--measure); }
 .rating__send { justify-self: start; }
 
-/* The specimen reveal. initSpecimenReveal() builds one .spec__reveal > button
-   per specimen and `hidden`s the real .wrong line; with no JS none of this
-   exists and the static <del>/<ins> pair is the whole of it. The button
-   mirrors .line-spec's metrics so it sits in the same rhythm, and carries the
-   specimen's amber rule plus an underlined label so it plainly reads as
-   "open me". Its content swaps — label ⇄ the error sentence — instantly, no
-   layout in the transform channel, nothing time-based. The .wrong line's own
-   `[hidden]` needs help: .line-spec already sets `display: flex`, which
-   out-specifies the UA [hidden] rule, so restore it explicitly. */
+/* The specimen reveal. initSpecimenReveal() builds one .spec__reveal button
+   per specimen and hides the real .wrong line; without JS the static
+   <del>/<ins> pair is the whole of it. The button mirrors .line-spec's
+   metrics and carries the amber rule plus an underlined label, so it reads
+   as "open me". .line-spec's display: flex out-specifies the UA [hidden]
+   rule, so [hidden] is restored explicitly. */
 .line-spec[hidden] { display: none; }
-/* SITE-PLAN F4 (2026-11-20): under each English mistake, faintly, the Russian
-   sentence it comes from ("Я согласен…" under "I am agree…"), so the reader
-   sees where the error starts. Typography only: --fg2, smaller, the body
-   face; no rule, no ink. Indented to the sentence's own left edge. Shown with the mistake;
-   main.js hides it while the mistake is folded away. */
+/* Under each English mistake, faintly, the Russian sentence it comes from,
+   so the reader sees where the error starts. --fg2, smaller, the body face,
+   indented to the sentence's own left edge. main.js hides it while the
+   mistake is folded away. */
 .line-spec__src {
   /* .68em of .line-spec's own fluid size, the width of one glyph slot */
   --glyph: clamp(11.56px, 1.156vw, 13.6px);
@@ -1764,51 +1182,25 @@ html.js .line-spec__src { padding-left: calc(16px + 2 * var(--glyph) + 24px); }
 .spec__prompt:focus-visible .spec__prompt-label {
   color: var(--fg); text-decoration-thickness: 2px;
 }
-/* :not([hidden]) so the attribute still hides it — a bare `display` here would
-   out-specify the UA [hidden] rule (same trap as .spec__permalink-status). */
+/* :not([hidden]), so the attribute still hides it (a bare display would
+   out-specify the UA [hidden] rule). */
 .spec__prompt-mistake:not([hidden]) { display: flex; gap: 12px; align-items: baseline; }
 .spec__prompt-mistake .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; color: var(--ink-specimen); }
 .spec__prompt-mistake .sig svg { display: block; width: .68em; height: .68em; }
 .spec__prompt-mistake del { text-decoration: none; color: var(--amber-text); }
 
 /* ---------- origin (name & mark) ---------- */
-/* Trifecta Order D / Stage D2 (2026-09-15): the pre-agreed phone fallback
-   from the plan. A centred column (the pattern every other .sec__head block
-   below 900px uses — .mechanisms, .rows) put the mark
-   above the three-row readout instead of beside it, and measured at
-   375x667 the readout ran well off the bottom of the viewport before the
-   reader saw a single reading. Below 900px this is a compact two-column
-   band instead — mark on the left, readout beside it, same row layout the
-   ≥900px rule below already uses — not a smaller type scale, per the plan's
-   own instruction. */
-/* Single source for how far the mark's column reaches, set on the section
-   itself (not .origin__body) so .origin__hint — a sibling of .origin__body,
-   not a descendant — can still inherit it and land over the panel/mark gap
-   without a second hand-kept number. */
+/* How far the mark's column reaches, set on the section so .origin__hint (a
+   sibling of the mark) can inherit it. */
 #origin {
   --mark-w: clamp(96px, 26vw, 170px);
 }
 @media (min-width: 900px) {
   #origin { --mark-w: clamp(180px, 22vw, 280px); }
 }
-.origin__body {
-  display: flex; flex-direction: row; align-items: flex-start;
-  gap: clamp(12px, 4vw, 32px);
-}
-/* flex-start, not center: below 900px the readout can run to 4+ wrapped
-   lines per row (worse in RU), making .origin__body several times taller
-   than the fixed-size mark. Centering a small mark in a tall row drags it
-   down to wherever the row's midpoint happens to land — next to "Coaching
-   since" or "Achieved" instead of the picker it's paired with. Pinning it
-   to the top keeps it beside "Choose your discipline" regardless of how
-   long that reading runs. */
-@media (min-width: 900px) {
-  .origin__body {
-    align-items: center;
-    justify-content: flex-start;
-    gap: clamp(40px, 6vw, 90px);
-  }
-}
+
+/* flex-start: the mark stays at the top of its row */
+
 .origin__mark {
   position: relative;
   width: var(--mark-w);
@@ -1816,63 +1208,26 @@ html.js .line-spec__src { padding-left: calc(16px + 2 * var(--glyph) + 24px); }
   margin: 0;
 }
 .glyph { display: block; width: 100%; height: auto; overflow: visible; }
-/* Specimen switch (2026-09-17): §03's own small instance of this mark, next
-   to the mistakes it switches. --mark-w isn't in scope outside #origin, so
-   this sets its own fixed size rather than inheriting an unset custom
-   property — deliberately smaller than even §01's own ≥900px-down minimum,
-   since this one sits inline with body copy, not as the section's own
-   figure. */
-/* Sized (2026-09-17) against the h2 it now sits beside (.sec__head h2:
-   clamp(27px, 3.6vw, 48px), two lines ~1.12 line-height): big enough to
-   read as a deliberate second appearance of the mark — not the "small
-   afterthought" scale it shipped at first — while staying visibly under
-   the heading's own footprint, since the headline stays the row's focal
-   point. Roughly the heading's own two-line height at each width, not its
-   font-size alone. */
-.origin__mark--mini { width: clamp(64px, 8vw, 92px); flex-shrink: 0; margin: 0; }
-/* Never scale the two arms: they're clipped halves of one shared path, and
-   scaling a clipped element scales its clip boundary with it, which would
-   tear the seam away from the unmodified mark underneath. The stem used to
-   carry a scale flourish the arms structurally can't (C5, 2026-09-06) — an
-   asymmetry where one of three "equal" hit regions gave a visibly different,
-   more pronounced reply than the other two. Dropped rather than added to the
-   arms: colour is the one feedback channel all three can carry identically.
-   Active state is full-strength --amber/--green — the same values as the
-   navbar wordmark, not a brightened stand-in — so the mark reads as one
-   consistent colour wherever it appears (2026-09-05). */
+
+/* Never scale the two arms: they are clipped halves of one path, and
+   scaling would scale the clip and tear the seam. Colour is the one feedback
+   all three strokes can carry alike; active is full --amber/--green, the
+   same as the masthead's mark. */
 .glyph__part {
   transition: fill var(--t) var(--e);
 }
-/* Extra, alongside C5 (2026-09-06), not a separate finding: the amber V and
-   the green stem meet at a shared vertex, and two overlapping fills read as
-   one two-tone shape at exactly the seam where the copy beside it insists
-   these are three separate strokes. A thin --bg-coloured keyline, painted
-   last (the stem sits after the arms in paint order), cuts a clean edge
-   between them without moving a single path coordinate — the mark itself
-   is still never redrawn. */
+/* A thin --bg keyline, painted last, cuts a clean edge where the amber V and
+   the green stem meet, so they read as three strokes; no path is redrawn. */
 .glyph__part { stroke: var(--bg); stroke-width: 1.25px; }
-/* C5: dimming used to be opacity: .32, which blends with whatever renders
-   behind a shape — including the *other* glyph part it overlaps at that same
-   vertex, which was half of what the keyline above cuts through. Explicit
-   solid fill tokens per theme instead: chosen to land close to the old
-   opacity look on each bg, but as colours that can't bleed into a neighbour. */
+/* Dimmed strokes use solid per-theme tokens, not opacity, so they can't
+   bleed into the stroke they overlap. */
 .glyph__part--left.is-dim,
 .glyph__part--right.is-dim { fill: var(--amber-dim); }
 .glyph__part--stem.is-dim { fill: var(--green-dim); }
 
-
-
-/* Specimen sigils (2026-09-17): three small copies of the masthead nav
-   icons at the open end of each stroke (index.html). Hidden at rest —
-   opacity only, never display/visibility, so the fade in initOrigin() has
-   something to animate. Coloured with the same two inks the strokes
-   themselves already use (amber for English/chess, green for climbing),
-   not a third colour. transform-box/-origin: the scale pop below pivots
-   around the icon's own centre, not the SVG's (0,0) corner; the placement
-   transform lives one level up, on the static outer <g> in index.html, so
-   this element's own transform is free for the spark alone (CLAUDE.md's
-   transform-channel rule — a layout transform and an animated one never
-   share a node). */
+/* Sigils: small copies of the discipline icons at the open end of each
+   stroke, in that stroke's ink. Hidden at rest with opacity only, so they
+   can fade. Placed by the static outer <g> in index.html. */
 .origin__sigil {
   opacity: 0;
   transition: opacity var(--t) var(--e);
@@ -1883,33 +1238,14 @@ html.js .line-spec__src { padding-left: calc(16px + 2 * var(--glyph) + 24px); }
 .origin__sigil[data-discipline="english"],
 .origin__sigil[data-discipline="chess"] { color: var(--amber); }
 .origin__sigil[data-discipline="climbing"] { color: var(--green); }
-/* Preview: hover/keyboard-focus on a stroke, ink only, reverts on leave —
-   never falls back to showing the committed discipline's sigil, unlike the
-   glyph's own paint(). See previewSigil() in main.js. */
+/* Shown only while a stroke or door is hovered or focused (initOrigin). */
 .origin__sigil.is-preview { opacity: 1; }
-/* Commit: a one-shot flourish, not a lit state — sparkSigil() in main.js
-   adds this class and removes it again after --spark-d, so a repeat commit
-   of the same discipline retriggers cleanly instead of being a no-op class
-   toggle. */
-.origin__sigil.is-spark { animation: sigil-spark var(--spark-d) var(--e); }
-@keyframes sigil-spark {
-  0%   { opacity: 0; transform: scale(.6); }
-  40%  { opacity: 1; transform: scale(1.2); }
-  70%  { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(.9); }
-}
 
-/* S7 move 03 — the mark assembles from its three strokes on first reveal.
-   Section 04's copy says "two for the V, one for the stem"; drawn in that
-   order by growing each clip rect from zero: left arm top->vertex, right arm
-   vertex->tip, then the stem down from the vertex. Presentation only — the
-   shared path geometry (#glyphV, the stem d=) is never touched, and the
-   rects keep their full-size attributes, so no-JS keeps the finished mark.
-   One-shot: it runs off the same .is-in the reveal observer sets, offset by
-   the figure's own --d so it starts with the reveal fade, not before it.
-   Under reduced motion the reset below plus the global .01ms rule land it
-   complete on the first frame. The idle hint in initOrigin() is held back
-   until this finishes so the two never drive the same strokes at once. */
+/* The mark assembles from its three strokes on first reveal, in the order
+   the copy names them (two for the V, one for the stem), by growing each
+   clip rect from zero. The rects keep their full-size attributes, so no-JS
+   shows the finished mark. Runs off the reveal's .is-in, offset by the
+   figure's --d; reduced motion lands it complete on the first frame. */
 html.js .origin__mark #glyphClipLeft  rect { height: 0; }
 html.js .origin__mark #glyphClipRight rect { y: 100px; height: 0; }
 html.js .origin__mark #glyphClipStem  rect { height: 0; }
@@ -1920,11 +1256,9 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
 @keyframes glyph-draw-up   { from { y: 100px; height: 0; }     to { y: 0px; height: 100px; } }
 @keyframes glyph-draw-stem { from { height: 0; }               to { height: 44px; } }
 
-/* Invisible, generously-sized hit targets — padded well past the thin visual
-   stroke (the arms render only ~8-11px wide at this size) so the target is
-   actually tappable, not traced to the glyph's own outline. Real <button>s,
-   not divs with role="button": Tab and touch both work natively, with mouse
-   hover layered on top for fine pointers only — see initOrigin() in main.js. */
+/* Invisible hit targets, padded well past the thin strokes so they are
+   tappable. They are links to the discipline pages; hover is layered on for
+   fine pointers only (initOrigin). */
 .origin__hit {
   position: absolute; display: block; margin: 0; padding: 0; border: 0;
   background: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
@@ -1932,51 +1266,17 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
 .origin__hit--left  { left: 0;    top: 0; width: 50%; height: 55%; }
 .origin__hit--right { right: 0;   top: 0; width: 50%; height: 55%; }
 .origin__hit--stem   { left: 20%; right: 20%; bottom: 0; top: 55%; }
-/* The dim/active contrast on the glyph and the panel revealing (see
-   initOrigin()) said *which* discipline has focus, but color alone isn't a
-   focus indicator, and a Tab landing here showed no ring at all — the ring
-   was suppressed here and never drawn anywhere else. It belongs on the
-   figure a reader can actually see, not boxed around the invisible,
-   oversized hit rectangle whose edges don't trace the glyph. :has() puts it
-   on .origin__mark itself, keyed off whichever hit target currently holds
-   keyboard focus. */
+/* The focus ring goes on the visible mark, not the oversized invisible hit
+   area: :has() puts it on .origin__mark for whichever hit has keyboard
+   focus. */
 .origin__hit:focus-visible { outline: none; }
 .origin__mark:has(.origin__hit:focus-visible) {
   outline: 2px solid var(--ink-target); outline-offset: 8px;
 }
 
-/* Single source of the three discipline/stat pairs, always in normal flow.
-   Stage D2 (2026-09-15) removed the html.js overlay that used to stack these
-   absolutely and cross-fade all but the active one — that overlay was
-   hiding the better design, and removing it means the no-JS state and the
-   JS state finally agree instead of one being a JS-only illusion. Each row
-   is a real <button> (not a div with role=button), matching .origin__hit's
-   own pattern: the readout is as clickable as the glyph, with a much larger
-   target for touch. */
-.origin__panel { position: relative; width: min(100%, 360px); }
-/* tabindex="-1" (main.js) makes this a one-shot landing point for a
-   #chess/#climbing deep link on load, not a real Tab stop — so it never
-   earns the global :focus-visible ring (style.css above). Left undeclared,
-   that box wraps the whole panel with no offset, unlike every other
-   programmatic focus target on the page (.origin__hit redirects its ring to
-   .origin__mark; .view__group > h2 gets its own offset outline below). The
-   committed row's .is-active fill and .origin__marker bar already say which
-   discipline landed here, so suppressing the outline loses no signal. */
-.origin__panel:focus-visible { outline: none; }
-/* Marginalia gesturing at the mark+panel below, not a caption sitting on
-   the table — a handwritten aside in its own script face (--hand, defined
-   above with the other type tokens), tilted, never straight. Pulled up
-   into the whitespace .sec__head's own margin-bottom already reserves
-   (negative margin-top) and pushed further from the readout with its own
-   margin-bottom, so there's real air between the note and what it's
-   annotating; the small swash below bridges that distance so it still
-   reads as one gesture instead of an orphaned label. margin-left:
-   var(--mark-w) (set on #origin, above) keeps it aligned over the
-   panel/mark gap at both breakpoints. --green-text (not the raw --green
-   ink) because this IS text, just held well above the 24px floor the
-   colour system's "never as text under 24px" rule sets — same safe-text
-   alias .mark--target already uses, so it clears 4.5:1 in both pairs
-   instead of only the cream one. */
+/* A hand-written aside in its own script face (--hand), tilted. Pulled up
+   into .sec__head's reserved margin, with a small swash bridging the gap
+   so it reads as one gesture. --green-text because it is text. */
 .origin__hint {
   display: flex;
   align-items: flex-end;
@@ -1997,183 +1297,10 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
   flex-shrink: 0;
   margin-bottom: 2px;
 }
-.origin__panel-item {
-  display: flex; width: 100%; align-items: center; justify-content: center; gap: 16px;
-  padding-block: 14px;
-  border-width: 0; border-top-width: 1px; border-style: solid; border-color: var(--rule);
-  margin: 0; background: none; appearance: none;
-  font: inherit; text-align: center; color: inherit; cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: background-color var(--t) var(--e);
-}
-/* appearance:none above strips the button's look but not the UA's own
-   inline padding (Chrome defaults a <button> to ~6px each side); that
-   leftover was never a deliberate design choice and only ever cost this
-   row's shrink budget, so it's zeroed here rather than left to be
-   rediscovered as "mystery" padding. */
-.origin__panel-item { padding-inline: 0; }
-/* Closes the chooser as its own bounded group (top rule from the first
-   item's own border-top, bottom rule here) so the three rows read as one
-   control, distinct from the plain list of .reading__row below it. */
-.origin__panel-item:last-of-type { border-bottom: 1px solid var(--rule); }
-/* Fill is a tint of --fg itself, not a new hue — keeps the two-ink system
-   (CLAUDE.md) intact while giving the chooser a hover/active state that
-   reads as "these rows are buttons," which .origin__marker's 1px edge alone
-   didn't make obvious enough on its own. */
-.origin__panel-item:hover,
-.origin__panel-item:focus-visible,
-.origin__panel-item.is-active {
-  background: color-mix(in srgb, var(--fg) 6%, transparent);
-}
-/* Below 900px, tighten the rows' own padding slightly — not their type
-   scale, per the plan's instruction — to reclaim the few px the two-column
-   band above still needed to clear a 375x667 viewport in English. */
-@media (max-width: 899.98px) {
-  .origin__panel-item { padding-block: 10px; }
-}
-/* RU's compound discipline nouns (СКАЛОЛАЗАНИЕ, АНГЛИЙСКИЙ) run wider than
-   their EN labels; overflow-wrap below keeps a single long Cyrillic word
-   from holding .origin__panel-item's row open past the viewport at
-   320px/RU (a single unbreakable token is otherwise treated as the row's
-   min-content width). .reading__row keeps its own label+value pair, so it
-   still needs flex-wrap to drop them to separate lines once they can't
-   both fit on one — that reasoning no longer applies to .origin__panel-item
-   now that it holds a single centered label with nothing to wrap against. */
-.reading__row { flex-wrap: wrap; }
-.origin__panel-item > span:first-child {
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
-  transition: color var(--t) var(--e);
-  overflow-wrap: anywhere;
-}
-/* Preview lights the row's name with full --fg, not an accent ink — this
-   text sits under the 24px floor the colour system reserves for non-text
-   use (CLAUDE.md). is-active means "currently shown" (preview or commit
-   alike); .origin__marker below is what distinguishes an actual commit. */
-.origin__panel-item.is-active > span:first-child { color: var(--fg); }
 
-/* The commit marker (Stage D2): a 1px rule that slides to the committed
-   row's leading edge. Its own element with its own transform channel — it
-   never touches .origin__mark's (the layout/transform rule in CLAUDE.md
-   is about one element's channel being shared between layout and
-   animation; this element carries no layout for anything else, so
-   animating its own transform is the decorative case the rule always
-   allowed). Positioned from main.js's positionMarker(), which measures the
-   real row it's pointing at rather than assuming a fixed row height, since
-   that height differs across the EN/RU languages and the two breakpoints
-   below. height:0 by default so a no-JS reader never sees a stray mark. */
-.origin__marker {
-  position: absolute; left: 0; top: 0; width: 1px; height: 0;
-  background: var(--ink-target);
-  transform: translateY(0);
-  transition: transform var(--t) var(--e), height var(--t) var(--e);
-}
 
-/* Stage D3 (2026-09-15): the readout's body. Same hairline-row idiom as
-   .origin__panel-item just above (label left, value right, border-top only,
-   no bleed — this sits inside the 360px-capped panel, not the section's own
-   edge, so it never joins the C12 full-bleed list at .mechanisms etc.), but
-   here the LABEL is what never changes; the VALUE is what switches. Base
-   rules (no html.js) put every .reading__value in normal flow, comma-dotted
-   apart by the sibling rule below — the no-JS/no-CSS-switch floor, where a
-   reader who never gets the JS-driven crossfade instead gets every
-   discipline's value read out in one line, which is a *better* result than
-   the JS state, not a fallback of it (see BUILD-NOTES). Only once html.js
-   confirms JS is present does .reading__values become a stacked grid cell
-   with the inactive value(s) faded and taken out of the tab/reading order —
-   updateReading() in main.js (called from commit(), not preview() — this is
-   the readout "swapping" D2 reserved for a commit, never a hover) is the
-   only thing that toggles .is-active here. */
-/* Frames the readout as the chooser's subordinate detail, not a fourth
-   peer row in the same list — spacing + a quiet eyebrow do the separating
-   the screenshot flagged as missing, without a second color or a box. */
-.reading__intro {
-  margin: clamp(36px, 5vw, 56px) 0 10px;
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase;
-  color: color-mix(in srgb, var(--fg2) 65%, var(--bg));
-}
-.reading { margin-top: 0; }
-.reading__row {
-  display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: 16px;
-  padding-block: 10px;
-  border-width: 0; border-top-width: 1px; border-style: solid; border-color: var(--rule);
-}
-@media (max-width: 899.98px) {
-  .reading__row { padding-block: 8px; }
-}
-/* Persistent. Never changes. Never animates — no transition property at
-   all, per the plan: that absence is what sells "same instrument, different
-   subject" rather than "new panel." */
-.reading__label {
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
-  /* Same fix as .origin__panel-item's label above, same reason. */
-  overflow-wrap: anywhere;
-}
-/* left, not right: a single-line reading (all the Measured/Coaching-since
-   values, most Achieved/Common-mistakes ones too) sits flush against the
-   row's right edge either way, since the box is shrink-to-fit — text-align
-   only matters once a value wraps, and a wrapped block should read with a
-   straight left edge, not a staircase of right-ragged line starts. */
-.reading__values { text-align: left; }
-/* Defensive, not currently load-bearing: .reading__label's uppercase is
-   scoped to itself, not inherited by its .reading__values sibling. Kept
-   explicit anyway, matching J2's .domain__stat exemption, because the next
-   stage's climbing row (7c vs 7C) is exactly the case an accidental
-   ancestor rule would flatten, and this is cheaper fixed now than found
-   later — see the rendered-text test in tests/test_content.py. */
-.reading__value { font-family: var(--mono); font-size: 15px; color: var(--fg); text-transform: none; }
-.reading__value + .reading__value::before { content: " · "; }
-html.js .reading__values { position: relative; display: grid; justify-items: end; }
-html.js .reading__value {
-  grid-area: 1 / 1;
-  opacity: 0; visibility: hidden;
-  transition: opacity var(--t) var(--e) calc(var(--i, 0) * .06s),
-              visibility 0s calc(var(--t) + var(--i, 0) * .06s);
-}
-html.js .reading__value.is-active {
-  opacity: 1; visibility: visible;
-  transition: opacity var(--t) var(--e) calc(var(--i, 0) * .06s),
-              visibility 0s calc(var(--i, 0) * .06s);
-}
-html.js .reading__value + .reading__value::before { content: none; }
 
 .origin__note { color: var(--fg2); max-width: var(--measure); margin-top: clamp(32px, 5vw, 56px); }
-/* DESIGN-PASS-III Q6 (2026-09-23): at >=900px the readout was capped at
-   360px, centred in ~500px of dead ground either side, carrying every proof
-   point the site has. It now sits on the page's own grid — the same
-   1.05fr | 1fr split as .sec__head and .specimen-top (kept in sync by
-   comment), so the panel lands directly under the lede column (~524px at
-   1280, ~369px at 900 — never narrower than before). align-items: start
-   pins the mark beside the chooser rows, not beside "In detail". Same
-   type, same register, same rows; phone layout untouched. */
-@media (min-width: 900px) {
-  .origin__body {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    column-gap: clamp(40px, 6vw, 90px);
-    align-items: start;
-  }
-  .origin__body > .origin__mark { justify-self: start; }
-  .origin__body > .origin__panel { width: 100%; }
-  /* The aside moves with the chooser it points into. */
-  #origin .origin__hint {
-    margin-left: calc((100% - clamp(40px, 6vw, 90px)) * 1.05 / 2.05 + clamp(40px, 6vw, 90px));
-  }
-  /* One left edge for the whole panel: chooser labels, the "In detail"
-     eyebrow and a real two-column spec table (fixed label column, values
-     left-aligned) all start 16px in, clear of the 1px commit marker. The
-     labels were centred for a narrow box; above a table they read as a
-     third alignment. */
-  .origin__panel .origin__panel-item { justify-content: flex-start; text-align: left; padding-inline: 16px 0; }
-  .reading__intro { padding-left: 16px; }
-  .reading .reading__row {
-    display: grid; grid-template-columns: 164px minmax(0, 1fr);
-    column-gap: 24px; padding: 10px 0 10px 16px;
-  }
-  html.js .reading__values { justify-items: start; }
-}
 
 /* ---------- who ---------- */
 .rows { border-top: 1px solid var(--rule); }
@@ -2189,13 +1316,10 @@ html.js .reading__value + .reading__value::before { content: none; }
   .rows > li { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: clamp(30px, 5vw, 80px); align-items: baseline; }
 }
 
-/* Spark Order S5 / move 19: each row carries an invisible overlay <button>
-   (built in main.js, so the no-JS row is untouched) that toggles a Telegram
-   prefill on the section 06 CTA. The picked state is marked with the page's
-   hairline vocabulary — a 2px ink rule down the row's leading edge, the same
-   device .line-spec / .wrong / .right use — as a detached ::before so
-   selecting a row never nudges its grid (layout stays off the transform
-   channel). No fill, no card. */
+/* Each row gets an invisible overlay <button> (built in main.js, so the
+   no-JS row is untouched) that picks a Telegram prefill for the contact CTA.
+   Picked = a 2px ink rule down the row's leading edge, as a detached
+   ::before so the grid never moves. */
 .row__pick {
   position: absolute; inset: 0; z-index: 1;
   margin: 0; padding: 0; border: 0; background: none;
@@ -2203,14 +1327,9 @@ html.js .reading__value + .reading__value::before { content: none; }
   cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 .row__pick:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 4px; }
-/* J2 (Jury Pass II, 2026-09-12): the picked-state rule above used to be the
-   *only* visible state — at rest a row gave no hint it was clickable. Same
-   ::before, same -14px gutter, now also shown at rest in --rule's hairline
-   weight (the exact tone the row's own top/bottom borders already use), so
-   it reads as "this row has an edge" rather than a new device, then
-   brightens to full --ink-target on pick. Gated behind html.js: the overlay
-   button that makes rows clickable is also JS-only, so a no-JS reader must
-   not see a mark promising an interaction that isn't there. */
+/* The same rule at rest, in --rule's weight, so the row reads as having an
+   edge; it brightens to --ink-target on pick. html.js only, like the
+   button. */
 .rows > li::before {
   content: ""; position: absolute; top: 0; bottom: 0;
   left: -14px; width: 2px;
@@ -2221,28 +1340,18 @@ html.js .rows > li::before { background: var(--rule); opacity: 1; }
 html.js .rows > li.is-picked::before { background: var(--ink-target); }
 
 /* ---------- collage composition ----------
-   Lives inside the collage view (below), once per domain group (English,
-   chess, climbing). Each group is a plain repeating grid of 5–6 figures at
-   three fixed crop ratios (4:5 / 3:2 / 1:1): 1 column, then 2, then 3 as the
-   viewport widens. No offsets and no overlap — "moderate, not wild" — so
-   layout never occupies the transform channel Stage 4's reveal needs.
-   Reference is xxix.co's gallery for the hard edges, zero radius and pure
-   CSS, not for its density. Structure is whitespace and the same 1px hairline
-   the rest of the page uses — no third colour, no gradient, no shadow.
-
-   Every figure hard-codes its final aspect ratio through a modifier class, so
-   the box is the right shape before any image exists and does not resize when
-   one arrives — this is what keeps the build's zero-layout-shift record.
-   Images + grayscale treatment are Stage 3; motion is Stage 4. */
+   Inside the collage view, once per domain group: a plain grid of figures at
+   three fixed crop ratios (4:5, 3:2, 1:1), 1 column, then 2, then 3. No
+   offsets or overlap, so layout never takes the transform channel. The same
+   1px hairline frames each figure; aspect ratios are fixed up front, so
+   nothing shifts when an image decodes. */
 .collage { display: grid; grid-template-columns: 1fr; gap: var(--collage-gap-y); }
 .collage__fig { margin: 0; min-width: 0; }
 .collage__slot {
   border: 1px solid var(--rule);
   display: grid; place-items: center;
   padding: 16px;
-  /* Reserved for Stage 1's reveal wipe (clip-path) — also the container
-     Stage 4's hover scale needs, set here so the two stages stay independent
-     of each other. */
+  /* for the reveal's clip-path wipe and to contain the hover scale */
   overflow: hidden;
 }
 .collage__fig--45 .collage__slot { aspect-ratio: 4 / 5; }
@@ -2250,48 +1359,30 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
 .collage__fig--11 .collage__slot { aspect-ratio: 1 / 1; }
 .collage__fig--916 .collage__slot { aspect-ratio: 9 / 16; }
 
-/* Real photo fills the ratio box the placeholder already reserved — the 1px
-   hairline on .collage__slot stays as the frame, the padding (there for the
-   filename chip) is dropped. object-fit locks the crop to that reserved box,
-   so nothing shifts when the image decodes — the build's zero-CLS record.
-   Grayscale treatment is the per-theme --collage-filter token above. */
+/* The photo fills the reserved ratio box; object-fit locks the crop, so
+   nothing shifts on decode. Grayscale is --collage-filter. */
 .collage__slot:has(img) { padding: 0; }
 .collage img {
   display: block; width: 100%; height: 100%;
   object-fit: cover;
   filter: var(--collage-filter);
-  /* Stage 4: earned now that Stage 3 made the tiles real controls. The scale
-     lives on the image, never the grid item, so layout keeps the transform
-     channel clear — .collage__slot's overflow:hidden (set in Stage 1) is
-     what contains it. .6s tracks D.state (main.js); kept in sync by hand,
-     same as var(--e) is between this file and the GSAP 'brand' ease. Paired
-     with :focus-visible, matching this page's existing hover/focus pairing
-     (e.g. .proof__link) so keyboard activation gets the same cue. Still no
-     colour reveal — grayscale (--collage-filter) is untouched. */
+  /* Hover/focus scale on the image, never the grid item; the slot's
+     overflow: hidden contains it. .6s tracks D.state in main.js. */
   transition: transform .6s var(--e);
 }
 .collage__trigger:hover img,
 .collage__trigger:focus-visible img { transform: scale(1.04); }
-/* Stage 3: main.js wraps every .collage__slot in a real <button> at
-   runtime (initCollageLightbox) — a no-JS reader never sees this class at
-   all. Reset to plain-block rather than `all: unset`, so only the button
-   chrome (background/border/padding/font) is stripped and .collage__slot's
-   own border/ratio/overflow stay exactly as they were, unaffected by the
-   extra wrapper. */
+/* main.js wraps every .collage__slot in a <button> at runtime
+   (initCollageLightbox). Reset to plain block rather than all: unset, so
+   only the button chrome goes. */
 .collage__trigger {
   display: block; width: 100%;
   background: none; border: 0; margin: 0; padding: 0;
   font: inherit; color: inherit; text-align: inherit;
   cursor: pointer;
 }
-/* Sans, not mono: mono on this page is quoted linguistic material, and a
-   filename is neither. Placeholder only — deleted with the boxes in Stage 3. */
-.collage__wait {
-  font-family: var(--sans); font-size: 11px; font-weight: 500;
-  letter-spacing: .04em; color: var(--fg2);
-  border: 1px solid var(--rule); padding: 4px 9px;
-  max-width: 100%; overflow-wrap: anywhere; text-align: center;
-}
+/* Sans, not mono: mono on this page is quoted linguistic material. */
+
 .collage figcaption {
   margin-top: 14px;
   font-size: 13px; color: var(--fg2); letter-spacing: .01em;
@@ -2314,35 +1405,20 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
 @media (min-width: 900px) {
   .collage--group { grid-template-columns: repeat(3, 1fr); }
 
-  /* Chess group ships four real frames, not six — two-up (2x2) so each one
-     takes ~half the group's width instead of being squeezed to a third with
-     an orphan on a fourth. Equal columns; slots keep their own ratio classes,
-     nothing stretched. align-items:start (inherited from the 600px rule) keeps
-     the ragged bottoms the rest of the collage already has. */
-  /* 2026-09-24: chess grew to six and went to two rows of three (Igor).
-     The group is one column of two .collage__row lines; see below. */
+  /* The chess group: one column of two .collage__row lines (below). */
   .collage--group--rows { grid-template-columns: 1fr; }
 
-  /* Climbing group's first row of three (4:5 / 9:16 / 1:1). Equal 1fr
-     columns made the 9:16 belay-loop frame tower over the other two. Size
-     the columns to the inverse of each crop's width:height instead
-     (0.8 : 0.5625 : 1 -> 64 : 45 : 80), so at a shared row height all three
-     line up: the tall middle frame goes narrow, the 4:5 and 1:1 take the
-     width it gives back. Still one plain grid row — the slots keep their
-     own aspect-ratio classes, nothing stretched or transformed. The
-     full-width .collage__pair below is unaffected (grid-column: 1 / -1). */
+  /* The climbing group's first row (4:5 / 9:16 / 1:1): columns sized to each
+     crop's width:height (64 : 45 : 80), so all three share one height. */
   .collage--group:has(.collage__pair) {
     grid-template-columns: 64fr 45fr 80fr;
   }
 }
 
 /* ---------- collage proportional rows (chess group) ----------
-   Mixed ratios in one row, all the same height, none cropped: each figure's
-   flex-grow is its slot's width:height (3:2 -> 1.5, 1:1 -> 1, 4:5 -> .8) on a
-   zero basis, so the width after the gaps is shared out in proportion to the
-   ratio and every slot resolves to the same height. Below 900px the row box
-   disappears (display: contents) and its figures sit in the group's grid like
-   any other tile. No transform, no spanning. */
+   Mixed ratios in one row at one height, none cropped: each figure's
+   flex-grow is its width:height on a zero basis. Below 900px the row box
+   steps aside (display: contents). */
 .collage__row { display: contents; }
 @media (min-width: 900px) {
   .collage__row { display: flex; align-items: flex-start; gap: var(--collage-gap-x); }
@@ -2352,12 +1428,9 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
   .collage__row > .collage__fig--916 { flex-grow: .5625; }
 }
 
-/* ---------- collage paired row (climbing group only) ----------
-   The climbing group's last row is 3:2 photos filling the group's full
-   width — coaching at the wall, Igor on rock, the training board from the
-   floor — in equal zones (three since 2026-09-24). Just a two-column grid inside one full-width grid
-   item; stacks to one column on narrow viewports like the rest of the
-   collage. No overlap, no hover behaviour. */
+/* ---------- collage paired row (climbing group) ----------
+   The last row: 3:2 photos across the group's full width in equal zones,
+   one column on narrow screens. */
 .collage__pair {
   grid-column: 1 / -1;
   display: grid;
@@ -2365,9 +1438,8 @@ html.js .rows > li.is-picked::before { background: var(--ink-target); }
 }
 @media (min-width: 600px) {
   .collage__pair { grid-template-columns: 1fr 1fr; align-items: start; }
-  /* 2026-09-24: a third 3:2 (the coaching frame) joined the row. Two-up it
-     leads on its own full-width line so the other two stay a pair; three-up
-     from 900px, where the group itself goes three-up. */
+  /* With three, two-up puts the first on its own line so the other two pair;
+     three-up from 900px. */
   .collage__pair__fig:first-child:nth-last-child(3) { grid-column: 1 / -1; }
 }
 @media (min-width: 900px) {
@@ -2402,28 +1474,18 @@ html.js.collage-open .view {
    router isn't running. */
 html.js.collage-open, html.js.collage-open body { overflow: hidden; }
 
-/* Stage 2 — the route's View Transition (main.js: withTransition(),
-   S7 move 04 extended to the open direction) is left to the browser's own
-   default crossfade timing unless told otherwise, which is a second curve
-   and a second duration entering the system. Pin both the whole-page
-   crossfade (::view-transition-group(root), used by close and by any
-   hashchange-driven open) and the door's own named group to the one easing
-   curve and the same .6s this route's plain opacity fade already uses
-   above, so the API and the CSS agree regardless of which one a given
-   browser ends up painting. */
+/* The route's View Transition uses the one curve and the same .6s as the
+   view's opacity fade, not the browser's default timing. */
 ::view-transition-group(root),
 ::view-transition-group(collage-door) {
   animation-duration: var(--t);
   animation-timing-function: var(--e);
 }
 
-/* Discipline pages, Stage 6 (2026-10-31): moving between the four pages is a
-   cross-document View Transition. It reuses the root crossfade pinned just
-   above (one curve, one duration), and the masthead, which is the same on
-   every page, gets its own group so it holds still while the page under it
-   changes. Scoped by a transition type so the collage route's same-document
-   transitions never pick up the masthead's name. Chrome and Safari animate;
-   other browsers just navigate. Off under reduced motion. */
+/* Moving between pages is a cross-document View Transition with the same
+   root crossfade; the masthead, the same on every page, holds still in its
+   own group. Scoped by a transition type so the collage route never picks
+   up the masthead's name. Off under reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; types: page; }
 }
@@ -2433,19 +1495,11 @@ html:active-view-transition-type(page) .masthead { view-transition-name: masthea
   animation-timing-function: var(--e);
 }
 
-/* ---------- collage lightbox (Stage 3) ----------
-   A layer on top of the view, not a nested route (main.js's own note:
-   moving #collage/#collage-en into hash-prefix matching would put 21
-   existing tests and the render-blocking pre-paint gate at risk for a
-   deep-linkable-photo nicety that hasn't been asked for). Built and
-   appended entirely at runtime — see initCollageLightbox — so nothing
-   here ships to a no-JS reader.
-
-   Full-bleed solid --bg, the same visual language the view itself already
-   uses for its own full-screen takeover, rather than inventing a
-   translucent backdrop the brand's flat-colour rule doesn't have a
-   colour for. z-index sits between the view (60) and the pointer dot
-   (90) — above the photographs, below the cursor. */
+/* ---------- collage lightbox ----------
+   A layer on top of the view, not a nested route, built entirely at runtime
+   (initCollageLightbox), so nothing here reaches a no-JS reader. Solid --bg,
+   like the view itself. z-index sits between the view (60) and the pointer
+   dot (90). */
 .lightbox {
   position: fixed; inset: 0; z-index: 70;
   display: grid;
@@ -2462,48 +1516,28 @@ html:active-view-transition-type(page) .masthead { view-transition-name: masthea
 .lightbox__media {
   grid-row: 1;
   width: 100%; height: 100%; min-height: 0; min-width: 0;
-  /* Flex, not grid, for this inner box: a grid item's percentage max-height
-     is resolved against its grid area, and Chromium (still true as of this
-     fix) treats that area as indefinite here even with an explicit 1fr row
-     on a definite-height grid — so a 900w+ square source rendered at full
-     native pixel size, sometimes taller than the viewport, ignoring
-     .lightbox__img's max-height:100% below entirely. A flex container's
-     cross-axis percentage resolution doesn't hit that circularity, so the
-     same img/max-* rules below now actually cap the photo. Fixed
-     2026-09-22: reported as photos opening "too big in the face" with no
-     way back to the whole image. */
+  /* Flex, not grid: Chromium resolves a grid item's percentage max-height
+     against an indefinite area here, so photos opened at native size, taller
+     than the viewport. Flex caps them. */
   display: flex; align-items: center; justify-content: center;
 }
-/* width/height: auto with these two max-* is what caps display at the
-   image's own native pixel size instead of upscaling a 900w/1200w source
-   to fill the screen — PLACEHOLDERS.md already flags climb-04-crimp as
-   soft at grid size; a lightbox must not make that worse by stretching it
-   further. Grayscale is the resting state here too, but the lightbox
-   reverses Stage 5's grayscale->colour rejection on purpose (2026-09-22,
-   Igor's call) — see BUILD-NOTES.md. Scoped to this full-screen, one-photo
-   mode only: the grid tiles keep the original ban untouched
-   (test_tile_still_grayscale_on_hover). */
+/* auto size with these max-* caps the photo at its native pixel size, never
+   upscaled. The lightbox is the one place a photo shows in colour (on hover,
+   or once on open for touch); the grid tiles stay grayscale. */
 .lightbox__img {
   display: block;
   max-width: 100%; max-height: 100%;
   width: auto; height: auto;
   filter: var(--collage-filter);
-  /* .6s tracks D.state (main.js) by hand, same convention as the grid
-     tile's hover-scale transition duration. */
+  /* .6s tracks D.state in main.js */
   transition: filter .6s var(--e);
 }
-/* Desktop: hover reveals colour. No :focus-visible pair here — unlike the
-   grid tiles' earned hover-scale, this conveys no information (same photo
-   either way), so a fake tabindex just to mirror hover would replant the
-   "empty keyboard stop" Stage 5 already rejected once for the tiles. */
+/* Desktop: hover reveals colour. No focus pair: it is the same photo either
+   way, so it earns no keyboard stop. */
 @media (hover: hover) and (pointer: fine) {
   .lightbox__img:hover { filter: none; }
 }
-/* Touch has no hover to trigger this, so main.js fires it once as the photo
-   opens (see initCollageLightbox's open()) — same transition, same timing,
-   just a class instead of a pseudo-class. Gated on (pointer: coarse) too,
-   belt-and-braces, so .is-colour is inert on any device main.js's
-   finePointer check didn't intend it for. */
+/* Touch has no hover, so main.js adds .is-colour once as the photo opens. */
 @media (pointer: coarse) {
   .lightbox.is-colour .lightbox__img { filter: none; }
 }
@@ -2521,14 +1555,8 @@ html:active-view-transition-type(page) .masthead { view-transition-name: masthea
 .lightbox__close, .lightbox__prev, .lightbox__next {
   -webkit-appearance: none; appearance: none;
   position: absolute;
-  /* Grid items (.lightbox__media, .lightbox__caption) paint like
-     inline-blocks — the same visual layer as these absolutely-positioned
-     buttons — ordered by DOM position, not by which is "positioned". Media
-     sits after .lightbox__prev but before .lightbox__next in the markup,
-     so without this, prev silently painted *under* a photo wide enough to
-     reach the edges (any phone-width viewport, since the native-resolution
-     cap barely shrinks these small sources) while next stayed on top.
-     z-index takes both out of that DOM-order tie-break for good. */
+  /* Grid items paint at the same layer as these positioned buttons, in DOM
+     order, so prev would sit under a wide photo; z-index lifts both. */
   z-index: 1;
   background: none; border: 0; padding: 10px;
   cursor: pointer; color: var(--fg2);
@@ -2564,23 +1592,15 @@ html.js .view__bar {
   border-bottom: 1px solid var(--rule);
 }
 .view .footmark { width: 34px; height: 34px; flex: none; }
-.footmark-home, .footmark-top { display: block; flex: none; border-radius: 4px; }
-.footmark-home:focus-visible, .footmark-top:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
+.footmark-home{ display: block; flex: none; border-radius: 4px; }
+.footmark-home:focus-visible{ outline: 2px solid var(--fg); outline-offset: 4px; }
 
 /* Cream/Charcoal + Back, grouped at the right end of the bar (footmark holds
    the left). Mirrors the masthead's tools cluster. */
 .view__tools { display: flex; align-items: center; gap: clamp(16px, 3vw, 30px); }
 
-/* The in-view domain switcher's .tools__group has no flex-shrink override
-   (unlike .tool, which treats its 44px touch target as a floor — see the
-   comment on .tool above), so once .view__tools runs out of room it's the
-   one flexbox crushes: measured clean down to ~430-500px, but by 375px the
-   crushed group's children visibly overlap the theme toggle next to it —
-   not a cosmetic squeeze, an actual overlapping-buttons bug. Same crowding
-   the masthead nav already hit (see its own max-width:400px rule above);
-   hidden below that same threshold rather than force a cramped fit — the
-   masthead icons (when reachable) and manual scroll still get you to every
-   group. */
+/* The in-view domain switcher would be crushed into the theme toggle below
+   400px, so it is hidden there. */
 @media (max-width: 400px) {
   .view__bar .tools__group,
   .view__bar .tools__rule { display: none; }
@@ -2597,9 +1617,7 @@ html.js .view__bar {
 }
 .view__back:hover { color: var(--fg); }
 .view__back svg { width: 22px; height: 8px; display: block; }
-/* 70x31 at rest — already clears WCAG 2.2's 24px minimum on both axes, but
-   sits well short of the icons' 44px beside it in the same bar. Same
-   padding-block-only treatment as .tool above, for a comparable reach. */
+/* touch: a taller target for Back, close to the icons' 44px */
 @media (pointer: coarse) { .view__back { padding-block: 13px; } }
 
 .view__body {
@@ -2613,11 +1631,8 @@ html.js .view__bar {
   max-width: 24ch; margin: 0 0 clamp(20px, 3vw, 32px);
 }
 html[data-lang="ru"] .view__body > h1 { letter-spacing: -.01em; }
-/* Focus lands here programmatically on entering #collage (main.js) so screen
-   readers start at the view's heading — the .focus() call stays. Igor asked
-   for no visible ring on that focus: the h1 is not an interactive control, so
-   the outline read as a stray box rather than a keyboard cue. Suppressed for
-   :focus-visible too (keyboard entry), matching the plain :focus rule. */
+/* Focus lands on the h1 when the view opens, so screen readers start there.
+   It is not a control, so no visible ring. */
 .view__body > h1:focus,
 .view__body > h1:focus-visible { outline: none; }
 .view__lede {
@@ -2626,10 +1641,8 @@ html[data-lang="ru"] .view__body > h1 { letter-spacing: -.01em; }
 }
 
 /* ---------- collage domain groups ----------
-   Three sections inside the collage view — English, chess, climbing — each a
-   labelled block carrying the same top-hairline rhythm a .sec has on the main
-   page. Headings are unnumbered domain words in the .label style: the collage
-   is its own view and does not continue the page's 01–06 count. */
+   English, chess, climbing: each a labelled block with a .sec's top
+   hairline. Unnumbered: the collage is its own view. */
 .view__group { border-top: 1px solid var(--rule); padding-top: clamp(44px, 6vw, 88px); }
 .view__group + .view__group { margin-top: clamp(44px, 6vw, 88px); }
 .view__group > .label { margin-bottom: clamp(18px, 2.4vw, 28px); }
@@ -2639,20 +1652,14 @@ html[data-lang="ru"] .view__body > h1 { letter-spacing: -.01em; }
   max-width: 24ch; margin: 0 0 clamp(14px, 2vw, 22px);
 }
 html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
-/* h2 takes focus (tabindex -1) when a masthead glyph icon jumps to its group —
-   same pattern as #collage-title: kill the mouse outline, keep the keyboard ring. */
+/* the h2 takes focus when an icon jumps to its group: no mouse outline, the
+   keyboard ring stays */
 .view__group > h2:focus { outline: none; }
 .view__group > h2:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 6px; }
 
-/* Each group's label carries the same glyph as its masthead nav icon, so the
-   icon you click visibly lands on the section it points to. Decorative (the
-   word is the label; the mark is aria-hidden). Held at 20px for parity with the
-   19px masthead nav glyph it echoes — the earlier 1.15em (~14px) off the 12px
-   label rendered a near-invisible hairline once the 1.8 stroke scaled down.
-   stroke-width bumped to 2.2 here (CSS wins over the SVG attr) so the outline
-   glyphs keep their weight at 20px; no effect on the fill-based chess mark.
-   Still inked in --fg2 to match the nav icons — a glyph, not text, so the
-   sub-24px accent-text rule doesn't come into it; fg2 is the restrained match. */
+/* Each group's label carries its discipline glyph (decorative; the word is
+   the label): 20px, with a 2.2 stroke (CSS beats the SVG attribute) so the
+   outline glyphs keep their weight; --fg2, like the icons. */
 .label--glyph { align-items: center; gap: .55em; }
 .label__mark { width: 20px; height: 20px; flex: none; stroke-width: 2.2; }
 
@@ -2661,26 +1668,9 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   margin: 0 0 clamp(28px, 4vw, 48px);
 }
 
-/* entry link — the one CTA into the full photo view. Given the .channels
-   scale (Lora, 600, clamp 22-44px) rather than the .scrollcue/.tool scale,
-   because the destination is a full-screen view, not a footnote: it earns a
-   full-width row, not an inline tag. Keyboard focus is the page-wide green
-   ring via :focus-visible; the drawn underline is additive on top of it,
-   not a replacement.
-
-   P9 (2026-09-06): this used to rest at --fg2 with the underline drawn in
-   only on hover — the most recessive large element on the page guarding
-   the only way through to real proof. Full --fg at rest was kept from
-   that fix (the door still reads as a door at rest, from weight alone).
-
-   2026-09-18: the resting-state underline P9 added is dropped again —
-   not because the door-cue idea was wrong, but because .proof__link
-   fills .proof edge to edge, so its "underline" is really a full-bleed
-   rule indistinguishable from a section hairline, and it sits directly
-   above the next section's own border-top with nothing between them: two rules
-   reading as one doubled line. Full --fg text already carries the
-   at-rest affordance; the underline now only earns its keep as the
-   hover/focus prompt it always was on top of that. */
+/* The entry link into the photo view, at the .channels scale: a full-width
+   row. Full --fg at rest so it reads as a door; the drawn underline adds to
+   the focus ring, never replaces it. */
 .proof { margin-top: clamp(48px, 7vw, 88px); border-top: 1px solid var(--rule); }
 .proof__link {
   display: flex; align-items: center; justify-content: space-between;
@@ -2699,11 +1689,9 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   font-size: clamp(24px, 4vw, 44px); color: var(--fg);
 }
 
-/* Two stacked copies of the same arrow rather than one: on hover the front
-   one travels, the back one follows a beat later at partial opacity, which
-   reads as the arrow moving rather than just sliding — same curve and
-   duration as everywhere else (var(--e), var(--t)), only the start is
-   delayed, the same device the reveal stagger already uses. */
+/* Two copies of the arrow: on hover the front one travels and the back one
+   follows a beat later at partial opacity, so it reads as moving. Same
+   curve and duration; only the start is delayed. */
 .proof__arrow { position: relative; width: 40px; height: 13px; flex: none; }
 .proof__arrow svg {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -2718,13 +1706,10 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   opacity: .3; transform: translateX(3px); transition-delay: .07s;
 }
 
-/* SITE-PLAN C2 (2026-11-20): the photo strip under "See me at work". It
-   wraps onto its own row inside the same flex link, so the text and arrow
-   keep their places and the whole band stays one link to the gallery. One
-   crop for all five (4:5), the gallery's own grayscale token, the page
-   gutter between frames: no border, no rounding, no motion of its own (the
-   band's .reveal carries it in). Five across from 900px; below that the
-   first three (one per discipline), so nothing scrolls sideways. */
+/* The photo strip under "See me at work", wrapped onto its own row inside
+   the same link. One 4:5 crop, the gallery's grayscale, the page gutter
+   between frames, no motion of its own. Five across from 900px; below that
+   the first three, one per discipline. */
 .proof__link { flex-wrap: wrap; }
 .proof__strip {
   flex: 1 0 100%;
@@ -2745,16 +1730,11 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 }
 
 /* ---------- in their words (testimonials marquee) ----------
-   Two states. The base rules are the static one — no JS, GSAP missing, or
-   reduced motion (initVoices() sits past main.js's reduce return): a plain
-   grid, every quote readable, nothing moving. .is-marquee (added by JS
-   only) turns the same list into one long row, cloned once, that main.js
-   drifts with translate3d on .voices__track. The track is not a .reveal
-   target — the reveal rises .voices__band, the wrapper — so the drift and
-   the reveal never share an element's transform channel.
-   The band bleeds to the viewport edge (body already clips overflow-x);
-   no fade masks at the edges, because the brand has no gradients — the
-   quotes simply run under the frame, the way a strip of film does. */
+   The base rules are the static state (no JS, no GSAP, reduced motion): a
+   plain grid, every quote readable. .is-marquee (JS only) turns the list
+   into one long row, cloned once, that main.js drifts with translate3d on
+   .voices__track. The reveal rises .voices__band instead, so the drift and
+   the reveal never share an element's transform. */
 #voices .sec__head { text-align: center; }
 #voices .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
 @media (min-width: 900px) {
@@ -2872,31 +1852,13 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   line-height: 1.02; letter-spacing: -.03em;
   margin-bottom: clamp(24px, 3vw, 40px);
 }
-/* P8 (Stage 6, 2026-09-06): the page's biggest line of text used to be
-   plain — no control anywhere for the one thing the page is actually
-   asking for. Travelling-arrow language matches .proof__link and
-   .channels a; the drawn-in underline (::after) was dropped 2026-09-12
-   per Igor — the arrow alone carried the "leads somewhere" cue here.
-   2026-09-24: the arrow went too (Igor: it wasn't doing its job), so for now
-   the headline has no visible link cue beyond the cursor dot and the
-   "Opens Telegram" line under it; a replacement cue is still to be picked. */
+/* The headline is the link. Its cues are the pointer dot and the "Opens
+   Telegram" line under it. */
 .contact__cta { color: var(--fg); position: relative; }
-/* C9 (2026-09-06): the handle used to live in its own grid column pinned to
-   the far right — "Telegram" at 44px Lora beside "@yngvil" at 13px mono,
-   up to 950px apart on a wide screen. Three of those in a row read as a
-   table with its middle column missing, and the piece a reader actually
-   needs (the handle) was both the smallest thing here and the furthest
-   from the label it belongs to. Rebuilt so the handle sits directly behind
-   the platform name as one unit.
-   J3 (Jury Pass II, 2026-09-12): C9 then gave this row .proof__link's
-   travelling arrow so "this row leads somewhere" read the same way twice —
-   but stacked directly under .contact__cta, which speaks the identical
-   device, three social links and the page's one conversion goal ended up
-   looking like four peers. The arrow is gone here (only .contact__cta and
-   .proof__link keep it) and the top rule is doubled in weight so this list
-   reads as a distinct, quieter tier below the CTA, not a continuation of
-   it — hover still draws in the underline under the platform name, so the
-   row keeps an affordance, just a smaller one. */
+/* Each handle sits right behind its platform name, as one unit. No arrow
+   here (only .contact__cta and .proof__link have one) and a doubled top
+   rule, so the three channels read as a quieter tier under the CTA; hover
+   still draws the underline under the platform name. */
 .channels { margin-top: clamp(56px, 7vw, 96px); border-top: 2px solid var(--rule); }
 .channels li { border-bottom: 1px solid var(--rule); }
 .channels a {
@@ -2926,13 +1888,8 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   letter-spacing: .02em;
 }
 
-/* Per-channel "why this one" line (2026-09-22, restyled same day — a first
-   pass used hover-revealed green handwriting here, but that's the page's
-   one human-hand gesture (§01's origin note, the masthead's "message me")
-   spent a third time, on copy that's informational rather than emotional,
-   and hidden behind a hover nothing signals exists. Real content belongs in
-   the row's own quiet second tier instead: same family/color as .ch__v,
-   always visible, no interaction required. */
+/* Each channel's "why this one" line: the row's quiet second tier, always
+   visible. */
 .ch__hint {
   display: block;
   font-family: var(--mono); font-size: clamp(12.5px, 1.3vw, 14px);
@@ -2940,18 +1897,17 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   letter-spacing: .01em;
   padding-block: 6px clamp(20px, 2.6vw, 32px);
 }
-/* "Opens Telegram · @yngvil" (2026-09-23): the CTA headline never names the
-   platform. .ch__hint's quiet tier, tucked 10px under the CTA — the negative
-   top margin cancels .contact__big's own margin-bottom, and this line hands
-   that same gap on to the lede below, so the section's spacing is unchanged. */
+/* "Opens Telegram · @yngvil", tucked under the CTA: the negative margin
+   cancels .contact__big's own and hands the same gap on to the lede, so the
+   section's spacing is unchanged. */
 .contact__via {
   font-family: var(--mono); font-size: clamp(12.5px, 1.3vw, 14px);
   color: var(--fg2); opacity: .75; letter-spacing: .01em;
   margin: calc(-1 * clamp(24px, 3vw, 40px) + 10px) 0 clamp(24px, 3vw, 40px);
 }
-/* The composed Telegram message while a §04 row is picked — the reader sees
-   exactly what they'll send. Same 2px leading rule, same -14px gutter, as
-   the picked row's ::before, so the two read as one thing. Fade only. */
+/* The composed Telegram message while a "who" row is picked, so the reader
+   sees what they'll send. The same 2px leading rule and gutter as the
+   picked row. Fade only. */
 .contact__draft {
   position: relative;
   margin: 0 0 clamp(24px, 3vw, 40px); max-width: var(--measure);
@@ -2965,32 +1921,19 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 }
 .contact__draft.is-in { opacity: 1; }
 
-/* Portrait (variant D, 2026-09-24; colour grade "A", same day). In colour,
-   and deliberately not under --collage-filter: in black and white, a lone
-   head-and-shoulders beside "Message me" read as a memorial card (Igor's
-   own reaction). The grade is baked into the file instead of adding a third
-   colour here: its black point is --fg and its white point --bg (Cream), so
-   the photo is never darker than the type or brighter than the page; the
-   leaves are pulled toward --green and the knit toward --amber, the street
-   is defocused and flattened (car and shopfront painted out), and there's a
-   fine grain. Recipe in BUILD-NOTES.md. No frame and no caption: the quieter
-   ground separates it from both --bg pairs, and a name-and-place line under
-   a portrait is the memorial's layout.
-   Phone: plain flow after the lede, at a modest fixed width, so the CTA
-   stays the first thing on screen. */
+/* The contact portrait, in colour on purpose (in black and white a lone
+   portrait read as a memorial card). The grade is baked into the file
+   instead of adding colour: black point --fg, white point --bg. Recipe in
+   BUILD-NOTES.md. No frame, no filter. */
 .contact__portrait { margin: clamp(32px, 6vw, 48px) 0 0; width: min(216px, 62%); }
 .contact__portrait img {
   display: block; width: 100%; height: auto; aspect-ratio: 4 / 5;
   object-fit: cover;
 }
-/* >=900px: text column | portrait column, the portrait held to the right
-   content edge. The gap is .sec__head's own, so the gutter matches the rest
-   of the page. The top margin drops the photo from the CTA's line box to
-   the ink top of its capitals: .177em of the CTA's size (Lora's ascent
-   minus its cap height plus half-leading at line-height 1.02, measured),
-   so it takes .contact__big's own clamp. The width is chosen so the 4:5
-   photo's bottom edge meets the EN lede's last line at 1280 — the two
-   columns end together. */
+/* >=900px: text column | portrait column, with .sec__head's gap. The top
+   margin (.177em of the CTA's size) drops the photo to the ink top of the
+   CTA's capitals; the width makes its bottom edge meet the lede's last line
+   at 1280. */
 @media (min-width: 900px) {
   .contact__head {
     display: grid; align-items: start;
@@ -3003,10 +1946,8 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   }
 }
 
-/* Home only (2026-11-20): the portrait moved up to the hero, so the empty
-   chair takes the right-hand column. Wider than the portrait's column,
-   because the engraving is 2:1; its floor line sits on the lede's last
-   line. */
+/* Home: the portrait is in the hero, so the empty chair takes this column,
+   wider because the engraving is 2:1. */
 @media (min-width: 900px) {
   .contact__head--chair {
     grid-template-columns: minmax(0, 1fr) clamp(260px, 30vw, 400px);
@@ -3016,10 +1957,9 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   .contact__head--chair .vig--empty-chair .vig__svg { width: 100%; height: auto; }
 }
 
-/* §04 pick feedback (2026-09-23). Built by initWhoRows(), so a no-JS reader
-   never sees it. Not the removed instruction line (63792e0): it says
-   nothing until a row is picked, then confirms the pick and points at §05.
-   Its box is reserved (min-height) so a pick never shifts the page. */
+/* Pick feedback, built by initWhoRows() (no-JS never sees it): silent until
+   a row is picked, then it confirms the pick and points at contact.
+   min-height reserves its box so a pick never shifts the page. */
 .rows__status {
   min-height: 1.6em; margin-top: 20px;
   font-family: var(--mono); font-size: 13px; color: var(--fg2);
@@ -3040,12 +1980,9 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .rows__status a:hover::after, .rows__status a:focus-visible::after { transform: scaleX(1); }
 .rows__status svg { width: auto; height: 1em; flex: none; }
 
-/* Phone contact bar (2026-09-23). Below 900px only, where the masthead's
-   "message me" doesn't exist; above 480px of height so a landscape phone
-   isn't left with a sliver of page between two bars. The scrolled
-   masthead's own vocabulary — --bg ground, one hairline — mirrored at the
-   bottom edge. The small rise on show is this element's own transform
-   (decorative; it carries no layout). z-index 39: under the masthead (40),
+/* Phone contact bar: below 900px wide and above 480px tall. The scrolled
+   masthead's vocabulary mirrored at the bottom edge. The rise on show is its
+   own transform (it carries no layout). z-index 39: under the masthead (40),
    the collage view (60) and the pointer dot (70). */
 .dock { display: none; }
 @media (max-width: 899.98px) and (min-height: 481px) {
@@ -3075,17 +2012,12 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
 .dock:active .dock__arrow svg, .dock:focus-visible .dock__arrow svg { color: var(--fg); transform: translateX(6px); }
 .dock:focus-visible { outline-offset: -4px; }
 
-/* ---------- footer: "Your move" (2026-09-26) ----------
-   See the comment above <footer> in index.html for the why.
-
-   The flipped pair. The footer is the one place the page swaps theme: under
-   a cream page it grounds in charcoal, under a charcoal page in cream. These
-   are the two pairs' own values — copied from :root and the charcoal block
-   above, not new colours; keep them in step if either pair ever moves.
-   --ink-target / --ink-specimen / --cursor-active-ink are re-declared, not
-   inherited, because a custom property that says var(--green) resolves where
-   it is declared (:root), so it would carry the page's green, not the
-   footer's. */
+/* ---------- footer: "Your move" ----------
+   The flipped pair: under a cream page the footer is charcoal, under a
+   charcoal page cream. The values are the two pairs' own; keep them in
+   step. --ink-* and --cursor-active-ink are re-declared because a custom
+   property resolves where it is declared, so inheriting would carry the
+   page's ink. */
 html:not([data-theme="dark"]) .foot {
   --bg:     #171310;
   --green:  #4C7A52;
@@ -3118,18 +2050,12 @@ html[data-theme="dark"] .foot {
   padding-block: clamp(56px, 9vw, 120px) clamp(24px, 3vw, 36px);
 }
 
-/* The curtain. <main> gets its own ground and its own layer (z-index 1) and
-   the footer is pinned to the viewport's bottom edge underneath it (z-index
-   0), so the page's end lifts off and uncovers it. Not z-index -1 on the
-   footer alone: that sinks it below #app's box for hit-testing, and nothing
-   in it could be clicked. main holds no fixed/sticky descendants, so its new
-   stacking context traps nothing under the masthead. All
-   of it is position + stacking — no transform, so nothing to reconcile with
-   the reveal system and nothing reduced motion needs to turn off (it is just
-   scroll). JS-only: without JS #collage is a plain block after the footer and
-   a pinned footer would paint over it. The footer has to fit the viewport or
-   a sticky bottom edge uncovers it bottom-first, so short screens (landscape
-   phones) fall back to a normal in-flow footer. */
+/* The curtain: <main> has its own ground on layer 1 and the footer is pinned
+   to the viewport's bottom on layer 0, so the page's end lifts off and
+   uncovers it (not z-index -1 on the footer, which kills its hit-testing).
+   Position and stacking only, no transform. JS only: without JS #collage is
+   a plain block after the footer. Short screens (landscape phones) keep an
+   in-flow footer, since a pinned one must fit the viewport. */
 html.js main { position: relative; z-index: 1; background: var(--bg); }
 html.js .foot {
   position: sticky; bottom: 0; z-index: 0;
@@ -3145,9 +2071,9 @@ html.js .foot__in { flex: 1; width: 100%; }
    handler read this edge instead. */
 .foot-edge { height: 0; }
 
-/* The line. Bigger than the hero title on purpose: the page's last word.
-   The whole line is the link; its rest-state hairline is --rule so it reads
-   as a link without hover (P9's precedent), brightening to --ink-target. */
+/* The line, bigger than the hero title on purpose: the page's last word.
+   The whole line is the link; its resting hairline is --rule, so it reads
+   as a link without hover, brightening to --ink-target. */
 .foot__move {
   display: inline-block; align-self: flex-start;
   position: relative;
@@ -3168,34 +2094,27 @@ html.js .foot__in { flex: 1; width: 100%; }
   padding-bottom: .14em;
   white-space: nowrap;
 }
-/* The mark set into the words (Igor, 2026-09-26). EN: the Y is the whole
-   Vitnyr mark, the v is its amber chevron; RU: the mark sits at the end.
-   Sizes are in em off Lora 500's metrics — the Y's ink to cap height
-   (~.7em), the chevron to x-height — and the EN viewBoxes are cropped to
-   the ink (the arms' round caps reach 16.5 — the crop has to include
-   them), so the box's foot is the ink's foot and sits on the baseline with
-   no nudge. Side margins are the only spacing (layout never takes the
-   transform channel; the turn below owns it). Never under the 32px
-   two-colour minimum: the Y's ink is ~.7em of a >=44px line. */
+/* The mark set into the words. EN: the Y is the whole mark and the v its
+   amber chevron; RU: the mark sits at the end. Sized in em off Lora 500's
+   metrics (the Y's ink to cap height, the chevron to x-height); the EN
+   viewBoxes are cropped to the ink, round caps included, so each foot sits
+   on the baseline. Side margins are the only spacing. Never under the 32px
+   two-colour minimum. */
 .fglyph { display: inline-block; overflow: visible; }
 .fglyph--y { height: .7em; width: .7em; }
 .fspin--y { margin-inline: -.01em -.05em; }
 .fglyph--v { height: .4em; width: calc(.4em * 68 / 41); }
 .fspin--v { margin-inline: 0 .02em; }
-/* RU's closing mark: same crop and cap height as the EN Y, so it scales
-   with the letters instead of sitting at a fixed-ish 48px (Igor: too small
-   on a wide screen). */
+/* RU's closing mark: the EN Y's crop and cap height, so it scales with the
+   letters. */
 .fglyph--mark { height: .7em; width: .7em; }
 .fspin--mark { margin-left: .16em; }
 
-/* F1's single turn, carried over: 0 -> 360 on the hover state only, so
-   leaving snaps home with no reverse spin. Each glyph turns on its own
-   hover (Igor: hovering anywhere on the line started them too early). The
-   target is the .fspin wrapper, a box that never transforms, with the
-   <svg> pointer-events:none — so a glyph sweeping under a parked pointer
-   can't flicker :hover and restart the turn. Keyboard focus on the link
-   turns them all. inline-flex so the wrapper's baseline is the svg's foot:
-   the glyphs sit exactly where they did unwrapped. */
+/* One turn, 0 -> 360, on hover only, so leaving snaps home with no reverse
+   spin. Each glyph turns on its own hover. The target is the .fspin
+   wrapper, which never transforms, with the <svg> pointer-events: none, so a
+   glyph sweeping under a parked pointer can't restart the turn. Keyboard
+   focus on the link turns them all. */
 .fspin { display: inline-flex; }
 /* Spacing sits on the wrapper, not the svg: a negative margin on a flex
    item shrank the Y by its own margin. */
@@ -3228,12 +2147,9 @@ html.js .foot__in { flex: 1; width: 100%; }
   font-size: clamp(19px, 1.8vw, 24px); line-height: 1.3;
 }
 .foot__nota { font-family: var(--mono); font-style: normal; font-size: .8em; color: var(--fg2); }
-/* SITE-PLAN B3 (2026-11-20): each reading links to its discipline page; a
-   page's own line stays plain text. At rest the link looks exactly like the
-   text did. On hover/focus only the words underline, with the same 1px
-   hairline as the specimen permalinks, so the "1…" stays a chess notation and
-   not part of the link's ink. Text link: no magnetic pull, the pointer dot
-   changes ink as it does over any link. */
+/* Each reading links to its discipline page; the page's own line stays
+   plain text. At rest the link looks like the text; on hover/focus only the
+   words underline, so the "1…" stays chess notation. No magnetic pull. */
 .foot__link { color: inherit; text-decoration: none; }
 .foot__link:hover .foot__text,
 .foot__link:focus-visible .foot__text {
@@ -3258,35 +2174,18 @@ html.js .foot__in { flex: 1; width: 100%; }
   .foot__place::before { content: none; }
 }
 .foot__time { font-variant-numeric: tabular-nums; }
-/* .foot__top reuses .tool wholesale (P15) — no rules of its own. */
-/* SITE-PLAN C4: the gallery's one link on every page and every width, beside
-   "Back to top" and in the same .tool voice; margin-left:auto keeps the pair
-   together on the right when the row wraps. */
+/* .foot__top reuses .tool, with no rules of its own. */
+/* The gallery's link, on every page and width, beside "Back to top";
+   margin-left: auto keeps the pair together on the right when the row wraps. */
 .foot__photos { margin-left: auto; }
-/* K8: "Notes" sits between "Photos" and "Back to top"; .tool needs nothing more. */
+/* "Notes" sits between "Photos" and "Back to top"; .tool needs nothing more. */
 
 /* The mark shape (#collage view bar). */
 .footmark { width: 48px; height: 48px; flex: none; }
-/* F1 (2026-09-07): hover spins the Vitnyr mark one full clockwise turn and
-   stops. Runs wherever the mark carries the .footmark-spin wrapper — the
-   the #collage view bar does (the footer's marks use .fspin, the same
-   pattern — see .fglyph). 360deg lands it back on its own
-   geometry exactly, so the mark is never left off-register. --e (an ease-out)
-   is fine here even though it's banned on the scrollcue loop: this doesn't
-   return to its start value, it goes 0 -> 360 once, so it accelerates out of
-   rest and settles soft into the finish. The `transition` sits ONLY on the
-   hover state — so pointer-leave has no transition and the mark jumps
-   360 -> 0 with no visible motion (360deg == 0deg) and no reverse spin. Each
-   hover re-arms a clean single turn. CSS-only: with JS or GSAP absent the
-   mark is simply static, as before. the mark is role=img, not a
-   control, so no :focus-visible path and no tab stop added.
-
-   The hover target is the .footmark-spin WRAPPER, never the <svg>: a rotating
-   element's own box sweeps under a pointer parked near its edge, so :hover on
-   it flickers and the turn restarts on every re-enter ("spinning like
-   crazy"). The wrapper is a fixed 48px box that never transforms, so :hover
-   holds steady until the pointer leaves that box; the <svg> is
-   pointer-events:none so its sweeping corners can't retrigger it either. */
+/* Hover turns the mark one full clockwise turn, back onto its own geometry.
+   --e is fine here because the turn never returns to its start. The
+   transition sits on the hover state only, so leaving snaps home with no
+   reverse spin. */
 .footmark-spin { display: inline-flex; }
 .footmark-spin .footmark { transform: rotate(0deg); pointer-events: none; }
 .footmark-spin:hover .footmark {
@@ -3295,13 +2194,9 @@ html.js .foot__in { flex: 1; width: 100%; }
   will-change: transform;
 }
 
-
-/* ============================================================
-   Pointer — one dot that rides the pointer (phase 4, reworked C14)
-   Enabled by JS only on a fine pointer with motion allowed.
-   No mix-blend-mode: on this palette a difference blend invents
-   colours the brand does not own.
-   ============================================================ */
+/* ---------- pointer ----------
+   One dot that rides the pointer. Enabled by JS only on a fine pointer with
+   motion allowed. No mix-blend-mode: a difference blend invents colours. */
 .cursor { display: none; }
 html.has-cursor .cursor {
   display: block; position: fixed; top: 0; left: 0;
@@ -3311,13 +2206,9 @@ html.has-cursor .cursor {
   opacity: 1;                      /* the dot is the pointer — present always */
   transition: opacity var(--t) var(--e);
 }
-/* C14 (2026-09-07): the dot is the pointer now, everywhere on a fine pointer,
-   not a flourish that only turned up over links (and ballooned 3x when it
-   did). So cursor:none is page-wide — hovering body copy shows the dot, not a
-   native I-beam. Text stays selectable; only the visual cue changes. The dot
-   fades out while the pointer is off the window (.cursor-out, set on
-   mouseleave in main.js). C13's scoped rule is gone with the magnetic pull it
-   mirrored. */
+/* The dot is the pointer everywhere on a fine pointer, so cursor: none is
+   page-wide; text stays selectable. The dot fades out while the pointer is
+   off the window (.cursor-out). */
 html.has-cursor, html.has-cursor * { cursor: none !important; }
 html.has-cursor.cursor-out .cursor { opacity: 0; }
 .cursor__dot {
@@ -3326,37 +2217,26 @@ html.has-cursor.cursor-out .cursor { opacity: 0; }
   background: var(--fg);
   transition: background var(--t) var(--e);
 }
-/* The one signal: the fill crossfades from --fg to an accent over a control —
-   same size at rest and active, colour only. Move 02 (Spark Order S4): the
-   two accents mean something — specimen amber over a control inside #specimen
-   (the error under examination), the target accent over the contact CTA and
-   every other control (the outcome). C15 (2026-09-07): that target accent is
-   --cursor-active-ink, which is green on charcoal but amber on cream (see the
-   token, top of file) — green sat muddy on the warm ground. main.js sets
-   .is-specimen / .is-target on .cursor; colour stays in the sheet, off the
-   --ink-* / --cursor-active-ink tokens, and every state is a token-to-token
-   swap — never an amber<->green interpolation. */
+/* The one signal: the fill crossfades from --fg to an accent over a
+   control, at the same size. Amber over a control inside #specimen (the
+   mistake), --cursor-active-ink over every other one. main.js sets
+   .is-specimen / .is-target; the colours stay here. */
 html.has-cursor.cursor-active .cursor__dot { background: var(--cursor-active-ink); }
 html.has-cursor.cursor-active .cursor.is-specimen .cursor__dot { background: var(--ink-specimen); }
 html.has-cursor.cursor-active .cursor.is-target .cursor__dot { background: var(--cursor-active-ink); }
-/* Over the footer the ground is the other pair, so the dot flips with it:
-   the page's --bg is the footer's ink. Active over the footer's controls it
-   takes specimen amber, the one accent that carries on both grounds (C15's
-   reason for amber on cream; it clears 4.9:1 on charcoal). main.js sets
-   .on-foot. */
+/* Over the footer the ground is the other pair, so the dot flips with it;
+   over the footer's controls it takes amber, the accent that carries on both
+   grounds. main.js sets .on-foot. */
 html.has-cursor .cursor.on-foot .cursor__dot { background: var(--bg); }
 html.has-cursor.cursor-active .cursor.on-foot .cursor__dot { background: var(--ink-specimen); }
 
-/* C16 (2026-09-07): the magnetic pull is back on non-text controls only
-   (initMagnetic in main.js — the .tool switches / icon-nav, .view__back).
-   C17 adds the §04 .origin__mark (interactive V glyph). will-change is a
-   standing layer request, so it is granted only while the pointer is
-   actually over one of them and the pull is running. */
+/* The magnetic pull (initMagnetic) is on non-text controls only; the layer
+   hint only while the pointer is over one. */
 .tool:hover, .view__back:hover, .origin__mark:hover { will-change: transform; }
 
-/* ---------- reveal rhythm (phase 3) ----------
-   Hidden state is applied only when JS is running, so the page is
-   fully readable if the script or the CDN never arrives. */
+/* ---------- reveal rhythm ----------
+   The hidden state applies only when JS is running, so the page is fully
+   readable if the script never arrives. */
 /* The reveal is a CSS transition switched on by an IntersectionObserver, not a
    scroll-position tween. It cannot get stuck if a rAF loop is suspended (a tab
    opened in the background, a deep link landed on while hidden) — the observer
@@ -3370,15 +2250,9 @@ html.js .reveal.is-in {
 }
 html.js .line__inner { transform: translateY(110%); }
 
-/* Stage 1: collage tiles get a wipe instead of the body-copy rise —
-   photographs, not paragraphs. Same .9s, same var(--e), same var(--d)
-   stagger, so no new rhythm enters the system; only the distance channel
-   changes, from translateY to clip-path. Revealing upward from the bottom
-   edge echoes the page's existing 24px rise. transform stays none in both
-   states (overriding the generic rule above) so the transform channel
-   this tile might need later (Stage 4's hover scale) is left untouched.
-   The wipe clips .collage__slot's 1px hairline along with the photo, so the
-   frame draws in with the image — intended, no new ink. */
+/* Collage tiles wipe in with clip-path instead of rising: the same .9s, --e
+   and --d stagger, only the channel changes. transform stays none, leaving
+   it to the hover scale. The wipe takes the 1px frame in with the photo. */
 html.js .collage .reveal { transform: none; }
 html.js .collage .reveal .collage__slot { clip-path: inset(100% 0 0 0); }
 html.js .collage .reveal.is-in .collage__slot {
@@ -3392,41 +2266,27 @@ html.js .collage .reveal.is-in .collage__slot {
   html.js .collage .reveal .collage__slot { clip-path: none !important; }
   .scrollcue:hover svg { animation: none; }
   .cursor, .line__inner { will-change: auto !important; }
-  /* initMagnetic never runs under reduced motion (past the reduce return in
-     main.js), but drop the standing layer hint too and pin the controls flat.
-     .origin__mark is already covered by the .reveal transform reset above. */
+  /* initMagnetic never runs under reduced motion; drop the layer hint too. */
   .tool:hover, .view__back:hover, .origin__mark:hover { will-change: auto !important; }
   .tool, .view__back { transform: none !important; }
-  /* Stage 4's hover scale is the same kind of hover-triggered transform as
-     the magnetic pull above — dropped outright under reduced motion, not
-     just made instant, matching that precedent. */
+  /* the collage hover scale goes too, like the magnetic pull */
   .collage__trigger:hover img, .collage__trigger:focus-visible img { transform: none !important; }
-  /* F1: no hover turn on either Vitnyr mark (footer + #collage bar). Without
-     this the global transition-duration override below just makes it
-     instant-flip on hover. */
+  /* no hover turn on either Vitnyr mark (the global override below would make
+     it an instant flip) */
   .footmark-spin:hover .footmark,
   .fspin:hover .fglyph,
   .foot__move:focus-visible .fglyph { transform: none !important; will-change: auto !important; }
-  /* the mark is simply present and complete — no stroke draw (S7 move 03).
-     Explicit px, not `auto`: a clip rect's `height: auto` computes to 0 here,
-     which would clip the stroke away rather than show it whole. */
+  /* the mark is simply there, complete. Explicit px: a clip rect's height: auto
+     computes to 0 and would hide the stroke. */
   html.js .origin__mark #glyphClipLeft rect,
   html.js .origin__mark #glyphClipRight rect { y: 0 !important; height: 100px !important; animation: none !important; }
   html.js .origin__mark #glyphClipStem rect { height: 44px !important; animation: none !important; }
-  /* Specimen sigils: a straight visibility cut, no fade and no pop — JS
-     still toggles .is-preview/.is-spark on hover/commit, only the motion
-     drops, matching every other control in this block. */
+  /* sigils: a straight visibility cut, no fade */
   .origin__sigil { transition: none !important; }
-  .origin__sigil.is-spark { animation: none !important; opacity: 1; transform: none; }
-  /* Discoverability pulse, killed outright rather than left to the generic
-     .01ms override below: at that speed an infinite text-shadow loop
-     wouldn't stop, it'd flicker every frame — exactly the kind of motion
-     this media query exists to prevent. */
-  .specimen-switch__item { animation: none !important; text-shadow: none !important; }
-  /* P22: same for the masthead mark. initLockmark() sits past the
-     reduced-motion return in main.js, so .is-drawing is never added here —
-     without this the html.js base rule leaves the drawn-in mark clipped away.
-     Values are the tight ink-bound clips (y15..57 arms, y42 h44 stem). */
+
+  /* the masthead mark too: .is-drawing is never added under reduced motion, so
+     the ink-bound clips (arms y 15..57, stem y 42 h 44) are pinned or the mark
+     would stay clipped away */
   html.js .lockup #lockClipLeft rect { height: 42px !important; animation: none !important; }
   html.js .lockup #lockClipRight rect { y: 15px !important; height: 42px !important; animation: none !important; }
   html.js .lockup #lockClipStem rect { height: 44px !important; animation: none !important; }
@@ -3436,11 +2296,10 @@ html.js .collage .reveal.is-in .collage__slot {
 }
 
 /* ==========================================================================
-   Discipline pages, Stage 1 (2026-10-31) — the home page's way out.
-   Hero → §01 method → §02 the mark, centred, with a door per stroke. See
-   DISCIPLINE-PAGES-PLAN.md. Everything here uses the existing tokens and the
-   existing inks: amber for the two V arms (English, chess), green for the
-   stem (climbing), never as text — only as rules and underlines.
+   Home: the way out to the discipline pages. The hero's three links, the
+   method's per-discipline lines, and the mark with a door per stroke. Amber
+   for the two V arms (English, chess), green for the stem (climbing), as
+   rules and underlines only, never as text.
    ========================================================================== */
 
 /* Hero: the italic line is three links. The word keeps the line's own grey;
@@ -3461,29 +2320,6 @@ html.js .collage .reveal.is-in .collage__slot {
 /* §01 method: each principle opens to its core, then one line per
    discipline, the label linking to that discipline's own page. */
 .mech__panel-inner p.mech__core { color: var(--fg); }
-.mech__cases {
-  margin: clamp(16px, 2vw, 22px) 0 0;
-  border-top: 1px solid var(--rule);
-  max-width: 980px;
-}
-.mech__case {
-  --case-ink: var(--ink-specimen);
-  display: grid; gap: 4px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--rule);
-}
-.mech__case:last-child { border-bottom: 0; padding-bottom: 0; }
-.mech__case--climbing { --case-ink: var(--ink-target); }
-@media (min-width: 700px) {
-  .mech__case { grid-template-columns: 9.5em minmax(0, 1fr); gap: clamp(16px, 3vw, 32px); align-items: baseline; }
-}
-.mech__case dt a {
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--fg);
-  text-decoration: underline; text-decoration-color: var(--case-ink);
-  text-decoration-thickness: 1.5px; text-underline-offset: 5px;
-}
-.mech__case dd { margin: 0; color: var(--fg2); max-width: var(--measure); }
 
 /* §02 the mark, centred, with its three doors. Phones: the mark first, then
    the doors as a big-type index. >=900px: each door in its stroke's corner —
@@ -3500,9 +2336,8 @@ html.js .collage .reveal.is-in .collage__slot {
   line-height: 1.06; letter-spacing: -.022em;
 }
 .doors__head p { color: var(--fg2); }
-/* #origin .origin__hint (above) pins the old hint over the readout column at
-   >=900px; the doors' hint is centred over the mark instead, so it needs the
-   same id-level weight to undo that. */
+/* The doors' hint is centred over the mark; it needs #origin's id-level
+   weight to undo .origin__hint's placement. */
 #origin .doors__hint {
   justify-content: center;
   margin: clamp(32px, 5vw, 56px) 0 clamp(12px, 2vw, 20px);
@@ -3587,14 +2422,12 @@ html.js .collage .reveal.is-in .collage__slot {
 .sec--doors .origin__coda { margin-top: clamp(56px, 8vw, 110px); }
 
 /* ==========================================================================
-   Discipline pages, Stage 2 (2026-10-31): the parts a discipline page has
-   that the home page doesn't. Shared by /english/ now and /chess/ and
-   /climbing/ next, so nothing below names a discipline except the inks.
+   Discipline pages: the parts a discipline page has that home doesn't.
+   Nothing below names a discipline except the inks.
    ========================================================================== */
 
-/* The masthead's photo shortcuts become the three pages on a sub-page. The
-   current page wears the same underline a section link gets when it's in
-   view (.tool.is-active), so "you are here" uses a cue the page already has. */
+/* The current page's icon wears the same underline as an in-view section
+   link. */
 .tool[aria-current="page"] { color: var(--fg); }
 .tool[aria-current="page"]::after { transform: scaleX(1); }
 
@@ -3614,15 +2447,9 @@ html.js .collage .reveal.is-in .collage__slot {
 .page-hero__text { display: grid; gap: clamp(24px, 3vw, 36px); }
 .page-hero__photo { margin: 0; min-width: 0; }
 .page-hero__photo .collage__slot { aspect-ratio: 3 / 2; }
-/* SITE-PLAN D4 (2026-11-20): the most personal thing on the page read as a
-   thumbnail. The frame goes (no hairline, no 16px mat: the photo is the
-   edge), and where the screen is tall enough the photo's column grows from
-   .6fr to .85fr (~470px at 1440). "Half the width" everywhere was measured
-   and ruled out: the text column then wraps the credentials row (climbing's
-   needs 756px) and pushes "Book a free trial" below the fold at 1366x768
-   and 1280x800, which the hero exists to prevent. At 880px tall and up
-   (1440x900, 1920x1080, 1280x1024) there is room, and the CTA stays on the
-   first screen at every size checked. */
+/* The photo has no frame. Where the screen is at least 880px tall its column
+   grows to .85fr; "half the width" everywhere would wrap the credentials and
+   push "Book a free trial" below the fold at 1366x768 and 1280x800. */
 .page-hero__photo .collage__slot { border: 0; padding: 0; }
 @media (min-width: 900px) and (min-height: 880px) {
   .hero__foot.page-hero__foot { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
@@ -3639,9 +2466,8 @@ html.js .collage .reveal.is-in .collage__slot {
   margin-top: 12px; font-size: 13px; color: var(--fg2); letter-spacing: .01em;
 }
 
-/* Credential strip: the facts the home page's readout used to carry, one
-   hairline row. Numbers in the serif at body size, their gloss in the label
-   voice. */
+/* Credential strip: one hairline row, the numbers in the serif at body size,
+   their gloss in the label voice. */
 .creds { display: flex; flex-wrap: wrap; gap: 14px clamp(24px, 3.4vw, 44px); border-top: 1px solid var(--rule); padding-top: 16px; }
 .creds li { display: grid; gap: 2px; }
 .creds__k { font-family: var(--serif); font-weight: 500; font-size: clamp(19px, 1.6vw, 22px); color: var(--fg); letter-spacing: -.01em; }
@@ -3672,8 +2498,7 @@ html.js .collage .reveal.is-in .collage__slot {
 .page-cta:hover svg, .page-cta:focus-visible svg { transform: translateX(6px); }
 
 /* Method on a discipline page: the core sentence, then this discipline's
-   line only — set off by a hairline in the discipline's ink, the way the
-   home page's labelled cases are. */
+   line, set off by a hairline in its ink. */
 .mech__here {
   margin-top: .9em; padding-left: 16px;
   border-left: 2px solid var(--page-ink, var(--ink-specimen));
@@ -3688,10 +2513,8 @@ html.js .collage .reveal.is-in .collage__slot {
   .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
 }
 
-/* SITE-PLAN E1 (2026-11-20): "what happens next" in the contact section of
-   all four pages. The facts row's exact voice (hairline rows, small caps
-   label, serif value), so it reads as the same kind of thing: plain facts
-   about how this works, not a sales block. */
+/* "What happens next" in every contact section, in the facts row's voice:
+   plain facts about how this works. */
 .steps {
   display: grid; list-style: none; padding: 0;
   margin: clamp(36px, 5vw, 64px) 0 0;
@@ -3706,9 +2529,7 @@ html.js .collage .reveal.is-in .collage__slot {
 
 .page-photos { display: grid; gap: 32px clamp(16px, 3vw, 40px); margin-top: clamp(48px, 7vw, 96px); }
 .page-photos .collage__fig { margin: 0; }
-/* SITE-PLAN C3 (2026-11-20): the pair splits the full content width (it
-   used to stop at 860px, pushed right, which left the left third of the
-   section empty under a full-width facts row). */
+/* the pair splits the full content width */
 @media (min-width: 600px) {
   .page-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -3744,18 +2565,11 @@ html.js .collage .reveal.is-in .collage__slot {
   .page-cta svg, .bridge__link svg, .page-cta::after, .bridge__link::after { transition: none; }
 }
 
-/* ============================================================
-   Notes (/notes/, feature/notes, 2026-11-20; NOTES-PLAN.md).
-   SITE-PLAN.md H4, the library of mistakes: Igor's LinkedIn posts set as
-   notes. One block, appended, so it merges cleanly past other branches
-   that edit this file; only the notes pages load the ?v= key that carries
-   it, and no rule here reaches an element the other pages have.
-   Nothing new in kind: amber/green only on the mistake and the fix (the
-   sanctioned .mark--specimen / .mark--target exception, or as non-text
-   ink: underlines, tile borders), hairline structure, square corners, the
-   page's own three faces, the one curve. No motion beyond .reveal and the
-   arrow nudge every CTA on the site already has.
-   ============================================================ */
+/* ==========================================================================
+   Notes (/notes/): Igor's posts set as notes. Nothing new in kind: amber
+   and green only on the mistake and the fix (or as non-text ink), hairline
+   structure, square corners, the page's own faces.
+   ========================================================================== */
 
 /* Hero: the note's figure takes more of the row than a discipline page's
    photo, because it is type that has to stay legible. */
@@ -3773,8 +2587,8 @@ html.js .collage .reveal.is-in .collage__slot {
   transition: text-decoration-color var(--t) var(--e), color var(--t) var(--e);
 }
 .note-source__link:hover, .note-source__link:focus-visible { color: var(--fg); text-decoration-color: currentColor; }
-/* NOTES-COUNCIL K4: who wrote the note, in the confirmed facts only, on the
-   line above the source; the same small type, one step darker. */
+/* Who wrote the note, in the confirmed facts only, above the source; the
+   same small type, one step darker. */
 .note-byline {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: .3em .6em;
   font-size: 13px; color: var(--fg); letter-spacing: .01em;
@@ -3824,10 +2638,9 @@ html.js .collage .reveal.is-in .collage__slot {
   font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
 }
 
-/* The grammar notes' figure (NOTES-COUNCIL K7): a sentence per row, from the
-   Russian through the habit to the English. Same rows and roles as
-   .weights; the culprit and the fix carry .mark--specimen / .mark--target,
-   as on .note-spec. */
+/* The grammar notes' figure: a sentence per row, from the Russian through
+   the habit to the English. The same rows and roles as .weights; the culprit
+   and the fix carry .mark--specimen / .mark--target. */
 .ladder { display: grid; gap: clamp(14px, 1.6vw, 20px); }
 .ladder__row {
   display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
@@ -3839,7 +2652,7 @@ html.js .collage .reveal.is-in .collage__slot {
 }
 .ladder__s[lang="ru"] { color: var(--fg2); }
 
-/* A specimen on /english/ points to its note (K7). */
+/* A specimen on /english/ points to its note. */
 .spec__more { margin-top: 18px; }
 
 /* The correction, as a .line-spec pair outside #specimen, so the specimen
@@ -3971,7 +2784,7 @@ html.js .collage .reveal.is-in .collage__slot {
 .note-pager__next:hover .note-pager__t svg, .note-pager__next:focus-visible .note-pager__t svg { transform: translateX(6px); }
 
 /* The index: a ledger of corrected proofs. One hairline row per note, the
-   whole row one link; rules bleed to the section edge like .specs (C12). */
+   whole row one link; the rules bleed to the section edge like .specs. */
 .ledger { border-top: 1px solid var(--rule); margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); }
 .ledger__item { border-bottom: 1px solid var(--rule); }
 .ledger__link {

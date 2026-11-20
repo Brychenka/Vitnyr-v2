@@ -1,4 +1,4 @@
-# What to record for the notes (NOTES-COUNCIL K6)
+# What to record for the notes (SITE-PLAN.md NQ8)
 
 Igor said yes on 2026-11-20. One voice memo per note, recorded on your
 phone, is enough: a quiet room, the phone about a hand's width from your
