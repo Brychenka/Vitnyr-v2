@@ -63,11 +63,12 @@ def test_three_icon_links_after_a_divider(open_site):
             el.classList.contains('tool--icon') ? 'icon'
             : el.classList.contains('tools__label') ? 'label'
             : el.classList.contains('tools__photos') ? 'photos'
+            : el.classList.contains('tools__notes') ? 'notes'
             : el.className)"""
     )
     # the caption opens the cluster, right before the icons it names; the
-    # gallery link closes it
-    assert order == ["label", "icon", "icon", "icon", "photos"]
+    # gallery link and the notes link (NOTES-COUNCIL K8) close it
+    assert order == ["label", "icon", "icon", "icon", "photos", "notes"]
 
 
 @pytest.mark.parametrize("path,current", PAGES)

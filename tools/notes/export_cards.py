@@ -24,8 +24,10 @@ from playwright.sync_api import sync_playwright  # noqa: E402
 def main():
     slugs = [importlib.import_module(m).NOTE["slug"] for m in ORDER]
     jobs = [("notes", "og-notes")] + [(f"note-{s}", f"og-note-{s}") for s in slugs]
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(ROOT))
-    handler.log_message = lambda *a: None
+    class Quiet(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, *a):
+            pass
+    handler = functools.partial(Quiet, directory=str(ROOT))
     with socketserver.TCPServer(("127.0.0.1", 0), handler) as srv:
         port = srv.server_address[1]
         threading.Thread(target=srv.serve_forever, daemon=True).start()
