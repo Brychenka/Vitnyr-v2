@@ -5832,3 +5832,49 @@ widths; `build.sh` produces `dist/` with the three folders. Suite: 331 passed
 
 **Not merged, not pushed, artifact not republished** (Igor decides on the
 artifact; see the plan's Stage 6).
+
+## SITE-PLAN stages 1–5 (2026-11-20, merged the same day)
+
+Igor asked to build the whole of `SITE-PLAN.md` without merging, saw the
+result as a separate preview artifact, and approved it all ("i love
+everything for now"). Built on stacked branches, one commit per step; each
+commit message says what changed, which pages, which cache keys, and which
+tests changed deliberately and why.
+
+- **Stage 1 `feature/s1-clean-up`:** hero portrait merged in (C1); chess hero
+  loses "procrastination device" (B1); English specimens open with the one
+  the plate draws (B2); footer readings link to their pages (B3); LinkedIn
+  note on chess/climbing (B4); five-photo strip in "See me at work" (C2);
+  theme follows the OS until the reader picks (C7, applied from the main
+  checkout's uncommitted `feature/theme-follows-system` work; 404 too);
+  sport-specific "who" card titles + prefills (B5); English shows six
+  reviews (C6). 353 passed.
+- **Stage 2 `feature/s2-frame`:** session photos fill the width (C3); the
+  three icons are discipline links on every page, "Photos" a text link,
+  `data-collage-link` openers cross-fade while the band stays the morphing
+  door (C4); the phone masthead is two rows on a grid + subgrid, 194 → 140px
+  at 375, caption always visible, 44px targets kept (C5); "what happens
+  next" strip (E1); "not ready for a lesson?" lines with discipline-naming
+  prefills (E3). 374 passed.
+- **Stage 3 `feature/s3-first-impression`:** headline option A (D1); home
+  reordered as a doorway, method cut to its five names (D2); discipline hero
+  photos frameless and larger on tall screens only (D4, measured against the
+  fold at 11 viewport sizes). The gallery-prefetch test now allows the
+  strip's five images. 374 passed.
+- **Stage 4 `feature/s4-signature`:** "Test your ear" (F1); Lichess rating
+  check, tests via `page.route` only (F2); Russian source under each English
+  mistake (F4). 398 passed.
+- **Stage 5 `feature/s5-speed`:** footer/masthead drift tests (G1); `build.sh`
+  minifies the `dist/` CSS/JS (G2: 190→68 KB CSS, 127→45 KB JS); GSAP/Lenis
+  self-hosted (G3); fonts self-hosted, Latin + Cyrillic woff2 with Google's
+  own unicode-range (G4). Every G step was compared pixel by pixel against
+  the previous state (4 pages × EN/RU × 375/1280 + charcoal, fixed clock,
+  reduced motion): identical within the ≤20px noise two identical runs show.
+  408 passed (one first run had two timing flakes in
+  `test_collage_view_switcher`; green on rerun).
+
+Held for Igor: E2 (Lichess blitz shows 1998 today, peak 2105, so linking the
+"2100" would raise a question), E4 (needs URLs; `.mark` is invisible inside
+the quotes). Caveat: F2's data source, Lichess `rating-history`, answered
+`[]` for every user from the build machine on 2026-11-20. Open: G5
+Lighthouse, I1 accessibility/Safari, I2 jury pass.

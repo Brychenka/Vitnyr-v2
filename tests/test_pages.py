@@ -228,3 +228,22 @@ def test_contact_says_what_happens_next(open_site, path):
         assert first in texts[0] and "30" in texts[1] and last in texts[2]
         assert not re.search(r"[$€₽֏]|AMD|USD|руб|драм", " ".join(texts), re.I), "no prices"
         assert page.locator("#steps-title").text_content().strip()
+
+
+# --- SITE-PLAN G3/G4 (2026-11-20): GSAP, Lenis and the fonts are served from
+# the site; loading a page asks no third party for anything. ---
+
+@pytest.mark.parametrize("path", ["index.html"] + [f"{s}/" for s in PAGES])
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_pages_load_nothing_from_third_parties(open_site, site_url, path, lang):
+    page, ctx = open_site(path=path, lang=lang)
+    seen = []
+    page.on("request", lambda r: seen.append(r.url))
+    page.reload(wait_until="networkidle")
+    outside = sorted({u.split("/")[2] for u in seen if not u.startswith(site_url)})
+    assert outside == [], outside
+    assert "lora-ready" in page.locator("html").get_attribute("class")   # the wordmark's font arrived
+    fonts = {u.rsplit("/", 1)[1] for u in seen if "/assets/fonts/" in u}
+    assert any(f.startswith("lora-latin") for f in fonts)
+    if lang == "ru":
+        assert any(f.startswith("lora-cyrillic") for f in fonts)
