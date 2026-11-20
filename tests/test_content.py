@@ -27,16 +27,27 @@ def test_name_is_still_igor_shatsev_in_russian(open_site):
 PAGES = ("english/", "chess/", "climbing/")
 
 
-def test_chess_rating_is_stated_without_fide(open_site):
-    # Igor's explicit correction: the 2100 rating is stated without "FIDE".
-    # \b so this doesn't trip on "confidence". Discipline pages (2026-10-31):
-    # the figure is on the home page's chess door and in /chess/'s hero.
+def test_chess_rating_is_a_peak_stated_without_fide(open_site):
+    # Igor's wording: 2100 is his peak (his live rating moves around
+    # 1950-2100), never "FIDE". \b so this doesn't trip on "confidence".
+    # The figure is on the home page's chess door and in /chess/'s hero.
     for path in ("index.html", "chess/"):
-        for lang in ("en", "ru"):
+        for lang, peak in (("en", "peak rating"), ("ru", "пиковый рейтинг")):
             page, _ = open_site(lang=lang, path=path)
             text = visible_text(page)
             assert "2100" in text, (path, lang)
+            assert peak in text.lower(), (path, lang)
             assert not re.search(r"\bFIDE\b", text, re.I), "'FIDE' must not appear"
+
+
+def test_chess_rating_links_to_lichess(open_site):
+    page, _ = open_site(path="chess/")
+    link = page.locator(".creds a.creds__link")
+    assert link.count() == 1
+    assert link.get_attribute("href") == "https://lichess.org/@/yngvibrychenka"
+    assert link.get_attribute("target") == "_blank" and "noopener" in link.get_attribute("rel")
+    assert link.locator(".creds__k").inner_text() == "2100"
+    assert "https://lichess.org/@/yngvibrychenka" in page.content()   # the Person's sameAs
 
 
 def test_climbing_grades_are_kept_distinct(open_site):
