@@ -338,10 +338,26 @@ def _fetched_collage_jpegs(page):
     )
 
 
+def _fetched_gallery_only_jpegs(page):
+    """Collage JPEGs fetched that the page itself doesn't show. SITE-PLAN C2
+    put five of the same files in the "See me at work" strip (and D2 moved it
+    up to §01), so those are meant to load with the page; anything else from
+    the gallery still waits for the view to open."""
+    return page.evaluate(
+        """() => {
+            const shown = new Set([...document.querySelectorAll('.proof__strip img')]
+                .flatMap(i => [i.currentSrc, i.src]).filter(Boolean));
+            return performance.getEntriesByType('resource')
+                .filter(r => r.name.includes('/assets/collage/') && r.name.endsWith('.jpg'))
+                .filter(r => !shown.has(r.name)).length;
+        }"""
+    )
+
+
 def test_collage_images_are_not_fetched_before_the_view_opens(open_site):
     page, _ = open_site()
     page.wait_for_timeout(300)
-    assert _fetched_collage_jpegs(page) == 0
+    assert _fetched_gallery_only_jpegs(page) == 0
     assert page.evaluate(
         "() => document.querySelectorAll('#collage img[data-src]').length"
     ) == COLLAGE_IMAGES
