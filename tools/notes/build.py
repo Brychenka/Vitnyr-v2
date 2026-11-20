@@ -21,7 +21,8 @@ import sys
 from lib import (ARROW, LINKEDIN, PERSON, ROOT, SITE, article_ld, breadcrumb, head2, hero, label, page,
                  pager, tg)
 
-ORDER = ["agree", "feel", "could_you", "au", "noun_verb_stress"]  # newest first (the first three: K7 preview)
+ORDER = ["feel", "could_you", "au", "noun_verb_stress"]  # newest first
+# agree.py ("I am agree") is parked on feature/notes-agree until Igor decides (2026-11-20).
 
 
 def load():

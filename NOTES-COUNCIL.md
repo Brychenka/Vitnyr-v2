@@ -287,12 +287,13 @@ republish the artifact if anything visible changed.
 | C2 "Send me your six" | **no** | K5 dropped. The notes' contact block also leaves out the English page's general voice-message step |
 | C3 Recordings | yes | K6 waits for the recordings; what to record is in `tools/notes/RECORDINGS.md` |
 | C4 Search Console / Yandex Webmaster | yes, done | K9 needs no action from Igor; sitemap now carries `<lastmod>` for the notes |
-| C5 Specimens as notes | "show me first" | Built as a preview on `feature/notes-specimens` (`/notes/agree/`, `/notes/feel/`, `/notes/could-you/`), not merged |
+| C5 Specimens as notes | "show me first", then: keep two, put "I am agree" back | `/notes/feel/` and `/notes/could-you/` merged 2026-11-20. `/notes/agree/` is parked on `feature/notes-agree` until Igor decides; `/english/`'s "I am agree" specimen has no note link again |
 
 Stage N1 (K1, K2, K3's no-question parts, K4) is done on `feature/notes-v2`,
 rebuilt on `main` `de3bfd6` by replaying the notes commits; the first
-`feature/notes` is left as it was. Nothing is merged (Igor: "don't merge
-anything yet").
+`feature/notes` is left as it was. After the preview Igor said: "put i'm
+agree back to where it was … merge the rest of the changes", so N1, K8 and
+two of the three K7 notes reached `main` on 2026-11-20.
 
 ## 5. Questions for Igor
 

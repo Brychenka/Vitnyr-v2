@@ -6033,3 +6033,22 @@ he says so.
   and is left for him.
 
 Not merged, not pushed, artifact not republished.
+
+## Notes merged: two specimen notes in, "I am agree" parked (2026-11-20)
+
+After the preview Igor said: "for now let's put i'm agree back to where it
+was. i'll decide later. after the reverse. merge the rest of the changes".
+
+- `/notes/agree/` is out: `tools/notes/agree.py`, its page, its share cards
+  and `/english/`'s "The full note" link under "I am agree" are removed, so
+  that specimen is back to how it was before K7. The whole note is kept on
+  `feature/notes-agree` (`c4e6e17`); bringing it back is a revert of this
+  removal commit.
+- The rest went to `main`: stage N1 (generator in `tools/notes/`, shell
+  re-synced), K8 (Notes link in the footers and the desktop masthead from
+  1240px), and `/notes/feel/` and `/notes/could-you/` with their links on
+  `/english/`. The ledger now lists four notes.
+- Still open for Igor: the notes' practice lines and Russian (not yet
+  line-edited), the post URLs (Q5), the stress post's date (Q6), conSOLE
+  (Q7), "95%" (Q2), the recordings (K6), and the English page's "reflexive
+  ending" wording.

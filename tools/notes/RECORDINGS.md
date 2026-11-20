@@ -53,5 +53,6 @@ Actions:
 
 ## Later
 
-If the three specimen notes (I am agree, I feel myself, please) go ahead,
-their lists come here too.
+The specimen notes (`feel`, `could-you`; `agree` is parked on
+`feature/notes-agree`) have no recording lists yet. Add them here if Igor
+wants audio for those too.
