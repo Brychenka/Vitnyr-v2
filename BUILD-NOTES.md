@@ -5878,3 +5878,10 @@ Held for Igor: E2 (Lichess blitz shows 1998 today, peak 2105, so linking the
 the quotes). Caveat: F2's data source, Lichess `rating-history`, answered
 `[]` for every user from the build machine on 2026-11-20. Open: G5
 Lighthouse, I1 accessibility/Safari, I2 jury pass.
+
+Deployed 2026-11-20 (main 1c56b70): the live pages load the new build
+(minified style.css, self-hosted fonts and scripts, no console errors).
+Cloudflare Web Analytics' beacon (static.cloudflareinsights.com) is on every
+page, so SITE-PLAN A1 is on: visitor numbers start from 2026-11-20. It is
+added at the edge, not in the repo, so the local "no third parties" test
+doesn't see it.

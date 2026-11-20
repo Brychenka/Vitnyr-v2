@@ -838,7 +838,7 @@ same day. Full suite at the end of stage 5: 408 passed, 1 known xfail.
 
 | Step | Status |
 |---|---|
-| A1 analytics | **Igor's click** (Cloudflare dashboard) |
+| A1 analytics | done: Cloudflare's Web Analytics beacon is on the live pages (seen 2026-11-20); compare later changes against this date |
 | A2 lead log | no code; the prefills name the discipline |
 | B1, B2, B3, B4 | done |
 | B5 card titles | done (drafts approved with the rest) |
