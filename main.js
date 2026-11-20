@@ -198,6 +198,7 @@
   initSpecimenPermalinks();
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
+  initEarTest();          // SITE-PLAN F1: an affordance, not motion
   initSectionNav();       // wayfinding, not motion — same reasoning as the three lines above
 
   /* ---------- masthead section quick-nav: active-section tracking ----------
@@ -2092,6 +2093,111 @@
 
       render();
     });
+  }
+
+  /* ---------- SITE-PLAN F1: "Test your ear" (English page) ----------
+     The reader toggles the sentences that sound right (aria-pressed), then
+     checks. Each row then shows its verdict and, for the wrong ones, the
+     natural form; the score and the habits behind the misses read out in
+     a polite live region, and the "Send me your score" link carries the
+     score into a prefilled Telegram message. Nothing is stored or sent
+     anywhere else. Re-renders on a language switch. An affordance, not
+     motion: wired before the reduced-motion return. */
+  function initEarTest() {
+    var root = document.querySelector('.ear');
+    if (!root) return;
+    var items = [].slice.call(root.querySelectorAll('.ear__item'));
+    var check = root.querySelector('.ear__check');
+    var again = root.querySelector('.ear__again');
+    var result = root.querySelector('.ear__result');
+    var scoreEl = root.querySelector('.ear__score');
+    var habitEl = root.querySelector('.ear__habit');
+    var send = root.querySelector('.ear__send');
+    if (!items.length || !check || !again || !result || !scoreEl || !habitEl || !send) return;
+    var baseHref = send.getAttribute('href');
+    var checked = false;
+    var T = {
+      en: {
+        score: function (n, t) { return 'You judged ' + n + ' of ' + t + ' correctly.'; },
+        missed: 'missed: this one isn’t natural',
+        natural: 'missed: this one is natural',
+        habits: function (l) { return 'What tripped you: ' + l + '.'; },
+        strict: 'No wrong sentence got past you; you were stricter than English is.',
+        clean: 'A clean ear. Saying it under pressure is the next skill, and that’s where a lesson starts.',
+        msg: function (n, t) { return 'Hi! I took the ear test on your site: ' + n + '/' + t + '. I’d like a free trial English lesson.'; }
+      },
+      ru: {
+        score: function (n, t) { return 'Вы верно оценили ' + n + ' из ' + t + '.'; },
+        missed: 'мимо: так не говорят',
+        natural: 'мимо: так говорят',
+        habits: function (l) { return 'Где вы споткнулись: ' + l + '.'; },
+        strict: 'Ни одна ошибка не прошла мимо; вы оказались строже самого английского.',
+        clean: 'Чистый слух. Следующий навык — сказать так же под давлением, с этого и начинается занятие.',
+        msg: function (n, t) { return 'Здравствуйте! Мой результат в тесте на слух на вашем сайте: ' + n + '/' + t + '. Хочу записаться на бесплатное пробное занятие по английскому.'; }
+      }
+    };
+    function lang() { return document.documentElement.getAttribute('data-lang') === 'ru' ? 'ru' : 'en'; }
+    function pick(li) { return li.querySelector('.ear__pick'); }
+
+    items.forEach(function (li) {
+      var b = pick(li);
+      b.addEventListener('click', function () {
+        if (checked) return;
+        b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      });
+    });
+
+    function render() {
+      if (!checked) return;
+      var l = lang(), t = T[l], hits = 0, habits = [], strict = false;
+      items.forEach(function (li) {
+        var right = li.getAttribute('data-right') === 'true';
+        var ok = (pick(li).getAttribute('aria-pressed') === 'true') === right;
+        var v = li.querySelector('.ear__verdict');
+        var fix = li.querySelector('.ear__fix');
+        if (fix) fix.hidden = false;
+        li.classList.toggle('is-miss', !ok);
+        if (ok) { hits++; v.hidden = true; v.textContent = ''; return; }
+        v.hidden = false;
+        v.textContent = right ? t.natural : t.missed;
+        if (right) strict = true;
+        else habits.push(li.getAttribute('data-habit-' + l));
+      });
+      scoreEl.textContent = t.score(hits, items.length);
+      habitEl.textContent = habits.length ? t.habits(habits.join(', ')) : (strict ? t.strict : t.clean);
+      send.setAttribute('href', 'https://t.me/yngvil?text=' + encodeURIComponent(t.msg(hits, items.length)));
+    }
+
+    check.addEventListener('click', function () {
+      checked = true;
+      root.classList.add('is-checked');
+      items.forEach(function (li) { pick(li).disabled = true; });
+      check.hidden = true;
+      again.hidden = false;
+      result.hidden = false;
+      render();
+      scoreEl.setAttribute('tabindex', '-1');
+      scoreEl.focus({ preventScroll: true });   // the button that had focus just left the page
+    });
+    again.addEventListener('click', function () {
+      checked = false;
+      root.classList.remove('is-checked');
+      items.forEach(function (li) {
+        var b = pick(li);
+        b.disabled = false;
+        b.setAttribute('aria-pressed', 'false');
+        li.classList.remove('is-miss');
+        li.querySelector('.ear__verdict').hidden = true;
+        var fix = li.querySelector('.ear__fix');
+        if (fix) fix.hidden = true;
+      });
+      result.hidden = true;
+      again.hidden = true;
+      check.hidden = false;
+      send.setAttribute('href', baseHref);
+      pick(items[0]).focus();
+    });
+    document.addEventListener('vitnyr:langchange', render);
   }
 
   /* ---------- mechanism fold (§02) ----------

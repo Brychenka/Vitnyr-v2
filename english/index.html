@@ -91,7 +91,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&family=Marck+Script&display=swap">
-<link rel="stylesheet" href="/style.css?v=20261121m">
+<link rel="stylesheet" href="/style.css?v=20261121p">
 <script src="/theme.js?v=20261121a"></script>
 </head>
 <body>
@@ -352,6 +352,78 @@
        grade, so this doesn't invent one — it reuses the "errors deeply
        rooted" / "same spot for almost everyone" framing from this
        section's own lede above instead. -->
+  </div>
+</section>
+
+<!-- SITE-PLAN F1 (2026-11-20): "Test your ear". Unnumbered on purpose (the
+     page keeps its 01-05 count and the masthead's numerals), and outside
+     #specimen, whose prose may carry no digit: this block shows a score. The
+     reader taps the sentences that sound right, then checks: each sentence
+     then shows the specimens' own device (the culprit in --amber-text,
+     struck; the natural form beside it with the fix in --green-text). The
+     score goes into a prefilled Telegram message and nowhere else: nothing
+     is stored, nothing is sent. JS-only (initEarTest in main.js): with no JS
+     it is hidden, and the specimens above already make the point.
+     Sentences are drafts for Igor (N9). -->
+<section class="sec sec--ear" id="ear" aria-labelledby="ear-title">
+  <p class="label reveal"><span data-en="Test your ear" data-ru="Проверьте слух">Test your ear</span></p>
+  <div class="sec__head">
+    <h2 class="reveal" id="ear-title"><span data-l="en">Which of these would a native speaker say?</span><span data-l="ru">Какие из этих фраз сказал бы носитель?</span></h2>
+    <div class="sec__lede">
+      <p class="reveal" data-l="en">Tap every sentence that sounds right to you, then check. <strong class="mark">Some are fine, most are not</strong>, and each wrong one is a habit I hear every week.</p>
+      <p class="reveal" data-l="ru">Отметьте все фразы, которые звучат правильно, и проверьте. <strong class="mark">Какие-то в порядке, большинство — нет</strong>, и каждая ошибка здесь — привычка, которую я слышу каждую неделю.</p>
+    </div>
+  </div>
+  <div class="ear reveal">
+    <ol class="ear__list">
+      <li class="ear__item" data-right="false" data-habit-en="an adjective where English has a verb" data-habit-ru="прилагательное там, где в английском глагол">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I <span class="ear__cut">am</span> agree with you.</span></button>
+        <span class="ear__verdict" hidden></span>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>I <ins class="mark--target">agree</ins> with you.</p>
+      </li>
+      <li class="ear__item" data-right="false" data-habit-en="a reflexive carried across from Russian" data-habit-ru="возвратность, перенесённая из русского">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I feel <span class="ear__cut">myself</span> good today.</span></button>
+        <span class="ear__verdict" hidden></span>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>I <ins class="mark--target">feel good</ins> today.</p>
+      </li>
+      <li class="ear__item" data-right="false" data-habit-en="the tense Russian uses for “since”" data-habit-ru="время, которое русский ставит с «с тех пор»">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I <span class="ear__cut">live</span> in Yerevan since 2022.</span></button>
+        <span class="ear__verdict" hidden></span>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>I <ins class="mark--target">’ve lived</ins> in Yerevan since 2022.</p>
+      </li>
+      <li class="ear__item" data-right="true">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I went to the office yesterday.</span></button>
+        <span class="ear__verdict" hidden></span>
+      </li>
+      <li class="ear__item" data-right="false" data-habit-en="Russian word order" data-habit-ru="русский порядок слов">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">Can you explain <span class="ear__cut">me this</span>?</span></button>
+        <span class="ear__verdict" hidden></span>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>Can you explain <ins class="mark--target">this to me</ins>?</p>
+      </li>
+      <li class="ear__item" data-right="false" data-habit-en="a preposition carried across from Russian" data-habit-ru="предлог, перенесённый из русского">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">We discussed <span class="ear__cut">about</span> the plan.</span></button>
+        <span class="ear__verdict" hidden></span>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>We <ins class="mark--target">discussed</ins> the plan.</p>
+      </li>
+      <li class="ear__item" data-right="true">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I’ve been working here for two years.</span></button>
+        <span class="ear__verdict" hidden></span>
+      </li>
+      <li class="ear__item" data-right="false" data-habit-en="articles" data-habit-ru="артикли">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">She gave me <span class="ear__cut">a</span> good advice.</span></button>
+        <span class="ear__verdict" hidden></span>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>She gave me <ins class="mark--target">some</ins> good advice.</p>
+      </li>
+    </ol>
+    <div class="ear__actions">
+      <button type="button" class="ear__check page-cta" data-magnetic><span data-en="Check my ear" data-ru="Проверить">Check my ear</span></button>
+      <button type="button" class="ear__again tool" hidden data-magnetic><span data-en="Try again" data-ru="Ещё раз">Try again</span></button>
+    </div>
+    <div class="ear__result" hidden>
+      <p class="ear__score" aria-live="polite"></p>
+      <p class="ear__habit"></p>
+      <a class="lede__link ear__send" href="https://t.me/yngvil?text=Hi%21%20I%20took%20the%20ear%20test%20on%20your%20site.%20I%27d%20like%20a%20free%20trial%20English%20lesson." target="_blank" rel="noopener" data-magnetic><span data-en="Send me your score" data-ru="Отправить мне результат">Send me your score</span></a>
+    </div>
   </div>
 </section>
 
@@ -881,6 +953,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-<script src="/main.js?v=20261121c"></script>
+<script src="/main.js?v=20261121d"></script>
 </body>
 </html>
