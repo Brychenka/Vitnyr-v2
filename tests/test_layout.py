@@ -147,8 +147,9 @@ def test_mechanisms_are_stacked_accordion_rows_not_a_side_by_side_grid(open_site
     2edc076 (2026-09-18) folded §02 into stacked accordion rows: the
     .mech__toggle header spans the row and its paragraph opens *below* it, so
     there is no heading column left to size. Asserts the new shape: opening a
-    row puts its paragraph under its header, not beside it."""
-    page, _ = open_site(viewport=WIDE)
+    row puts its paragraph under its header, not beside it. On a discipline
+    page since SITE-PLAN D2: home lists the five names without accordions."""
+    page, _ = open_site(viewport=WIDE, path="chess/")
     rows = page.locator("#method .mechanisms > li")
     assert rows.count() >= 1
     for i in range(rows.count()):
@@ -156,7 +157,7 @@ def test_mechanisms_are_stacked_accordion_rows_not_a_side_by_side_grid(open_site
         row.locator(".mech__toggle").click()
         page.wait_for_timeout(1200)
         head = row.locator(".mech__head").bounding_box()
-        para = row.locator("p:visible").bounding_box()
+        para = row.locator("p:visible").first.bounding_box()
         assert para["y"] >= head["y"] + head["height"] - 1, (
             f"row {i}: paragraph starts above its header's bottom edge"
         )

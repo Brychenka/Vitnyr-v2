@@ -222,14 +222,33 @@ def test_section_numbering_is_sequential(open_site, path, count):
     assert [n.strip() for n in nums] == [f"{i:02d}" for i in range(1, count + 1)]
 
 
-def test_home_runs_hero_method_then_the_doors(open_site):
-    """Discipline pages, Stage 1 (2026-10-31): Igor's order for the home
-    page is the hero, then the method, then the mark with its three doors.
-    Cheap regression guard against a later change moving them around."""
+def test_home_runs_hero_doors_voices_method_contact(open_site):
+    """SITE-PLAN D2 (2026-11-20), replacing Discipline pages Stage 1's
+    hero -> method -> doors: home is a doorway. The mark with its three
+    doors comes straight after the hero (§01), then the reviews, then the
+    method, shortened to its five names (§02), then contact (§03). Cheap
+    regression guard against a later change moving them around."""
     page, _ = open_site()
     ids = page.locator(".sec[id]").evaluate_all("els => els.map(e => e.id)")
-    assert ids[:2] == ["method", "origin"]
-    assert page.locator("#origin .label .num").inner_text().strip() == "02"
+    assert ids == ["origin", "voices", "method", "contact"]
+    assert page.locator("#origin .label .num").inner_text().strip() == "01"
+    assert page.locator("#method .label .num").inner_text().strip() == "02"
+    # the masthead's numerals follow the new order
+    hrefs = page.locator(".tools__group--sections a.tool").evaluate_all(
+        "els => els.map(e => e.getAttribute('href'))")
+    assert hrefs == ["#origin", "#method", "#contact"]
+
+
+def test_home_method_is_the_five_names_and_the_way_to_each_page(open_site):
+    """D2: no accordions on home; the five names, not clickable, then one
+    line linking to each discipline page's own #method, in both languages."""
+    for lang in ("en", "ru"):
+        page, _ = open_site(lang=lang)
+        assert page.locator("#method .mech__toggle").count() == 0
+        assert page.locator("#method .mechanisms li").count() == 5
+        hrefs = page.locator("#method .mech__more:visible a").evaluate_all(
+            "els => els.map(e => e.getAttribute('href'))")
+        assert hrefs == ["/english/#method", "/chess/#method", "/climbing/#method"]
 
 
 # --- Spark Order S9A / move 09: each specimen is addressable, and the claim it
