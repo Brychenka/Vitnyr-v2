@@ -90,7 +90,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&family=Marck+Script&display=swap">
-<link rel="stylesheet" href="/style.css?v=20261121k">
+<link rel="stylesheet" href="/style.css?v=20261121r">
 <script src="/theme.js?v=20261121a"></script>
 </head>
 <body>
@@ -316,6 +316,45 @@
     </article>
   </div>
 
+  </div>
+</section>
+
+<!-- SITE-PLAN F2 (2026-11-20): "Is your rating actually stuck?" The chess
+     headline says the rating has stalled; this shows the visitor their own
+     curve. Unnumbered (01-05 and the masthead numerals stand), outside
+     #specimen. The username goes from the visitor's browser straight to
+     Lichess's public API (it answers any site: access-control-allow-origin
+     *); nothing is stored or sent anywhere else. The pool with the most
+     rated days in the last 12 months is drawn in the plates' hand: a 1px
+     line in theme ink, hairline axes in --rule, small mono labels, the
+     year's low-to-high range marked by an amber bracket (ink, not text).
+     It says only what the data says. JS-only (initRatingCheck in main.js):
+     hidden with no JS. -->
+<section class="sec sec--rating" id="rating" aria-labelledby="rating-title">
+  <p class="label reveal"><span data-en="Your rating" data-ru="Ваш рейтинг">Your rating</span></p>
+  <div class="sec__head">
+    <h2 class="reveal" id="rating-title"><span data-l="en">Is your rating actually stuck?</span><span data-l="ru">Ваш рейтинг правда стоит?</span></h2>
+    <div class="sec__lede">
+      <p class="reveal" data-l="en">Type your Lichess username and see your last twelve months. <strong class="mark">A flat line isn’t a ceiling</strong>; it’s usually the same few patterns.</p>
+      <p class="reveal" data-l="ru">Введите ник на Lichess и посмотрите на последние двенадцать месяцев. <strong class="mark">Ровная линия — не потолок</strong>: обычно за ней одни и те же несколько паттернов.</p>
+    </div>
+  </div>
+  <div class="rating reveal">
+    <form class="rating__form" novalidate>
+      <label class="rating__label" for="rating-user"><span data-en="Your Lichess username" data-ru="Ваш ник на Lichess">Your Lichess username</span></label>
+      <div class="rating__row">
+        <input id="rating-user" class="rating__input" name="username" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="30" required aria-describedby="rating-note">
+        <button type="submit" class="page-cta rating__go" data-magnetic><span data-en="Show my rating" data-ru="Показать рейтинг">Show my rating</span></button>
+      </div>
+      <p class="rating__note" id="rating-note" data-en="Your username goes from your browser straight to Lichess. Nothing is stored here." data-ru="Ник уходит из вашего браузера прямо в Lichess. Здесь ничего не хранится.">Your username goes from your browser straight to Lichess. Nothing is stored here.</p>
+    </form>
+    <p class="rating__status" role="status" aria-live="polite"></p>
+    <div class="rating__out" hidden>
+      <figure class="rating__chart" aria-hidden="true"></figure>
+      <p class="rating__say"></p>
+      <p class="rating__verdict"></p>
+      <a class="lede__link rating__send" href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20a%20free%20trial%20chess%20lesson." target="_blank" rel="noopener" data-magnetic><span data-en="Send me your username" data-ru="Отправить мне ник">Send me your username</span></a>
+    </div>
   </div>
 </section>
 
@@ -726,6 +765,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-<script src="/main.js?v=20261121b"></script>
+<script src="/main.js?v=20261121g"></script>
 </body>
 </html>

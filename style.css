@@ -1478,6 +1478,98 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
    no-JS or reduced-motion reader gets exactly today's appearance. */
 .line-spec del, .line-spec ins { text-decoration: none; }
 
+/* ---------- SITE-PLAN F1 (2026-11-20): "Test your ear" (English page) ----------
+   Eight sentences as toggle buttons (aria-pressed), in the specimens' mono.
+   Before the check nothing hints at the answer: the culprit is a plain span.
+   After it, each row takes the specimens' own device — a 2px rule in the
+   specimen or target ink, the culprit in --amber-text and struck, the
+   natural form under it with the fix in --green-text — so this reads as the
+   specimens made interactive, not a quiz widget. The tick box is a hairline
+   square (no rounding) that fills with --fg. JS-only: hidden with no JS. */
+html:not(.js) .sec--ear { display: none; }
+.ear__list { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--rule); }
+@media (min-width: 900px) {
+  .ear__list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
+}
+.ear__item { border-bottom: 1px solid var(--rule); border-left: 2px solid transparent; transition: border-color var(--t) var(--e); }
+.ear__pick {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; margin: 0; background: none; border: 0;
+  color: inherit; text-align: left; cursor: pointer;
+  font-family: var(--mono); font-size: clamp(16px, 1.5vw, 18px); line-height: 1.5;
+  display: flex; gap: 14px; align-items: baseline;
+  padding: 16px 0 16px 14px; min-height: 44px;
+}
+.ear__pick:disabled { cursor: default; }
+.ear__box {
+  flex: none; align-self: center;
+  width: 14px; height: 14px; border: 1px solid var(--fg2);
+  transition: background-color var(--t) var(--e), border-color var(--t) var(--e);
+}
+.ear__pick:not(:disabled):hover .ear__box { border-color: var(--fg); }
+.ear__pick[aria-pressed="true"] .ear__box { background: var(--fg); border-color: var(--fg); }
+.ear.is-checked .ear__item[data-right="false"] { border-left-color: var(--ink-specimen); }
+.ear.is-checked .ear__item[data-right="true"] { border-left-color: var(--ink-target); }
+.ear.is-checked .ear__cut {
+  color: var(--amber-text);
+  text-decoration: line-through; text-decoration-thickness: 1px;
+}
+.ear__fix, .ear__verdict {
+  margin: 0; padding-left: calc(14px + 14px + 14px);   /* the sentence's own x: padding + box + gap */
+}
+.ear__fix {
+  font-family: var(--mono); font-size: clamp(16px, 1.5vw, 18px); line-height: 1.5;
+  padding-bottom: 16px; margin-top: -8px;
+}
+.ear__fix ins { text-decoration: none; }
+.ear__verdict:not([hidden]) {
+  display: block; margin-top: -10px; padding-bottom: 10px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--fg2);
+}
+.ear__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px clamp(28px, 4vw, 48px); margin-top: clamp(28px, 4vw, 44px); }
+button.page-cta { -webkit-appearance: none; appearance: none; background: none; border: 0; padding: 0 0 6px; cursor: pointer; text-align: left; }
+/* :not([hidden]) / [hidden]: .page-cta's inline-flex and this grid would
+   otherwise out-specify the UA [hidden] rule (the .spec__prompt-mistake trap). */
+.ear__result:not([hidden]) { margin-top: clamp(24px, 3vw, 36px); display: grid; gap: 10px; max-width: var(--measure); }
+.ear__actions [hidden] { display: none; }
+.ear__score { font-family: var(--serif); font-weight: 500; font-size: clamp(22px, 2.2vw, 30px); color: var(--fg); outline: none; }
+.ear__habit { color: var(--fg2); }
+.ear__send { justify-self: start; }
+
+/* ---------- SITE-PLAN F2 (2026-11-20): "Is your rating actually stuck?" ----------
+   A username field in the page's own hairline voice (a single rule under the
+   input, no box, no rounding), the CTA's serif button, and a chart drawn the
+   way the plates are: a 1px theme-ink line, --rule hairline axes, 11px mono
+   labels in --fg2, and one amber bracket marking the year's low-to-high
+   range (non-text ink). JS-only: hidden with no JS. */
+html:not(.js) .sec--rating { display: none; }
+.rating__form { display: grid; gap: 12px; max-width: 640px; }
+.rating__label { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+.rating__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px clamp(24px, 3vw, 40px); }
+.rating__input {
+  flex: 1 1 220px; min-width: 0;
+  font-family: var(--mono); font-size: clamp(18px, 1.7vw, 21px); color: var(--fg);
+  background: none; border: 0; border-bottom: 1px solid var(--fg2); border-radius: 0;
+  padding: 8px 0; min-height: 44px;
+  transition: border-color var(--t) var(--e);
+}
+.rating__input:hover, .rating__input:focus { border-bottom-color: var(--fg); }
+.rating__input:focus-visible { outline-offset: 4px; }
+.rating__note { font-size: 13px; color: var(--fg2); }
+.rating__status { min-height: 1.5em; margin-top: 18px; color: var(--fg2); }
+.rating__status:empty { margin-top: 0; }
+.rating__out:not([hidden]) { display: grid; gap: 12px; margin-top: 8px; }
+.rating__chart { margin: 0 0 8px; color: var(--fg); min-width: 0; }
+.rating__chart { max-width: 760px; }
+.rating__chart svg { display: block; max-width: 100%; height: auto; overflow: visible; }
+.rating__axis { stroke: var(--rule); stroke-width: 1; fill: none; }
+.rating__line { stroke: currentColor; stroke-width: 1.25; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.rating__bracket { stroke: var(--ink-specimen); stroke-width: 1.5; fill: none; stroke-linecap: round; }
+.rating__tick { font-family: var(--mono); font-size: 11px; fill: var(--fg2); }
+.rating__say { font-family: var(--serif); font-weight: 500; font-size: clamp(21px, 2vw, 27px); color: var(--fg); }
+.rating__verdict { color: var(--fg2); max-width: var(--measure); }
+.rating__send { justify-self: start; }
+
 /* The specimen reveal. initSpecimenReveal() builds one .spec__reveal > button
    per specimen and `hidden`s the real .wrong line; with no JS none of this
    exists and the static <del>/<ins> pair is the whole of it. The button
@@ -1488,6 +1580,23 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
    `[hidden]` needs help: .line-spec already sets `display: flex`, which
    out-specifies the UA [hidden] rule, so restore it explicitly. */
 .line-spec[hidden] { display: none; }
+/* SITE-PLAN F4 (2026-11-20): under each English mistake, faintly, the Russian
+   sentence it comes from ("Я согласен…" under "I am agree…"), so the reader
+   sees where the error starts. Typography only: --fg2, smaller, the body
+   face; no rule, no ink. Indented to the sentence's own left edge. Shown with the mistake;
+   main.js hides it while the mistake is folded away. */
+.line-spec__src {
+  /* .68em of .line-spec's own fluid size, the width of one glyph slot */
+  --glyph: clamp(11.56px, 1.156vw, 13.6px);
+  margin: 2px 0 0;
+  padding-left: calc(16px + var(--glyph) + 12px);
+  font-size: clamp(14px, 1.3vw, 15px); line-height: 1.5;
+  color: var(--fg2);
+}
+.line-spec__src + .line-spec { margin-top: 12px; }
+/* With JS the mistake shows inside the reveal button, which leads with its
+   own +/− slot before the glyph: one more slot and gap to clear. */
+html.js .line-spec__src { padding-left: calc(16px + 2 * var(--glyph) + 24px); }
 .spec__prompt {
   -webkit-appearance: none; appearance: none;
   margin: 0; background: none; border: 0; border-left: 2px solid var(--ink-specimen);

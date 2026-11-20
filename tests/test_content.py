@@ -394,3 +394,38 @@ def test_head_names_all_three_disciplines_english_first(open_site):
             positions = [text.find(w) for w in words]
             assert all(p >= 0 for p in positions), (lang, text)
             assert positions == sorted(positions), (lang, text)
+
+
+# --- SITE-PLAN F4 (2026-11-20): under each English mistake, faintly, the
+# Russian sentence it grows from. English page, English only; it travels with
+# the mistake (folded away until the reader opens it), always there with no
+# JS. Typography only, no digits (the #specimen rule above). ---
+
+def test_each_english_mistake_carries_its_russian_source(open_site):
+    page, _ = open_site(path="english/")
+    srcs = page.locator("#specimen .line-spec__src")
+    assert srcs.count() == 3
+    for i in range(3):
+        el = srcs.nth(i)
+        assert el.get_attribute("lang") == "ru" and el.get_attribute("data-l") == "en"
+        assert re.search("[а-я]", el.text_content()) and not re.search(r"\d", el.text_content())
+        assert el.get_attribute("hidden") is not None          # folded with its mistake
+    page.locator("#specimen-copula .spec__prompt").click()
+    assert page.locator("#specimen-copula .line-spec__src").is_visible()
+    assert "согласен" in page.locator("#specimen-copula .line-spec__src").inner_text()
+    colour = page.locator("#specimen-copula .line-spec__src").evaluate("el => getComputedStyle(el).color")
+    fg2 = page.evaluate("getComputedStyle(document.querySelector('.stand')).color")
+    assert colour == fg2, "--fg2, no new ink"
+    page.locator("#specimen-copula .spec__prompt").click()
+    assert not page.locator("#specimen-copula .line-spec__src").is_visible()
+
+
+def test_russian_sources_are_not_shown_on_the_russian_page(open_site):
+    page, _ = open_site(path="english/", lang="ru")
+    page.locator("#specimen-copula .spec__prompt").click()
+    assert not page.locator("#specimen-copula .line-spec__src").is_visible()
+
+
+def test_russian_sources_show_without_js(open_site):
+    page, _ = open_site(path="english/", java_script_enabled=False)
+    assert page.locator("#specimen-copula .line-spec__src").is_visible()
