@@ -3360,8 +3360,11 @@ html.js .collage .reveal.is-in .collage__slot {
 
 .page-photos { display: grid; gap: 32px clamp(16px, 3vw, 40px); margin-top: clamp(48px, 7vw, 96px); }
 .page-photos .collage__fig { margin: 0; }
+/* SITE-PLAN C3 (2026-11-20): the pair splits the full content width (it
+   used to stop at 860px, pushed right, which left the left third of the
+   section empty under a full-width facts row). */
 @media (min-width: 600px) {
-  .page-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 860px; margin-left: auto; }
+  .page-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* Bridge: one line to the other two pages, then out. Centred, like the
