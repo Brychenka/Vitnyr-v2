@@ -798,6 +798,15 @@ html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, s
 .sec__head h2 { font-size: clamp(27px, 3.6vw, 48px); font-weight: 500; line-height: 1.12; letter-spacing: -.02em; }
 .sec__lede { max-width: var(--measure); color: var(--fg2); }
 .sec__lede p + p { margin-top: 1em; }
+/* SITE-PLAN E3: a link inside lede copy. Theme ink with a hairline underline
+   in --rule that firms to the text colour on hover/focus, the same move as
+   .eyebrow__home; no accent as text. */
+.lede__link {
+  color: var(--fg); text-decoration: underline; text-decoration-color: var(--rule);
+  text-underline-offset: .22em; text-decoration-thickness: 1px;
+  transition: text-decoration-color var(--t) var(--e);
+}
+.lede__link:hover, .lede__link:focus-visible { text-decoration-color: currentColor; }
 @media (min-width: 900px) {
   .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
