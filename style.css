@@ -2416,6 +2416,32 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   opacity: .3; transform: translateX(3px); transition-delay: .07s;
 }
 
+/* SITE-PLAN C2 (2026-11-20): the photo strip under "See me at work". It
+   wraps onto its own row inside the same flex link, so the text and arrow
+   keep their places and the whole band stays one link to the gallery. One
+   crop for all five (4:5), the gallery's own grayscale token, the page
+   gutter between frames: no border, no rounding, no motion of its own (the
+   band's .reveal carries it in). Five across from 900px; below that the
+   first three (one per discipline), so nothing scrolls sideways. */
+.proof__link { flex-wrap: wrap; }
+.proof__strip {
+  flex: 1 0 100%;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1.2vw, 16px);
+}
+.proof__strip img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 4 / 5; object-fit: cover;
+  filter: var(--collage-filter);
+}
+/* climb-07 is landscape: keep Igor, not the wall, in the 4:5 window */
+.proof__strip .proof__img--left { object-position: 25% 50%; }
+.proof__strip img:nth-child(n+4) { display: none; }
+@media (min-width: 900px) {
+  .proof__strip { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .proof__strip img:nth-child(n+4) { display: block; }
+}
+
 /* ---------- in their words (testimonials marquee) ----------
    Two states. The base rules are the static one — no JS, GSAP missing, or
    reduced motion (initVoices() sits past main.js's reduce return): a plain

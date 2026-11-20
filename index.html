@@ -163,7 +163,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Lora:ital,wght@0,500;0,600;1,500&family=Marck+Script&display=swap">
-<link rel="stylesheet" href="style.css?v=20261121a">
+<link rel="stylesheet" href="style.css?v=20261121b">
 <script src="theme.js?v=20261031a"></script>
 <script>
 /* Render-blocking, like theme.js: if the URL already points at the collage,
@@ -762,6 +762,20 @@ if (location.hash === '#collage') document.documentElement.classList.add('collag
       <span class="proof__arrow" aria-hidden="true">
         <svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
         <svg aria-hidden="true" class="proof__arrow--echo" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+      </span>
+      <!-- SITE-PLAN C2 (2026-11-20): five real frames from the gallery, so
+           the band reads as a finished section, not a heading over empty
+           space. Inside the same link (the whole strip opens #collage), so
+           the photos are decoration (alt="", aria-hidden) and the link's
+           name stays "See me at work". One crop (4:5), the gallery's own
+           grayscale token. 3 across below 900px (one per discipline), 5
+           from 900px. -->
+      <span class="proof__strip" aria-hidden="true">
+        <img src="assets/collage/en-03-club.jpg" srcset="assets/collage/en-03-club.jpg 450w, assets/collage/en-03-club@2x.jpg 900w" sizes="(min-width: 900px) 18vw, 31vw" width="450" height="563" loading="lazy" decoding="async" alt="">
+        <img src="assets/collage/chess-02-clock.jpg" srcset="assets/collage/chess-02-clock.jpg 450w, assets/collage/chess-02-clock@2x.jpg 900w" sizes="(min-width: 900px) 18vw, 31vw" width="450" height="450" loading="lazy" decoding="async" alt="">
+        <img src="assets/collage/climb-07-coaching.jpg" srcset="assets/collage/climb-07-coaching.jpg 600w, assets/collage/climb-07-coaching@2x.jpg 1200w" sizes="(min-width: 900px) 18vw, 31vw" width="600" height="400" loading="lazy" decoding="async" alt="" class="proof__img--left">
+        <img src="assets/collage/chess-09-cascade.jpg" srcset="assets/collage/chess-09-cascade.jpg 450w, assets/collage/chess-09-cascade@2x.jpg 900w" sizes="(min-width: 900px) 18vw, 31vw" width="450" height="563" loading="lazy" decoding="async" alt="">
+        <img src="assets/collage/climb-01-board.jpg" srcset="assets/collage/climb-01-board.jpg 450w, assets/collage/climb-01-board@2x.jpg 900w" sizes="(min-width: 900px) 18vw, 31vw" width="450" height="563" loading="lazy" decoding="async" alt="">
       </span>
     </a>
   </div>

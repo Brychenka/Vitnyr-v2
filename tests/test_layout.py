@@ -483,3 +483,29 @@ def test_who_section_has_no_lede_under_its_heading(open_site):
             page, _ = open_site(lang=lang, path=path)
             assert page.locator("#who .sec__lede").count() == 0, (path, lang)
 
+
+
+# --- SITE-PLAN C2 (2026-11-20): "See me at work" carries five real frames
+# from the gallery, inside its one link, three across on a phone. ---
+
+def test_proof_band_shows_photos_inside_its_one_link(open_site):
+    for viewport, shown in ((WIDE, 5), (NARROW, 3)):
+        page, _ = open_site(viewport=viewport, has_touch=viewport is NARROW)
+        strip = page.locator(".proof__link .proof__strip")
+        assert strip.count() == 1
+        imgs = strip.locator("img")
+        assert imgs.count() == 5
+        page.locator(".proof").scroll_into_view_if_needed()
+        visible = page.evaluate(
+            "() => [...document.querySelectorAll('.proof__strip img')]"
+            ".filter(i => getComputedStyle(i).display !== 'none').length")
+        assert visible == shown
+        for i in range(shown):
+            src = imgs.nth(i).get_attribute("src")
+            assert src.startswith("assets/collage/"), src
+            ratio = imgs.nth(i).evaluate("el => el.getBoundingClientRect().width / el.getBoundingClientRect().height")
+            assert abs(ratio - 0.8) < 0.02
+        # decoration inside a named link: the link's name is still the words
+        assert strip.get_attribute("aria-hidden") == "true"
+        assert page.locator(".proof__link").get_attribute("href") == "#collage"
+        assert page.evaluate("document.documentElement.scrollWidth") <= viewport["width"]
