@@ -1488,6 +1488,23 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
    `[hidden]` needs help: .line-spec already sets `display: flex`, which
    out-specifies the UA [hidden] rule, so restore it explicitly. */
 .line-spec[hidden] { display: none; }
+/* SITE-PLAN F4 (2026-11-20): under each English mistake, faintly, the Russian
+   sentence it comes from ("Я согласен…" under "I am agree…"), so the reader
+   sees where the error starts. Typography only: --fg2, smaller, the body
+   face; no rule, no ink. Indented to the sentence's own left edge. Shown with the mistake;
+   main.js hides it while the mistake is folded away. */
+.line-spec__src {
+  /* .68em of .line-spec's own fluid size, the width of one glyph slot */
+  --glyph: clamp(11.56px, 1.156vw, 13.6px);
+  margin: 2px 0 0;
+  padding-left: calc(16px + var(--glyph) + 12px);
+  font-size: clamp(14px, 1.3vw, 15px); line-height: 1.5;
+  color: var(--fg2);
+}
+.line-spec__src + .line-spec { margin-top: 12px; }
+/* With JS the mistake shows inside the reveal button, which leads with its
+   own +/− slot before the glyph: one more slot and gap to clear. */
+html.js .line-spec__src { padding-left: calc(16px + 2 * var(--glyph) + 24px); }
 .spec__prompt {
   -webkit-appearance: none; appearance: none;
   margin: 0; background: none; border: 0; border-left: 2px solid var(--ink-specimen);

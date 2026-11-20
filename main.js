@@ -2013,6 +2013,9 @@
       // whichever language happened to be first in the DOM.
       var wrongs = spec.querySelectorAll('.line-spec.wrong');
       if (!lines || !wrongs.length) return;
+      // SITE-PLAN F4: the Russian source line travels with the mistake —
+      // folded away with it, shown when it is.
+      var srcs = spec.querySelectorAll('.line-spec__src');
       function currentWrong() {
         if (wrongs.length === 1) return wrongs[0];
         var want = isRu() ? 'ru' : 'en';
@@ -2075,6 +2078,7 @@
         wrap.setAttribute('data-open', open ? 'true' : 'false');
         label.hidden = open;
         reveal.hidden = !open;
+        srcs.forEach(function (s) { s.hidden = !open; });
         mark.textContent = open ? '−' : '+';   // − / +
       }
 
