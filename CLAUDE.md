@@ -93,8 +93,12 @@ python3 -m http.server
 ```
 
 Then visit `localhost:8000`. Opening `index.html` directly via `file://`
-mostly works but skips the Google Fonts preconnect timing and some relative
-paths are worth checking under an actual server.
+mostly works, but the pages use root-absolute paths (`/assets/`, `/english/`)
+that only resolve under an actual server. Fonts, GSAP and Lenis are all
+served from the repo since 2026-11-20 (SITE-PLAN G3/G4), so the site works
+offline too. Cloudflare Pages runs `build.sh`, which copies the site into
+`dist/` and minifies the `dist/` copies of `style.css`, `main.js` and
+`theme.js` with esbuild 0.24.0 (G2); the source files keep every comment.
 
 There is no linter, but there is a test suite: `tests/` holds Playwright
 tests (pytest), run with `tests/.venv/bin/pytest tests -q` (about 5 minutes; it
@@ -146,8 +150,10 @@ Four shared files, each with one job, plus one HTML file per page:
   from the reveal on first hover (`transitionProperty = 'opacity'`) — a
   transient transform releasing the channel, per the motion rules below. See
   `BUILD-NOTES.md`. Wrapped in one IIFE,
-  no exports, no modules. GSAP + CustomEase + Lenis are loaded from CDN
-  `<script>` tags in `index.html`, in that order, before `main.js`.
+  no exports, no modules. GSAP + CustomEase + Lenis are served from
+  `assets/vendor/` (version in the filename, because `/assets/*` is cached
+  for a year) by `<script>` tags on each page, in that order, before
+  `main.js`.
 - **`style.css`** — one `:root` token block (colors, fonts, easing, spacing)
   feeding every rule below it; no other file defines a color or a duration.
 
@@ -366,3 +372,19 @@ the brand file, so nothing in the code will tell a new chat about them:
   `BUILD-NOTES.md`'s "§04 'Three domains' folded into §03 Specimens" entry
   for the full before/after. Don't propose re-adding a standalone domains
   section without knowing this was a deliberate merge, not an oversight.
+- **SITE-PLAN stages 1–5 (built and merged 2026-11-20, Igor: "i love
+  everything").** `SITE-PLAN.md` is the work order; its status table says
+  what's left. What changed in structure, so a new chat doesn't undo it:
+  home runs hero → §01 the doors (`#origin`, with the "See me at work" photo
+  strip) → reviews → §02 the method, cut to its five names (the accordions
+  live on the discipline pages) → §03 contact; the hero headline is "Every
+  plateau / is a habit." / "Каждое плато — / это привычка."; the masthead's
+  three icons always link to the discipline pages ("Coaching"), and
+  "Photos" is a text link (masthead from 1140px, every footer); the phone
+  masthead is two rows (grid + subgrid); the theme follows the OS until the
+  reader picks one (reverses 2026-09-07's cream-always); every contact
+  section has a "what happens next" strip; the English page has "Test your
+  ear" (`#ear`) and the Russian source under each mistake; the chess page has
+  the Lichess rating check (`#rating`). New blocks are unnumbered so the
+  01–05 counts stand. `tests/test_seams.py` fails if one page's masthead or
+  footer drifts from the others.

@@ -831,11 +831,37 @@ true, keep it · Q5 Lichess `yngvibrychenka` · Q6 handles stay for now.
 
 ## Status
 
-| Stage | Status |
+Built 2026-11-20 on stacked branches `feature/s1-clean-up` → `s2-frame` →
+`s3-first-impression` → `s4-signature` → `s5-speed`, shown to Igor as a
+preview, approved ("i love everything for now") and merged to `main` the
+same day. Full suite at the end of stage 5: 408 passed, 1 known xfail.
+
+| Step | Status |
 |---|---|
-| 1. Clean up | open; C1 waits for N1, A1 for N2 |
-| 2. Finish the frame | open |
-| 3. First impression | D1 waits for N3; D2 and D4 can start after stage 1 |
-| 4. Signature | F2 and F4 can start; F1 waits for N9; F3 waits for Q8 |
-| 5. Speed | open |
-| 6. Polish and jury | runs last |
+| A1 analytics | **Igor's click** (Cloudflare dashboard) |
+| A2 lead log | no code; the prefills name the discipline |
+| B1, B2, B3, B4 | done |
+| B5 card titles | done (drafts approved with the rest) |
+| B6 rehab line | waits for Q4 |
+| C1 portrait, C2 photo strip, C3 photos width | done |
+| C4 one meaning per icon, C5 two-row phone masthead | done |
+| C6 six reviews | done: Vitalii's card shows in Russian only; nothing deleted |
+| C7 dark mode follows the OS | done (from the main checkout's patch) |
+| D1 headline | done, option A |
+| D2 home doorway | done |
+| D3 About block | waits for Q4 |
+| D4 bigger photos | done, partly: the half-width version pushed the CTA below the fold at 1280x800 and 1366x768, so the photo grows only on screens 880px+ tall; frame dropped everywhere |
+| E1 what happens next | done |
+| E2 Lichess link on 2100 | **held**: Lichess blitz showed 1998 (peak 2105) on 2026-11-20; ask Igor |
+| E3 smaller first step | done |
+| E4 reviewer links + marks | **held**: needs Igor's URLs; `.mark` is invisible inside the quotes (already --fg, weight 500), so marking needs a decision |
+| E5–E7 | wait for Igor's material / answers |
+| F1 Test your ear | done |
+| F2 Lichess rating check | done; **check live**: on 2026-11-20 Lichess's rating-history API returned `[]` for every user from the build machine (the page says so plainly when that happens) |
+| F3 chess boards | waits for Q8 |
+| F4 Russian behind the mistake | done |
+| G1 drift tests, G2 minify, G3 vendor JS, G4 fonts | done, pixel-identical |
+| G5 Lighthouse | **open** |
+| H1–H4 | Igor / waits |
+| I1 accessibility + Safari, I2 jury pass | **open** |
+| I3 docs + artifact | done with the merge |
