@@ -1023,6 +1023,16 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 .mechanisms { display: grid; gap: 0; border-top: 1px solid var(--rule); }
 .mechanisms > li { border-bottom: 1px solid var(--rule); }
 .mech__head { margin: 0; }
+/* SITE-PLAN D2 (2026-11-20): home's method lists the five names only. Same
+   grid and type as an accordion row's header, without the button or the
+   "+", and a little less padding: a quiet index, not five closed doors. */
+.mech__row {
+  margin: 0;
+  display: grid; grid-template-columns: 80px 1fr; align-items: baseline;
+  gap: clamp(16px, 3vw, 32px);
+  padding-block: clamp(18px, 2.2vw, 28px);
+}
+.mech__more { margin-top: clamp(24px, 3vw, 36px); color: var(--fg2); max-width: var(--measure); }
 .mech__toggle {
   -webkit-appearance: none; appearance: none;
   width: 100%; margin: 0; border: 0; background: none;
