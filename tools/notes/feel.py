@@ -17,10 +17,12 @@ PHRASES = [
     (f"I feel {D('myself')} at home", f"I {I('feel')} at home"),
     (f"I felt {D('myself')} stupid", f"I {I('felt')} stupid"),
 ]
+# "-\u2060self": the word joiner stops a line break between the hyphen and
+# "self" (the heading broke as "keeps -" / "self for actions" at 1280px).
 LOOKALIKES = [
-    ("представиться", "introduce myself", both("an action · -self stays", "действие · -self на месте")),
-    ("ушибиться", "hurt myself", both("an action · -self stays", "действие · -self на месте")),
-    (hit("чувствую себя", "себя"), "I feel", both("a feeling · no -self", "ощущение · без -self")),
+    ("представиться", "introduce myself", both("an action · -\u2060self stays", "действие · -\u2060self на месте")),
+    ("ушибиться", "hurt myself", both("an action · -\u2060self stays", "действие · -\u2060self на месте")),
+    (hit("чувствую себя", "себя"), "I feel", both("a feeling · no -\u2060self", "ощущение · без -\u2060self")),
 ]
 PRACTICE = [
     "I <b>feel</b> good today.",
@@ -50,15 +52,15 @@ def body(note):
                  [[w, ("register__w", r)] for w, r in PHRASES], cls=" register--pairs"),
     ]))
     why = section("why", "02", "Why it happens", "Почему так", "\n".join([
-        head2("English keeps -self for actions.", "В английском -self — для действий.",
+        head2("English keeps -\u2060self for actions.", "В английском -\u2060self — для действий.",
               "English does have myself, but for something you do to yourself, not for how you feel: [[introduce myself, hurt myself]]. A feeling goes straight after feel.",
               "В английском myself есть, но для того, что вы делаете с собой, а не для того, как себя чувствуете: [[introduce myself, hurt myself]]. Ощущение идёт сразу после feel."),
         pull(LOOKALIKES),
     ]))
     say = section("practice", "03", "Say it out loud", "Скажите вслух", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
-              "feel, then the feeling. The last two are actions, so they keep -self.",
-              "feel — и сразу ощущение. Последние две — действия, поэтому -self остаётся."),
+              "feel, then the feeling. The last two are actions, so they keep -\u2060self.",
+              "feel — и сразу ощущение. Последние две — действия, поэтому -\u2060self остаётся."),
         practice(PRACTICE, "DRAFT for Igor (K7 preview): i. is the specimen's own line; ii.–vi. are new."),
     ]))
     return "\n\n".join([words, why, say])
