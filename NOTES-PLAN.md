@@ -218,18 +218,24 @@ carousels ("Две буквы — один звук.", "О весе ударен
 
 ## 7. Adding the next note (checklist)
 
-1. Copy `notes/au/` to `notes/<slug>/`. Replace the head (title,
-   `data-head-ru`, description, og/twitter, hreflang, JSON-LD), the hero,
-   §01–§03, the pager and the Telegram prefill (both languages).
-2. Add the row at the top of the ledger in `notes/index.html`, and to its
-   JSON-LD `ItemList`.
-3. Fix the pager on the previous newest note.
-4. Add the two `<url>` blocks to `sitemap.xml`.
-5. Add `page=note-<slug>` to `share-card.html`, export `og-note-<slug>.png`
-   and `og-note-<slug>-ru.png`.
-6. Run `tests/test_notes.py`.
-7. On LinkedIn: link the note in the first comment, with `?lang=ru` for a
+Since NOTES-COUNCIL K2 (2026-11-20) the notes are generated; never edit
+`notes/**/index.html` by hand.
+
+1. Copy a note module in `tools/notes/` (`au.py` for a word list,
+   `noun_verb_stress.py` for pairs) to `tools/notes/<name>.py` and fill in
+   its `NOTE` (both languages) and `body()`.
+2. Add `<name>` at the front of `ORDER` in `tools/notes/build.py`.
+3. `python3 tools/notes/build.py`. This writes the page, the ledger row and
+   JSON-LD, every pager, the sitemap entries and the share card's text.
+4. `tests/.venv/bin/python tools/notes/export_cards.py` writes the two
+   share-card PNGs.
+5. Run `tests/test_notes.py`, then the full suite.
+6. On LinkedIn: link the note in the first comment, with `?lang=ru` for a
    Russian post.
+
+If `english/index.html`'s masthead, contact section or footer change,
+re-run step 3; `test_the_notes_are_up_to_date_with_their_generator` fails
+until you do.
 
 ## 8. Questions for Igor
 

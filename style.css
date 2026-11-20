@@ -494,6 +494,7 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 .langswitch, .tools__label { text-align: center; }
 .langswitch::before,
 .tools__photos::before,
+.tools__notes::before,
 .tools__label::before {
   content: "Направления";
   display: block;
@@ -513,6 +514,14 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 .tools__photos { margin-left: 8px; text-align: left; }
 .tools__photos::before { content: "Photos"; }
 @media (max-width: 1139.98px) { .tools__photos { display: none; } }
+/* NOTES-COUNCIL K8 (2026-11-20, Igor: yes): "Notes" beside "Photos", the
+   same plain text link. Reserves "Заметки" (wider than "Notes") so a
+   language switch doesn't move the row. Only from 1240px: measured, a
+   discipline page's masthead wraps to a second row with it up to 1220px
+   (home's up to 1160px). Below that the footer's "Notes" is the way in. */
+.tools__notes { text-align: left; }
+.tools__notes::before { content: "Заметки"; }
+@media (max-width: 1239.98px) { .tools__notes { display: none; } }
 
 /* ---------- progress hairline (Spark Order S3 / move 20) ----------
    A 1px rule on the masthead's bottom edge. left/right:0 pins it to the
@@ -3254,6 +3263,7 @@ html.js .foot__in { flex: 1; width: 100%; }
    "Back to top" and in the same .tool voice; margin-left:auto keeps the pair
    together on the right when the row wraps. */
 .foot__photos { margin-left: auto; }
+/* K8: "Notes" sits between "Photos" and "Back to top"; .tool needs nothing more. */
 
 /* The mark shape (#collage view bar). */
 .footmark { width: 48px; height: 48px; flex: none; }
@@ -3754,6 +3764,13 @@ html.js .collage .reveal.is-in .collage__slot {
   transition: text-decoration-color var(--t) var(--e), color var(--t) var(--e);
 }
 .note-source__link:hover, .note-source__link:focus-visible { color: var(--fg); text-decoration-color: currentColor; }
+/* NOTES-COUNCIL K4: who wrote the note, in the confirmed facts only, on the
+   line above the source; the same small type, one step darker. */
+.note-byline {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: .3em .6em;
+  font-size: 13px; color: var(--fg); letter-spacing: .01em;
+}
+.note-byline .sep { color: var(--fg2); }
 
 .note-fig { margin: 0; min-width: 0; }
 .note-fig figcaption { margin-top: 14px; font-size: 13px; color: var(--fg2); letter-spacing: .01em; }

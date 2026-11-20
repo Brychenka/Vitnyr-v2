@@ -279,6 +279,21 @@ both languages, 375 and 1280, reduced motion, no console errors, no
 overflow, full suite, then merge and push only with Igor's yes, then
 republish the artifact if anything visible changed.
 
+## 4a. Igor's answers and status (2026-11-20, later)
+
+| | Answer | Status |
+|---|---|---|
+| C1 Notes link in footers and desktop menu | yes | **K8 done** on `feature/notes-v2`: every footer; masthead from 1240px (it wraps the row below that) |
+| C2 "Send me your six" | **no** | K5 dropped. The notes' contact block also leaves out the English page's general voice-message step |
+| C3 Recordings | yes | K6 waits for the recordings; what to record is in `tools/notes/RECORDINGS.md` |
+| C4 Search Console / Yandex Webmaster | yes, done | K9 needs no action from Igor; sitemap now carries `<lastmod>` for the notes |
+| C5 Specimens as notes | "show me first" | Built as a preview on `feature/notes-specimens`, not merged |
+
+Stage N1 (K1, K2, K3's no-question parts, K4) is done on `feature/notes-v2`,
+rebuilt on `main` `de3bfd6` by replaying the notes commits; the first
+`feature/notes` is left as it was. Nothing is merged (Igor: "don't merge
+anything yet").
+
 ## 5. Questions for Igor
 
 New:

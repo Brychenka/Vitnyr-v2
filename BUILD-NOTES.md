@@ -5964,3 +5964,43 @@ pages too; the drift test fails until they match.
 
 **Not merged, not pushed, artifact not republished** — waiting on Igor
 (NOTES-PLAN.md §8).
+
+## Notes, stage N1: the new shell, a generator, the Notes link (2026-11-20, `feature/notes-v2`)
+
+`main` moved to SITE-PLAN stages 1–5 while the notes were being built, and
+the three notes pages fell a version behind (CDN fonts and scripts, no
+"Photos", no "What happens next"). `NOTES-COUNCIL.md` is the review that
+followed; this is its stage N1 plus K8, after Igor's answers.
+
+- **Branch.** `feature/notes-v2` is cut from `main` `de3bfd6`, with the four
+  `feature/notes` commits replayed on top (only BUILD-NOTES conflicted; both
+  entries kept). The first `feature/notes` is left as it was.
+- **K2, the generator.** `tools/notes/`: `build.py` (pages, ledger, pagers,
+  sitemap block with `<lastmod>`, the share card's notes block),
+  `lib.py` (frame and pieces), one module per note (`au.py`,
+  `noun_verb_stress.py`), `export_cards.py` (PNGs, its own local server).
+  The masthead, contact section, footer, dock, stylesheet and scripts are
+  cut from `english/index.html` on every run, so the notes can't drift; a
+  new test re-runs the generator on a copy and fails if any output is stale.
+  The pager is now one link, to the next note down the ledger (the oldest
+  wraps to the newest).
+- **K1** comes free with K2: self-hosted fonts and scripts, current cache
+  keys, "Photos", "What happens next". The contact block keeps no
+  voice-message step on a note (Igor said no to K5).
+- **K3:** "mispronounce au" (not "the au cluster"); an accent footnote under
+  the au table (British /ɔː/, many Americans /ɑː/; a draft); "CONflict and
+  conFLICT" instead of a bare reference to an earlier post; "trial lesson"
+  no longer twice in a row.
+- **K4:** a by-line under each note's standfirst: "Igor Shatsev, English
+  coach · C2 · IELTS 9 · 10 years · 100+ one-on-one clients" (`.note-byline`).
+- **K8:** "Notes" in every footer (after "Photos") and in the masthead
+  (after "Photos") from 1240px: measured, a discipline page's masthead wraps
+  to a second row with it up to 1220px. On a notes page it carries
+  `aria-current="page"`. `style.css` key bumped to `20261121n` on all pages.
+- **Share card:** which blocks show is now decided by its script
+  (`note-*` matches every note), so a new note needs no CSS there. The
+  re-exported PNGs differed from the committed ones only by anti-aliasing
+  (mean 0.01/255), so the committed PNGs were kept.
+- `tools/notes/RECORDINGS.md` lists what Igor records for K6.
+
+Not merged, not pushed, artifact not republished.
