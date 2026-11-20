@@ -4,387 +4,255 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Vitnyr — a four-page marketing site (home, `/english/`, `/chess/`,
-`/climbing/`, since 2026-10-31) for Igor Shatsev, an English coach in
-Yerevan who also coaches chess and climbing as real disciplines in their own
-right (English leads; chess and climbing are weighted secondary offers, not
-proof-of-method — see "Content and positioning decisions" below).
-Static HTML/CSS/JS, no build step, no framework, no package.json. Built
-against a design guide called `onesignaturemove.pdf` (not in this repo);
-`BUILD-NOTES.md` has the full phase-by-phase log, deviations from that guide,
-and what's still outstanding. The site is live at `vitnyrcoach.com` on
-Cloudflare Pages (`build.sh` copies the publishable files into `dist/`;
-`functions/_middleware.js` rewrites the `<head>` of any `?lang=ru` page for
-crawlers). `DISCIPLINE-PAGES-PLAN.md` is the work order behind the split
-into four pages, with what each stage built and what Igor still decides.
+Vitnyr: the site of Igor Shatsev, an English coach in Yerevan who also
+coaches chess and climbing as real disciplines in their own right (English
+leads; see "Decisions" below). Four pages, home, `/english/`, `/chess/` and
+`/climbing/`, plus a notes library at `/notes/`. Static HTML/CSS/JS, no
+framework, no package.json. Live at `vitnyrcoach.com` on Cloudflare Pages:
+`build.sh` copies the publishable files into `dist/` and minifies the CSS
+and JS there; `functions/_middleware.js` rewrites the `<head>` of any
+`?lang=ru` page for crawlers, which never run `theme.js`.
 
 Repo: https://github.com/Brychenka/Vitnyr-v2 (branch `main`). This
-`site-v2/` folder is the repo root — there is no v1 in this repo; an earlier
-four-page version was retired. It has disappeared from local disk twice
-already (not recoverable from Trash either time) — it is not backed up
-anywhere and should be treated as gone unless Igor says otherwise.
+`site-v2/` folder is the repo root. It has disappeared from local disk twice
+(not recoverable from Trash either time); GitHub is its only backup.
 
-Reference source material lives in `reference/`: `onesignaturemove.pdf` (the
-design build guide v2 was built against) and `vitnyr-brand-identity.md` (the
-visual-identity spec — colors, type, logo geometry). Both used to live only
-in `~/Downloads` as loose files and had already been lost once before being
-copied in here; treat `reference/` as their only durable copy. The identity
-file itself is stale on two points — it calls the coach "Leon" and frames the
-English offering as IT-first — both **superseded by the decisions below**,
-which is why this section exists.
+`reference/` holds the source material: `onesignaturemove.pdf` (the design
+guide v2 was built against) and `vitnyr-brand-identity.md` (colours, type,
+logo geometry), whose only durable copies are here. The identity file is
+stale on two points (it calls the coach "Leon" and frames English as
+IT-first); the decisions below supersede it. Also there: the collage shot
+list, the nav-icon design handoff and the portrait grade scripts.
+
+The docs: `BUILD-NOTES.md` is the build log (what changed, when and why,
+with the bugs worth remembering). `SITE-PLAN.md` is the one open work order:
+the steps still to do and the questions only Igor can answer. Finished work
+orders were removed on 2026-11-21; they are in git history.
 
 ## Working on this project: one chat per feature
 
-Igor runs each new feature or content change as its own chat, with this repo
-as the shared backbone between them. For that to work, a new chat should:
+Igor runs each feature or content change as its own chat, with this repo as
+the shared backbone. A new chat should:
 
-1. Read this file first — it's loaded automatically — plus `BUILD-NOTES.md`
-   for the phase-by-phase build log and what's still outstanding. If there
-   is an open work order, read it too: `JURY-PASS-II.md` (2026-09-12) holds
-   the current staged plan, its standing orders, and — importantly — the
-   findings that were **withdrawn or parked** because they collide with
-   decisions already made. Check it before proposing a change to the main
-   page, so a settled decision isn't re-opened as a fresh idea.
-   Three further orders came out of a 2026-09-13 trifecta brainstorm. Igor
-   dropped all three build plans 2026-09-15 — `TRIFECTA-A-SPECIMENS.md` and
-   `TRIFECTA-C-MARK-NAV.md` are deleted outright; nothing in either was ever
-   approved to build. `TRIFECTA-B-DOSSIERS.md` is kept, trimmed to its Stage
-   B0 only: the positioning question it forced (**answered 2026-09-13:
-   Weighted**, recorded below) and the still-open material-gap question
-   (does real chess/climbing coaching material exist, is it bookable) that
-   outlasts the retired order because any future chess/climbing feature runs
-   into the same gap. A fourth idea (the mark as the page's index) was first
-   drafted on `feature/navigator-order`; that draft is superseded — Trifecta
-   Order D (`TRIFECTA-D-NAVIGATOR.md`) shipped all its stages to `main` on
-   2026-09-15 and the mark now sits at §01.
+1. Read this file (loaded automatically), then `SITE-PLAN.md`, and
+   `BUILD-NOTES.md` for anything it touches.
 2. Branch before changing anything: `git checkout -b feature/<name>` off an
    up-to-date `main`. Don't commit straight to `main`.
 3. Verify before calling it done: both themes, both languages, ~375px and
    ~1280px, `prefers-reduced-motion: reduce`, no console errors, no
-   horizontal overflow. The pane a chat previews in often repaints only on
-   demand — don't trust a single screenshot for anything scroll- or
-   time-driven; drive it with real frames (see `BUILD-NOTES.md`'s motion
-   section for the pattern that surfaced real bugs this way).
-4. Commit on the branch, then merge to `main` and push, so the *next* chat
-   starts from a `main` that has this feature in it.
-5. If the change touches anything visible, republish the live artifact —
-   see below — **to the same URL**, so the link Igor already has stays
-   correct instead of forking into a second, stale copy.
+   horizontal overflow, and the test suite. A preview pane often repaints
+   only on demand, so don't trust a single screenshot for anything scroll-
+   or time-driven; drive it with real frames.
+4. Commit on the branch, then merge to `main` and push, so the next chat
+   starts from a `main` that has the feature.
+5. If the change is visible, republish the live artifact to the same URL,
+   so the link Igor has stays correct.
 
 **Live artifact:** `https://claude.ai/code/artifact/f516ba87-7ade-47a6-b65c-c5944147006c`
-(published as "Vitnyr Signature"). Since 2026-11-20 it holds all four pages:
-the artifact host now serves extra files next to the page, so it is published
-as home (`index.html`) plus `english.html`, `chess.html`, `climbing.html`,
-`style.css`, `theme.js`, `main.js` and `assets/`. Build that bundle with
+("Vitnyr Signature"). It holds all four pages: home (`index.html`) plus
+`english.html`, `chess.html`, `climbing.html`, `style.css`, `theme.js`,
+`main.js` and `assets/`. Build the bundle with
 `python3 tools/artifact/build.py <repo> <out-dir>` (it reads committed files
-only and rewrites the site's root-absolute links to relative ones), then
-publish `index.html` with the rest as `files` to the same URL. Never edit the
-artifact's HTML directly, or the two will drift. Read the live artifact before
-publishing (the tool enforces this) so a concurrent chat's changes aren't
-clobbered.
+only and rewrites root-absolute links to relative ones), then publish
+`index.html` with the rest as `files` to the same URL. Never edit the
+artifact's HTML directly. Read the live artifact before publishing (the tool
+enforces this) so a concurrent chat's changes aren't clobbered.
 
 ## Running it
 
-No install step, and no build step for local work (`build.sh` only
-assembles `dist/` for Cloudflare Pages). Serve the folder statically and open it:
+Serve the folder and open it:
 
 ```
 python3 -m http.server
 ```
 
-Then visit `localhost:8000`. Opening `index.html` directly via `file://`
-mostly works, but the pages use root-absolute paths (`/assets/`, `/english/`)
-that only resolve under an actual server. Fonts, GSAP and Lenis are all
-served from the repo since 2026-11-20 (SITE-PLAN G3/G4), so the site works
-offline too. Cloudflare Pages runs `build.sh`, which copies the site into
-`dist/` and minifies the `dist/` copies of `style.css`, `main.js` and
-`theme.js` with esbuild 0.24.0 (G2); the source files keep every comment.
+Then visit `localhost:8000`. The pages use root-absolute paths (`/assets/`,
+`/english/`), so `file://` doesn't work. Fonts, GSAP and Lenis are served
+from the repo (`assets/fonts/`, `assets/vendor/`); nothing loads from a third
+party.
 
-There is no linter, but there is a test suite: `tests/` holds Playwright
-tests (pytest), run with `tests/.venv/bin/pytest tests -q` (about 5 minutes; it
-starts its own static server; `open_site(path="chess/")` opens a discipline
-page, and `tests/test_pages.py` covers what the split added). It was brought
-back to fully green on 2026-09-21, and again after the discipline-page split
-(one known xfail, `specimen-register` naming "please" in its visible
-explanation — see the reason in `tests/test_content.py`). Run it before and
-after a change and read every failure rather than bulk-updating. Tests are no
-substitute for looking, so also check manually: both
-themes (Cream/Charcoal) and both languages (EN/RU), at both ~375px and
-~1280px widths, with and without `prefers-reduced-motion: reduce`.
+Tests: `tests/` holds Playwright tests (pytest), run with
+`tests/.venv/bin/pytest tests -q` (about 6 minutes; it starts its own static
+server; `open_site(path="chess/")` opens a discipline page). One known xfail
+(`specimen-register` naming "please" in its visible explanation; the reason
+is in `tests/test_content.py`); `test_collage_view_switcher` is
+occasionally flaky and passes on a rerun. Run the suite before and after a
+change and read every failure rather than bulk-updating. Tests are no
+substitute for looking.
 
 ## Architecture
 
-Four shared files, each with one job, plus one HTML file per page:
+Shared files, each with one job, plus one HTML file per page:
 
 - **`index.html`, `english/index.html`, `chess/index.html`,
-  `climbing/index.html`** — each page's content, in both languages inline
-  (see i18n below). The discipline pages load the shared files by absolute
-  path (`/style.css`) and carry their own head, JSON-LD and share card. Their
-  masthead, footer and contact section are copies of the home page's, so a
-  change to one of those has to be copied to all four (DISCIPLINE-PAGES-PLAN.md,
-  architecture decision 4). `main.js` initialisers return early when their
-  section is missing, which is what lets one script serve all four pages.
-  Sections are marked with `<!-- SWAPPABLE BLOCK -->` comments where a
-  positioning change (Framing A vs. the current Framing B) is meant to be a
-  copy edit, not a restructure — the hero and the "who this is for" section.
-- **`theme.js`** — loaded synchronously in `<head>`, render-blocking on
-  purpose. Reads/writes `localStorage` (`vitnyr-theme`, `vitnyr-lang`) and
-  stamps `data-theme` / `data-lang` on `<html>` *before first paint*, so
-  there's never a flash of the wrong theme or language. Also gates the SVG
-  wordmark behind a `document.fonts.load` check (see "Wordmark" below) and
-  fires `vitnyr:langchange` on the document when the language switch button
-  is used.
-- **`main.js`** — everything else: Lenis smooth scroll wired into GSAP's
-  ticker, the IntersectionObserver-driven reveal animation, the hero's
-  line-mask entrance, animated counters, and the pointer dot — one dot that
-  rides the pointer everywhere and eases its fill to the accent ink over a
-  control (colour only — the 3× balloon was retired at C14). Plus a magnetic
-  pull (`initMagnetic`) that nudges a hovered control toward the pointer:
-  retired at C14, brought back at C16 scoped to non-text controls only
-  (`.tool, .view__back` — the switches, collage icon-nav, "Back to top",
-  "Back"; C17 adds the §04 `.origin__mark`; 2026-09-21 adds the masthead's
-  handwritten `.tools__hint` "message me" link at Igor's request), never on
-  other `data-magnetic` text links, which keep the dot's colour cue but no
-  movement. `.origin__mark` is
-  also a `.reveal` target, so `initMagnetic` hands the transform channel back
-  from the reveal on first hover (`transitionProperty = 'opacity'`) — a
-  transient transform releasing the channel, per the motion rules below. See
-  `BUILD-NOTES.md`. Wrapped in one IIFE,
-  no exports, no modules. GSAP + CustomEase + Lenis are served from
-  `assets/vendor/` (version in the filename, because `/assets/*` is cached
-  for a year) by `<script>` tags on each page, in that order, before
-  `main.js`.
-- **`style.css`** — one `:root` token block (colors, fonts, easing, spacing)
-  feeding every rule below it; no other file defines a color or a duration.
-
-Plus **`assets/collage/`** — the `#collage` view's photographs, two widths
-each (`<slug>.jpg` ~450w, `<slug>@2x.jpg` ~900w), grayscaled at display time
-by the per-theme `--collage-filter` token. **Every image is a real photo of
-Igor** (2026-09-24): the English group's stock stand-ins were removed outright
-rather than waiting for a shoot, leaving three real English frames; provenance
-of the retired stand-ins stays in `assets/collage/PLACEHOLDERS.md`. The
-deferred `<picture>`/WebP half of the Stage 3 spec (`collage-plan.md`) is
-still undone.
+  `climbing/index.html`**: each page's content, both languages inline (see
+  i18n). Each carries its own head, JSON-LD and share card and loads the
+  shared files by absolute path, with a `?v=` cache key per file (bump it
+  on every change; `/assets/*` is cached for a year, so vendor and font
+  files carry their version in the name). **The four-page rule:** the
+  masthead, footer and contact section are copies, so a change to one goes
+  to all four; `tests/test_seams.py` fails if they drift. `main.js`'s
+  initialisers return early when their section is missing, which is how one
+  script serves every page. `<!-- SWAPPABLE BLOCK -->` marks where a
+  positioning change (Framing A vs. the current Framing B) would be a copy
+  edit.
+- **`notes/`** is generated: `python3 tools/notes/build.py` builds every
+  note, the index, the sitemap entries and the share cards' text from
+  `tools/notes/*.py` and the frame of `english/index.html`. Never edit
+  `notes/**/index.html` by hand; re-run the generator after changing the
+  English page's masthead, contact or footer (a test fails until you do).
+  Adding a note: the checklist is in `SITE-PLAN.md` under H4.
+- **`theme.js`**: loaded synchronously in `<head>`, render-blocking on
+  purpose. Stamps `data-theme` (from the OS setting, or the reader's stored
+  choice) and `data-lang` on `<html>` before first paint, writes the
+  per-language canonical and Russian head tags, gates the wordmark on Lora
+  having loaded, and fires `vitnyr:langchange` on a language switch.
+- **`main.js`**: everything else, in one IIFE. Lenis smooth scroll on
+  GSAP's ticker, the IntersectionObserver reveal, the hero's line-mask
+  entrance, the pointer dot (one dot that is the cursor on a fine pointer
+  and eases its fill to an accent over a control; colour only, never size),
+  and a magnetic pull on non-text controls only (`.tool, .view__back,
+  .origin__mark, .tools__hint`), never on text links. Plus the routed
+  collage view and its lightbox, the specimen reveal and permalinks, the
+  method fold, "Test your ear" (English), the Lichess rating check (chess),
+  the who-rows' Telegram prefills and the phone contact bar.
+- **`style.css`**: one `:root` token block (colours, fonts, easing,
+  spacing) feeding every rule; no other file defines a colour or a
+  duration.
+- **`assets/collage/`**: the photo view's photographs, two widths each,
+  grayscaled at display time by `--collage-filter`. **Every image is a real
+  photo of Igor**; never add stock. The deferred `<picture>`/WebP half of
+  `reference/collage-plan.md` is still undone.
+- **`assets/share/`**: the share cards, exported from `share-card.html`
+  (`?page=`, `?lang=ru`) at 1200x630; the edge function serves the `-ru`
+  twin for `?lang=ru`. **`tools/engraving/`** generates the engraved
+  plates and vignettes; regenerate rather than hand-edit their paths.
 
 ### i18n: dual-language DOM, not a template system
 
-There's no i18n library. Every translatable string exists twice in the DOM,
-picked with CSS:
+Every translatable string exists twice in the DOM:
 
-- Short strings: `<span data-en="..." data-ru="...">` — `theme.js`'s
-  `applyLang()` copies the right attribute into `textContent` on load and on
-  language switch.
-- Longer blocks (paragraphs, headings that differ enough in length to need
-  separate layout): two full elements marked `data-l="en"` / `data-l="ru"`,
-  and CSS hides the inactive one: `html[data-lang="en"] [data-l="ru"] {
-  display: none }`. The hero title uses this pattern, which is why `main.js`
-  has to specifically re-measure and re-run the hero animation on language
-  switch (masked lines in the hidden language have zero height and can't be
-  measured until they're the visible ones).
+- Short strings: `<span data-en="..." data-ru="...">`; `theme.js`'s
+  `applyLang()` copies the right one into `textContent`. Never put
+  `data-en`/`data-ru` on an element that has child markup (it would be
+  flattened); put them on a span inside.
+- Longer blocks: twin elements marked `data-l="en"` / `data-l="ru"`, the
+  inactive one hidden by CSS. The hero title uses this, which is why
+  `main.js` re-measures and replays the hero on a language switch (masked
+  lines in the hidden language have zero height).
+- Links whose target differs by language carry `data-href-en` /
+  `data-href-ru` (the Telegram prefills).
 
-When adding copy, match whichever pattern the surrounding block already
-uses — don't invent a third mechanism.
+Match whichever pattern the surrounding block uses; don't invent a third.
 
 ### The reveal/motion system
 
-Only one easing curve exists on the whole page: `cubic-bezier(.16, 1, .3,
-1)`, defined once as `--e` in CSS and once as a GSAP `CustomEase` named
-`'brand'` in `main.js`, so they can't drift apart. Only one reveal rhythm
-exists (`.reveal` class: 24px rise + fade, 0.9s, 0.08s stagger, fires once
-via IntersectionObserver, not scroll position — see the comment block above
-`buildReveals()` for why ScrollTrigger was deliberately dropped for this).
-Don't introduce a second easing curve or a second reveal timing; extend the
-existing `D` duration table in `main.js` instead if a new animation is
-needed.
+One easing curve: `cubic-bezier(.16, 1, .3, 1)`, defined once as `--e` in
+CSS and once as the GSAP `CustomEase` `'brand'`. One reveal rhythm
+(`.reveal`: 24px rise and fade, 0.9s, 0.08s stagger, once, via
+IntersectionObserver). Don't add a second curve or reveal timing; extend the
+`D` duration table in `main.js` if a new animation needs a duration.
 
 **Layout must not occupy the transform channel.** The reveal is
-`transform: translateY(24px)` and any parallax is a transform too, so
-anything that offsets, overlaps or nudges an element for *layout* reasons
-has to do it with grid placement, margins or `inset` — never `translate`.
-A transform carrying layout has to be composed with every animation that
-later targets the same element, and the two fight. This is not
-hypothetical: the `gsap.set('.line__inner', {y:'110%'})` bug in
-`BUILD-NOTES.md` put `NaN` in GSAP's transform cache and every later tween
-on those elements silently rendered nothing. If a composition can only be
-built with `transform`, say so and stop rather than taking the channel.
+`transform: translateY(24px)`, so anything offset or nudged for layout uses
+grid placement, margins or `inset`, never `translate`. A layout transform
+fights every animation on the same element: `gsap.set('.line__inner',
+{y:'110%'})` once put `NaN` in GSAP's transform cache and every later tween
+rendered nothing (see `BUILD-NOTES.md`). If a composition can only be built
+with `transform`, say so and stop.
 
-Everything animation-related is additive: with JS absent, GSAP failed to
-load, or `prefers-reduced-motion: reduce`, the page must render fully
-readable with no hidden content. That's why `.reveal`'s hidden state only
-applies under `html.js`, and why there's a `failsafe()` sweep in `main.js`
-that forces-shows anything left stuck.
+Everything animated is additive: with JS absent, GSAP missing or reduced
+motion, the page renders fully readable. `.reveal`'s hidden state applies
+only under `html.js`, and `failsafe()` in `main.js` force-shows anything
+left stuck. An author `display` value beats the UA `[hidden]` rule, so
+styles on hideable elements use `:not([hidden])`.
 
-### Color system (do not add a third color)
+### Colour system (do not add a third colour)
 
-Two fixed pairs only, swapped wholesale via `data-theme` / prefers-color-scheme:
+Two fixed pairs, swapped wholesale by `data-theme`:
 
-- `--bg`/`--fg`/`--fg2`/`--rule` — the theme pair (charcoal-on-cream or
-  cream-on-charcoal).
-- `--amber` = the specimen (the error under examination). `--green` = the
-  target (correct form, interaction, achieved outcome). Referenced as
-  `--ink-specimen` / `--ink-target` in component CSS — use those semantic
-  names, not the raw color variables, when styling something new.
+- `--bg`/`--fg`/`--fg2`/`--rule`: the theme pair (cream, or charcoal).
+- `--amber` = the specimen (the mistake under examination), `--green` = the
+  target (the correct form, interaction, an outcome). Use the semantic
+  names `--ink-specimen` / `--ink-target` in component CSS.
 
-One derived alias exists: `--cursor-active-ink` (the pointer dot's fill over a
-control) resolves to `--ink-target` on charcoal and `--ink-specimen` on cream
-— Igor's call at C15, green read muddy on the warm ground. It's an alias to
-the existing two inks, not a third colour.
+`--cursor-active-ink` (the pointer dot over a control) is amber on cream
+and green on charcoal: an alias to the two inks, not a third colour.
 
-Accent color (amber/green) is only ever used as non-text ink — rules,
-underlines, glyphs, display numerals — **never as text under 24px**, because
-amber fails 4.5:1 on cream body text and green fails it on charcoal body
-text. This is verified and documented in `BUILD-NOTES.md`; don't reintroduce
-small colored text without rechecking contrast in both pairs.
+Accents are non-text ink only (rules, underlines, glyphs, display numerals),
+**never text under 24px**: amber fails 4.5:1 on cream and green on
+charcoal. The one exception, `.mark--specimen` / `.mark--target`, uses the
+text-safe `--amber-text` / `--green-text`.
 
 No gradients, no shadows, no rounded corners anywhere except the cursor dot
-(`border-radius: 50%` on `.cursor__dot`) — that's a deliberate exception, not
-a precedent.
+(`border-radius: 50%` on `.cursor__dot`), a deliberate exception.
 
 ### Wordmark SVG
 
-The header/footer Vitnyr mark is hand-placed SVG (`<path>` glyphs from the
-brand pack, `<text>` set at Lora's own advances) — comments in `index.html`
-say not to regenerate or redraw it. It's held at `opacity: 0` until
-`theme.js` confirms Lora has actually loaded (`lora-ready` class), because
-the text nodes are positioned assuming Lora's exact letter widths and would
-misalign in a fallback face.
+The masthead and footer Vitnyr mark is hand-placed SVG (paths from the brand
+pack, `<text>` at Lora's own advances); never regenerate or redraw it. It is
+held at `opacity: 0` until `theme.js` confirms Lora has loaded
+(`lora-ready`), because the letters assume Lora's exact widths.
 
-## Outstanding / placeholder content
+## Outstanding and placeholder content
 
-Search for `PLACEHOLDER`, `fill in`, and `.ch__todo`. The Telegram, LinkedIn
-and Instagram handles are live in `index.html`; `og:url`, `og:image`, the
-hreflang links, JSON-LD, `sitemap.xml` and `robots.txt` point at Igor's
-registered domain `https://vitnyrcoach.com/` (swapped in 2026-09-23 from the
-`vitnyr.example` placeholder); the site is live there. There is
-deliberately **no static canonical** — `theme.js`'s `applyHead()` writes a
-self-referencing one per language (`/` or `/?lang=ru`) off the x-default
-alternate, plus the Russian `<title>`/description from their `data-head-ru`
-twins; a static `/` canonical contradicted the `?lang=ru` alternate
-(2026-09-23). The share card has two exports, `og-share.png` and
-`og-share-ru.png` (`assets/share/share-card.html`, `?lang=ru` for the second);
-each page wires its English card into `og:image` (`og-share.png` on home,
-`og-english.png` etc. on the discipline pages, all from the same source with
-`?page=`), and the edge function swaps in the `-ru` twin for `?lang=ru`,
-because a crawler never runs `theme.js`. `BUILD-NOTES.md` lists these plus
-what's been visually verified vs. only checked by measuring the DOM.
+Search for `PLACEHOLDER`: the chess and climbing pages have no testimonials
+yet, and some note fields wait on Igor. `SITE-PLAN.md` lists what is open
+and the questions for Igor. There is deliberately **no static canonical**:
+`theme.js` writes a self-referencing one per language (`/` or `/?lang=ru`)
+off the x-default alternate; a static `/` canonical contradicted the
+`?lang=ru` alternate.
 
-## Content and positioning decisions (already made — don't re-litigate)
+## Content and positioning decisions (already made, don't re-litigate)
 
-These came out of direct conversation with Igor, not from the design guide or
-the brand file, so nothing in the code will tell a new chat about them:
+These came from Igor directly, so nothing in the code says them:
 
-- **Real material only.** No invented clients, results, testimonials, or
-  statistics — ever. Every claim on the page is either real or a clearly
-  marked placeholder (see above). If a feature needs a proof point that
-  doesn't exist yet, it gets a placeholder, not a plausible-sounding
-  fabrication.
-- **The three confirmed facts, worded exactly this way:** 10 years coaching,
-  100+ one-on-one clients, a **2100 chess rating stated without FIDE**
-  (Igor's own correction — don't add "FIDE" back in), **7c redpoint indoor**
-  and a **7C Kilter boulder** (climbing grades, not to be merged into one
-  generic "7c"). Coaching-outcome figures Igor has since confirmed
-  (2026-09-16 and 2026-09-23), worded as the page has them: **C2 level ·
-  IELTS 9** (Igor's own English), **3 years / 30 students to 1800+**
-  (chess coaching), **2 years / 13 climbers reached 7a in a year**
-  (climbing coaching), and **5,000+ analysed games** (the chess pattern
-  bank). Nothing beyond these should be asserted about outcomes.
-- **"Igor Shatsev" everywhere, including in Russian.** Igor was explicit:
-  *"I need to be Igor Shatsev everywhere on the website."* Don't swap in
-  "Vitnyr" or a transliteration as the personal name in either language —
-  Vitnyr is the umbrella brand, Igor Shatsev is the person, and both stay
-  visible together.
-- **Positioning: Framing B (broad), chosen over Framing A (IT-first).**
-  The brief's original open question. The `<!-- SWAPPABLE BLOCK -->` comments
-  in `index.html` mark where Framing A would be a copy edit — the general
-  "who this is for" rows plus the promotable `.it-row` — should positioning
-  ever pivot, but that pivot hasn't happened and shouldn't be assumed.
-- **Funnel/structure: a home page that sends people to a page per
-  discipline** (Igor's call, 2026-10-31, superseding the single page). Home
-  is the hero (trifecta still in the headline), then the method, then the
-  mark, centred, with three doors. Each discipline page carries that
-  discipline's specimens, method lines, who-rows and sessions. The rule that
-  decides where a sentence goes: every sentence on `/chess/` must make sense
-  to someone who only wants chess; one bridge line near the end of each page
-  is the only place the other two are named. v1 also had separate pages and
-  was retired; this split differs in keeping one shared method and one
-  design, and in sorting the copy by that rule rather than duplicating it.
-  English still leads (first door, the only page with testimonials). The
-  home mark now rests with all three strokes lit, because it navigates
-  instead of selecting: C6's English-lit rest belonged to the old readout.
-- **Positioning: chess and climbing are full disciplines, weighted behind
-  English — not proof-of-method** (decided 2026-09-13, superseding the
-  original credibility-anchor framing where the trifecta worked only as
-  proof the English method transfers). English still leads and stays
-  visibly the largest, first offer; chess and climbing are real, bookable,
-  secondary disciplines with their own material — not disinterested evidence
-  for someone else's coaching. This answers `TRIFECTA-B-DOSSIERS.md`'s Stage
-  B0.1 with its **Weighted** option, not **Equal** — so §04's mark still
-  rests with English (C6) and the raised dim floor (J7) both stay intact,
-  and nothing about the hero, the JSON-LD `jobTitle`, or existing metadata
-  changes on the strength of this decision alone (an "Equal" positioning
-  would have forced all three). What still has to be answered before any
-  future chess/climbing feature moves — see `TRIFECTA-B-DOSSIERS.md`'s
-  remaining B0.2 — is the actual session material for chess and climbing
-  coaching: does it exist yet, is it bookable today. Until that lands, this
-  is a documentation-only change: don't restructure `#disciplines`, rewrite
-  §06, or touch metadata on the strength of this decision alone. (B0.2 was
-  since answered by Stage 5's real chess/climbing specimens, landing before
-  the §04-into-§03 fold below — `#disciplines` no longer exists and contact
-  is now §05, so read those two sentences as history, not current structure.)
-- **One *file*, even where there's more than one view** — *superseded
-  2026-10-31 for the discipline pages, which are real pages because Google
-  has to index them separately.* The photos view below is still a routed
-  view inside the home page. What happens to the single-file artifact is
-  Igor's call (DISCIPLINE-PAGES-PLAN.md, Stage 6). Original rule: Igor asked for the
-  photo collage as a separate page (2026-09-04), which qualifies the rule
-  above rather than reversing it. The constraint that decides the shape:
-  the live artifact is a single self-contained HTML file, so a second
-  `.html` is unreachable from it and its content silently disappears from
-  the link Igor already shares. So a "page" here is a full-screen view
-  inside `index.html`, routed by URL hash, that *behaves* like one —
-  deep-linkable, own header, own way back, browser back works, theme and
-  language persist with no flash, focus moves to the destination heading on
-  navigation (not just scroll — see the skip-link bug in `BUILD-NOTES.md`),
-  and scroll resets. Apply the same reasoning to any future "separate
-  page": ask what it does to the artifact before splitting a file. Inside
-  that view, the photos are grouped into three domain sections —
-  **English, then chess, then climbing** (2026-09-05), unnumbered so the
-  view doesn't continue the page's 01–05 count. See `BUILD-NOTES.md`'s
-  "Collage → three domain groups" entry and `reference/collage-shotlist.md`
-  (v2).
-- **Contact channels: Telegram, LinkedIn, Instagram, in that order** — Igor's
-  own answer when asked. Real handles are still outstanding (see above); the
-  order and the choice of exactly these three platforms is settled.
-- **Five specialist review already done once** (`BUILD-NOTES.md`'s "The five
-  specialist passes" section: colour, logo, copy, type, motion) — a useful
-  pattern to reuse for a future feature that touches several disciplines at
-  once, but don't assume it needs repeating for a narrow, single-discipline
-  change.
-- **§04 "Three domains" was folded into §03 Specimens, not deleted**
-  (2026-09-18, page-length concern from Igor). §01's origin mark and §03's
-  specimens already establish English/chess/climbing as three separate real
-  disciplines, so a standalone fourth section re-arguing the same point was
-  cut length rather than content — but chess's and climbing's eligibility
-  bar, session format, and "coaching runs now" availability line (the only
-  parts of §04 that weren't duplicated elsewhere) moved into their own
-  `.specimens-group` in §03 rather than being deleted with the rest. English
-  lost its §04 card outright since it duplicated the hero. See
-  `BUILD-NOTES.md`'s "§04 'Three domains' folded into §03 Specimens" entry
-  for the full before/after. Don't propose re-adding a standalone domains
-  section without knowing this was a deliberate merge, not an oversight.
-- **SITE-PLAN stages 1–5 (built and merged 2026-11-20, Igor: "i love
-  everything").** `SITE-PLAN.md` is the work order; its status table says
-  what's left. What changed in structure, so a new chat doesn't undo it:
-  home runs hero → §01 the doors (`#origin`, with the "See me at work" photo
-  strip) → reviews → §02 the method, cut to its five names (the accordions
-  live on the discipline pages) → §03 contact; the hero headline is "Every
-  plateau / is a habit." / "Каждое плато — / это привычка."; the masthead's
-  three icons always link to the discipline pages ("Coaching"), and
-  "Photos" is a text link (masthead from 1140px, every footer); the phone
-  masthead is two rows (grid + subgrid); the theme follows the OS until the
-  reader picks one (reverses 2026-09-07's cream-always); every contact
-  section has a "what happens next" strip; the English page has "Test your
-  ear" (`#ear`) and the Russian source under each mistake; the chess page has
-  the Lichess rating check (`#rating`). New blocks are unnumbered so the
-  01–05 counts stand. `tests/test_seams.py` fails if one page's masthead or
-  footer drifts from the others.
+- **Real material only.** No invented clients, results, testimonials or
+  statistics, ever. Every claim is real or a clearly marked placeholder.
+- **The confirmed facts, worded this way:** 10 years coaching, 100+
+  one-on-one clients, a **2100 peak rating** in chess, never with "FIDE"
+  (Igor, 2026-11-21: his live rating moves between about 1950 and 2100, so
+  the site says "peak" and the number links to his Lichess profile,
+  `lichess.org/@/yngvibrychenka`), **7c redpoint indoor** and a **7C Kilter
+  boulder** (two grades, never merged into one "7c"). Coaching outcomes, as
+  the pages word them: **C2 · IELTS 9** (Igor's own English), **3 years / 30
+  students to 1800+** (chess), **2 years / 13 climbers to 7a in a year**
+  (climbing), **5,000+ analysed games** (the chess pattern bank). Nothing
+  beyond these is asserted about outcomes.
+- **"Igor Shatsev" everywhere, including in Russian.** Vitnyr is the
+  umbrella brand, Igor Shatsev is the person; both stay visible.
+- **Positioning: Framing B (broad), not Framing A (IT-first).**
+- **Chess and climbing are full disciplines, weighted behind English**, not
+  proof that the English method transfers. English leads: first door, the
+  only page with testimonials (all real, from Igor's LinkedIn
+  recommendations; the two in Russian show only on the Russian page).
+- **A home page that sends people to a page per discipline** (2026-10-31).
+  Home: hero (all three disciplines in the headline: "Every plateau / is a
+  habit." / "Каждое плато — / это привычка."), §01 the mark with three
+  doors (`#origin`) and the "See me at work" photo strip, the reviews, §02
+  the method's five names, §03 contact. Every sentence on a discipline page
+  must make sense to someone who only wants that discipline; one bridge
+  line near the end is the only place the other two are named. The
+  masthead's three icons always link to the discipline pages; "Photos" and
+  "Notes" are text links. New blocks are unnumbered, so the 01-05 counts
+  stand.
+- **The photo view is a routed view inside the home page**, not a separate
+  page: `#collage`, deep-linkable, with its own header and way back, Back
+  closes it, focus moves to its heading. Three groups, **English, then
+  chess, then climbing**, unnumbered.
+- **Contact channels: Telegram, LinkedIn, Instagram, in that order.** No
+  prices on the site. Every contact section says what happens next (message,
+  30-minute trial, a plan).
+- **The theme follows the OS** until the reader picks one with the theme
+  control.
+- **Motion and the pointer:** Igor likes the magnetic pull on controls and
+  the ticking numbers, but the facts row they animated was removed and
+  the counter code with it; don't propose re-adding it.
+- **Five specialist passes** (colour, logo, copy, type, motion) were done
+  once (`BUILD-NOTES.md`); reuse the pattern for a change that touches
+  several disciplines, not for a narrow one.
+- **Not doing** (Igor and the council threw these out): an AI chat
+  assistant, a booking calendar, a general blog, an Armenian version, video
+  backgrounds or more motion, invented chess or climbing reviews, a third
+  colour, splitting the brand. Real `/ru/` URLs and a template build are
+  deferred until Igor asks (see `SITE-PLAN.md`).

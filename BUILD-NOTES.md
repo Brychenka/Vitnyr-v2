@@ -6052,3 +6052,61 @@ was. i'll decide later. after the reverse. merge the rest of the changes".
   line-edited), the post URLs (Q5), the stress post's date (Q6), conSOLE
   (Q7), "95%" (Q2), the recordings (K6), and the English page's "reflexive
   ending" wording.
+
+## 2100 as a peak, and a clean-up (2026-11-21, `feature/peak-and-cleanup`)
+
+Igor: "let's make it 2100 rating peak. to not confuse people. even if i go
+1950-2100. clean up everything we don't need including comments and
+whatever is necessary."
+
+**The rating (E2).** Lichess showed blitz 1998, peak 2105, so a bare "2100"
+linked to the profile would have raised a question. Now:
+- Home's chess door: "Peak rating 2100 · 30 students to 1800+" / "Пик
+  рейтинга 2100 · 30 учеников до 1800+", with non-breaking spaces inside
+  each fact so a phone breaks only at the dot (Russian at 375 takes two
+  lines, like the climbing door already did).
+- The chess hero's credential is a link to `lichess.org/@/yngvibrychenka`
+  (new tab): "2100 / peak rating" ("пик рейтинга"), the number underlined
+  in `--rule` like `.lede__link`, "on Lichess" for screen readers only.
+  "peak rating on Lichess" as the visible label wrapped the credentials row
+  at 1280 and pushed the trial button down, so it stays short; measured,
+  the row and the CTA sit exactly where they did at 900-1440 in both
+  languages.
+- Both pages' meta descriptions, the chess share cards (re-exported) and
+  the chess page's Person `sameAs`.
+- CLAUDE.md's confirmed-facts line now says "2100 peak rating".
+
+**Dead code.** The home mark's script still carried the retired readout
+panel (commit, marker, reading values, the specimen switch, the spark):
+`initOrigin()` is now only what runs (hover/focus preview of a stroke and
+its door, the sigils, the one-time idle hint). 82 CSS rules that could
+match nothing went with it (the readout `.reading*`/`.origin__panel*`, the
+old specimen switch, `.mech__case*`, `.collage__wait`, `.footmark-top`,
+`.vig--mirror`, `.vig__coil`, the spark and glow keyframes), plus two
+unused `D` durations (`follow`, `correct`). Found by scanning every class
+in `style.css` against the class attributes and JS strings of all pages.
+
+**Comments.** About 60% of `style.css`'s comments and half of `main.js`'s
+were change history (dates, stage codes, what used to be there). Every
+comment block was read and either cut, or kept and shortened to the why;
+guard rails (the transform channel, the wordmark, `[hidden]`, the Chrome
+clip-rect quirk, the Lenis wheel fix) stay. style.css 211 KB -> 131 KB,
+main.js 126 KB -> 88 KB; HTML comments likewise (they ship to visitors).
+
+**Files.** Removed, all in git history: the finished work orders
+(`JURY-PASS-II.md`, `DESIGN-PASS-III.md`, `TRIFECTA-B-DOSSIERS.md`,
+`TRIFECTA-D-NAVIGATOR.md`, `DISCIPLINE-PAGES-PLAN.md`,
+`FINISHING-TOUCHES.md`, `NOTES-PLAN.md`, `NOTES-COUNCIL.md`),
+`Claude outputs/` (intermediate photo edits) and
+`assets/collage/PLACEHOLDERS.md` (provenance of stand-ins long gone).
+`SITE-PLAN.md` is cut to what's open, with the notes' open questions folded
+in (NQ1-NQ10) and the notes checklist under H4. CLAUDE.md rewritten to
+describe the site as it is, every decision kept.
+
+**Checked.** Full-page screenshots of all four pages and two notes (EN/RU,
+375/1280, cream and charcoal at 1280) against `main` before the change,
+with a fixed clock: the only differences are the rating lines, plus Russian
+phones: the chess door's facts now take two lines. A second run of the old
+`main` against itself shows the same 28px flicker at the bottom of
+`english-en-1280-light`, so that one is noise.
+
