@@ -20,11 +20,10 @@
    ============================================================ */
 
 :root {
-  /* Cream is the default pair (Igor, 2026-09-07): the page always opens on
-     cream and only switches to charcoal when the reader picks it with the
-     theme control. The OS `prefers-color-scheme` no longer decides — the
-     charcoal values live in `:root[data-theme="dark"]` below and nowhere
-     else, so an explicit choice is the only way in. */
+  /* Cream pair. theme.js stamps data-theme from the reader's OS setting, or
+     from their stored choice once they use the theme control (2026-09-29);
+     the charcoal values live in `:root[data-theme="dark"]` below and nowhere
+     else. Cream is also what renders with JS absent. */
   --bg:     #EFEBE3;
   /* Amber is fixed, not theme-swapped: Igor picked the single darker value
      (#B07C24) over the brighter one the charcoal pair used to carry, so one
@@ -150,10 +149,10 @@
   --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
 }
 
-/* ---------- charcoal pair: opt-in only ----------
-   Applied solely when the reader picks it (theme.js stamps
-   data-theme="dark"). No prefers-color-scheme branch — cream is the default
-   in every OS setting (Igor, 2026-09-07). Every value here is the charcoal
+/* ---------- charcoal pair ----------
+   Applied when theme.js stamps data-theme="dark": the reader's OS is set to
+   dark, or they picked charcoal with the theme control (2026-09-29). No CSS
+   prefers-color-scheme branch — theme.js decides, before first paint. Every value here is the charcoal
    counterpart of a token defined on :root above; nothing new is introduced. */
 :root[data-theme="dark"] {
   /* Shipped (feature/dark-theme-color-exploration, merged — keep it; do not

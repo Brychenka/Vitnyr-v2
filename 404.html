@@ -5,9 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Not found — Vitnyr</title>
+<!-- Follows the OS like the main pages (SITE-PLAN C7); a choice the reader
+     made with the theme button (theme.js's `vitnyr-theme` key) wins. -->
+<meta name="theme-color" content="#EFEBE3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)">
+<script>
+  try {
+    var t = localStorage.getItem('vitnyr-theme');
+    if (t === 'light' || t === 'dark') {
+      document.documentElement.setAttribute('data-theme', t);
+      var c = t === 'dark' ? '#171310' : '#EFEBE3';
+      var m = document.querySelectorAll('meta[name="theme-color"]');
+      for (var i = 0; i < m.length; i++) m[i].setAttribute('content', c);
+    }
+  } catch (e) {}
+</script>
 <style>
   :root { --bg:#EFEBE3; --fg:#1D2224; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#171310; --fg:#F2EFE8; } }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#171310; --fg:#F2EFE8; } }
+  :root[data-theme="dark"] { --bg:#171310; --fg:#F2EFE8; }
   body { margin:0; min-height:100vh; display:grid; place-content:center; gap:1rem;
          padding:0 16px; background:var(--bg); color:var(--fg);
          font:18px/1.5 Georgia, serif; text-align:center; }
