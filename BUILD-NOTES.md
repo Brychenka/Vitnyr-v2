@@ -6004,3 +6004,32 @@ followed; this is its stage N1 plus K8, after Igor's answers.
 - `tools/notes/RECORDINGS.md` lists what Igor records for K6.
 
 Not merged, not pushed, artifact not republished.
+
+## Notes, K7 preview: the three English specimens as notes (2026-11-20, `feature/notes-specimens`)
+
+Igor on NOTES-COUNCIL C5: "show me how it looks and then we'll decide". So
+this is a preview branch on top of `feature/notes-v2`, not for merging until
+he says so.
+
+- Three notes, generated like the others (`tools/notes/agree.py`,
+  `feel.py`, `could_you.py`), first in the ledger, the same order as the
+  English page: `/notes/agree/` "A state or an action?", `/notes/feel/`
+  "Nothing to add.", `/notes/could-you/` "Please isn't enough."
+- Each standfirst reuses its specimen's approved explanation; the forms,
+  look-alikes, practice lines and Russian are drafts for Igor. Each has a
+  new hero figure, `.ladder`: one sentence per row, from the Russian through
+  the habit to the English, with the culprit and the fix in the same inks
+  as `.note-spec`.
+- The slugs leave out the word each specimen hides until asked ("am",
+  "myself", "please"; W1, J6(b)), because each specimen on `/english/` now
+  links to its note ("The full note", reusing `.bridge__link`).
+- Not all notes started on LinkedIn any more, so the index's "Each one
+  starts as a post on LinkedIn" now appears only while that is true (the
+  generator checks), and these notes show a date without a LinkedIn link.
+- Found while writing `feel`: the English page explains "I feel myself" as a
+  Russian "reflexive ending built into the verb". чувствую себя uses a
+  separate reflexive word (себя), not an ending (that would be -ся). The note
+  says "reflexive word"; the English page's sentence is Igor's approved copy
+  and is left for him.
+
+Not merged, not pushed, artifact not republished.

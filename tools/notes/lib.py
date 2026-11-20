@@ -355,3 +355,22 @@ def hit(word, letters):
 def tile(ch, v=None, mod=""):
     return (f'<span class="tile{mod}"><span class="tile__ch">{ch}</span>'
             + (f'<span class="tile__v">{v}</span>' if v else "") + "</span>")
+
+
+def ladder(rows, caption_en, caption_ru, fig_id):
+    """A sentence-level hero figure for the grammar notes: one sentence per
+    row, from the Russian through the habit to the English, the culprit and
+    the fix in the same inks as .note-spec. rows: (html, lang, role_en, role_ru)."""
+    out = "\n".join(
+        f'      <div class="ladder__row"><span class="ladder__s" lang="{lang}">{html}</span>'
+        f'<span class="weights__role" data-en="{ren}" data-ru="{rru}">{ren}</span></div>'
+        for html, lang, ren, rru in rows)
+    return f"""    <figure class="note-fig ladder reveal" aria-labelledby="{fig_id}">
+{out}
+      <figcaption id="{fig_id}"><span data-l="en">{caption_en}</span><span data-l="ru">{caption_ru}</span></figcaption>
+    </figure>"""
+
+
+def both(en, ru):
+    """A short string in both languages (theme.js swaps it)."""
+    return f'<span data-en="{en}" data-ru="{ru}">{en}</span>'

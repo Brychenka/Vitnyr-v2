@@ -287,7 +287,7 @@ republish the artifact if anything visible changed.
 | C2 "Send me your six" | **no** | K5 dropped. The notes' contact block also leaves out the English page's general voice-message step |
 | C3 Recordings | yes | K6 waits for the recordings; what to record is in `tools/notes/RECORDINGS.md` |
 | C4 Search Console / Yandex Webmaster | yes, done | K9 needs no action from Igor; sitemap now carries `<lastmod>` for the notes |
-| C5 Specimens as notes | "show me first" | Built as a preview on `feature/notes-specimens`, not merged |
+| C5 Specimens as notes | "show me first" | Built as a preview on `feature/notes-specimens` (`/notes/agree/`, `/notes/feel/`, `/notes/could-you/`), not merged |
 
 Stage N1 (K1, K2, K3's no-question parts, K4) is done on `feature/notes-v2`,
 rebuilt on `main` `de3bfd6` by replaying the notes commits; the first
