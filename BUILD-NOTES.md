@@ -5885,3 +5885,82 @@ Cloudflare Web Analytics' beacon (static.cloudflareinsights.com) is on every
 page, so SITE-PLAN A1 is on: visitor numbers start from 2026-11-20. It is
 added at the edge, not in the repo, so the local "no third parties" test
 doesn't see it.
+
+## Notes — Igor's LinkedIn posts as `/notes/` (2026-11-20, `feature/notes`)
+
+Igor asked for a page that keeps his LinkedIn posts on the site to bring in
+more readers. This is SITE-PLAN.md's **H4, the library of mistakes** (its
+open question N11 answered by the request), built off `main` in its own
+worktree so `feature/s1-clean-up` and the uncommitted
+`feature/theme-follows-system` were never touched. `NOTES-PLAN.md` holds
+the brainstorm, the ambitious v1, the cold-eyes table that cut it down
+(no cards, no carousel images, no text-to-speech, no feed embed, no
+filters, no masthead item yet), the v2 that was built, the checklist for
+adding the next note, and the questions only Igor can answer.
+
+- **`/notes/`** — a ledger of corrected proofs: one hairline row per note,
+  each carrying its own correction in mono (amber mistake, green fix, the
+  sanctioned `.mark--specimen` / `.mark--target` exception), then a
+  "follow on LinkedIn" line and the English contact section.
+- **`/notes/au/`** ("Two letters, one sound") and
+  **`/notes/noun-verb-stress/`** ("The weight of stress"): hero with a
+  typeset figure in the photo slot (hairline Scrabble tiles where the green
+  `ɔː` spans the two amber letters' columns; the stressed syllable set
+  large so the type's weight is the stress), the correction as a
+  `.line-spec` pair outside `#specimen` (so the specimen reveal leaves it
+  showing), the word list as a real `<table>`, why Russian pulls it there,
+  practice sentences, a pager, contact. Lists align to `.sec__head`'s own
+  two columns at ≥900px (Russian/noun under the heading, English/verb under
+  the lede); the table's last column is 45.5%, which is that split's share
+  from 900px to `--maxw`.
+- **Shell:** masthead, contact and footer are the English page's own blocks
+  (generated once by a scratch script, then committed as plain HTML, the
+  same way the discipline pages were). No discipline is `aria-current`;
+  each page has its own section links.
+- **CSS:** one block appended to `style.css`; only the notes pages load the
+  new key (`?v=20261120n`). The four existing pages use none of the new
+  selectors, so their heads (and cache keys) are unchanged. The English
+  page's link into the notes reuses `.bridge__link`, so it needs no new CSS.
+- **Head / sharing:** own title, `data-head-ru`, description, hreflang trio,
+  og/twitter, JSON-LD (`CollectionPage` + `ItemList`; `Article` with
+  `author → #igor`). Six share cards (`share-card.html?page=notes|note-au|
+  note-noun-verb-stress`, EN and RU — the edge middleware swaps `.png` for
+  `-ru.png`); a note's card carries its correction. The `english` selector
+  in `share-card.html` became `~=` so its facts line can be shared; the
+  English card re-exports identically.
+- **Deploy:** `build.sh` copies `notes/`; `sitemap.xml` lists the three
+  pages in both languages.
+- **Content:** the Russian is Igor's posts, lightly cleaned (из-за, и т. д.,
+  всё); the English is a translation marked as a draft. The `au` practice
+  sentences are drafts (not in his post); one stress action sentence was
+  hidden on the screenshot and is a stand-in. Kelly & Bock (1988) checked:
+  *Stress in time*, JEP: HPP 14(3), 389–403. The "по-русски" column of his
+  register slide was unreadable and is left out. The posts' own URLs and
+  the stress post's exact date are pending (the source line links to his
+  LinkedIn activity page and says "November 2026").
+- **Tests:** `tests/test_notes.py` discovers note folders on disk and fails
+  if one is missing from the ledger, the JSON-LD list, the sitemap, the
+  build or the share cards, or lacks its own head in both languages; also
+  masthead/footer drift against `/english/`, section-link targets, Telegram
+  prefills naming English, the correction showing both lines, phone width
+  in RU dark, and no-JS reading. `test_pages.py`'s sitemap test was renamed
+  `test_sitemap_lists_every_page_in_two_languages` and now expects the notes
+  — a deliberate change to what it protects.
+
+Verified: all three pages at 1280 (Cream EN, Charcoal RU) and at 375 and
+320 touch (Charcoal RU, Cream EN), reduced motion, JS off; no console
+errors, no overflow, no hidden reveals; in the browser, the language switch
+(title, canonical, Telegram prefill, hero replay), section jumps with the
+active underline, and the dock. Suite: 357 passed + the known xfail;
+`test_hero_foot_is_visible_at_rest_without_scrolling` failed at 800/1080
+in the full run (opacity 0.93 vs 0.95, read 400ms after load while the
+reveal fades over 0.9s). It passes on this branch alone and fails the same
+way on untouched `main`, so it is a pre-existing timing flake on the home
+page, not this change.
+
+A dry-run merge into `feature/s1-clean-up`'s committed state is clean. When
+that branch's masthead/footer changes land, copy them into the three notes
+pages too; the drift test fails until they match.
+
+**Not merged, not pushed, artifact not republished** — waiting on Igor
+(NOTES-PLAN.md §8).

@@ -75,14 +75,16 @@ def test_page_json_ld_is_a_service_under_the_home_person(open_site, slug):
     assert f'"@id": "{SITE}/{slug}/#service"' in home.content()
 
 
-def test_sitemap_lists_four_pages_in_two_languages(site_url, open_site):
+def test_sitemap_lists_every_page_in_two_languages(site_url, open_site):
+    """Four pages, then the notes (feature/notes, 2026-11-20: the index and
+    each note, newest first), each in both languages."""
     page, _ = open_site()
     body = page.request.get(f"{site_url}/sitemap.xml").text()
     ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9", "x": "http://www.w3.org/1999/xhtml"}
     root = ET.fromstring(body)
     locs = [u.find("s:loc", ns).text for u in root.findall("s:url", ns)]
     expected = []
-    for p in ["/", "/english/", "/chess/", "/climbing/"]:
+    for p in ["/", "/english/", "/chess/", "/climbing/", "/notes/", "/notes/au/", "/notes/noun-verb-stress/"]:
         expected += [SITE + p, SITE + p + "?lang=ru"]
     assert locs == expected
     for u in root.findall("s:url", ns):
