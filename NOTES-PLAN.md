@@ -6,6 +6,11 @@
 `feature/theme-follows-system` (uncommitted, main checkout), so neither is
 touched.
 
+**Next steps live in `NOTES-COUNCIL.md`** (2026-11-20, after SITE-PLAN
+stages 1–5 reached `main`): the council review of the notes and the site,
+cut down to what's worth doing, with its running order. Read it before
+changing the notes.
+
 **Igor's ask:** a page that keeps his LinkedIn posts on the website, to
 bring in more readers, in the same design, vibe and aesthetics.
 
