@@ -3392,6 +3392,22 @@ html.js .collage .reveal.is-in .collage__slot {
   .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
 }
 
+/* SITE-PLAN E1 (2026-11-20): "what happens next" in the contact section of
+   all four pages. The facts row's exact voice (hairline rows, small caps
+   label, serif value), so it reads as the same kind of thing: plain facts
+   about how this works, not a sales block. */
+.steps {
+  display: grid; list-style: none; padding: 0;
+  margin: clamp(36px, 5vw, 64px) 0 0;
+  border-top: 1px solid var(--rule);
+}
+.steps li { display: grid; gap: 4px; padding: 16px 0 18px; border-bottom: 1px solid var(--rule); }
+.steps__k { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
+.steps__v { font-family: var(--serif); font-weight: 500; font-size: clamp(19px, 1.7vw, 24px); color: var(--fg); }
+@media (min-width: 700px) {
+  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
+}
+
 .page-photos { display: grid; gap: 32px clamp(16px, 3vw, 40px); margin-top: clamp(48px, 7vw, 96px); }
 .page-photos .collage__fig { margin: 0; }
 /* SITE-PLAN C3 (2026-11-20): the pair splits the full content width (it
