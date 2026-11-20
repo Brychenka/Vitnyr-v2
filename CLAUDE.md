@@ -72,13 +72,16 @@ as the shared backbone between them. For that to work, a new chat should:
    correct instead of forking into a second, stale copy.
 
 **Live artifact:** `https://claude.ai/code/artifact/f516ba87-7ade-47a6-b65c-c5944147006c`
-(published as "Vitnyr Signature"). It's a single self-contained HTML file —
-`style.css`, `theme.js`, and `main.js` inlined into `index.html` — because
-the artifact host doesn't serve the repo's separate files. When republishing,
-rebuild that inline version from the current repo files rather than editing
-the artifact's HTML directly, or the two will drift. Read the live artifact
-before editing it (the tool enforces this) so a concurrent chat's changes
-aren't clobbered.
+(published as "Vitnyr Signature"). Since 2026-11-20 it holds all four pages:
+the artifact host now serves extra files next to the page, so it is published
+as home (`index.html`) plus `english.html`, `chess.html`, `climbing.html`,
+`style.css`, `theme.js`, `main.js` and `assets/`. Build that bundle with
+`python3 tools/artifact/build.py <repo> <out-dir>` (it reads committed files
+only and rewrites the site's root-absolute links to relative ones), then
+publish `index.html` with the rest as `files` to the same URL. Never edit the
+artifact's HTML directly, or the two will drift. Read the live artifact before
+publishing (the tool enforces this) so a concurrent chat's changes aren't
+clobbered.
 
 ## Running it
 

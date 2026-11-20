@@ -178,3 +178,37 @@ def test_page_has_no_testimonials_it_cannot_back(open_site, slug):
     else:
         assert voices == 0
         assert "PLACEHOLDER" in page.content()
+
+
+# --- SITE-PLAN B3 (2026-11-20): the footer's three readings are the way into
+# each discipline. Each links to its page, except the page you're already on,
+# and the language switch must not flatten the link (theme.js rewrites the
+# text of any element carrying data-en/data-ru, so those sit on a span inside
+# the <a>, never on the <a>'s parent). ---
+
+FOOT_TARGETS = ["/english/", "/chess/", "/climbing/"]
+
+
+@pytest.mark.parametrize("path,here", [("index.html", None)] + [(f"{s}/", f"/{s}/") for s in PAGES])
+def test_footer_readings_link_to_the_other_disciplines(open_site, path, here):
+    page, _ = open_site(path=path)
+
+    def hrefs():
+        return page.evaluate(
+            """() => [...document.querySelectorAll('.foot__notes dd')]
+                   .map(dd => { const a = dd.querySelector('a');
+                                return a ? a.getAttribute('href') : null; })""")
+
+    expected = [None if t == here else t for t in FOOT_TARGETS]
+    assert hrefs() == expected
+    # survives a round trip through Russian
+    switch = page.locator(".masthead .langswitch")
+    switch.click()
+    assert re.search("[а-я]", page.locator(".foot__notes dd").first.inner_text())
+    assert hrefs() == expected
+    switch.click()
+    assert hrefs() == expected
+    # at rest it reads as the plain text it used to be
+    deco = page.evaluate(
+        "() => getComputedStyle(document.querySelector('.foot__link .foot__text')).textDecorationLine")
+    assert deco == "none"

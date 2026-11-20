@@ -13,37 +13,50 @@ def meta_theme_color(page):
     return page.locator('meta[name="theme-color"]').get_attribute("content")
 
 
-def test_dark_system_pref_still_opens_cream(open_site):
-    """2026-09-07 (Igor: "make cream the default one, only moving to dark one if
-    the choosers chose to"): `prefers-color-scheme` was removed outright, so an
-    OS-dark reader with no stored choice opens on *cream*, not charcoal. Guards
-    the decision itself — a reinstated media query would fail here."""
+def test_dark_system_pref_opens_charcoal(open_site):
+    """2026-09-29 (Igor: "make it follow the systems settings"), reversing the
+    2026-09-07 cream-always default: an OS-dark reader with no stored choice
+    opens on charcoal."""
     page, _ = open_site(color_scheme="dark")
-    # no stored choice -> no data-theme attribute -> base :root -> cream
-    assert page.locator("html").get_attribute("data-theme") is None
-    assert meta_theme_color(page).upper() == CREAM
+    assert page.locator("html").get_attribute("data-theme") == "dark"
+    assert meta_theme_color(page).upper() == CHARCOAL
     assert page.evaluate("getComputedStyle(document.body).backgroundColor") == (
-        "rgb(239, 235, 227)"
+        "rgb(23, 19, 16)"
     )
-    assert page.locator(".masthead .themeswitch").get_attribute("title") == "Charcoal"
+    assert page.locator(".masthead .themeswitch").get_attribute("title") == "Cream"
+    # nothing is stored until the reader uses the control
+    assert page.evaluate("localStorage.getItem('vitnyr-theme')") is None
 
 
-def test_light_system_pref_uses_cream_with_no_attribute(open_site):
+def test_light_system_pref_opens_cream(open_site):
     page, _ = open_site(color_scheme="light")
-    assert page.locator("html").get_attribute("data-theme") is None
+    assert page.locator("html").get_attribute("data-theme") == "light"
     assert meta_theme_color(page).upper() == CREAM
     assert page.locator(".masthead .themeswitch").get_attribute("title") == "Charcoal"
 
 
-def test_toggle_from_the_cream_default_sets_dark(open_site):
-    """Charcoal is opt-in: it is reachable only through the control."""
-    page, _ = open_site(color_scheme="dark")
+def test_toggle_from_the_system_default_stores_the_other_pair(open_site):
+    page, _ = open_site(color_scheme="light")
     page.locator(".masthead .themeswitch").click()
 
     assert page.locator("html").get_attribute("data-theme") == "dark"
     assert page.evaluate("localStorage.getItem('vitnyr-theme')") == "dark"
     assert meta_theme_color(page).upper() == CHARCOAL
     assert page.locator(".masthead .themeswitch").get_attribute("title") == "Cream"
+
+
+def test_live_os_switch_is_followed_without_a_stored_choice(open_site):
+    page, _ = open_site(color_scheme="light")
+    page.emulate_media(color_scheme="dark")
+    page.wait_for_timeout(50)
+    assert page.locator("html").get_attribute("data-theme") == "dark"
+
+
+def test_live_os_switch_is_ignored_after_a_stored_choice(open_site):
+    page, _ = open_site(theme="light", color_scheme="light")
+    page.emulate_media(color_scheme="dark")
+    page.wait_for_timeout(50)
+    assert page.locator("html").get_attribute("data-theme") == "light"
 
 
 def test_explicit_choice_overrides_system_pref(open_site):
@@ -83,9 +96,9 @@ def test_theme_button_label_is_localised(open_site):
 # laptop or in daylight. Both pairs are tuned to land near 2:1 instead. ---
 
 def test_hairline_clears_roughly_2to1_on_charcoal(open_site):
-    # theme="dark", not color_scheme: charcoal is opt-in only, so an OS-level
-    # preference would have measured the cream hairline instead — which lands in
-    # this same band, so the mistake passed silently.
+    # theme="dark" seeds an explicit choice, so the pair doesn't hang on the
+    # fixture's OS default (the cream hairline lands in this same band, so a
+    # wrong pair would pass silently).
     page, _ = open_site(theme="dark")
     ratio = rule_contrast(page)
     assert 1.85 <= ratio <= 2.3, f"--rule vs --bg on charcoal: {ratio:.2f}:1"
@@ -95,3 +108,25 @@ def test_hairline_clears_roughly_2to1_on_cream(open_site):
     page, _ = open_site()
     ratio = rule_contrast(page)
     assert 1.85 <= ratio <= 2.3, f"--rule vs --bg on cream: {ratio:.2f}:1"
+
+
+# --- SITE-PLAN C7 (2026-11-20): the OS decides on every page, not just home,
+# and a stored choice carries across pages (the 404 included). ---
+
+@pytest.mark.parametrize("path", ["english/", "chess/", "climbing/"])
+def test_discipline_pages_follow_the_os_until_the_reader_chooses(open_site, path):
+    page, _ = open_site(color_scheme="dark", path=path)
+    assert page.locator("html").get_attribute("data-theme") == "dark"
+    assert meta_theme_color(page).upper() == CHARCOAL
+    page, _ = open_site(color_scheme="dark", theme="light", path=path)
+    assert page.locator("html").get_attribute("data-theme") == "light"
+    assert meta_theme_color(page).upper() == CREAM
+
+
+def test_not_found_page_follows_the_os_and_a_stored_choice(open_site):
+    page, _ = open_site(color_scheme="dark", path="404.html")
+    assert page.evaluate("getComputedStyle(document.body).backgroundColor") == "rgb(23, 19, 16)"
+    page, _ = open_site(color_scheme="dark", theme="light", path="404.html")
+    assert page.evaluate("getComputedStyle(document.body).backgroundColor") == "rgb(239, 235, 227)"
+    page, _ = open_site(color_scheme="light", theme="dark", path="404.html")
+    assert page.evaluate("getComputedStyle(document.body).backgroundColor") == "rgb(23, 19, 16)"

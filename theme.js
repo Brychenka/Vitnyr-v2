@@ -21,16 +21,18 @@
   }
   function save(key, v) { try { localStorage.setItem(key, v); } catch (e) {} }
 
-  /* Cream is the default pair (Igor, 2026-09-07). The OS `prefers-color-scheme`
-     no longer has a say — the page opens on cream in every case and only goes
-     charcoal once the reader picks it with the theme control. */
+  /* The reader's OS setting picks the pair (Igor, 2026-09-29 — reversing the
+     2026-09-07 cream-always default): a dark system opens on charcoal, anything
+     else on cream. A choice made with the theme control is stored and wins
+     over the OS from then on. The attribute is always stamped, so style.css
+     keeps a single `[data-theme="dark"]` branch and no media-query twin. */
+  var darkMQ = null;
+  try { darkMQ = window.matchMedia('(prefers-color-scheme: dark)'); } catch (e) {}
   function effectiveTheme() {
-    return stored(THEME_KEY, 'light', 'dark') || 'light';
+    return stored(THEME_KEY, 'light', 'dark') || (darkMQ && darkMQ.matches ? 'dark' : 'light');
   }
   function applyTheme() {
-    var chosen = stored(THEME_KEY, 'light', 'dark');
-    if (chosen) document.documentElement.setAttribute('data-theme', chosen);
-    else document.documentElement.removeAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', effectiveTheme());
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', effectiveTheme() === 'light' ? '#EFEBE3' : '#171310');   /* the warm charcoal --bg (style.css) */
     labelTheme();
@@ -131,6 +133,13 @@
   document.documentElement.setAttribute('lang', lang);
   applyHead(lang);   /* the head tags sit above this script, so they exist already */
   applyTheme();
+  /* The OS flips (e.g. an automatic sunset switch) while the page is open:
+     follow it, unless the reader has made their own choice. */
+  if (darkMQ) {
+    var onScheme = function () { if (!stored(THEME_KEY, 'light', 'dark')) applyTheme(); };
+    if (darkMQ.addEventListener) darkMQ.addEventListener('change', onScheme);
+    else if (darkMQ.addListener) darkMQ.addListener(onScheme);
+  }
 
   /* The wordmark is live SVG text positioned at Lora's own advances, so it must
      never paint in a fallback face. Reveal it only once Lora has actually

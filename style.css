@@ -20,11 +20,10 @@
    ============================================================ */
 
 :root {
-  /* Cream is the default pair (Igor, 2026-09-07): the page always opens on
-     cream and only switches to charcoal when the reader picks it with the
-     theme control. The OS `prefers-color-scheme` no longer decides — the
-     charcoal values live in `:root[data-theme="dark"]` below and nowhere
-     else, so an explicit choice is the only way in. */
+  /* Cream pair. theme.js stamps data-theme from the reader's OS setting, or
+     from their stored choice once they use the theme control (2026-09-29);
+     the charcoal values live in `:root[data-theme="dark"]` below and nowhere
+     else. Cream is also what renders with JS absent. */
   --bg:     #EFEBE3;
   /* Amber is fixed, not theme-swapped: Igor picked the single darker value
      (#B07C24) over the brighter one the charcoal pair used to carry, so one
@@ -150,10 +149,10 @@
   --collage-filter: grayscale(1) contrast(1.08) brightness(0.98);
 }
 
-/* ---------- charcoal pair: opt-in only ----------
-   Applied solely when the reader picks it (theme.js stamps
-   data-theme="dark"). No prefers-color-scheme branch — cream is the default
-   in every OS setting (Igor, 2026-09-07). Every value here is the charcoal
+/* ---------- charcoal pair ----------
+   Applied when theme.js stamps data-theme="dark": the reader's OS is set to
+   dark, or they picked charcoal with the theme control (2026-09-29). No CSS
+   prefers-color-scheme branch — theme.js decides, before first paint. Every value here is the charcoal
    counterpart of a token defined on :root above; nothing new is introduced. */
 :root[data-theme="dark"] {
   /* Shipped (feature/dark-theme-color-exploration, merged — keep it; do not
@@ -909,6 +908,70 @@ html[data-lang="ru"] .hero__title em { font-size: .5em; letter-spacing: -.010em;
 html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
 html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 
+/* ---------- hero portrait (home) ----------
+   2026-11-20 (feature/ft2-hero-portrait): Igor's portrait moves up from the
+   contact section, so a stranger sees the person before anything else.
+   The file is the same graded 4:5 one (black point --fg, white point --bg),
+   so it needs no frame, no filter and no caption here either.
+   Phone/tablet: plain flow between the title and the stand, at the width
+   the contact section used, so the title stays the first thing read. */
+.hero__portrait { margin: 0; width: min(220px, 60%); }
+.hero__portrait img {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+/* .hero__head holds the eyebrow and the title together, so the portrait
+   beside them can't pull them apart. Its gap is .hero's own. */
+.hero__head { display: flex; flex-direction: column; gap: clamp(28px, 5vh, 60px); }
+/* >=900px: a two-column hero. .hero__head | the portrait, both hung from
+   the eyebrow's line; the stand under the title and the scroll cue under
+   the portrait on the last row, bottoms aligned. .hero__foot steps aside
+   (display: contents) so its two children can take those two cells.
+   The title can't keep its full-width 8.6vw: the italic trifecta line is
+   8.14em of the title size wide in EN, and .line's mask clips anything
+   wider than its column. So the size follows the text column instead:
+   (hero content width - portrait - gap) / 8.6, capped at 124px as before.
+   The content width is min(100vw, --maxw) - 2 x --gut, rather than
+   container units, so .hero doesn't take on layout containment for one
+   font size. 100vw counts a classic scrollbar (~17px), which makes the
+   title ~2px too big; the 8.6 divisor leaves .46em (EN) / .28em (RU) of
+   slack on the widest line, so it still fits.
+   The portrait's width is picked so its 4:5 height lands on the title's
+   last line at common sizes (head height = eyebrow + gap + 2.87 x the
+   title size, solved at 900, 1280 and 1600): ~21vw. Both the width and
+   the gap stop growing at --maxw (1320px: 21% is 277px), because the hero
+   stops widening there too; past that point a growing portrait could only
+   take its width out of the title (86px at 1920 when it was allowed to).
+   Net: the title runs ~95px from 1280 up, where the full-width hero had
+   110-124px. That's the price of the face sitting beside it. */
+@media (min-width: 900px) {
+  .hero--home {
+    --face-w: clamp(200px, 21vw, 277px);
+    --face-gap: clamp(40px, 5vw, 64px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--face-w);
+    grid-template-areas:
+      "head  face"
+      "stand cue";
+    align-content: center;
+    column-gap: var(--face-gap);
+    row-gap: clamp(28px, 5vh, 60px);
+  }
+  .hero--home > .hero__head { grid-area: head; align-self: start; }
+  .hero--home .hero__title {
+    font-size: min(124px, calc((min(100vw, var(--maxw)) - 2 * var(--gut) - var(--face-w) - var(--face-gap)) / 8.6));
+  }
+  .hero--home > .hero__portrait { grid-area: face; width: auto; align-self: start; }
+  .hero--home > .hero__foot { display: contents; }
+  .hero--home .stand { grid-area: stand; }
+  .hero--home .scrollcue { grid-area: cue; align-self: end; justify-self: start; }
+  /* RU's trifecta line at the global .5em is 9.04em of the title size,
+     past the 8.6 the column allows, so it wrapped inside its mask. .46em
+     brings it to 8.32 and keeps the title itself the same size in both
+     languages (the portrait's height is matched to it). */
+  html[data-lang="ru"] .hero--home .hero__title em { font-size: .46em; }
+}
+
 /* ---------- mechanisms ---------- */
 /* Foldable (2026-09-18, superseding P14's side-by-side desktop grid below):
    each item is now a header row (the .mech__toggle button, holding the
@@ -1103,13 +1166,6 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
   .vig .eng--alt { display: none; }
 }
 
-/* hero: between the paragraph and the scroll cue at >=900px; under the
-   paragraph, left-aligned, below that */
-.vig--still-life { height: clamp(120px, 34vw, 150px); }
-@media (min-width: 900px) {
-  .hero__foot { grid-template-columns: minmax(0, 1fr) auto auto; }
-  .vig--still-life { height: clamp(130px, 13vw, 190px); margin-bottom: -6px; }
-}
 /* §01: the note on the name, the stone beside it in the panel's column */
 .origin__coda { margin-top: clamp(32px, 5vw, 56px); display: grid; gap: clamp(24px, 4vw, 40px); }
 .origin__coda .origin__note { margin-top: 0; }
@@ -2359,6 +2415,32 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   opacity: .3; transform: translateX(3px); transition-delay: .07s;
 }
 
+/* SITE-PLAN C2 (2026-11-20): the photo strip under "See me at work". It
+   wraps onto its own row inside the same flex link, so the text and arrow
+   keep their places and the whole band stays one link to the gallery. One
+   crop for all five (4:5), the gallery's own grayscale token, the page
+   gutter between frames: no border, no rounding, no motion of its own (the
+   band's .reveal carries it in). Five across from 900px; below that the
+   first three (one per discipline), so nothing scrolls sideways. */
+.proof__link { flex-wrap: wrap; }
+.proof__strip {
+  flex: 1 0 100%;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1.2vw, 16px);
+}
+.proof__strip img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 4 / 5; object-fit: cover;
+  filter: var(--collage-filter);
+}
+/* climb-07 is landscape: keep Igor, not the wall, in the 4:5 window */
+.proof__strip .proof__img--left { object-position: 25% 50%; }
+.proof__strip img:nth-child(n+4) { display: none; }
+@media (min-width: 900px) {
+  .proof__strip { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .proof__strip img:nth-child(n+4) { display: block; }
+}
+
 /* ---------- in their words (testimonials marquee) ----------
    Two states. The base rules are the static one — no JS, GSAP missing, or
    reduced motion (initVoices() sits past main.js's reduce return): a plain
@@ -2618,6 +2700,19 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   }
 }
 
+/* Home only (2026-11-20): the portrait moved up to the hero, so the empty
+   chair takes the right-hand column. Wider than the portrait's column,
+   because the engraving is 2:1; its floor line sits on the lede's last
+   line. */
+@media (min-width: 900px) {
+  .contact__head--chair {
+    grid-template-columns: minmax(0, 1fr) clamp(260px, 30vw, 400px);
+    align-items: end;
+  }
+  .contact__head--chair .vig--empty-chair { margin-top: 0; height: auto; }
+  .contact__head--chair .vig--empty-chair .vig__svg { width: 100%; height: auto; }
+}
+
 /* §04 pick feedback (2026-09-23). Built by initWhoRows(), so a no-JS reader
    never sees it. Not the removed instruction line (63792e0): it says
    nothing until a row is picked, then confirms the pick and points at §05.
@@ -2830,6 +2925,19 @@ html.js .foot__in { flex: 1; width: 100%; }
   font-size: clamp(19px, 1.8vw, 24px); line-height: 1.3;
 }
 .foot__nota { font-family: var(--mono); font-style: normal; font-size: .8em; color: var(--fg2); }
+/* SITE-PLAN B3 (2026-11-20): each reading links to its discipline page; a
+   page's own line stays plain text. At rest the link looks exactly like the
+   text did. On hover/focus only the words underline, with the same 1px
+   hairline as the specimen permalinks, so the "1…" stays a chess notation and
+   not part of the link's ink. Text link: no magnetic pull, the pointer dot
+   changes ink as it does over any link. */
+.foot__link { color: inherit; text-decoration: none; }
+.foot__link:hover .foot__text,
+.foot__link:focus-visible .foot__text {
+  text-decoration: underline;
+  text-underline-offset: .22em;
+  text-decoration-thickness: 1px;
+}
 
 .foot__base {
   display: flex; align-items: center; justify-content: space-between;
