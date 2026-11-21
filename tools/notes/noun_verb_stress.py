@@ -87,8 +87,6 @@ NOTE = dict(
     og_desc="Nine IT words whose stress moves when the noun becomes a verb.",
     og_alt="The weight of stress. A note by Igor Shatsev on noun and verb stress.",
     ld_headline="The weight of stress: PROject or proJECT?",
-    nav=[("01", "#words", "The words", "Слова"), ("02", "#why", "Why it happens", "Почему так"),
-         ("03", "#practice", "Say it out loud", "Скажите вслух")],
     contact_lede_en="Not sure where your stress falls? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
     contact_lede_ru="Не уверены, куда падает ваше ударение? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
     tg_en="Hi! I came from your note about word stress. I'd like to book a free trial English lesson.",

@@ -41,8 +41,6 @@ def test_footer_is_the_same_on_all_four_pages():
 def test_masthead_is_the_same_on_all_four_pages():
     def norm(path):
         h = _common(_block(path, r'<header class="masthead">.*?</header>'))
-        # each page numbers its own sections (home 01-03, a discipline page 01-05)
-        h = re.sub(r'<span class="tools__rule tools__rule--sections".*?</nav>', "</nav>", h, flags=re.S)
         # the current page is marked; the lockup is named for where it goes
         h = re.sub(r'\saria-current="page"', "", h)
         h = re.sub(r'\saria-label="[^"]*"', "", h)

@@ -90,8 +90,6 @@ NOTE = dict(
     og_desc="automate, auction, cause, launch, fault, authenticate: six IT words, one sound, /ɔː/.",
     og_alt="Two letters, one sound. A note by Igor Shatsev on the au sound.",
     ld_headline="Two letters, one sound: how to pronounce au",
-    nav=[("01", "#words", "The words", "Слова"), ("02", "#why", "Why it happens", "Почему так"),
-         ("03", "#practice", "Say it out loud", "Скажите вслух")],
     contact_lede_en="Not sure how you say these six? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
     contact_lede_ru="Не уверены, как вы произносите эти шесть слов? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
     tg_en="Hi! I came from your note about the au sound. I'd like to book a free trial English lesson.",

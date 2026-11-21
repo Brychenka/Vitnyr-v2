@@ -252,10 +252,11 @@ def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
     page, _ = open_site(theme="dark")
     dot = page.locator(".cursor")
     dot_dot = page.locator(".cursor__dot")
-    # Trifecta Order D / Stage D1 (2026-09-15): the scrollcue used to point at
-    # #method; #origin moved to position 1 and the scrollcue was re-pointed to
-    # follow it (main.js/index.html), so this selector follows it too.
-    link = page.locator('a[href="#origin"]').first  # the scrollcue
+    # A link that holds still: the masthead has no entrance, while the hero's
+    # scroll cue is still rising when the test starts, so a hover aimed at its
+    # box can miss. (Until 2026-11-21 `a[href="#origin"]` silently matched the
+    # masthead's 01 numeral first; the numerals are gone.)
+    link = page.locator(".masthead .tools__hint")
 
     page.mouse.move(400, 300)
     page.mouse.move(400, 760)   # plain text

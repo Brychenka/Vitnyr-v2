@@ -42,7 +42,6 @@ assert MAST.count(' aria-current="page"') == 1, "english/index.html: expected on
 MAST = MAST.replace(' aria-current="page"', "")
 assert 'class="tool tools__notes" href="/notes/"' in MAST, "masthead has no Notes link"
 MAST = MAST.replace('class="tool tools__notes" href="/notes/"', 'class="tool tools__notes" href="/notes/" aria-current="page"')
-SECTIONS_OLD = between(MAST, '<div class="tools__group tools__group--sections">', '<a class="tools__hint"', include_end=False)
 
 ARROW = '<svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>'
 WRONG_SIG = '<span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
@@ -62,19 +61,13 @@ def strong(t):
     return t.replace("[[", '<strong class="mark">').replace("]]", "</strong>") if t else t
 
 
-def sections(links):
-    out = ['<div class="tools__group tools__group--sections">']
-    for num, href, en, ru in links:
-        out.append(f'      <a class="tool" href="{href}" data-magnetic>{num}<span class="vh" data-en="{en}" data-ru="{ru}">{en}</span></a>')
-    return "\n".join(out) + "\n      "
-
-
 def page(*, path, comment, title_en, title_ru, desc_en, desc_ru, og_title, og_desc, og_image, og_alt,
-         og_type, jsonld, nav, body, contact_num, contact_lede_en, contact_lede_ru, tg_en, tg_ru):
+         og_type, jsonld, body, contact_lede_en, contact_lede_ru, tg_en, tg_ru):
     """Write <path>/index.html: the note's own head and body inside the
     English page's frame. Returns the HTML."""
     url = SITE + path
-    mast = MAST.replace(SECTIONS_OLD, sections(nav))
+    # the contact section numbers on from the body's own section labels
+    contact_num = "%02d" % (body.count('<span class="num">') + 1)
     contact = re.sub(r'<span class="num">\d+</span>', f'<span class="num">{contact_num}</span>', CONTACT, count=1)
     # the note's own lede replaces the English one; no smaller first step on
     # a note (Igor, 2026-11-20: no voice-message step on the notes)
@@ -129,7 +122,7 @@ def page(*, path, comment, title_en, title_ru, desc_en, desc_ru, og_title, og_de
 <body>
 
 """
-    html = (head + mast + '\n\n<div id="app">\n<main id="main">\n<span id="top"></span>\n\n'
+    html = (head + MAST + '\n\n<div id="app">\n<main id="main">\n<span id="top"></span>\n\n'
             + body.strip() + "\n\n" + contact + "\n\n" + tail)
     out = ROOT / path.strip("/") / "index.html"
     out.parent.mkdir(parents=True, exist_ok=True)

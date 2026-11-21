@@ -365,18 +365,18 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 }
 .langswitch::before { content: "RU"; }
 /* "Photos": a plain text link after the discipline icons. Reserves
-   "Photos" (wider than "Фото"). Only from 1140px, where it fits on one row on
-   every page; below that the footer's link, and on home the "See me at
-   work" band, are the way in. */
+   "Photos" (wider than "Фото"). Only from 980px, where the row still leaves
+   the mark ~55px of air; below that the footer's link, and on home the "See
+   me at work" band, are the way in. */
 .tools__photos { margin-left: 8px; text-align: left; }
 .tools__photos::before { content: "Photos"; }
-@media (max-width: 1139.98px) { .tools__photos { display: none; } }
+@media (max-width: 979.98px) { .tools__photos { display: none; } }
 /* "Notes" beside "Photos", the same pattern; reserves "Заметки". Only from
-   1240px, where it fits on one row on every page; below that the footer's
-   link is the way in. */
+   1080px, by the same ~55px measure; below that the footer's link is the
+   way in. */
 .tools__notes { text-align: left; }
 .tools__notes::before { content: "Заметки"; }
-@media (max-width: 1239.98px) { .tools__notes { display: none; } }
+@media (max-width: 1079.98px) { .tools__notes { display: none; } }
 
 /* ---------- progress hairline ----------
    A 1px rule on the masthead's bottom edge; main.js sets --progress (0-1).
@@ -433,60 +433,26 @@ html[data-theme="dark"] .themeswitch svg { transform: rotate(180deg); }
 /* 24 + 10 + 10 = a 44px target */
 @media (pointer: coarse) { .tool--icon { padding: 10px; } }
 
-/* ---------- masthead section numerals ----------
-   Links into the page's own numbered sections, reusing .tool. Desktop only:
-   the phone masthead has no room. */
-.tools__group--sections { gap: 10px; }
-/* The current section keeps .tool's hover line switched on. */
-.tool.is-active::after { transform: scaleX(1); }
-@media (max-width: 899.98px) {
-  .tools__rule--sections, .tools__group--sections { display: none; }
-}
-
-/* "message me": a hand-written aside by the last numeral, pointing at the
-   way into #contact. Out of flow (absolute), so the row doesn't move; placed
-   with inset, with the tilt on the inner text, so no transform channel is
-   taken. --green-text because it is text. It steps aside once the page
-   moves and comes back at the top. */
-.tools__group--sections { position: relative; }
+/* ---------- "message me" ----------
+   The last thing in the row, after its own rule: the way into #contact,
+   in the hand. --green-text because it is text. The tilt is on the inner
+   text, so the link's own transform stays free for the magnetic pull.
+   A zero-height ::before reserves the Russian width (the wider one), so
+   the language switch doesn't move the row. Desktop only. */
 .tools__hint {
-  position: absolute;
-  right: -6px;
-  bottom: calc(100% - 4px);
-  width: max-content;   /* else it shrink-wraps to the 132px group and the arrow spills out */
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  font-family: var(--hand);
-  font-size: 24px;
-  line-height: 1;
-  white-space: nowrap;
+  font-family: var(--hand); font-size: 24px; line-height: 1;
+  white-space: nowrap; flex-shrink: 0;
+  text-align: right;   /* either language ends on the margin */
   color: var(--green-text);
-  transition: opacity var(--t) var(--e), visibility var(--t) var(--e);
 }
-.tools__hint-text { transform: rotate(5deg); transform-origin: right bottom; }
-.tools__hint-arrow { width: 30px; height: auto; flex-shrink: 0; margin-bottom: 1px; }
-html.is-scrolled .tools__hint { opacity: 0; visibility: hidden; }   /* hidden, so the invisible note can't be clicked or tabbed to */
-
-/* From 1100px the note sits to the right of the last numeral, level with
-   the row; the sections group reserves its width as a margin. */
-@media (min-width: 1100px) {
-  /* One value for both languages, sized for the Russian note: the language
-     switch must not move the nav (test_language_switch_button_does_not_move). */
-  .tools__group--sections { margin-right: 176px; }
-  .tools__hint {
-    right: auto;
-    left: calc(100% + 12px);
-    bottom: auto;
-    top: 50%;
-    margin-top: -20px;
-    flex-direction: row-reverse;
-    align-items: center;
-    gap: 8px;
-  }
-  .tools__hint-text { transform-origin: left center; }
-  .tools__hint-arrow { transform: scaleX(-1) rotate(-70deg); margin-bottom: 0; width: 26px; }
-  html.is-scrolled .tools__hint { opacity: 1; visibility: visible; }
+.tools__hint::before {
+  content: "напишите мне";
+  display: block; height: 0; overflow: hidden;
+  visibility: hidden; pointer-events: none;
+}
+.tools__hint-text { display: inline-block; transform: rotate(5deg); }
+@media (max-width: 899.98px) {
+  .tools__rule--hint, .tools__hint { display: none; }
 }
 
 @media (max-width: 602px) {

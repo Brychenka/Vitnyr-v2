@@ -92,8 +92,6 @@ NOTE = dict(
     og_desc="feel already carries the feeling. Six phrases, and when -self does belong.",
     og_alt="Nothing to add. A note by Igor Shatsev on “I feel myself good”.",
     ld_headline="Nothing to add: why Russian speakers say “I feel myself good”",
-    nav=[("01", "#words", "The phrases", "Фразы"), ("02", "#why", "Why it happens", "Почему так"),
-         ("03", "#practice", "Say it out loud", "Скажите вслух")],
     contact_lede_en="Not sure which habits slip into your English? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
     contact_lede_ru="Не уверены, какие привычки пролезают в ваш английский? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “I feel myself”. I'd like to book a free trial English lesson.",

@@ -90,8 +90,6 @@ NOTE = dict(
     og_desc="An order with please is still an order. Six requests, and how English softens them.",
     og_alt="Please isn’t enough. A note by Igor Shatsev on polite requests.",
     ld_headline="Please isn’t enough: how to make a request in English",
-    nav=[("01", "#words", "The requests", "Просьбы"), ("02", "#why", "Why it happens", "Почему так"),
-         ("03", "#practice", "Say it out loud", "Скажите вслух")],
     contact_lede_en="Not sure how your requests land? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
     contact_lede_ru="Не уверены, как звучат ваши просьбы? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “please”. I'd like to book a free trial English lesson.",
