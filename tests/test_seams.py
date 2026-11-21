@@ -32,8 +32,6 @@ def _common(html):
 def test_footer_is_the_same_on_all_four_pages():
     def norm(path):
         f = _common(_block(path, r"<footer\b.*?</footer>"))
-        # B3: a page's own reading is plain text, the other two are links
-        f = re.sub(r'<a class="foot__link">(.*?)</a>', r"\1", f, flags=re.S)
         return re.sub(r"\s+", " ", f).strip()
     base = norm(PAGES[0])
     for path in PAGES[1:]:

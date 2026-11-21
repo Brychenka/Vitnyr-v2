@@ -6110,3 +6110,26 @@ phones: the chess door's facts now take two lines. A second run of the old
 `main` against itself shows the same 28px flicker at the bottom of
 `english-en-1280-light`, so that one is noise.
 
+
+## Footer: the three readings out (2026-11-21, `feature/footer-clean`)
+
+Igor, with a screenshot of the readings row: "can we remove this and adjust
+the website and the footer so it looks clean and pretty."
+
+- **Removed:** the `<dl class="foot__notes">` under "Your move." (*Your turn
+  to speak.* / *1… The board is waiting.* / *The next grade.*, and the RU
+  first pass that was never confirmed), on all four pages and the notes, with
+  its CSS (`.foot__notes`, `.foot__note`, `.foot__nota`, `.foot__link`,
+  `.foot__text`) and B3's test that each reading links to its page. The
+  masthead's three icons remain the way into each discipline from anywhere.
+- **What's left:** "Your move." at the top; at the bottom, `.foot__end`: the
+  engraved chess clock right-aligned, standing on one full-width `--rule`
+  that is now the colophon's `border-top`, then the colophon. The clock is
+  slightly smaller (72-96px on phones, 96-124px wide) now that it stands
+  alone. The reader's dial still keeps Yerevan time.
+- **Phones:** the curtain was `min(86svh, 780px)` everywhere; with only the
+  line and the colophon in it, a phone showed ~360px of empty ground. Below
+  720px it is `min(64svh, 540px)`; desktop keeps its height.
+- **Test:** `test_footer_clock_stands_on_the_colophon_rule` (four pages, 375
+  and 1280): no readings, clock bottom on the rule, right edges aligned, no
+  overflow.
