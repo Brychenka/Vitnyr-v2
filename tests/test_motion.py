@@ -850,19 +850,20 @@ def _masthead_height(page):
     return page.locator(".masthead").bounding_box()["height"]
 
 
-@pytest.mark.parametrize("path,target_id", [
-    ("index.html", "method"), ("index.html", "origin"), ("index.html", "contact"),
-    ("english/", "specimen"), ("english/", "who"), ("english/", "sessions"),
+@pytest.mark.parametrize("path,link,target_id", [
+    ("index.html", ".masthead .tools__hint", "contact"),
+    ("english/", ".masthead .tools__hint", "contact"),
+    ("english/", "a.scrollcue", "specimen"),
 ])
-def test_quick_nav_lands_each_section_clear_of_the_fixed_masthead(open_site, path, target_id):
-    """DP7: scroll-margin-top computed to 0 on every one of the five sections
-    against the fixed masthead, so a jump landed with the destination's own
-    heading hidden underneath it — 134px of it, in the review's own
-    measurement. Covers the Lenis-driven path (main.js's headerHeight()
-    offset) via the masthead's own 01-05 quick-nav, which is desktop-only,
-    hence the WIDE viewport."""
+def test_in_page_jumps_land_clear_of_the_fixed_masthead(open_site, path, link, target_id):
+    """DP7: scroll-margin-top computed to 0 on every section against the
+    fixed masthead, so a jump landed with the destination's own heading
+    hidden underneath it — 134px of it, in the review's own measurement.
+    Covers the Lenis-driven path (main.js's headerHeight() offset) through
+    the masthead's "message me" (desktop-only, hence the WIDE viewport) and
+    a discipline page's scroll cue."""
     page, _ = open_site(path=path)
-    page.locator(f'.tools__group--sections a.tool[href="#{target_id}"]').click()
+    page.locator(link).click()
     page.wait_for_timeout(1500)   # let the 1.2s Lenis tween settle
     top = page.locator(f"#{target_id}").bounding_box()["y"]
     head_h = _masthead_height(page)

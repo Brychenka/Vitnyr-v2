@@ -244,10 +244,6 @@ def test_home_runs_hero_doors_voices_method_contact(open_site):
     assert ids == ["origin", "voices", "method", "contact"]
     assert page.locator("#origin .label .num").inner_text().strip() == "01"
     assert page.locator("#method .label .num").inner_text().strip() == "02"
-    # the masthead's numerals follow the new order
-    hrefs = page.locator(".tools__group--sections a.tool").evaluate_all(
-        "els => els.map(e => e.getAttribute('href'))")
-    assert hrefs == ["#origin", "#method", "#contact"]
 
 
 def test_home_method_is_the_five_names_and_the_way_to_each_page(open_site):

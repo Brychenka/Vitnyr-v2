@@ -6,7 +6,7 @@ view (`data-collage-jump`, captioned "Photos"), while the discipline pages
 used the same three glyphs to link to /english/, /chess/, /climbing/. SITE-PLAN
 C4 (2026-11-20) gave them one meaning everywhere: on all four pages they are
 links to the discipline pages, captioned "Coaching", the current page marked;
-"Photos" is a plain text link to the gallery (masthead from 1140px, footer at
+"Photos" is a plain text link to the gallery (masthead from 980px, footer at
 every width). The gallery keeps its own in-view switcher, which still carries
 `data-collage-jump`. SITE-PLAN C5 (same day) set the phone masthead in two rows
 instead of three, without shrinking any 44px target (J4).
@@ -42,8 +42,8 @@ def _icons(page):
 def test_three_icon_links_after_a_divider(open_site):
     page, _ = open_site()
     tools = page.locator(".tools")
-    # the section quick-nav (2026-09-19) adds a second rule + group after the
-    # discipline cluster (desktop only, display:none below 900px).
+    # a second rule sets "message me" apart at the end of the row (desktop
+    # only, display:none below 900px)
     assert tools.locator(".tools__rule").count() == 2
     assert _icons(page).count() == 3
 
@@ -54,10 +54,10 @@ def test_three_icon_links_after_a_divider(open_site):
             el.classList.contains('tools__group--util') ? 'util'
             : el.classList.contains('tools__rule') ? 'rule'
             : el.classList.contains('tools__group--nav') ? 'nav'
-            : el.classList.contains('tools__group--sections') ? 'sections'
+            : el.classList.contains('tools__hint') ? 'hint'
             : el.className)"""
     )
-    assert top == ["util", "rule", "nav", "rule", "sections"]
+    assert top == ["util", "rule", "nav", "rule", "hint"]
     order = page.evaluate(
         """() => [...document.querySelector('.tools__group--nav').children].map(el =>
             el.classList.contains('tool--icon') ? 'icon'
@@ -158,7 +158,7 @@ def test_masthead_photos_link_opens_the_gallery_on_home(open_site):
     page, _ = open_site()
     link = page.locator(".masthead .tools__photos")
     assert link.get_attribute("href") == "#collage"
-    assert link.is_visible()          # WIDE is 1280, over its 1140px floor
+    assert link.is_visible()          # WIDE is 1280, over its 980px floor
     link.click()
     page.wait_for_selector("html.collage-open")
     assert "#collage" in page.url
@@ -176,12 +176,16 @@ def test_discipline_pages_link_to_the_gallery_by_name(open_site, path):
         assert page.locator(sel).get_attribute("href") == "/#collage"
 
 
-def test_masthead_photos_link_steps_aside_below_1140(open_site):
-    """Measured: below 1140px a discipline page's five numerals, the caption
-    and this link don't share one row. The footer's link is there at every
+def test_masthead_photos_link_steps_aside_below_980(open_site):
+    """Photos joins the row at 980px and Notes at 1080px, the widths where
+    the row still leaves the mark ~55px of air (measured 2026-11-21, once
+    the section numerals were gone). The footer's links are there at every
     width."""
-    page, _ = open_site(viewport={"width": 1100, "height": 800}, path="chess/")
+    page, _ = open_site(viewport={"width": 970, "height": 800}, path="chess/")
     assert not page.locator(".masthead .tools__photos").is_visible()
+    page, _ = open_site(viewport={"width": 1070, "height": 800}, path="chess/")
+    assert page.locator(".masthead .tools__photos").is_visible()
+    assert not page.locator(".masthead .tools__notes").is_visible()
     page, _ = open_site(viewport=NARROW, has_touch=True, path="chess/")
     assert not page.locator(".masthead .tools__photos").is_visible()
     assert page.locator(".foot__photos").count() == 1
@@ -246,6 +250,44 @@ def test_masthead_is_one_row_from_603px(open_site, width):
     icon = _icons(page).first.bounding_box()
     assert icon["y"] == pytest.approx(theme["y"], abs=3)
     assert theme["y"] < lockup["y"] + lockup["height"], f"{width}px: tools dropped under the mark"
+
+
+@pytest.mark.parametrize("width", [900, 980, 1080])
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_desktop_row_is_one_line_with_air_before_the_mark(open_site, width, lang):
+    """900 is where "message me" joins the row, 980 Photos, 1080 Notes: each
+    is its step's tightest width. Every item sits on one centre line and the
+    mark keeps at least 48px of air."""
+    page, _ = open_site(viewport={"width": width, "height": 800}, path="chess/", lang=lang)
+    mids, gap = page.evaluate("""() => {
+        const tools = document.querySelector('.masthead .tools');
+        const kids = [...tools.children].filter(e => getComputedStyle(e).display !== 'none');
+        const mid = e => { const r = e.getBoundingClientRect(); return r.top + r.height / 2; };
+        return [kids.map(mid),
+                tools.getBoundingClientRect().left - document.querySelector('.lockup').getBoundingClientRect().right];
+    }""")
+    assert max(mids) - min(mids) < 2, f"{width}px: the row broke or drifted: {mids}"
+    assert gap >= 48, f"{width}px: only {gap:.0f}px between the mark and the row"
+
+
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_message_me_closes_the_row_on_the_margin(open_site, lang):
+    """The section numerals left the masthead on 2026-11-21 (the pages are
+    reached by the icons; the numerals' one useful jump, to #contact, was
+    already "message me"). The note now closes the row on its own, after a
+    rule, its last letter on the margin in either language. Below 900px it
+    steps aside with its rule."""
+    page, _ = open_site(lang=lang)
+    hint = page.locator(".masthead .tools__hint")
+    assert hint.get_attribute("href") == "#contact"
+    assert hint.inner_text().strip() == {"en": "message me", "ru": "напишите мне"}[lang]
+    text_right, margin = page.evaluate("""() => [
+        document.querySelector('.masthead .tools__hint-text').getBoundingClientRect().right,
+        document.querySelector('.masthead .tools').getBoundingClientRect().right]""")
+    assert text_right == pytest.approx(margin, abs=2)
+    narrow, _ = open_site(viewport={"width": 899, "height": 800}, lang=lang)
+    assert not narrow.locator(".masthead .tools__hint").is_visible()
+    assert not narrow.locator(".masthead .tools__rule--hint").is_visible()
 
 
 @pytest.mark.parametrize("width", [320, 375, 414, 602])

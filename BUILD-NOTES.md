@@ -6133,3 +6133,40 @@ the website and the footer so it looks clean and pretty."
 - **Test:** `test_footer_clock_stands_on_the_colophon_rule` (four pages, 375
   and 1280): no readings, clock bottom on the rule, right edges aligned, no
   overflow.
+
+## Masthead: the section numerals out (2026-11-21, `feature/masthead-numerals-out`)
+
+Igor, with a screenshot of "01 02 03 ↶ напишите мне": since the site grew
+into separate pages, is the 1-5 navigation needed, or is it redundant and
+taking space? Then: "figure out how to remove them keeping everything neat
+and tidy and beautiful."
+
+- **Why they went:** they were built on 2026-09-19 as the one-page site's
+  table of contents. Since the split (2026-11-20) the masthead's job is
+  moving between pages, and the numerals were a second menu in the same
+  bar: bare numbers whose names only a screen reader heard, never shown on
+  phones, their "you are here" already done by the progress hairline, and
+  their one useful jump (to `#contact`) already "message me".
+- **Removed:** the numerals and their rule on all four pages and every
+  note (`tools/notes` no longer takes a `nav` list; a note's contact
+  number now counts the body's own section labels), `initSectionNav()`,
+  `.tool.is-active`, and the hint's two placements (above the row below
+  1100px, fading on scroll; beside the last numeral above). The section
+  labels in the pages (01-05) stay: they number the content.
+- **"message me" now:** the last item in the row after its own rule, in
+  line, always visible from 900px (hidden below with its rule, as before).
+  The arrow went with the numeral it pointed at. The tilt now turns on the
+  note's centre, so it sits on the row's centre line, and it is set flush
+  right inside a box reserving the Russian width, so the language switch
+  moves nothing and either language ends on the margin.
+- **Room given back:** the row is the same on every page now. Photos joins
+  at 980px (was 1140) and Notes at 1080px (was 1240), each where the row
+  still leaves the mark ~55px of air; on main the discipline pages had
+  27-33px at those steps.
+- **Tests:** `test_desktop_row_is_one_line_with_air_before_the_mark` (900,
+  980, 1080, both languages) and `test_message_me_closes_the_row_on_the_margin`
+  are new; the DP7 jump test now drives "message me" and the scroll cue;
+  the seam test no longer strips a per-page numerals block. The cursor
+  test's `a[href="#origin"]`.first had been hovering the 01 numeral, not
+  the scroll cue its comment named (the cue is still rising at that
+  moment, so a hover aimed at it misses); it now hovers "message me".

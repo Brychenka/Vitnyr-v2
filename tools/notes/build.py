@@ -37,14 +37,13 @@ def build_note(note, nxt, wrapped):
     card = f"og-note-{note['slug']}"
     kind = ("Newest note", "Самая новая заметка") if wrapped else ("Earlier note", "Предыдущая заметка")
     body = "\n\n".join([hero(note), note["body"](note), pager(nxt, *kind) if nxt else ""])
-    nav = note["nav"] + [(f"{len(note['nav']) + 1:02d}", "#contact", "How to start", "Как начать")]
     page(path=path, comment=note["comment"],
          title_en=note["title"], title_ru=note["title_ru_head"],
          desc_en=note["desc_en"], desc_ru=note["desc_ru"],
          og_title=note["og_title"], og_desc=note["og_desc"], og_image=card, og_alt=note["og_alt"],
          og_type="article",
          jsonld=article_ld(path, note["ld_headline"], note["og_desc"], note["short_en"], note["iso"], card),
-         nav=nav, body=body, contact_num=f"{len(note['nav']) + 1:02d}",
+         body=body,
          contact_lede_en=note["contact_lede_en"], contact_lede_ru=note["contact_lede_ru"],
          tg_en=note["tg_en"], tg_ru=note["tg_ru"])
 
@@ -158,8 +157,7 @@ def build_index(notes):
          og_desc="The English mistakes Russian speakers make, taken apart one at a time.",
          og_image="og-notes", og_alt="Notes from the lessons. Igor Shatsev, English coach in Yerevan.",
          og_type="website", jsonld=jsonld,
-         nav=[("01", "#notes", "Notes", "Заметки"), ("02", "#contact", "How to start", "Как начать")],
-         body=body, contact_num="02",
+         body=body,
          contact_lede_en="Tell me where your English breaks now: at work, on calls, in conversation. [[The 30-minute trial lesson is free, and you owe me nothing after it]]. Online or in Yerevan.",
          contact_lede_ru="Напишите, где ваш английский ломается сейчас: на работе, на созвонах, в разговоре. [[Пробное занятие — 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
          tg_en=INDEX_TG_EN, tg_ru=INDEX_TG_RU)

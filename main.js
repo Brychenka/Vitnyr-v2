@@ -158,27 +158,6 @@
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
   initEarTest();          // an affordance, not motion
   initRatingCheck();      // same; its one draw-in checks `reduce` itself
-  initSectionNav();       // wayfinding, not motion
-
-  /* ---------- masthead section numerals: active-section tracking ----------
-     An IntersectionObserver on a thin band near the middle of the viewport
-     (-45%/-50% margins), so a link lights when its section is in reading
-     position, not the moment its top edge appears. */
-  function initSectionNav() {
-    var links = document.querySelectorAll('.tools__group--sections .tool[href^="#"]');
-    if (!links.length || !('IntersectionObserver' in window)) return;
-    var map = {};
-    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
-    var sections = Object.keys(map).map(function (id) { return document.getElementById(id); }).filter(Boolean);
-    if (!sections.length) return;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        var link = map[entry.target.id];
-        if (link) link.classList.toggle('is-active', entry.isIntersecting);
-      });
-    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-    sections.forEach(function (el) { io.observe(el); });
-  }
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {

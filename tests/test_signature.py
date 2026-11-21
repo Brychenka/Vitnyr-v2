@@ -31,7 +31,7 @@ def test_ear_test_lives_on_the_english_page_only(open_site):
     assert order.index("ear") == order.index("specimen") + 1
     assert order.index("method") == order.index("ear") + 1
     assert page.locator("#specimen #ear").count() == 0
-    # unnumbered: the 01-05 count and the masthead numerals are untouched
+    # unnumbered: the 01-05 count is untouched
     assert _ear(page).locator(".label .num").count() == 0
     for path in ("index.html", "chess/", "climbing/"):
         other, _ = open_site(path=path)
