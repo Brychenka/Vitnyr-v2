@@ -958,13 +958,11 @@ html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
 
 /* §05: under the lede, in the text column beside the portrait */
 .vig--empty-chair { height: clamp(130px, 16vw, 200px); margin-top: clamp(28px, 4vw, 48px); }
-/* footer: at the end of the notes row, beside "1… The board is waiting."
-   (below them on phones). Not a .reveal: the curtain is what uncovers it. */
-.foot__row { display: grid; gap: 28px; }
-.vig--chess-clock { height: clamp(84px, 24vw, 110px); justify-self: end; }
+/* footer: at the right end of .foot__end, standing on the colophon's rule.
+   Not a .reveal: the curtain is what uncovers it. */
+.vig--chess-clock { height: clamp(72px, 20vw, 96px); align-self: flex-end; }
 @media (min-width: 720px) {
-  .foot__row { grid-template-columns: minmax(0, 1fr) auto; align-items: end; column-gap: clamp(24px, 4vw, 56px); }
-  .vig--chess-clock { height: clamp(96px, 10vw, 140px); }
+  .vig--chess-clock { height: clamp(96px, 9vw, 124px); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -2063,6 +2061,11 @@ html.js .foot {
   display: flex; flex-direction: column;
 }
 html.js .foot__in { flex: 1; width: 100%; }
+/* A phone's footer holds one line and the colophon, so the curtain is
+   shorter there, or the line would hang over an empty screen. */
+@media (max-width: 719px) {
+  html.js .foot { min-height: min(64svh, 540px); }
+}
 @media (max-height: 560px) {
   html.js .foot { position: relative; z-index: auto; min-height: 0; }
 }
@@ -2126,41 +2129,15 @@ html.js .foot__in { flex: 1; width: 100%; }
   will-change: transform;
 }
 
-/* The three readings, set like the notes under a chess diagram. */
-.foot__notes {
-  display: grid; grid-template-columns: 1fr;
-  gap: 18px;
-  margin: 0; padding-top: 22px;
-  border-top: 1px solid var(--rule);
-}
-@media (min-width: 720px) {
-  .foot__notes { grid-template-columns: repeat(3, 1fr); gap: clamp(24px, 4vw, 56px); }
-}
-.foot__note { display: grid; gap: 4px; }
-.foot__notes dt {
-  font-family: var(--mono); font-size: 12px; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--fg2);
-}
-.foot__notes dd {
-  margin: 0;
-  font-family: var(--serif); font-style: italic; font-weight: 500;
-  font-size: clamp(19px, 1.8vw, 24px); line-height: 1.3;
-}
-.foot__nota { font-family: var(--mono); font-style: normal; font-size: .8em; color: var(--fg2); }
-/* Each reading links to its discipline page; the page's own line stays
-   plain text. At rest the link looks like the text; on hover/focus only the
-   words underline, so the "1…" stays chess notation. No magnetic pull. */
-.foot__link { color: inherit; text-decoration: none; }
-.foot__link:hover .foot__text,
-.foot__link:focus-visible .foot__text {
-  text-decoration: underline;
-  text-underline-offset: .22em;
-  text-decoration-thickness: 1px;
-}
-
+/* The page's end: the clock on the right, standing on one full-width rule,
+   and the colophon under it. Only "Your move." above; the curtain's height
+   is the space between. */
+.foot__end { display: flex; flex-direction: column; }
 .foot__base {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px 20px; flex-wrap: wrap;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule);
 }
 .foot__print {
   display: flex; flex-wrap: wrap; gap: 4px .5em;
