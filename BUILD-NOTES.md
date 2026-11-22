@@ -6278,3 +6278,36 @@ moved:
 Contact is now §04, so a discipline page runs 01-04. The `.facts` CSS went
 with the section. Tests edited (numbering 5 -> 4) but not run, and the
 artifact not republished, both on Igor's instruction.
+
+## Photos view: lag and overlapping text on open (2026-11-23, `feature/polish-phone-hero`)
+
+Igor: clicking Photos lagged, with text overlapping for about two seconds.
+Two causes, both in the route's View Transition:
+
+- **A fade inside a fade.** The open runs inside a View Transition, and the
+  view's own `opacity` transition (0.6s) ran inside it. The transition's
+  "new" picture is live, so for most of the open it showed a half-transparent
+  view with the home page's hero, portrait and masthead showing through.
+  Fix: main.js sets `html.vt-route` for the transition's length, and
+  `html.js.vt-route .view { transition: none; }`. Without a transition (old
+  browsers, reduced motion) the view still fades itself.
+- **The browser's crossfade.** The default root animation shows old and new
+  at once (plus-lighter), so two full screens of text share the middle
+  frames; page-to-page moves had it too. Now a fade-through over `--bg`:
+  old out over the first 35% of `--t`, new in over the rest, one curve.
+
+Also: the photos (which ship as `data-src` so a page load doesn't fetch
+them) are promoted on hover, focus or touch of any way into the view, so
+they are downloading before the click. Measuring tip: the preview pane
+throttles requestAnimationFrame when it isn't being captured, so frame gaps
+there are not real; the overlap shows in a screenshot taken right after the
+click. The "Page already revealed" console errors after a cross-page click
+come from the pane too (seen on main before this change; no site code
+touches page-reveal).
+
+Same branch, earlier: the home intro line no longer promises "how sessions
+run"; the method's five rows lost their 01-05 numbers (the section label
+carries the page's numbering); on phones the home hero puts the pitch and
+"Choose a discipline" before the portrait, and the contact bar shows
+whenever the hero's own CTA is off screen (home has none, so from the
+start). Tests not run, artifact not republished (Igor's instruction).
