@@ -1050,9 +1050,16 @@
     // Shared by every route that transitions. `mutate` is one of sync()'s two
     // idempotent halves, so racing a direct call after a short failsafe costs
     // nothing if the update callback is merely slow.
+    // html.vt-route switches the view's own opacity fade off while the
+    // transition runs: the transition already fades the screen, and a second
+    // fade inside it left the view half-transparent, the page's text showing
+    // through it, for most of the open.
     function withTransition(mutate) {
       if (!canTransition()) { mutate(); return null; }
+      root.classList.add('vt-route');
       var t = document.startViewTransition(mutate);
+      var unroute = function () { root.classList.remove('vt-route'); };
+      t.finished.then(unroute, unroute);
       var settled = false;
       var mark = function () { settled = true; };
       t.updateCallbackDone.then(mark, mark);
@@ -1112,6 +1119,16 @@
         if (history.pushState) history.pushState(null, '', '#collage');
         else location.hash = 'collage';
         routeAfterHashChange();
+      });
+    });
+
+    // Start the photos downloading as soon as a reader reaches for the view
+    // (hover, focus or touch on a way in), so they are there when it opens
+    // rather than filling in during the first seconds.
+    var warmPhotos = function () { promoteCollageImages(view); };
+    document.querySelectorAll('[data-collage-link], [data-collage-open], [data-collage-jump]').forEach(function (a) {
+      ['pointerenter', 'focus', 'touchstart'].forEach(function (ev) {
+        a.addEventListener(ev, warmPhotos, { once: true, passive: true });
       });
     });
 
@@ -1301,9 +1318,11 @@
   }
 
   /* ---------- phone contact bar ----------
-     Shows .dock once the hero has scrolled away and hides it while #contact
-     or the footer is on screen, so it never doubles the real CTA. Visibility,
-     not motion: wired before the reduced-motion return. */
+     Shows .dock whenever the hero's own CTA (.page-cta) is off screen, so a
+     phone always has a way to act, from the first screen on; home's hero has
+     no CTA, so there it shows from the start. Hidden while #contact or the
+     footer is on screen, so it never doubles a real CTA. Visibility, not
+     motion: wired before the reduced-motion return. */
   function initDock() {
     var dock = document.querySelector('.dock');
     var hero = document.getElementById('hero');
@@ -1312,17 +1331,19 @@
     // on screen the whole time; its flow edge is what says it's uncovered.
     var foot = document.querySelector('.foot-edge');
     if (!dock || !hero || !contact || !('IntersectionObserver' in window)) return;
-    var state = { heroAbove: false, contact: false, foot: false };
+    var cta = hero.querySelector('.page-cta');
+    var state = { ctaOut: !cta, contact: false, foot: false };
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (en.target === hero) state.heroAbove = !en.isIntersecting && en.boundingClientRect.top < 0;
+        if (en.target === cta) state.ctaOut = !en.isIntersecting;
         else if (en.target === contact) state.contact = en.isIntersecting;
         else state.foot = en.isIntersecting || en.boundingClientRect.top < 0;
       });
-      var on = state.heroAbove && !state.contact && !state.foot;
+      var on = state.ctaOut && !state.contact && !state.foot;
       dock.classList.toggle('is-on', on);
     }, { rootMargin: '0px 0px -56px 0px' });
-    io.observe(hero); io.observe(contact); if (foot) io.observe(foot);
+    if (cta) io.observe(cta);
+    io.observe(contact); if (foot) io.observe(foot);
   }
 
   /* ---------- footer: Yerevan clock and keyboard reach ----------

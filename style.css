@@ -749,6 +749,12 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
    filter or caption. On phones and tablets it sits in plain flow between
    the title and the stand. */
 .hero__portrait { margin: 0; width: min(220px, 60%); }
+/* Phones and tablets: the one-line pitch and "Choose a discipline" come
+   before the portrait, so the first screen says what this is and where to
+   go; the portrait follows straight after. */
+@media (max-width: 899.98px) {
+  .hero--home > .hero__portrait { order: 1; }
+}
 .hero__portrait img {
   display: block; width: 100%; height: auto; aspect-ratio: 4 / 5;
   object-fit: cover;
@@ -792,8 +798,9 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 }
 
 /* ---------- mechanisms ---------- */
-/* Each item is a header row (the .mech__toggle button: number, title, mark)
-   and a collapsible .mech__panel, stacked at every width. */
+/* Each item is a header row (the .mech__toggle button: title and mark)
+   and a collapsible .mech__panel, stacked at every width. The five are
+   unnumbered: the section label already carries the page's numbering. */
 .mechanisms { display: grid; gap: 0; border-top: 1px solid var(--rule); }
 .mechanisms > li { border-bottom: 1px solid var(--rule); }
 .mech__head { margin: 0; }
@@ -801,8 +808,6 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
    without the button or the "+". */
 .mech__row {
   margin: 0;
-  display: grid; grid-template-columns: 80px 1fr; align-items: baseline;
-  gap: clamp(16px, 3vw, 32px);
   padding-block: clamp(18px, 2.2vw, 28px);
 }
 .mech__more { margin-top: clamp(24px, 3vw, 36px); color: var(--fg2); max-width: var(--measure); }
@@ -810,13 +815,9 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
   -webkit-appearance: none; appearance: none;
   width: 100%; margin: 0; border: 0; background: none;
   font: inherit; color: inherit; text-align: left; cursor: pointer;
-  display: grid; grid-template-columns: 80px 1fr auto; align-items: baseline;
+  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
   gap: clamp(16px, 3vw, 32px);
   padding-block: clamp(26px, 3vw, 40px);
-}
-.mech__n {
-  font-family: var(--sans); font-size: 12px; font-weight: 500;
-  letter-spacing: .1em; color: var(--fg2);
 }
 .mech__toggle-label { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.25; }
 .mech__toggle-mark {
@@ -1411,6 +1412,18 @@ html.js.collage-open, html.js.collage-open body { overflow: hidden; }
   animation-duration: var(--t);
   animation-timing-function: var(--e);
 }
+/* A fade-through, not a crossfade: the old screen has gone before the new
+   one arrives, so two screens of text never share a frame (the browser's
+   crossfade showed both at half strength mid-way). The moment between is
+   the page's own --bg. Used by the collage route and page-to-page moves. */
+::view-transition { background: var(--bg); }
+::view-transition-old(root) { animation: vt-out var(--t) var(--e) both; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: vt-in var(--t) var(--e) both; mix-blend-mode: normal; }
+@keyframes vt-out { 0% { opacity: 1; } 35%, 100% { opacity: 0; } }
+@keyframes vt-in { 0%, 35% { opacity: 0; } 100% { opacity: 1; } }
+/* Inside a route transition the view doesn't run its own fade too (main.js
+   sets .vt-route for the transition's length); without one, it does. */
+html.js.vt-route .view { transition: none; }
 
 /* Moving between pages is a cross-document View Transition with the same
    root crossfade; the masthead, the same on every page, holds still in its
