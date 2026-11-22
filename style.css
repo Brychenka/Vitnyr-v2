@@ -1113,17 +1113,9 @@ button.page-cta { -webkit-appearance: none; appearance: none; background: none; 
 .ear__habit { color: var(--fg2); }
 .ear__send { justify-self: start; }
 
-/* The specimen reveal. initSpecimenReveal() builds one .spec__reveal button
-   per specimen and hides the real .wrong line; without JS the static
-   <del>/<ins> pair is the whole of it. The button mirrors .line-spec's
-   metrics and carries the amber rule plus an underlined label, so it reads
-   as "open me". .line-spec's display: flex out-specifies the UA [hidden]
-   rule, so [hidden] is restored explicitly. */
-.line-spec[hidden] { display: none; }
 /* Under each English mistake, faintly, the Russian sentence it comes from,
    so the reader sees where the error starts. --fg2, smaller, the body face,
-   indented to the sentence's own left edge. main.js hides it while the
-   mistake is folded away. */
+   indented to the sentence's own left edge. */
 .line-spec__src {
   /* .68em of .line-spec's own fluid size, the width of one glyph slot */
   --glyph: clamp(11.56px, 1.156vw, 13.6px);
@@ -1133,37 +1125,6 @@ button.page-cta { -webkit-appearance: none; appearance: none; background: none; 
   color: var(--fg2);
 }
 .line-spec__src + .line-spec { margin-top: 12px; }
-/* With JS the mistake shows inside the reveal button, which leads with its
-   own +/− slot before the glyph: one more slot and gap to clear. */
-html.js .line-spec__src { padding-left: calc(16px + 2 * var(--glyph) + 24px); }
-.spec__prompt {
-  -webkit-appearance: none; appearance: none;
-  margin: 0; background: none; border: 0; border-left: 2px solid var(--ink-specimen);
-  width: 100%; text-align: left; cursor: pointer; color: inherit;
-  font-family: var(--mono); font-size: clamp(17px, 1.7vw, 20px); line-height: 1.55;
-  display: flex; gap: 12px; align-items: baseline;
-  padding: 5px 0 5px 14px;
-}
-.spec__prompt-mark {
-  flex: none; width: .68em; text-align: center;
-  font-family: var(--mono); color: var(--ink-specimen);
-}
-.spec__prompt-label {
-  color: var(--fg2);
-  text-decoration: underline; text-decoration-color: var(--ink-specimen);
-  text-underline-offset: .22em; text-decoration-thickness: 1px;
-  transition: color var(--t) var(--e);
-}
-.spec__prompt:hover .spec__prompt-label,
-.spec__prompt:focus-visible .spec__prompt-label {
-  color: var(--fg); text-decoration-thickness: 2px;
-}
-/* :not([hidden]), so the attribute still hides it (a bare display would
-   out-specify the UA [hidden] rule). */
-.spec__prompt-mistake:not([hidden]) { display: flex; gap: 12px; align-items: baseline; }
-.spec__prompt-mistake .sig { flex: none; display: inline-flex; align-items: center; height: 1.55em; color: var(--ink-specimen); }
-.spec__prompt-mistake .sig svg { display: block; width: .68em; height: .68em; }
-.spec__prompt-mistake del { text-decoration: none; color: var(--amber-text); }
 
 /* ---------- origin (name & mark) ---------- */
 /* How far the mark's column reaches, set on the section so .origin__hint (a

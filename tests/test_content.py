@@ -316,34 +316,7 @@ def test_each_specimen_is_addressable_by_its_own_permalink(open_site):
     assert ids == SPECIMEN_IDS
 
 
-# --- J6(b) (Jury Pass II, 2026-09-12): the reveal hides each specimen's
-# wrong/right pair until clicked, but the .spec__why paragraph beside it
-# sits outside that reveal — always visible — and used to name the exact
-# word or quote the corrected sentence, spoiling the click. Rewritten to
-# describe each error's shape instead; this pins the specific word each
-# paragraph used to give away so the fix can't quietly regress. ---
-
-SPOILED_WORDS = {
-    "specimen-reflexive": "myself",
-    "specimen-copula": "agree",
-    "specimen-register": "please",
-}
-
-
-_REGISTER_SPOILS_PLEASE = pytest.mark.xfail(
-    reason="KNOWN REGRESSION (found in DP baseline pass): specimen-register's visible "
-    "explanation names 'please' again, spoiling the reveal J6(b) was meant to protect. "
-    "Fixing means rewriting Igor's copy, so it is left for him.", strict=True)
-
-
-@pytest.mark.parametrize("specimen_id,word", [
-    pytest.param(k, v, marks=_REGISTER_SPOILS_PLEASE) if k == "specimen-register" else (k, v)
-    for k, v in SPOILED_WORDS.items()
-])
-def test_specimen_why_no_longer_names_the_hidden_word(open_site, specimen_id, word):
-    page, _ = open_site(path="english/")
-    why = page.locator(f"#{specimen_id} .spec__why:visible").inner_text().lower()
-    assert word not in why, f"{specimen_id}: '{word}' still appears in the visible explanation"
+SPECIMEN_WHY_IDS = ("specimen-reflexive", "specimen-copula", "specimen-register")
 
 
 def test_specimen_why_paragraphs_are_not_empty_in_either_language(open_site):
@@ -351,7 +324,7 @@ def test_specimen_why_paragraphs_are_not_empty_in_either_language(open_site):
     real, non-empty prose, not a blank left behind by the edit."""
     for lang in ("en", "ru"):
         page, _ = open_site(lang=lang, path="english/")
-        for specimen_id in SPOILED_WORDS:
+        for specimen_id in SPECIMEN_WHY_IDS:
             text = page.locator(f"#{specimen_id} .spec__why:visible").inner_text().strip()
             assert text, f"{specimen_id}/{lang}: .spec__why is empty"
 
@@ -404,9 +377,8 @@ def test_head_names_all_three_disciplines_english_first(open_site):
 
 
 # --- SITE-PLAN F4 (2026-11-20): under each English mistake, faintly, the
-# Russian sentence it grows from. English page, English only; it travels with
-# the mistake (folded away until the reader opens it), always there with no
-# JS. Typography only, no digits (the #specimen rule above). ---
+# Russian sentence it grows from. English page, English only; always on
+# screen with the mistake. Typography only, no digits (the #specimen rule above). ---
 
 def test_each_english_mistake_carries_its_russian_source(open_site):
     page, _ = open_site(path="english/")
@@ -416,20 +388,16 @@ def test_each_english_mistake_carries_its_russian_source(open_site):
         el = srcs.nth(i)
         assert el.get_attribute("lang") == "ru" and el.get_attribute("data-l") == "en"
         assert re.search("[а-я]", el.text_content()) and not re.search(r"\d", el.text_content())
-        assert el.get_attribute("hidden") is not None          # folded with its mistake
-    page.locator("#specimen-copula .spec__prompt").click()
+        assert el.get_attribute("hidden") is None
     assert page.locator("#specimen-copula .line-spec__src").is_visible()
     assert "согласен" in page.locator("#specimen-copula .line-spec__src").inner_text()
     colour = page.locator("#specimen-copula .line-spec__src").evaluate("el => getComputedStyle(el).color")
     fg2 = page.evaluate("getComputedStyle(document.querySelector('.stand')).color")
     assert colour == fg2, "--fg2, no new ink"
-    page.locator("#specimen-copula .spec__prompt").click()
-    assert not page.locator("#specimen-copula .line-spec__src").is_visible()
 
 
 def test_russian_sources_are_not_shown_on_the_russian_page(open_site):
     page, _ = open_site(path="english/", lang="ru")
-    page.locator("#specimen-copula .spec__prompt").click()
     assert not page.locator("#specimen-copula .line-spec__src").is_visible()
 
 

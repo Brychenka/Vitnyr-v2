@@ -73,12 +73,10 @@ party.
 
 Tests: `tests/` holds Playwright tests (pytest), run with
 `tests/.venv/bin/pytest tests -q` (about 6 minutes; it starts its own static
-server; `open_site(path="chess/")` opens a discipline page). One known xfail
-(`specimen-register` naming "please" in its visible explanation; the reason
-is in `tests/test_content.py`); `test_collage_view_switcher` is
-occasionally flaky and passes on a rerun. Run the suite before and after a
-change and read every failure rather than bulk-updating. Tests are no
-substitute for looking.
+server; `open_site(path="chess/")` opens a discipline page).
+`test_collage_view_switcher` is occasionally flaky and passes on a rerun.
+Run the suite before and after a change and read every failure rather than
+bulk-updating. Tests are no substitute for looking.
 
 ## Architecture
 

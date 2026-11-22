@@ -82,9 +82,8 @@ def test_specimen_pair_stacks_above_its_explanation_at_mobile_width(open_site):
 
 def test_specimen_sentence_pair_reads_at_showpiece_size(open_site):
     page, _ = open_site(viewport=WIDE, path="english/")
-    # the visible half of the pair, and the reveal button that stands in for the
-    # other half, both at the showpiece size
-    for sel in ("#specimen .line-spec.right", "#specimen .spec__prompt"):
+    # both halves of the pair at the showpiece size
+    for sel in ("#specimen .line-spec.wrong", "#specimen .line-spec.right"):
         size = page.locator(sel).first.evaluate(
             "el => parseFloat(getComputedStyle(el).fontSize)"
         )
@@ -96,9 +95,9 @@ def test_wrong_and_right_lines_have_a_visible_gap(open_site):
     with no margin between them, so a 2px amber rule ran straight into a 2px
     green one and read as one stroke changing colour halfway down, right
     where the wrong/right distinction is the entire point of the device.
-    Measured without JS, where both lines of the static pair are on screen."""
+    Both lines are on screen at rest."""
     lines = "#specimen .spec__lines"
-    page, _ = open_site(viewport=WIDE, java_script_enabled=False, path="english/")
+    page, _ = open_site(viewport=WIDE, path="english/")
     wrong = page.locator(f"{lines} >> .wrong").first
     right = page.locator(f"{lines} >> .right").first
     wrong_box = wrong.bounding_box()
