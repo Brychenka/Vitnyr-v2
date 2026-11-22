@@ -648,19 +648,12 @@ html[data-theme="dark"] .themeswitch svg { transform: rotate(180deg); }
   .sec__head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(40px, 6vw, 90px); }
 }
 
-/* the method head is a centred single column */
-#method .sec__head { text-align: center; }
-#method .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
-#method .sec__lede { margin-inline: auto; }
+/* the method and who heads are a centred single column */
+#method .sec__head, #who .sec__head { text-align: center; }
+#method .sec__head h2, #who .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
+#method .sec__lede, #who .sec__lede { margin-inline: auto; }
 @media (min-width: 900px) {
-  #method .sec__head { grid-template-columns: none; }
-}
-
-/* the who head is a centred single column too */
-#who .sec__head { text-align: center; }
-#who .sec__head h2 { max-width: var(--measure); margin-inline: auto; }
-@media (min-width: 900px) {
-  #who .sec__head { grid-template-columns: none; }
+  #method .sec__head, #who .sec__head { grid-template-columns: none; }
 }
 
 /* These blocks sit inside the section's padding, so they bleed back out to
@@ -2420,17 +2413,8 @@ html.js .collage .reveal.is-in .collage__slot {
   border-left: 2px solid var(--page-ink, var(--ink-specimen));
 }
 
-/* Session facts: three label/value pairs. */
-.facts { display: grid; border-top: 1px solid var(--rule); margin-top: clamp(32px, 5vw, 64px); }
-.facts > div { display: grid; gap: 4px; padding: 16px 0 18px; border-bottom: 1px solid var(--rule); }
-.facts dt { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
-.facts dd { margin: 0; font-family: var(--serif); font-weight: 500; font-size: clamp(19px, 1.7vw, 24px); color: var(--fg); }
-@media (min-width: 700px) {
-  .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
-}
-
-/* "What happens next" in every contact section, in the facts row's voice:
-   plain facts about how this works. */
+/* "What happens next" in every contact section: three plain facts about
+   how this works. */
 .steps {
   display: grid; list-style: none; padding: 0;
   margin: clamp(36px, 5vw, 64px) 0 0;

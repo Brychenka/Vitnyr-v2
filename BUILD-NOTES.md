@@ -6256,3 +6256,25 @@ quiz would be empty without a board or position.
 - Tests updated to the open layout (both lines visible, mistake before fix,
   the Russian source always shown); per Igor they were not run, and the
   live artifact was not republished.
+
+## Discipline pages: "How sessions run" removed (2026-11-23, `feature/sessions-out`)
+
+Igor asked whether the contact section already said enough to make a whole
+"How sessions run" section redundant. It did: the trial ("30 minutes, free,
+no strings attached") was on each page five times, and "online or in
+Yerevan" twice. Removed on English, Chess and Climbing; what was only there
+moved:
+
+- Format and place go into the contact text, which now says them once
+  (chess: 60 minutes, one-on-one or in a group, Lichess or Chess.com plus a
+  call, or in Yerevan).
+- Who it's for ("under 1800", "under 7a", "mistakes that became habits")
+  is the lede under "Which of these is you?".
+- The concrete line becomes the method's last paragraph: chess's two or
+  three games against 5,000+ patterns, climbing's tendon line, English's
+  "built around your goals".
+- The two photos close the method section.
+
+Contact is now §04, so a discipline page runs 01-04. The `.facts` CSS went
+with the section. Tests edited (numbering 5 -> 4) but not run, and the
+artifact not republished, both on Igor's instruction.

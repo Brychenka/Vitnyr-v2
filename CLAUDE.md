@@ -231,10 +231,12 @@ These came from Igor directly, so nothing in the code says them:
   the method's five names, §03 contact. Every sentence on a discipline page
   must make sense to someone who only wants that discipline, and the page
   ends on contact: the closing "bridge" to the other two was removed
-  (2026-11-23, Igor: redundant with the masthead and home). The
-  masthead's three icons always link to the discipline pages; "Photos" and
-  "Notes" are text links. New blocks are unnumbered, so the 01-05 counts
-  stand.
+  (2026-11-23, Igor: redundant with the masthead and home), and so was
+  "How sessions run" (2026-11-23): format and place live in the contact
+  text, who it's for under "Which of these is you?", so a discipline page
+  runs 01-04. The masthead's three icons always link to the discipline
+  pages; "Photos" and "Notes" are text links. New blocks are unnumbered,
+  so the counts stand.
 - **The photo view is a routed view inside the home page**, not a separate
   page: `#collage`, deep-linkable, with its own header and way back, Back
   closes it, focus moves to its heading. Three groups, **English, then
