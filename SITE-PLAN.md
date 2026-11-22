@@ -168,7 +168,7 @@ loses the "English students" label.
 ### H3. English club schedule [new] · S · waits (Igor)
 
 If the English club runs on a fixed day, add one line to the English page's
-"How sessions run": day, time, place, open to anyone. It's the
+contact text: day, time, place, open to anyone. It's the
 lowest-commitment way in, and it shows people actually come.
 
 ### H4. A library of mistakes [new] · L, ongoing · waits (Igor's texts; after G1)

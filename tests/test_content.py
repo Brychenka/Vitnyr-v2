@@ -226,7 +226,7 @@ def test_real_chess_photos_carry_alt_text(open_site):
         assert img.get_attribute("alt").strip()
 
 
-@pytest.mark.parametrize("path,count", [("index.html", 3), ("english/", 5), ("chess/", 5), ("climbing/", 5)])
+@pytest.mark.parametrize("path,count", [("index.html", 3), ("english/", 4), ("chess/", 4), ("climbing/", 4)])
 def test_section_numbering_is_sequential(open_site, path, count):
     page, _ = open_site(path=path)
     nums = page.locator(".sec .label .num").all_inner_texts()
