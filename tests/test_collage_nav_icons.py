@@ -6,7 +6,7 @@ view (`data-collage-jump`, captioned "Photos"), while the discipline pages
 used the same three glyphs to link to /english/, /chess/, /climbing/. SITE-PLAN
 C4 (2026-11-20) gave them one meaning everywhere: on all four pages they are
 links to the discipline pages, captioned "Coaching", the current page marked;
-"Photos" is a plain text link to the gallery (masthead from 980px, footer at
+"Photos" is a plain text link to the gallery (masthead from 900px, footer at
 every width). The gallery keeps its own in-view switcher, which still carries
 `data-collage-jump`. SITE-PLAN C5 (same day) set the phone masthead in two rows
 instead of three, without shrinking any 44px target (J4).
@@ -23,7 +23,7 @@ from conftest import NARROW, WIDE, horizontal_overflow
 
 ICON_NAMES = {"en": ["English", "Chess", "Climbing"],
               "ru": ["Английский", "Шахматы", "Скалолазание"]}
-ICON_TITLES = ["English", "Chess", "Climbing"]
+ICON_NAMES = {"en": ["English", "Chess", "Climbing"], "ru": ["Английский", "Шахматы", "Скалолазание"]}
 ICON_HREFS = ["/english/", "/chess/", "/climbing/"]
 PAGES = [("index.html", None), ("english/", 0), ("chess/", 1), ("climbing/", 2)]
 
@@ -80,7 +80,9 @@ def test_icons_link_to_the_discipline_pages_on_every_page(open_site, path, curre
     icons = _icons(page)
     assert icons.count() == 3
     assert [icons.nth(i).get_attribute("href") for i in range(3)] == ICON_HREFS
-    assert [icons.nth(i).get_attribute("title") for i in range(3)] == ICON_TITLES
+    # no title tooltips: from 603px the heading over the icons names the one
+    # under the pointer (2026-11-23)
+    assert [icons.nth(i).get_attribute("title") for i in range(3)] == [None] * 3
     assert page.locator(".masthead [data-collage-jump]").count() == 0
     marked = [icons.nth(i).get_attribute("aria-current") for i in range(3)]
     assert marked == [("page" if i == current else None) for i in range(3)]
@@ -158,7 +160,7 @@ def test_masthead_photos_link_opens_the_gallery_on_home(open_site):
     page, _ = open_site()
     link = page.locator(".masthead .tools__photos")
     assert link.get_attribute("href") == "#collage"
-    assert link.is_visible()          # WIDE is 1280, over its 980px floor
+    assert link.is_visible()          # WIDE is 1280, over its 900px floor
     link.click()
     page.wait_for_selector("html.collage-open")
     assert "#collage" in page.url
@@ -176,14 +178,14 @@ def test_discipline_pages_link_to_the_gallery_by_name(open_site, path):
         assert page.locator(sel).get_attribute("href") == "/#collage"
 
 
-def test_masthead_photos_link_steps_aside_below_980(open_site):
-    """Photos joins the row at 980px and Notes at 1080px, the widths where
-    the row still leaves the mark ~55px of air (measured 2026-11-21, once
-    the section numerals were gone). The footer's links are there at every
-    width."""
-    page, _ = open_site(viewport={"width": 970, "height": 800}, path="chess/")
+def test_masthead_photos_link_steps_aside_below_900(open_site):
+    """Photos joins the row at 900px (with "message me") and Notes at 940px,
+    the widths where the row still leaves the mark its air (measured
+    2026-11-23, once the caption had moved above the icons). The footer's
+    links are there at every width."""
+    page, _ = open_site(viewport={"width": 890, "height": 800}, path="chess/")
     assert not page.locator(".masthead .tools__photos").is_visible()
-    page, _ = open_site(viewport={"width": 1070, "height": 800}, path="chess/")
+    page, _ = open_site(viewport={"width": 930, "height": 800}, path="chess/")
     assert page.locator(".masthead .tools__photos").is_visible()
     assert not page.locator(".masthead .tools__notes").is_visible()
     page, _ = open_site(viewport=NARROW, has_touch=True, path="chess/")
@@ -252,10 +254,10 @@ def test_masthead_is_one_row_from_603px(open_site, width):
     assert theme["y"] < lockup["y"] + lockup["height"], f"{width}px: tools dropped under the mark"
 
 
-@pytest.mark.parametrize("width", [900, 980, 1080])
+@pytest.mark.parametrize("width", [900, 940])
 @pytest.mark.parametrize("lang", ["en", "ru"])
 def test_desktop_row_is_one_line_with_air_before_the_mark(open_site, width, lang):
-    """900 is where "message me" joins the row, 980 Photos, 1080 Notes: each
+    """900 is where "message me" and Photos join the row, 940 Notes: each
     is its step's tightest width. Every item sits on one centre line and the
     mark keeps at least 48px of air."""
     page, _ = open_site(viewport={"width": width, "height": 800}, path="chess/", lang=lang)
@@ -400,7 +402,7 @@ def test_icons_have_one_shared_visible_caption(open_site):
     page, _ = open_site()
     label = page.locator(".tools .tools__label")
     assert label.count() == 1
-    assert label.text_content().strip() == "Coaching"
+    assert label.locator(".tools__name.is-rest").text_content().strip() == "Coaching"
     assert label.evaluate("el => getComputedStyle(el).display") != "none"
     assert page.evaluate(
         """() => {
@@ -414,5 +416,81 @@ def test_icons_have_one_shared_visible_caption(open_site):
 
 def test_icon_caption_is_localised(open_site):
     page, _ = open_site(lang="ru")
-    assert page.locator(".tools .tools__label").text_content().strip() == "Направления"
+    assert page.locator(".tools .tools__name.is-rest").text_content().strip() == "Направления"
     assert page.locator(".masthead .tools__photos").text_content().strip() == "Фото"
+
+
+# --- 2026-11-23: the caption is a heading over the icons, not a fourth link.
+# From 603px it sits above the three on a hairline bracket that spans exactly
+# them; pointing at (or tabbing to) an icon closes the bracket onto it and the
+# heading says its name. ---
+
+def _heading(page):
+    return page.evaluate("""() => {
+        const l = document.querySelector('.masthead .tools__label');
+        const icons = [...document.querySelectorAll('.masthead .tools__group--nav .tool--icon')]
+            .map(e => e.getBoundingClientRect());
+        const r = l.getBoundingClientRect();
+        const after = getComputedStyle(l, '::after');
+        const shown = [...l.querySelectorAll('.tools__name')]
+            .filter(n => getComputedStyle(n).opacity === '1').map(n => n.textContent.trim());
+        return {top: r.top, bottom: r.bottom, left: r.left, right: r.right,
+                iconsTop: Math.min(...icons.map(i => i.top)),
+                iconsLeft: icons[0].left, iconsRight: icons[2].right,
+                ml: parseFloat(after.marginLeft), mr: parseFloat(after.marginRight),
+                shown, width: r.width};
+    }""")
+
+
+@pytest.mark.parametrize("width", [603, 900, 1280])
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_caption_is_a_heading_over_exactly_the_three_icons(open_site, width, lang):
+    page, _ = open_site(viewport={"width": width, "height": 800}, lang=lang)
+    h = _heading(page)
+    assert h["bottom"] <= h["iconsTop"] + 1, "the heading sits above the icons"
+    assert h["top"] >= 0, "the heading stays inside the masthead"
+    assert h["left"] == pytest.approx(h["iconsLeft"], abs=1)
+    assert h["right"] == pytest.approx(h["iconsRight"], abs=1)
+    assert h["shown"] == [{"en": "Coaching", "ru": "Направления"}[lang]]
+
+
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_pointing_at_an_icon_names_it_and_closes_the_bracket(open_site, lang):
+    page, _ = open_site(lang=lang, reduced_motion=True)
+    rest = _heading(page)
+    for i in range(3):
+        _icons(page).nth(i).hover()
+        page.wait_for_timeout(100)
+        h = _heading(page)
+        assert h["shown"] == [ICON_NAMES[lang][i]]
+        assert h["ml"] + h["mr"] > rest["ml"] + rest["mr"] + 60, "the bracket narrows onto the icon"
+        # the bracket's span sits over this icon
+        icon = page.evaluate(f"document.querySelectorAll('.masthead .tools__group--nav .tool--icon')[{i}].getBoundingClientRect().toJSON()")
+        mid = icon["x"] + icon["width"] / 2
+        assert h["left"] + h["ml"] < mid < h["right"] - h["mr"]
+    page.mouse.move(5, 600)
+    page.wait_for_timeout(100)
+    assert _heading(page)["shown"] == [{"en": "Coaching", "ru": "Направления"}[lang]]
+
+
+def test_keyboard_focus_names_the_icon_too(open_site):
+    page, _ = open_site(reduced_motion=True)
+    _icons(page).nth(1).focus()
+    page.keyboard.press("Shift+Tab"); page.keyboard.press("Tab")   # :focus-visible
+    page.wait_for_timeout(100)
+    assert _heading(page)["shown"] == ["Chess"]
+
+
+def test_icon_names_in_the_heading_are_hidden_from_screen_readers(open_site):
+    """Each icon already carries its name for assistive tech (.vh); the
+    heading's swapped names are decoration and stay out of the tree."""
+    page, _ = open_site()
+    names = page.locator(".masthead .tools__name:not(.is-rest)")
+    assert names.count() == 3
+    assert all(names.nth(i).get_attribute("aria-hidden") == "true" for i in range(3))
+
+
+def test_phone_caption_stays_in_the_row_and_does_not_swap(open_site):
+    page, _ = open_site(viewport={"width": 375, "height": 780}, has_touch=True)
+    names = page.locator(".masthead .tools__name:not(.is-rest)")
+    assert all(names.nth(i).evaluate("el => getComputedStyle(el).display") == "none" for i in range(3))
