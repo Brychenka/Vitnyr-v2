@@ -6170,3 +6170,37 @@ and tidy and beautiful."
   test's `a[href="#origin"]`.first had been hovering the 01 numeral, not
   the scroll cue its comment named (the cue is still rising at that
   moment, so a hover aimed at it misses); it now hovers "message me".
+
+## Masthead: "Coaching" becomes a heading over the icons (2026-11-23, `feature/coaching-caption`)
+
+Igor: the caption "hangs there but it's not clickable"; make it clear it
+leads to the three symbols. Two reasons it read as a link: it was set
+exactly like "Photos" and "Notes" (same size, ink and capitals, in one
+line), and it shared their group at one spacing, so it seemed to caption
+them too. Tried and dropped: a hairline box round the icons (a segmented
+control; too heavy for this bar), a dash from the caption into the icons
+(too timid), and the name swap alone inline (no help at rest).
+
+- **From 603px** the caption is a small heading (11px, tracked) above the
+  three icons, on a hairline bracket exactly their width. It is absolutely
+  placed in the nav group, so the icons keep the row's centre line and the
+  masthead's height is unchanged (the heading sits in its top padding; on a
+  coarse pointer it tucks into the icons' 10px padding). Width comes from
+  `--icon` (32px fine, 44px coarse).
+- **Pointing at or tabbing to an icon** closes the bracket onto it (its
+  margins move, never a transform) and the heading crossfades to that
+  icon's name; leaving brings back "Coaching". Pure CSS on `:has()`;
+  without it the heading just stays "Coaching". Pointing at the heading
+  lifts all three icons. The swapped names are `aria-hidden` (each icon
+  keeps its `.vh` name); the icons' `title` tooltips went, since the
+  heading now names them. Reduced motion: no fades.
+- **Phones (≤602px)** keep the caption inline in row 2 as before; the
+  swapped names are `display: none` there.
+- **Room:** the row is ~120px narrower, so Photos now joins at 900px with
+  "message me" (was 980) and Notes at 940px (was 1080). Photos stands off
+  the icons by the cluster gap, not their 10px.
+- **Tests:** caption tests read `.tools__name.is-rest`; the title assertion
+  became "no title"; breakpoint tests moved to 900/940; new tests cover the
+  heading's placement over exactly the three icons (603/900/1280, both
+  languages), the hover swap and bracket, keyboard focus, aria-hidden, and
+  the phone keeping its inline caption.

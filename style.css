@@ -365,18 +365,20 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 }
 .langswitch::before { content: "RU"; }
 /* "Photos": a plain text link after the discipline icons. Reserves
-   "Photos" (wider than "Фото"). Only from 980px, where the row still leaves
-   the mark ~55px of air; below that the footer's link, and on home the "See
-   me at work" band, are the way in. */
-.tools__photos { margin-left: 8px; text-align: left; }
+   "Photos" (wider than "Фото"). Only from 900px, with "message me"; there
+   the row leaves the mark 120px of air. Below that the footer's link, and on
+   home the "See me at work" band, are the way in. It stands off the icons by
+   the cluster gap, not their 10px, so the heading over the icons plainly
+   names those three and not these links. */
+.tools__photos { margin-left: calc(clamp(18px, 2.6vw, 30px) - 10px); text-align: left; }
 .tools__photos::before { content: "Photos"; }
-@media (max-width: 979.98px) { .tools__photos { display: none; } }
+@media (max-width: 899.98px) { .tools__photos { display: none; } }
 /* "Notes" beside "Photos", the same pattern; reserves "Заметки". Only from
-   1080px, by the same ~55px measure; below that the footer's link is the
-   way in. */
+   940px, where the mark keeps ~65px of air (55px is the floor); below that
+   the footer's link is the way in. */
 .tools__notes { text-align: left; }
 .tools__notes::before { content: "Заметки"; }
-@media (max-width: 1079.98px) { .tools__notes { display: none; } }
+@media (max-width: 939.98px) { .tools__notes { display: none; } }
 
 /* ---------- progress hairline ----------
    A 1px rule on the masthead's bottom edge; main.js sets --progress (0-1).
@@ -407,12 +409,55 @@ html.js .lockup.is-drawing #lockClipStem  rect { animation: glyph-draw-stem 1s l
 html.past-origin .progress__fill--target { opacity: 1; }
 
 /* ---------- collage nav icons ---------- */
-/* A caption for the icons that follow, in the row's own type and not
-   interactive, so it can't read as a control. */
+/* The caption for the three icons. On a phone it sits in the row before
+   them; from 603px it is a small heading over them, on a hairline bracket
+   that spans exactly the three, so it can't read as a fourth link. Point at
+   an icon (or tab to it) and the bracket closes onto it while the heading
+   says its name; leave and it reads "Coaching" again. The names are
+   stacked in one grid cell and crossfade; the swap is CSS (:has), so
+   without :has the heading simply stays "Coaching". */
 .tools__label {
   font-family: var(--sans); font-size: 14px; font-weight: 500;
   letter-spacing: .08em; text-transform: uppercase; color: var(--fg2);
   white-space: nowrap; flex-shrink: 0;
+  display: inline-grid; cursor: default;
+}
+.tools__label::before { grid-area: 1 / 1; }
+.tools__name { grid-area: 1 / 1; transition: opacity var(--t) var(--e), color var(--t) var(--e); }
+.tools__name:not(.is-rest) { display: none; }
+@media (min-width: 603px) {
+  /* one icon's box: 24px glyph + padding (4px fine, 10px coarse) */
+  .tools__group--disciplines { --icon: 32px; position: relative; }
+  .tools__label {
+    position: absolute; left: 0; bottom: calc(100% + 2px);
+    width: calc(3 * var(--icon) + 20px);
+    font-size: 11px; letter-spacing: .12em; line-height: 1; text-align: center;
+  }
+  .tools__label::before { content: none; }
+  .tools__name:not(.is-rest) { display: block; opacity: 0; }
+  .tools__label::after {
+    content: ""; grid-area: 2 / 1; height: 4px; margin: 5px 6px 0;
+    border: 1px solid var(--rule); border-bottom: 0;
+    transition: margin var(--t) var(--e), border-color var(--t) var(--e);
+  }
+  .tools__group--disciplines:has(.tool--icon:is(:hover, :focus-visible)) .tools__name.is-rest { opacity: 0; }
+  .tools__group--disciplines:has(a[href="/english/"]:is(:hover, :focus-visible)) .tools__name[data-for="/english/"],
+  .tools__group--disciplines:has(a[href="/chess/"]:is(:hover, :focus-visible)) .tools__name[data-for="/chess/"],
+  .tools__group--disciplines:has(a[href="/climbing/"]:is(:hover, :focus-visible)) .tools__name[data-for="/climbing/"] { opacity: 1; color: var(--fg); }
+  .tools__group--disciplines:has(a[href="/english/"]:is(:hover, :focus-visible)) .tools__label::after { margin-right: calc(2 * var(--icon) + 26px); }
+  .tools__group--disciplines:has(a[href="/chess/"]:is(:hover, :focus-visible)) .tools__label::after { margin-inline: calc(var(--icon) + 16px); }
+  .tools__group--disciplines:has(a[href="/climbing/"]:is(:hover, :focus-visible)) .tools__label::after { margin-left: calc(2 * var(--icon) + 26px); }
+  .tools__group--disciplines:has(.tool--icon:is(:hover, :focus-visible)) .tools__label::after { border-color: var(--fg2); }
+  /* pointing at the heading lifts the three it names */
+  .tools__group--disciplines:has(.tools__label:hover) .tool--icon { color: var(--fg); }
+}
+@media (min-width: 603px) and (pointer: coarse) {
+  /* touch icons carry 10px padding, so the heading tucks into it */
+  .tools__group--disciplines { --icon: 44px; }
+  .tools__label { bottom: calc(100% - 6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tools__name, .tools__label::after { transition: none; }
 }
 .tools__rule { width: 1px; height: 14px; background: var(--rule); flex-shrink: 0; }
 /* The discipline icons: 24px glyphs, 1:1 with the 0 0 24 viewBox so strokes
