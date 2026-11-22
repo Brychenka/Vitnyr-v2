@@ -357,13 +357,13 @@ def test_cursor_takes_target_ink_over_the_contact_cta(open_site):
 
 def test_cursor_takes_specimen_ink_over_a_control_inside_specimen(open_site):
     """The delegated handler keys the dot's ink off `closest('#specimen')`.
-    The specimen reveal's `.spec__prompt` button is the real control there."""
+    Each specimen's permalink label is the control there."""
     page, _ = open_site(path="english/")
-    prompt = page.locator("#specimen .spec__prompt").first
+    prompt = page.locator("#specimen .spec__permalink").first
     # the prompt itself, not just the section: on /english/ it sits below the
     # fold, and hover() would otherwise scroll it in under a still pointer
     prompt.scroll_into_view_if_needed()
-    page.wait_for_timeout(1500)   # let the reveal and Lenis settle so the button stops moving
+    page.wait_for_timeout(1500)   # let the reveal and Lenis settle so the link stops moving
     prompt.hover()
     page.wait_for_timeout(200)
 
@@ -704,33 +704,6 @@ def test_collage_bar_mark_turns_once_on_hover(open_site):
     # after the turn: back on its own geometry (360deg == rest)
     page.wait_for_timeout(1300)
     assert abs(_rotation_deg(page, ".view__bar .footmark-spin .footmark")) < 0.5
-
-
-# --- The specimen reveal (replaces the S6 performed correction). The error is
-# behind a "Show the common mistake" button; hover previews it, click/tap/Enter
-# locks it. No JS -> the untouched static <del>/<ins> pair. Behaviour lives in
-# test_a11y.py::test_specimen_reveal_* ; here we only guard that it introduces
-# no transform and no scroll/time coupling. ---
-
-def test_specimen_reveal_holds_no_transform(open_site):
-    """The reveal is a content swap, not motion — its own machinery
-    (.spec__reveal and everything in it) never takes a transform, opened or
-    closed. The .reveal rise on the .spec itself is a separate system."""
-    page, _ = open_site(path="english/")
-    page.locator("#specimen").scroll_into_view_if_needed()
-    page.wait_for_timeout(1500)   # let the .reveal rise finish
-
-    def stray_transforms():
-        return page.eval_on_selector_all(
-            "#specimen .spec__reveal, #specimen .spec__reveal *",
-            """els => els
-                .map(e => getComputedStyle(e).transform)
-                .filter(t => t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)')""")
-
-    assert stray_transforms() == []
-    page.locator("#specimen .spec__prompt").first.click()   # lock one open
-    page.wait_for_timeout(200)
-    assert stray_transforms() == []
 
 
 def _clip_heights(page):

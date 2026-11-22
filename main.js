@@ -153,7 +153,6 @@
   initDock();
   initFoot();             // a clock and a focus fix, not motion
   initSpecimenPermalinks();
-  initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
   initEarTest();          // an affordance, not motion
 
@@ -1390,104 +1389,6 @@
       setTimeout(tick, step - (Date.now() % step) + 20);
     };
     tick();
-  }
-
-  /* ---------- the specimen reveal ----------
-     At rest: the "Correct:" line and a "+ Show the common mistake" prompt
-     where the error was. Hover, tap or focus opens it: the prompt becomes the
-     error sentence (the cloned glyph and the <del> word in amber) and the
-     marker flips to "−". A tap or Enter locks it open; a hover closes on
-     leave. An affordance, not motion. With no JS the static <del>/<ins> pair
-     is the whole of it; the real .wrong line stays in the DOM, only hidden. */
-  function initSpecimenReveal() {
-    var specs = document.querySelectorAll('#specimen .spec');
-    if (!specs.length) return;
-    var isRu = function () { return document.documentElement.getAttribute('data-lang') === 'ru'; };
-
-    specs.forEach(function (spec) {
-      var lines = spec.querySelector('.spec__lines');
-      // Some specimens carry one .line-spec.wrong, others one per language: pick
-      // the one for the live language.
-      var wrongs = spec.querySelectorAll('.line-spec.wrong');
-      if (!lines || !wrongs.length) return;
-      // The Russian source line travels with the mistake: folded with it, shown
-      // with it.
-      var srcs = spec.querySelectorAll('.line-spec__src');
-      function currentWrong() {
-        if (wrongs.length === 1) return wrongs[0];
-        var want = isRu() ? 'ru' : 'en';
-        for (var i = 0; i < wrongs.length; i++) {
-          if (wrongs[i].getAttribute('data-l') === want) return wrongs[i];
-        }
-        return wrongs[0];
-      }
-
-      var wrap = document.createElement('div');
-      wrap.className = 'spec__reveal';
-      wrap.setAttribute('data-open', 'false');
-
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'spec__prompt';
-      btn.setAttribute('aria-expanded', 'false');
-
-      var mark = document.createElement('span');
-      mark.className = 'spec__prompt-mark';
-      mark.setAttribute('aria-hidden', 'true');
-      mark.textContent = '+';
-
-      var label = document.createElement('span');
-      label.className = 'spec__prompt-label';
-      label.setAttribute('data-en', 'Show the common mistake');
-      label.setAttribute('data-ru', 'Показать типичную ошибку');
-      label.textContent = isRu() ? 'Показать типичную ошибку' : 'Show the common mistake';
-
-      var reveal = document.createElement('span');
-      reveal.className = 'spec__prompt-mistake';
-      reveal.hidden = true;
-
-      function fillReveal() {
-        reveal.textContent = '';
-        var w = currentWrong();
-        var sentence = w.children[w.children.length - 1];   // the visible sentence <span>
-        var sig = w.querySelector('.sig');
-        if (sig) reveal.appendChild(sig.cloneNode(true));
-        if (sentence) reveal.appendChild(sentence.cloneNode(true));
-      }
-      fillReveal();
-
-      btn.appendChild(mark);
-      btn.appendChild(label);
-      btn.appendChild(reveal);
-      wrap.appendChild(btn);
-      lines.insertBefore(wrap, wrongs[0]);
-      wrongs.forEach(function (w) { w.hidden = true; });   // JS-only: the static pair stays the no-JS source of truth
-
-      document.addEventListener('vitnyr:langchange', fillReveal);
-
-      // Hover previews; a click, tap or Enter locks it open or shut. No focus
-      // preview, so a click that leaves the button focused can't wedge it open.
-      var st = { hover: false, lock: false };
-      function render() {
-        var open = st.hover || st.lock;
-        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        wrap.setAttribute('data-open', open ? 'true' : 'false');
-        label.hidden = open;
-        reveal.hidden = !open;
-        srcs.forEach(function (s) { s.hidden = !open; });
-        mark.textContent = open ? '−' : '+';   // − / +
-      }
-
-      btn.addEventListener('mouseenter', function () { st.hover = true; render(); });
-      btn.addEventListener('mouseleave', function () { st.hover = false; render(); });
-      btn.addEventListener('click', function () {
-        st.lock = !st.lock;
-        st.hover = false;   // a tap owns the state; ignore any synthetic hover it fires
-        render();
-      });
-
-      render();
-    });
   }
 
   /* ---------- "Test your ear" (English page) ----------

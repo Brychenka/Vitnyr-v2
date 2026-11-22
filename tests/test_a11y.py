@@ -106,10 +106,6 @@ def test_specimen_rows_have_text_equivalent_for_correctness(open_site):
     page, _ = open_site(path="english/")
     vh = page.locator(".line-spec:not([data-l=\"ru\"]) .vh")
     assert vh.count() == 6
-    # text_contents, not inner_texts: under JS the .wrong line is [hidden] (the
-    # error moved behind the reveal button), so its label renders nothing — but
-    # the equivalent is still in the DOM for the no-JS render and for AT once
-    # the disclosure is opened.
     texts = {t.strip() for t in vh.all_text_contents()}
     assert texts == {"Incorrect:", "Correct:", "Reads as:", "Better as:"}
 
@@ -287,11 +283,9 @@ def test_dot_stays_one_size_and_only_recolours_over_hot_targets(open_site):
     assert dot.evaluate("el => parseFloat(getComputedStyle(el).opacity)") > 0.95
 
 
-# --- The specimen reveal: the error sits behind a "Show the common mistake"
-# button (hover previews, click/tap/Enter locks); the "Correct:" line is always
-# shown. With no JS the button is never built and the static <del>/<ins> pair
-# is the whole of it — that pair stays the source of truth, and the ✕/✓ glyphs
-# are real proofreading marks. ---
+# --- The specimens: since 2026-11-23 the mistake and the fix are both on
+# screen at rest, mistake first, with or without JS (Igor dropped the "Show
+# the common mistake" reveal). The ✕/✓ glyphs are real proofreading marks. ---
 
 def _spec_pair_readable(page):
     # Scoped to English: it's the only group visible by default (no JS to
@@ -306,88 +300,23 @@ def _spec_pair_readable(page):
             assert loc.nth(i).inner_text().strip()
 
 
-def test_specimen_static_pair_survives_without_js(open_site):
-    page, _ = open_site(java_script_enabled=False, path="english/")
+@pytest.mark.parametrize("js", [True, False])
+def test_specimen_shows_mistake_and_fix_at_rest(open_site, js):
+    page, _ = open_site(java_script_enabled=js, path="english/")
     _spec_pair_readable(page)
-    # nothing was built: no prompt button, the three real <del> pairs are it
     assert page.locator(".spec__prompt").count() == 0
     assert page.locator(
         '#specimen .specimens-group[data-discipline-group="english"] .line-spec del'
     ).count() == 3
 
 
-def test_specimen_reveal_is_an_accessible_disclosure(open_site):
-    """With JS: each specimen's error is behind a real <button> that names
-    itself and carries aria-expanded; the "Correct:" line stays visible; the
-    static .wrong line is [hidden] (out of the a11y tree) until the button is
-    activated, and activating it toggles the state back and forth."""
-    page, _ = open_site(path="english/")
-    # Scoped to English: initSpecimenReveal() builds a prompt for every
-    # .spec under #specimen regardless of group visibility (Stage 5,
-    # 2026-09-16 added six more, chess + climbing), but this test's
-    # assertions (e.g. "am agree") are specific to English's specimens.
-    english = '#specimen .specimens-group[data-discipline-group="english"] '
-    prompts = page.locator(f"{english}.spec__prompt")
-    rights = page.locator(f"{english}.line-spec.right")
-    assert prompts.count() == 3
-    for i in range(3):
-        btn = prompts.nth(i)
-        assert btn.get_attribute("aria-expanded") == "false"
-        assert "show the common mistake" in btn.inner_text().strip().lower()
-        assert rights.nth(i).is_visible()
-
-    wrong0 = page.locator("#specimen .line-spec.wrong").first
-    assert wrong0.get_attribute("hidden") is not None
-    assert not wrong0.is_visible()
-
-    btn0 = prompts.first
-    btn0.click()
-    assert btn0.get_attribute("aria-expanded") == "true"
-    assert "am agree" in btn0.inner_text()                   # the error is now shown, in place
-    assert rights.first.is_visible()                          # the fix never went away
-    btn0.click()
-    assert btn0.get_attribute("aria-expanded") == "false"
-    assert "am agree" not in btn0.inner_text()
-
-
-def test_specimen_reveal_works_under_reduced_motion(open_site):
-    """It is an affordance, not motion, so it is wired before the reduced-motion
-    return: a reduced-motion reader still gets the button and can open it."""
-    page, _ = open_site(reduced_motion=True, path="english/")
-    page.wait_for_timeout(300)
-    page.locator("#specimen").scroll_into_view_if_needed()
-
-    btn = page.locator("#specimen .spec__prompt").first
-    assert btn.count() == 1
-    assert "show the common mistake" in btn.inner_text().strip().lower()
-    btn.click()
-    assert btn.get_attribute("aria-expanded") == "true"
-    mistake = btn.locator(".spec__prompt-mistake")
-    assert mistake.is_visible() and mistake.inner_text().strip()
-    assert float(mistake.evaluate("el => getComputedStyle(el).opacity")) > 0.98
-
-
-def test_specimen_mistake_is_hidden_until_hover_or_tap(open_site):
-    """The point of the change: at rest the mistake isn't on screen. Hover the
-    prompt to preview it, leave to hide it again; a click locks it open."""
-    page, _ = open_site(path="english/")
-    btn = page.locator("#specimen .spec__prompt").first
-    btn.scroll_into_view_if_needed()
-    mistake = btn.locator(".spec__prompt-mistake")
-    label = btn.locator(".spec__prompt-label")
-
-    assert not mistake.is_visible() and label.is_visible()
-
-    btn.hover()
-    assert mistake.is_visible() and not label.is_visible()
-
-    page.mouse.move(5, 5)                     # leave the button
-    assert not mistake.is_visible() and label.is_visible()
-
-    btn.click()                              # lock it open
-    assert mistake.is_visible()
-    page.mouse.move(5, 5)
-    assert mistake.is_visible(), "a locked reveal should survive the pointer leaving"
+def test_specimen_mistake_comes_before_the_fix(open_site):
+    for path in ("english/", "chess/", "climbing/"):
+        page, _ = open_site(path=path)
+        order = page.eval_on_selector_all(
+            "#specimen .spec__lines > .line-spec:not([data-l=\"ru\"])",
+            "els => els.map(e => e.classList.contains('wrong') ? 'w' : 'r').join('')")
+        assert order == "wr" * 3, (path, order)
 
 
 def test_specimen_marks_are_proofreading_notation(open_site):

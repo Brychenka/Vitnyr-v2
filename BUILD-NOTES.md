@@ -6237,3 +6237,22 @@ chess", the same seam as every section break.
   stay: they are copy, not the tool.
 - Per Igor: the test suite was not run for this change, and the live
   artifact was not republished.
+
+## Specimens: mistake and fix both shown, no reveal (2026-11-23, `feature/specimens-open`)
+
+Igor reversed his own 2026-09-07 request (J6): the "Show the common mistake"
+button is gone on all three pages. Each card now shows the mistake (amber,
+first), then on the English page its Russian source, then the fix (green),
+at rest, with or without JS. Reasons: the mistake is what the reader
+recognises themselves in; the label and the explanation beside each card
+already named it, so the click revealed nothing; and a "guess the fix"
+quiz would be empty without a board or position.
+
+- Gone: `initSpecimenReveal()` and its CSS (`.spec__prompt*`,
+  `.line-spec[hidden]`, the `html.js` source indent). The markup was
+  already mistake-first, so nothing in the pages had to move.
+- The J6(b) "spoiler" guard and its known xfail (`specimen-register` naming
+  "please") are gone: with the mistake on screen there is nothing to spoil.
+- Tests updated to the open layout (both lines visible, mistake before fix,
+  the Russian source always shown); per Igor they were not run, and the
+  live artifact was not republished.
