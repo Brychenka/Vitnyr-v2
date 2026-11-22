@@ -231,8 +231,9 @@ These came from Igor directly, so nothing in the code says them:
   habit." / "Каждое плато — / это привычка."), §01 the mark with three
   doors (`#origin`) and the "See me at work" photo strip, the reviews, §02
   the method's five names, §03 contact. Every sentence on a discipline page
-  must make sense to someone who only wants that discipline; one bridge
-  line near the end is the only place the other two are named. The
+  must make sense to someone who only wants that discipline, and the page
+  ends on contact: the closing "bridge" to the other two was removed
+  (2026-11-23, Igor: redundant with the masthead and home). The
   masthead's three icons always link to the discipline pages; "Photos" and
   "Notes" are text links. New blocks are unnumbered, so the 01-05 counts
   stand.

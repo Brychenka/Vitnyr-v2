@@ -2522,35 +2522,26 @@ html.js .collage .reveal.is-in .collage__slot {
   .page-photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* Bridge: one line to the other two pages, then out. Centred, like the
-   home page's doors, because it is the same move in miniature. */
-.bridge {
-  max-width: var(--maxw); margin-inline: auto; padding: clamp(40px, 8vh, 110px) var(--gut);
-  text-align: center;
-}
-.bridge__line {
-  font-family: var(--serif); font-weight: 500; font-size: clamp(23px, 2.7vw, 38px);
-  line-height: 1.25; letter-spacing: -.015em; max-width: 32ch; margin-inline: auto;
-}
-.bridge__links { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px clamp(32px, 5vw, 64px); margin-top: clamp(24px, 3vw, 36px); }
-.bridge__link {
+/* "The full note" and the way into the notes (English page): small caps,
+   an arrow, an underline that grows from the left. */
+.more-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px clamp(32px, 5vw, 64px); margin-top: clamp(24px, 3vw, 36px); }
+.more-link {
   --link-ink: var(--ink-specimen);
   position: relative; display: inline-flex; align-items: center; gap: 12px;
   font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
   color: var(--fg); padding-bottom: 6px;
 }
-.bridge__link--climbing { --link-ink: var(--ink-target); }
-.bridge__link::after {
+.more-link::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
   background: var(--link-ink); transform: scaleX(.3); transform-origin: left;
   transition: transform var(--t) var(--e);
 }
-.bridge__link svg { width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
-.bridge__link:hover::after, .bridge__link:focus-visible::after { transform: scaleX(1); }
-.bridge__link:hover svg, .bridge__link:focus-visible svg { transform: translateX(6px); }
+.more-link svg { width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
+.more-link:hover::after, .more-link:focus-visible::after { transform: scaleX(1); }
+.more-link:hover svg, .more-link:focus-visible svg { transform: translateX(6px); }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-cta svg, .bridge__link svg, .page-cta::after, .bridge__link::after { transition: none; }
+  .page-cta svg, .more-link svg, .page-cta::after, .more-link::after { transition: none; }
 }
 
 /* ==========================================================================
