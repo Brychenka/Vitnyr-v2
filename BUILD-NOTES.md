@@ -6222,3 +6222,18 @@ hairline → contact, the same seam as every other section break.
   exception besides the contact channels; a new test checks each page's
   contact follows a section with no cross-discipline link in `main`.
 - CLAUDE.md's positioning rule updated to match.
+
+## Chess page: "Is your rating actually stuck?" removed (2026-11-23, `feature/rating-out`)
+
+Igor asked to remove the Lichess rating check (F2) and leave the page clean.
+The chess page now runs mistakes (#specimen) → hairline → "02 How I coach
+chess", the same seam as every section break.
+
+- Gone: the section in `chess/index.html`, its CSS block, `initRatingCheck()`
+  and the `draw` entry in main.js's `D` table (only the rating line used it),
+  the F2 tests in `tests/test_signature.py`, SITE-PLAN's "F2 follow-up"
+  item and the rating check in I1, and the mention in CLAUDE.md.
+- The hero's "Your rating has stalled." and the who-row about a flat rating
+  stay: they are copy, not the tool.
+- Per Igor: the test suite was not run for this change, and the live
+  artifact was not republished.
