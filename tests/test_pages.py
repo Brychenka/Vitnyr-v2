@@ -118,17 +118,17 @@ def test_masthead_links_the_pages_and_marks_the_current_one(open_site, slug):
 
 
 @pytest.mark.parametrize("slug", PAGES)
-def test_only_the_bridge_names_the_other_disciplines(open_site, slug):
+def test_page_body_never_names_the_other_disciplines(open_site, slug):
     """The rule: every sentence on a discipline page makes sense to someone who
-    only wants that discipline. The bridge is the one sanctioned exception, and
-    the contact channels' own descriptions (what each profile is about) are a
-    second. Checked on rendered text, both languages."""
+    only wants that discipline; the masthead's icons are the way to the other
+    two. The contact channels' own descriptions (what each profile is about)
+    are the one exception. Checked on rendered text, both languages."""
     for lang in ("en", "ru"):
         page, _ = open_site(path=f"{slug}/", lang=lang)
         text = page.evaluate(
             """() => {
                 const main = document.querySelector('main').cloneNode(true);
-                main.querySelectorAll('.bridge, .channels, .vh, [hidden]').forEach(e => e.remove());
+                main.querySelectorAll('.channels, .vh, [hidden]').forEach(e => e.remove());
                 document.body.appendChild(main);
                 main.style.position = 'absolute';
                 const t = main.innerText;
@@ -141,10 +141,16 @@ def test_only_the_bridge_names_the_other_disciplines(open_site, slug):
 
 
 @pytest.mark.parametrize("slug", PAGES)
-def test_bridge_links_the_other_two_pages(open_site, slug):
+def test_page_ends_on_contact_with_no_detour(open_site, slug):
+    """No block between the last section and contact sends the reader to
+    another discipline (the bridge was removed 2026-11-23)."""
     page, _ = open_site(path=f"{slug}/")
-    hrefs = sorted(a.get_attribute("href") for a in page.locator(".bridge a").all())
-    assert hrefs == sorted(f"/{s}/" for s in PAGES if s != slug)
+    assert page.locator(".bridge").count() == 0
+    prev = page.evaluate("document.getElementById('contact').previousElementSibling.tagName")
+    assert prev == "SECTION"
+    others = [f"/{s}/" for s in PAGES if s != slug]
+    hrefs = page.evaluate("[...document.querySelectorAll('main a')].map(a => a.getAttribute('href'))")
+    assert not [h for h in hrefs if h in others]
 
 
 @pytest.mark.parametrize("slug,word", [("english", "English"), ("chess", "chess"), ("climbing", "climbing")])

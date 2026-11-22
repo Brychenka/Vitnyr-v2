@@ -6204,3 +6204,21 @@ control; too heavy for this bar), a dash from the caption into the icons
   heading's placement over exactly the three icons (603/900/1280, both
   languages), the hover swap and bracket, keyboard focus, aria-hidden, and
   the phone keeping its inline caption.
+
+## Discipline pages: the closing "bridge" removed (2026-11-23, `feature/bridge-out`)
+
+Igor: the bridge ("I coach chess and climbing the same way…" plus two
+links) was redundant with the masthead's icons, which are always on screen,
+and with the home page, which already presents all three. It also sat
+between the reviews/photos and "How to start", sending readers away just
+before the ask. Removed from all three pages; each now ends last section →
+hairline → contact, the same seam as every other section break.
+
+- `.bridge` and `.bridge__line` deleted. The link style it shared with the
+  English page's notes links ("The full note", "More mistakes…") lives on as
+  `.more-link` / `.more-links`; `.bridge__link--climbing` (only the bridge
+  used the green variant) is gone.
+- Tests: the "only the bridge names the other disciplines" rule now has no
+  exception besides the contact channels; a new test checks each page's
+  contact follows a section with no cross-discipline link in `main`.
+- CLAUDE.md's positioning rule updated to match.
