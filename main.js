@@ -25,9 +25,8 @@
        micro: a thing appearing or disappearing outright
        state: a hover, a magnet, a theme settling (--t in the sheet)
        hero:  the single longest move on the page, used once
-       draw:  the rating line drawing itself in, once
      The reveal's own 0.9s lives in the stylesheet, where the transition is. */
-  var D = { micro: 0.3, state: 0.6, hero: 1.05, draw: 1.4 };
+  var D = { micro: 0.3, state: 0.6, hero: 1.05 };
   var STAGGER = 0.08;
 
   /* ---------- first-frame gate ----------
@@ -157,7 +156,6 @@
   initSpecimenReveal();   // an affordance, not motion — wired before the reduced-motion return
   initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
   initEarTest();          // an affordance, not motion
-  initRatingCheck();      // same; its one draw-in checks `reduce` itself
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
   if (reduce) {
@@ -1594,210 +1592,6 @@
       pick(items[0]).focus();
     });
     document.addEventListener('vitnyr:langchange', render);
-  }
-
-  /* ---------- "Is your rating actually stuck?" (chess page) ----------
-     The username goes from this browser straight to Lichess's public API
-     (rating-history, open to any site) and nowhere else; nothing is stored.
-     Of Bullet, Blitz, Rapid and Classical, the pool with the most rated days
-     in the last 12 months is drawn as an inline SVG, with the year's range
-     bracketed in amber. The words say only what the data says: the range,
-     and whether it is narrow enough (120 points or less) to call a plateau.
-     The line draws in once (D.draw); reduced motion shows it whole. A
-     language switch relabels without redrawing. */
-  function initRatingCheck() {
-    var root = document.querySelector('.rating');
-    if (!root) return;
-    var form = root.querySelector('.rating__form');
-    var input = root.querySelector('.rating__input');
-    var status = root.querySelector('.rating__status');
-    var out = root.querySelector('.rating__out');
-    var chart = root.querySelector('.rating__chart');
-    var say = root.querySelector('.rating__say');
-    var verdict = root.querySelector('.rating__verdict');
-    var send = root.querySelector('.rating__send');
-    if (!form || !input || !status || !out || !chart || !say || !verdict || !send) return;
-    var baseHref = send.getAttribute('href');
-    var POOLS = ['Bullet', 'Blitz', 'Rapid', 'Classical'];
-    var PLATEAU = 120;
-    var DAY = 864e5;
-    var NS = 'http://www.w3.org/2000/svg';
-    var state = null;
-    var seq = 0;
-    var T = {
-      en: {
-        pools: { Bullet: 'Bullet', Blitz: 'Blitz', Rapid: 'Rapid', Classical: 'Classical' },
-        loading: 'Asking Lichess…',
-        bad: 'Lichess usernames are 2 to 30 letters, digits, _ or -.',
-        notfound: 'Lichess doesn’t know that username.',
-        wait: 'Lichess asks to wait a minute. Try again shortly.',
-        none: 'No rated games on Lichess in the last 12 months.',
-        few: 'Too few rated days in the last 12 months to read a trend.',
-        net: 'Couldn’t reach Lichess.',
-        nohistory: 'Lichess isn’t sharing a rating history for that username right now.',
-        say: function (pool, lo, hi) { return 'Last 12 months, ' + pool + ': between ' + lo + ' and ' + hi + '.'; },
-        flat: 'That’s a plateau. It’s usually the same few patterns.',
-        moving: 'Still moving. Let’s keep it that way.',
-        msg: function (u) { return 'Hi! My Lichess is ' + u + '. I’d like a free trial chess lesson.'; },
-        locale: 'en-GB'
-      },
-      ru: {
-        pools: { Bullet: 'пуля', Blitz: 'блиц', Rapid: 'рапид', Classical: 'классика' },
-        loading: 'Спрашиваю Lichess…',
-        bad: 'Ник на Lichess — от 2 до 30 букв, цифр, _ или -.',
-        notfound: 'Lichess не знает такого ника.',
-        wait: 'Lichess просит подождать минуту. Попробуйте чуть позже.',
-        none: 'За последние 12 месяцев на Lichess нет рейтинговых партий.',
-        few: 'За последние 12 месяцев слишком мало рейтинговых дней, чтобы увидеть тренд.',
-        net: 'Не удалось связаться с Lichess.',
-        nohistory: 'Lichess сейчас не отдаёт историю рейтинга для этого ника.',
-        say: function (pool, lo, hi) { return 'Последние 12 месяцев, ' + pool + ': от ' + lo + ' до ' + hi + '.'; },
-        flat: 'Это плато. Обычно за ним одни и те же несколько паттернов.',
-        moving: 'Рейтинг ещё движется. Пусть так и будет.',
-        msg: function (u) { return 'Здравствуйте! Мой ник на Lichess: ' + u + '. Хочу записаться на бесплатное пробное занятие по шахматам.'; },
-        locale: 'ru-RU'
-      }
-    };
-    function lang() { return document.documentElement.getAttribute('data-lang') === 'ru' ? 'ru' : 'en'; }
-    function svgEl(name, attrs) {
-      var n = document.createElementNS(NS, name);
-      for (var k in attrs) n.setAttribute(k, attrs[k]);
-      return n;
-    }
-
-    function parse(json) {
-      // A bare [] is Lichess not serving the history at all (an account with no
-      // games still gets its pools, with empty points). Say so rather than claim
-      // the visitor hasn't played.
-      if (Array.isArray(json) && !json.length) return { key: 'nohistory' };
-      var now = Date.now(), since = now - 365 * DAY, best = null;
-      (Array.isArray(json) ? json : []).forEach(function (pool) {
-        if (!pool || POOLS.indexOf(pool.name) < 0) return;
-        var pts = (pool.points || []).map(function (p) {
-          return { t: new Date(p[0], p[1], p[2]).getTime(), r: p[3] };
-        }).filter(function (p) { return p.t >= since && p.t <= now + DAY && typeof p.r === 'number'; });
-        if (!best || pts.length > best.pts.length) best = { pool: pool.name, pts: pts };
-      });
-      if (!best || !best.pts.length) return { key: 'none' };
-      if (best.pts.length < 2) return { key: 'few' };
-      var rs = best.pts.map(function (p) { return p.r; });
-      best.lo = Math.min.apply(null, rs);
-      best.hi = Math.max.apply(null, rs);
-      best.since = since;
-      best.now = now;
-      return best;
-    }
-
-    function drawChart(animate) {
-      // drawn at the figure's real pixel width, so the 11px labels stay 11px
-      // on a phone and on a wide screen alike; redrawn on resize
-      var W = Math.max(280, Math.round(chart.getBoundingClientRect().width || 640));
-      var H = Math.round(Math.min(260, Math.max(170, W * 0.32)));
-      var L = 46, R = 26, TOP = 18, B = 30;
-      var lo = state.lo, hi = state.hi;
-      var pad = Math.max(20, (hi - lo) * 0.2);
-      var y0 = lo - pad, y1 = hi + pad;
-      function x(t) { return L + (t - state.since) / (state.now - state.since) * (W - L - R); }
-      function y(r) { return TOP + (y1 - r) / (y1 - y0) * (H - TOP - B); }
-      var svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, focusable: 'false' });
-      svg.appendChild(svgEl('path', { 'class': 'rating__axis', d: 'M' + L + ' ' + TOP + 'V' + (H - B) + 'H' + (W - R) }));
-      var d = state.pts.map(function (p, i) {
-        return (i ? 'L' : 'M') + x(p.t).toFixed(1) + ' ' + y(p.r).toFixed(1);
-      }).join('');
-      var line = svgEl('path', { 'class': 'rating__line', d: d });
-      svg.appendChild(line);
-      var bx = W - R + 12;
-      svg.appendChild(svgEl('path', { 'class': 'rating__bracket',
-        d: 'M' + (bx - 6) + ' ' + y(hi).toFixed(1) + 'H' + bx + 'V' + y(lo).toFixed(1) + 'H' + (bx - 6) }));
-      var t = T[lang()];
-      function label(txt, ax, ay, anchor) {
-        var n = svgEl('text', { 'class': 'rating__tick', x: ax, y: ay, 'text-anchor': anchor });
-        n.textContent = txt;
-        svg.appendChild(n);
-      }
-      label(String(hi), L - 8, (y(hi) - 3).toFixed(1), 'end');
-      label(String(lo), L - 8, (y(lo) + 12).toFixed(1), 'end');
-      var fmt = { month: 'short', year: 'numeric' };
-      label(new Date(state.since).toLocaleDateString(t.locale, fmt), L, H - 8, 'start');
-      label(new Date(state.now).toLocaleDateString(t.locale, fmt), W - R, H - 8, 'end');
-      chart.textContent = '';
-      chart.appendChild(svg);
-      if (animate && !reduce && line.getTotalLength) {
-        var len = line.getTotalLength();
-        line.style.strokeDasharray = len;
-        line.style.strokeDashoffset = len;
-        line.getBoundingClientRect();   // commit the start state before the transition
-        line.style.transition = 'stroke-dashoffset ' + D.draw + 's var(--e)';
-        line.style.strokeDashoffset = '0';
-      }
-    }
-
-    function show() {
-      var t = T[lang()];
-      status.classList.remove('vh');
-      if (!state) { status.textContent = ''; out.hidden = true; return; }
-      if (state.kind === 'loading') { status.textContent = t.loading; out.hidden = true; return; }
-      if (state.kind === 'error') {
-        status.textContent = t[state.key];
-        out.hidden = true;
-        send.setAttribute('href', baseHref);
-        return;
-      }
-      out.hidden = false;
-      say.textContent = t.say(t.pools[state.pool], state.lo, state.hi);
-      verdict.textContent = (state.hi - state.lo <= PLATEAU) ? t.flat : t.moving;
-      send.setAttribute('href', 'https://t.me/yngvil?text=' + encodeURIComponent(t.msg(state.user)));
-      // the live region carries the result to a screen reader; the visible
-      // sentence and verdict below carry it to everyone else
-      status.textContent = say.textContent + ' ' + verdict.textContent;
-      status.classList.add('vh');
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var u = input.value.trim();
-      if (!/^[A-Za-z0-9_-]{2,30}$/.test(u)) {
-        state = { kind: 'error', key: 'bad' };
-        show();
-        input.focus();
-        return;
-      }
-      state = { kind: 'loading' };
-      show();
-      var req = ++seq;
-      fetch('https://lichess.org/api/user/' + encodeURIComponent(u) + '/rating-history',
-            { headers: { Accept: 'application/json' }, credentials: 'omit' })
-        .then(function (res) {
-          if (res.status === 404) throw { key: 'notfound' };
-          if (res.status === 429) throw { key: 'wait' };
-          if (!res.ok) throw { key: 'net' };
-          return res.json();
-        })
-        .then(function (json) {
-          if (req !== seq) return;
-          var r = parse(json);
-          if (r.key) { state = { kind: 'error', key: r.key }; show(); return; }
-          state = { kind: 'ok', user: u, pool: r.pool, pts: r.pts, lo: r.lo, hi: r.hi, since: r.since, now: r.now };
-          show();
-          drawChart(true);
-        })
-        .catch(function (err) {
-          if (req !== seq) return;
-          state = { kind: 'error', key: (err && err.key) || 'net' };
-          show();
-        });
-    });
-    document.addEventListener('vitnyr:langchange', function () {
-      show();
-      if (state && state.kind === 'ok') drawChart(false);
-    });
-    var resizeTimer = 0;
-    window.addEventListener('resize', function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        if (state && state.kind === 'ok') drawChart(false);
-      }, 150);
-    });
   }
 
   /* ---------- method fold ----------

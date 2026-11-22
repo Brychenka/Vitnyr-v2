@@ -86,7 +86,7 @@
 <link rel="icon" href="/assets/vitnyr-icon-favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/vitnyr-icon-256.png">
 
-<link rel="stylesheet" href="/style.css?v=20261123b">
+<link rel="stylesheet" href="/style.css?v=20261123c">
 <script src="/theme.js?v=20261121b"></script>
 </head>
 <body>
@@ -303,39 +303,6 @@
     </article>
   </div>
 
-  </div>
-</section>
-
-<!-- "Is your rating actually stuck?": the headline says the rating has stalled;
-     this shows visitors their own curve. Unnumbered, outside #specimen. The
-     username goes from the browser straight to Lichess's public API and
-     nowhere else; nothing is stored. It says only what the data says. JS only
-     (initRatingCheck): hidden without JS. -->
-<section class="sec sec--rating" id="rating" aria-labelledby="rating-title">
-  <p class="label reveal"><span data-en="Your rating" data-ru="Ваш рейтинг">Your rating</span></p>
-  <div class="sec__head">
-    <h2 class="reveal" id="rating-title"><span data-l="en">Is your rating actually stuck?</span><span data-l="ru">Ваш рейтинг правда стоит?</span></h2>
-    <div class="sec__lede">
-      <p class="reveal" data-l="en">Type your Lichess username and see your last twelve months. <strong class="mark">A flat line isn’t a ceiling</strong>; it’s usually the same few patterns.</p>
-      <p class="reveal" data-l="ru">Введите ник на Lichess и посмотрите на последние двенадцать месяцев. <strong class="mark">Ровная линия — не потолок</strong>: обычно за ней одни и те же несколько паттернов.</p>
-    </div>
-  </div>
-  <div class="rating reveal">
-    <form class="rating__form" novalidate>
-      <label class="rating__label" for="rating-user"><span data-en="Your Lichess username" data-ru="Ваш ник на Lichess">Your Lichess username</span></label>
-      <div class="rating__row">
-        <input id="rating-user" class="rating__input" name="username" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="30" required aria-describedby="rating-note">
-        <button type="submit" class="page-cta rating__go" data-magnetic><span data-en="Show my rating" data-ru="Показать рейтинг">Show my rating</span></button>
-      </div>
-      <p class="rating__note" id="rating-note" data-en="Your username goes from your browser straight to Lichess. Nothing is stored here." data-ru="Ник уходит из вашего браузера прямо в Lichess. Здесь ничего не хранится.">Your username goes from your browser straight to Lichess. Nothing is stored here.</p>
-    </form>
-    <p class="rating__status" role="status" aria-live="polite"></p>
-    <div class="rating__out" hidden>
-      <figure class="rating__chart" aria-hidden="true"></figure>
-      <p class="rating__say"></p>
-      <p class="rating__verdict"></p>
-      <a class="lede__link rating__send" href="https://t.me/yngvil?text=Hi%21%20I%27d%20like%20a%20free%20trial%20chess%20lesson." target="_blank" rel="noopener" data-magnetic><span data-en="Send me your username" data-ru="Отправить мне ник">Send me your username</span></a>
-    </div>
   </div>
 </section>
 
@@ -712,6 +679,6 @@
 <script src="/assets/vendor/gsap-3.12.5.min.js"></script>
 <script src="/assets/vendor/CustomEase-3.12.5.min.js"></script>
 <script src="/assets/vendor/lenis-1.1.14.min.js"></script>
-<script src="/main.js?v=20261121i"></script>
+<script src="/main.js?v=20261123a"></script>
 </body>
 </html>

@@ -152,13 +152,6 @@ photos (the undone half of the collage plan). Only if it flags HTML size:
 try serving one engraving as a shared file (`<svg><use href="…#id">`) and
 stop if any of its animation or theming breaks.
 
-### F2 follow-up. Check the rating tool live · S
-
-On 2026-11-20 Lichess's `rating-history` API returned `[]` for every
-username from the build machine (the tool says so plainly when that
-happens). Try a real username on the live chess page; if it still gets
-`[]`, look for another public source before changing the copy.
-
 ### H1. Business profiles on maps [new] · Igor, off the site
 
 Google Business Profile and Yandex Business for English, chess and
@@ -199,7 +192,7 @@ noun/verb stress, feel, could-you). The open questions are NQ1-NQ9 below.
 ### I1. Accessibility and Safari [FT5.2] · M
 
 Keyboard path through every new piece (footer links, photo strip, test,
-rating check, boards), screen-reader names in both languages, an iOS Safari
+boards), screen-reader names in both languages, an iOS Safari
 check of the masthead, the curtain footer and the new blocks.
 
 ### I2. Jury pass [FT5.3] · S
