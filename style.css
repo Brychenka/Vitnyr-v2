@@ -1234,10 +1234,14 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
 .origin__note { color: var(--fg2); max-width: var(--measure); margin-top: clamp(32px, 5vw, 56px); }
 
 /* ---------- who ---------- */
+/* One edge: every row's hairline runs to the section's edge like the top
+   one (the row bleeds out and re-adds the inset as padding), so the block
+   has a single width of rule. */
 .rows { border-top: 1px solid var(--rule); }
 .rows > li {
   position: relative;   /* the overlay pick button + the picked-state rule */
-  padding-block: clamp(26px, 3vw, 40px);
+  margin-inline: calc(var(--gut) * -1);
+  padding: clamp(26px, 3vw, 40px) var(--gut);
   border-bottom: 1px solid var(--rule);
   display: grid; gap: 10px;
 }
@@ -1258,17 +1262,15 @@ html.js .origin__mark.is-in #glyphClipStem  rect { animation: glyph-draw-stem .4
   cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 .row__pick:focus-visible { outline: 2px solid var(--ink-target); outline-offset: 4px; }
-/* The same rule at rest, in --rule's weight, so the row reads as having an
-   edge; it brightens to --ink-target on pick. html.js only, like the
-   button. */
+/* The rule shows only on the picked row, just outside the text edge; at
+   rest there is none, so the block has no third edge. */
 .rows > li::before {
   content: ""; position: absolute; top: 0; bottom: 0;
-  left: -14px; width: 2px;
+  left: calc(var(--gut) - 14px); width: 2px;
   background: var(--ink-target);
-  opacity: 0; transition: opacity var(--t) var(--e), background-color var(--t) var(--e);
+  opacity: 0; transition: opacity var(--t) var(--e);
 }
-html.js .rows > li::before { background: var(--rule); opacity: 1; }
-html.js .rows > li.is-picked::before { background: var(--ink-target); }
+html.js .rows > li.is-picked::before { opacity: 1; }
 
 /* ---------- collage composition ----------
    Inside the collage view, once per domain group: a plain grid of figures at
