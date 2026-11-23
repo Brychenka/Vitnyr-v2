@@ -6368,3 +6368,19 @@ artifact not republished.
 
 Tests: wording in test_signature comments updated; not run (Igor's
 instruction). Artifact not republished.
+
+## Full test run after the no-tests stretch (2026-11-24, `fix/tests-catch-up`)
+
+First full run since d8e73f7: 451 passed, 7 failed. Fixed:
+- Notes were stale after the main.js cache-key bump (regenerated; the bump
+  must always be followed by `tools/notes/build.py`).
+- Three tests still asserted decisions Igor has since reversed: the phone
+  portrait on the first screen (now after the pitch, dce5005), the who
+  rows' resting mark (now only on pick), and "no lede under Which of these
+  is you?" (aecf188 added the who-it's-for line; now plain weight).
+- `test_switcher_hides_below_400px_rather_than_crowd` was a real focus
+  race, not just a flaky test: on a cold `/#collage` the browser's
+  scroll-to-fragment sometimes focuses the view after main.js has already
+  re-asserted the heading (1 in 5 widths on f02d78c, 3 in 5 on main). The
+  view now hands its own focus back to the heading for its first 3 s.
+Then 458 passed.
