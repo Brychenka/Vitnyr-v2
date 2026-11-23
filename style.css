@@ -798,54 +798,54 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 }
 
 /* ---------- mechanisms ---------- */
-/* Each item is a header row (the .mech__toggle button: title and mark)
-   and a collapsible .mech__panel, stacked at every width. The five are
-   unnumbered: the section label already carries the page's numbering. */
+/* Home lists the five names as plain rows; a discipline page sets them as
+   cards (below). Unnumbered: the section label carries the numbering. */
 .mechanisms { display: grid; gap: 0; border-top: 1px solid var(--rule); }
 .mechanisms > li { border-bottom: 1px solid var(--rule); }
-.mech__head { margin: 0; }
-/* Home's method lists the five names only: an accordion row's grid and type
-   without the button or the "+". */
 .mech__row {
   margin: 0;
   padding-block: clamp(18px, 2.2vw, 28px);
 }
 .mech__more { margin-top: clamp(24px, 3vw, 36px); color: var(--fg2); max-width: var(--measure); }
-.mech__toggle {
-  -webkit-appearance: none; appearance: none;
-  width: 100%; margin: 0; border: 0; background: none;
-  font: inherit; color: inherit; text-align: left; cursor: pointer;
-  display: grid; grid-template-columns: 1fr auto; align-items: baseline;
-  gap: clamp(16px, 3vw, 32px);
-  padding-block: clamp(26px, 3vw, 40px);
+
+/* A discipline page: five cards in one row, each the principle in a line and
+   this discipline's example. Below 1100px the row scrolls sideways (native
+   scroll and snap, the next card peeking in); from 1100px all five sit side
+   by side. Hairlines between cards; the first and last sit on the content
+   edge, so the text lines up with the section label. */
+.mechanisms--cards {
+  grid-auto-flow: column;
+  grid-auto-columns: min(80%, 340px);
+  border-bottom: 1px solid var(--rule);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gut);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
 }
-.mech__toggle-label { font-size: clamp(19px, 1.7vw, 23px); line-height: 1.25; }
-.mech__toggle-mark {
-  font-family: var(--mono); font-size: 16px; line-height: 1.25;
-  color: var(--fg2);
-  transition: color var(--t) var(--e);
+.mechanisms--cards::-webkit-scrollbar { display: none; }
+.mechanisms--cards:focus-visible { outline: 1px solid var(--fg); outline-offset: -1px; }
+.mechanisms--cards > li {
+  border-bottom: 0; border-right: 1px solid var(--rule);
+  scroll-snap-align: start;
+  padding: clamp(24px, 2.6vw, 34px) clamp(18px, 2vw, 28px);
 }
-.mech__toggle:hover .mech__toggle-mark,
-.mech__toggle:focus-visible .mech__toggle-mark { color: var(--fg); }
-.mech__panel-inner p { color: var(--fg2); max-width: var(--measure); }
-.mech__panel-inner { padding-bottom: clamp(26px, 3vw, 40px); }
-/* The fold exists only under html.js; without JS every panel is plain and
-   open. main.js flips aria-expanded and :has() reads it. grid-template-rows
-   0fr/1fr animates the height without the transform channel; the inner's
-   padding collapses with the track, or a closed panel would show a sliver. */
-html.js .mech__panel {
-  display: grid; grid-template-rows: 0fr; overflow: hidden;
-  transition: grid-template-rows var(--t) var(--e);
+.mechanisms--cards > li:first-child { padding-left: 0; }
+.mechanisms--cards > li:last-child { border-right: 0; padding-right: 0; }
+.mech__name {
+  margin: 0 0 14px;
+  font-family: inherit; font-size: 12px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--fg2);
 }
-html.js .mech__panel-inner {
-  min-height: 0; overflow: hidden; padding-bottom: 0;
-  transition: padding-bottom var(--t) var(--e);
+.mechanisms--cards .mech__core {
+  font-family: var(--serif); font-size: clamp(19px, 1.6vw, 22px); line-height: 1.3;
+  color: var(--fg); margin: 0;
 }
-html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel {
-  grid-template-rows: 1fr;
-}
-html.js .mechanism:has(.mech__toggle[aria-expanded="true"]) .mech__panel-inner {
-  padding-bottom: clamp(26px, 3vw, 40px);
+@media (min-width: 1100px) {
+  .mechanisms--cards {
+    grid-auto-flow: row; grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow-x: visible;
+  }
 }
 
 /* ---------- specimens ----------
@@ -2239,10 +2239,6 @@ html.js .collage .reveal.is-in .collage__slot {
 .hero__door:hover,
 .hero__door:focus-visible { color: var(--fg); text-decoration-color: var(--door-ink); }
 
-/* §01 method: each principle opens to its core, then one line per
-   discipline, the label linking to that discipline's own page. */
-.mech__panel-inner p.mech__core { color: var(--fg); }
-
 /* §02 the mark, centred, with its three doors. Phones: the mark first, then
    the doors as a big-type index. >=900px: each door in its stroke's corner —
    English by the top-left arm, chess by the top-right arm, climbing under
@@ -2419,10 +2415,10 @@ html.js .collage .reveal.is-in .collage__slot {
 .page-cta:hover::after, .page-cta:focus-visible::after { transform: scaleX(1); }
 .page-cta:hover svg, .page-cta:focus-visible svg { transform: translateX(6px); }
 
-/* Method on a discipline page: the core sentence, then this discipline's
-   line, set off by a hairline in its ink. */
+/* Method on a discipline page: under each card's principle, this
+   discipline's example, set off by a hairline in its ink. */
 .mech__here {
-  margin-top: .9em; padding-left: 16px;
+  margin-top: 1.1em; padding-left: 14px; color: var(--fg2);
   border-left: 2px solid var(--page-ink, var(--ink-specimen));
 }
 

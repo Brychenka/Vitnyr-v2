@@ -137,30 +137,28 @@ def test_row_dividers_content_keeps_its_original_inset(open_site):
     assert abs(heading_x - first_row_x) < 1
 
 
-# --- P14: each .mechanisms > li is its own grid, so the old fixed middle
-# track sized itself against the *paragraph* column, not its own heading —
-# "Load management" got the same ~470px as the page's longest heading. ---
+# --- 2026-11-23: a discipline page's method is a row of five cards (the fold
+# is gone): side by side from 1100px, a sideways scroller below it that the
+# keyboard can reach only while it scrolls. ---
 
-def test_mechanisms_are_stacked_accordion_rows_not_a_side_by_side_grid(open_site):
-    """Replaces the old "heading column sizes to its own heading" check.
-    2edc076 (2026-09-18) folded §02 into stacked accordion rows: the
-    .mech__toggle header spans the row and its paragraph opens *below* it, so
-    there is no heading column left to size. Asserts the new shape: opening a
-    row puts its paragraph under its header, not beside it. On a discipline
-    page since SITE-PLAN D2: home lists the five names without accordions."""
-    page, _ = open_site(viewport=WIDE, path="chess/")
-    rows = page.locator("#method .mechanisms > li")
-    assert rows.count() >= 1
-    for i in range(rows.count()):
-        row = rows.nth(i)
-        row.locator(".mech__toggle").click()
-        page.wait_for_timeout(1200)
-        head = row.locator(".mech__head").bounding_box()
-        para = row.locator("p:visible").first.bounding_box()
-        assert para["y"] >= head["y"] + head["height"] - 1, (
-            f"row {i}: paragraph starts above its header's bottom edge"
-        )
+@pytest.mark.parametrize("path", ["english/", "chess/", "climbing/"])
+def test_discipline_method_cards_sit_in_one_row_on_a_wide_screen(open_site, path):
+    page, _ = open_site(viewport=WIDE, path=path)
+    cards = page.locator("#method .mechanisms--cards > li")
+    assert cards.count() == 5
+    assert page.locator("#method .mech__toggle").count() == 0
+    tops = {round(cards.nth(i).bounding_box()["y"]) for i in range(5)}
+    assert len(tops) == 1, tops
+    assert page.locator("#method .mechanisms--cards").get_attribute("tabindex") is None
 
+
+def test_discipline_method_cards_scroll_sideways_on_a_phone(open_site):
+    page, _ = open_site(viewport={"width": 375, "height": 812}, path="chess/")
+    row = page.locator("#method .mechanisms--cards")
+    sw, cw = row.evaluate("el => [el.scrollWidth, el.clientWidth]")
+    assert sw > cw
+    assert row.get_attribute("tabindex") == "0"
+    assert page.evaluate("document.documentElement.scrollWidth") <= 375
 
 
 # --- P13: at a short mobile viewport the header's own two-line height plus

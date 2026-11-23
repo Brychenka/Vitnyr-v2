@@ -153,7 +153,7 @@
   initDock();
   initFoot();             // a clock and a focus fix, not motion
   initSpecimenPermalinks();
-  initMechanismFold();    // same: a disclosure, not motion — CSS handles the open/close transition itself
+  initMethodCards();      // same: no motion, only keyboard reach for the sideways row
   initEarTest();          // an affordance, not motion
 
   /* ---------- reduced motion: show the finished state and stop ---------- */
@@ -1516,27 +1516,21 @@
     document.addEventListener('vitnyr:langchange', render);
   }
 
-  /* ---------- method fold ----------
-     Independent disclosures, not an exclusive accordion. aria-expanded is set
-     here, not in the HTML, so a no-JS reader never sees a closed panel with
-     no way to open it. The panel's open/close is CSS, reading the same
-     aria-expanded via :has(). */
-  function initMechanismFold() {
-    var toggles = document.querySelectorAll('.mech__toggle');
-    if (!toggles.length) return;
-    // The first principle ships open, so a reader who never clicks still gets
-    // one and sees what the fold does.
-    toggles.forEach(function (btn, i) {
-      var startOpen = i === 0;
-      btn.setAttribute('aria-expanded', startOpen ? 'true' : 'false');
-      var mark = btn.querySelector('.mech__toggle-mark');
-      if (mark && startOpen) mark.textContent = '−';
-      btn.addEventListener('click', function () {
-        var open = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
-        if (mark) mark.textContent = open ? '+' : '−';
-      });
-    });
+  /* ---------- method cards ----------
+     A discipline page's five method cards scroll sideways below 1100px. A
+     scroller has to be reachable by keyboard (arrow keys then scroll it), but
+     only while it actually scrolls: on a wide screen it would be a tab stop
+     that does nothing. */
+  function initMethodCards() {
+    var row = document.querySelector('.mechanisms--cards');
+    if (!row) return;
+    function sync() {
+      if (row.scrollWidth > row.clientWidth + 1) row.setAttribute('tabindex', '0');
+      else row.removeAttribute('tabindex');
+    }
+    sync();
+    if ('ResizeObserver' in window) new ResizeObserver(sync).observe(row);
+    else window.addEventListener('resize', sync);
   }
 
   /* ---------- last resort ----------
