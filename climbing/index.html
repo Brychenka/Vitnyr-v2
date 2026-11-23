@@ -85,7 +85,7 @@
 <link rel="icon" href="/assets/vitnyr-icon-favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/vitnyr-icon-256.png">
 
-<link rel="stylesheet" href="/style.css?v=20261123f">
+<link rel="stylesheet" href="/style.css?v=20261123g">
 <script src="/theme.js?v=20261121b"></script>
 </head>
 <body>
@@ -309,18 +309,16 @@
 </section>
 
 <section class="sec" id="method">
-  <p class="label reveal"><span class="num">02</span><span data-en="How I coach climbing" data-ru="Как я тренирую скалолазов">How I coach climbing</span></p>
+  <p class="label reveal"><span class="num">02</span><span id="method-label" data-en="How I coach climbing" data-ru="Как я тренирую скалолазов">How I coach climbing</span></p>
   <div class="sec__head">
     <h2 class="reveal" data-l="en">Deliberate practice, pointed at your weakest link.</h2>
     <h2 class="reveal" data-l="ru">Осознанная практика, нацеленная на ваше самое слабое звено.</h2>
     <div class="sec__lede">
       <div data-l="en">
-        <p class="reveal">I combine neuroscience, rehab principles and the psychology of learning to coach people in a way that sticks.</p>
         <p class="reveal">Mileage doesn’t build skill. If it did, years in the gym would already have got you there. Skill comes from one loop: climb <strong class="mark mark--target">right at the edge of what you can hold</strong>, catch what breaks inside the move, and correct it before it sets.</p>
         <p class="reveal">In most hobbies, overtraining costs you motivation. In climbing it costs you a tendon, and you find out when it’s already too late.</p>
       </div>
       <div data-l="ru">
-        <p class="reveal">Я соединяю нейронауку, принципы реабилитации и психологию обучения — и тренирую так, чтобы выученное действительно оставалось с вами.</p>
         <p class="reveal">Навык не растёт от количества пролазов. Иначе годы в зале уже сделали бы своё дело. Он растёт из одного цикла: лезть <strong class="mark mark--target">прямо на грани того, что вы способны удержать</strong>, ловить сбой внутри движения и исправлять его, пока он не закрепился.</p>
         <p class="reveal">В большинстве увлечений перетренированность стоит вам мотивации. В скалолазании — сухожилия, и узнаёте вы об этом, когда уже поздно.</p>
       </div>
@@ -347,86 +345,41 @@
 </g>
 </svg>
 </figure>
-  <ol class="mechanisms">
-    <li class="reveal mechanism">
-      <h3 class="mech__head">
-        <button type="button" class="mech__toggle" aria-controls="mech-panel-feedback-loops">
-          <span class="mech__toggle-label" data-en="Feedback loops" data-ru="Обратная связь в моменте">Feedback loops</span>
-          <span class="mech__toggle-mark" aria-hidden="true">+</span>
-        </button>
-      </h3>
-      <div class="mech__panel" id="mech-panel-feedback-loops">
-        <div class="mech__panel-inner">
-          <p class="mech__core" data-l="en">A mistake is easiest to fix the second you make it. Corrected a week later, it has already set roots.</p>
-          <p class="mech__core" data-l="ru">Ошибку проще всего исправить в ту секунду, когда вы её допустили. Через неделю она уже пустила корни.</p>
-          <p class="mech__here" data-l="en">A foot placement fixed mid-attempt changes your next go. Fixed from the ground afterward, it’s a note you’ll forget by next session.</p>
-          <p class="mech__here" data-l="ru">Стопа, поправленная прямо в попытке, меняет следующую попытку. Поправленная уже с земли — это заметка, которую вы забудете к следующей тренировке.</p>
-        </div>
-      </div>
+  <ol class="mechanisms mechanisms--cards reveal" aria-labelledby="method-label">
+    <li class="mechanism">
+      <h3 class="mech__name"><span data-en="Feedback loops" data-ru="Обратная связь в моменте">Feedback loops</span></h3>
+      <p class="mech__core" data-l="en">A mistake is easiest to fix the second you make it.</p>
+      <p class="mech__core" data-l="ru">Ошибку проще всего исправить в ту секунду, когда вы её допустили.</p>
+      <p class="mech__here" data-l="en">A foot placement fixed mid-attempt changes your next go. Fixed from the ground afterward, it’s a note you’ll forget by next session.</p>
+      <p class="mech__here" data-l="ru">Стопа, поправленная прямо в попытке, меняет следующую попытку. Поправленная уже с земли — это заметка, которую вы забудете к следующей тренировке.</p>
     </li>
-    <li class="reveal mechanism">
-      <h3 class="mech__head">
-        <button type="button" class="mech__toggle" aria-controls="mech-panel-pattern-recognition">
-          <span class="mech__toggle-label" data-en="Pattern recognition" data-ru="Поиск закономерностей">Pattern recognition</span>
-          <span class="mech__toggle-mark" aria-hidden="true">+</span>
-        </button>
-      </h3>
-      <div class="mech__panel" id="mech-panel-pattern-recognition">
-        <div class="mech__panel-inner">
-          <p class="mech__core" data-l="en">Mistakes aren’t random. Most people don’t have a hundred weaknesses; they have three or four habits wearing different disguises. Find the habit and you fix dozens of errors at once.</p>
-          <p class="mech__core" data-l="ru">Ошибки не случайны. У большинства не сто слабостей, а три-четыре привычки в разных обличьях. Найдите привычку — и исправите десятки ошибок разом.</p>
-          <p class="mech__here" data-l="en">From your grip to the way you place your toes, it’s all muscle memory. See the pattern in the mistakes you repeat, and you see exactly what to fix.</p>
-          <p class="mech__here" data-l="ru">От хвата до постановки носка — всё это мышечная память. Увидите закономерность в повторяющихся ошибках — увидите, что именно исправлять.</p>
-        </div>
-      </div>
+    <li class="mechanism">
+      <h3 class="mech__name"><span data-en="Pattern recognition" data-ru="Поиск закономерностей">Pattern recognition</span></h3>
+      <p class="mech__core" data-l="en">Mistakes aren’t random.</p>
+      <p class="mech__core" data-l="ru">Ошибки не случайны.</p>
+      <p class="mech__here" data-l="en">From your grip to the way you place your toes, it’s all muscle memory. See the pattern in the mistakes you repeat, and you see exactly what to fix.</p>
+      <p class="mech__here" data-l="ru">От хвата до постановки носка — всё это мышечная память. Увидите закономерность в повторяющихся ошибках — увидите, что именно исправлять.</p>
     </li>
-    <li class="reveal mechanism">
-      <h3 class="mech__head">
-        <button type="button" class="mech__toggle" aria-controls="mech-panel-load-management">
-          <span class="mech__toggle-label" data-en="Load management" data-ru="Дозирование нагрузки">Load management</span>
-          <span class="mech__toggle-mark" aria-hidden="true">+</span>
-        </button>
-      </h3>
-      <div class="mech__panel" id="mech-panel-load-management">
-        <div class="mech__panel-inner">
-          <p class="mech__core" data-l="en">Too easy and you’re coasting, not learning. Too hard and you’re just struggling. The right level sits right at your edge, and misjudging it costs you either way.</p>
-          <p class="mech__core" data-l="ru">Слишком легко — вы отдыхаете, а не учитесь. Слишком тяжело — просто мучаетесь. Нужный уровень лежит ровно на вашем пределе, и промах в любую сторону стоит дорого.</p>
-          <p class="mech__here" data-l="en">Climbers call it the crux. Get it wrong and it costs you a tendon.</p>
-          <p class="mech__here" data-l="ru">Скалолазы называют это ключом. Промахнётесь — заплатите связкой.</p>
-        </div>
-      </div>
+    <li class="mechanism">
+      <h3 class="mech__name"><span data-en="Load management" data-ru="Дозирование нагрузки">Load management</span></h3>
+      <p class="mech__core" data-l="en">Too easy and you’re coasting, not learning. Too hard and you’re just struggling.</p>
+      <p class="mech__core" data-l="ru">Слишком легко — вы отдыхаете, а не учитесь. Слишком тяжело — просто мучаетесь.</p>
+      <p class="mech__here" data-l="en">Climbers call it the crux. Get it wrong and it costs you a tendon.</p>
+      <p class="mech__here" data-l="ru">Скалолазы называют это ключом. Промахнётесь — заплатите связкой.</p>
     </li>
-    <li class="reveal mechanism">
-      <h3 class="mech__head">
-        <button type="button" class="mech__toggle" aria-controls="mech-panel-retrieval">
-          <span class="mech__toggle-label" data-en="Retrieval" data-ru="Активное вспоминание">Retrieval</span>
-          <span class="mech__toggle-mark" aria-hidden="true">+</span>
-        </button>
-      </h3>
-      <div class="mech__panel" id="mech-panel-retrieval">
-        <div class="mech__panel-inner">
-          <p class="mech__core" data-l="en">Re-reading a mistake isn’t the same as recalling it. The brain strengthens what it has to dig back up on its own. An error corrected once and never revisited fades in days; brought back cold a week later, it sticks.</p>
-          <p class="mech__core" data-l="ru">Перечитать ошибку — не то же самое, что вспомнить её. Мозг укрепляет то, что приходится доставать из памяти самому. Ошибка, исправленная один раз, стирается за несколько дней; поднятая «с холода» через неделю — остаётся.</p>
-          <p class="mech__here" data-l="en">A sequence drilled twice in one session means little if your body can’t find it again two sessions later without a reminder.</p>
-          <p class="mech__here" data-l="ru">Связка, отработанная дважды за тренировку, мало что значит, если через две тренировки тело не найдёт её без подсказки.</p>
-        </div>
-      </div>
+    <li class="mechanism">
+      <h3 class="mech__name"><span data-en="Retrieval" data-ru="Активное вспоминание">Retrieval</span></h3>
+      <p class="mech__core" data-l="en">Re-reading a mistake isn’t the same as recalling it.</p>
+      <p class="mech__core" data-l="ru">Перечитать ошибку — не то же самое, что вспомнить её.</p>
+      <p class="mech__here" data-l="en">A sequence drilled twice in one session means little if your body can’t find it again two sessions later without a reminder.</p>
+      <p class="mech__here" data-l="ru">Связка, отработанная дважды за тренировку, мало что значит, если через две тренировки тело не найдёт её без подсказки.</p>
     </li>
-    <li class="reveal mechanism">
-      <h3 class="mech__head">
-        <button type="button" class="mech__toggle" aria-controls="mech-panel-interleaving">
-          <span class="mech__toggle-label" data-en="Interleaving" data-ru="Чередование">Interleaving</span>
-          <span class="mech__toggle-mark" aria-hidden="true">+</span>
-        </button>
-      </h3>
-      <div class="mech__panel" id="mech-panel-interleaving">
-        <div class="mech__panel-inner">
-          <p class="mech__core" data-l="en">Ten of the same thing in a row teach you to spot a pattern you’re already expecting. Mixed practice makes you decide which one applies, and that decision is the real skill. It feels messier in the moment. It’s also what the real thing looks like.</p>
-          <p class="mech__core" data-l="ru">Десять одинаковых задач подряд учат узнавать то, чего вы и так ждёте. Вперемешку приходится решать, что здесь применимо, — и это решение и есть навык. В моменте это ощущается хаотичнее. Зато так выглядит настоящая жизнь.</p>
-          <p class="mech__here" data-l="en">A session of nothing but crimps builds one movement. Mix in slopers and dynamic moves, and your body has to choose instead of replaying what it rehearsed.</p>
-          <p class="mech__here" data-l="ru">Тренировка из одних мизеров закрепляет одно движение. Добавьте слоперы и динамику — и телу придётся выбирать, а не повторять заученное.</p>
-        </div>
-      </div>
+    <li class="mechanism">
+      <h3 class="mech__name"><span data-en="Interleaving" data-ru="Чередование">Interleaving</span></h3>
+      <p class="mech__core" data-l="en">Mixed practice makes you decide what applies, and that decision is the real skill.</p>
+      <p class="mech__core" data-l="ru">Вперемешку приходится решать, что здесь применимо, — и это решение и есть навык.</p>
+      <p class="mech__here" data-l="en">A session of nothing but crimps builds one movement. Mix in slopers and dynamic moves, and your body has to choose instead of replaying what it rehearsed.</p>
+      <p class="mech__here" data-l="ru">Тренировка из одних мизеров закрепляет одно движение. Добавьте слоперы и динамику — и телу придётся выбирать, а не повторять заученное.</p>
     </li>
   </ol>
   <div class="page-photos">
@@ -658,6 +611,6 @@
 <script src="/assets/vendor/gsap-3.12.5.min.js"></script>
 <script src="/assets/vendor/CustomEase-3.12.5.min.js"></script>
 <script src="/assets/vendor/lenis-1.1.14.min.js"></script>
-<script src="/main.js?v=20261123c"></script>
+<script src="/main.js?v=20261123d"></script>
 </body>
 </html>

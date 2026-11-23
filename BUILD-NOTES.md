@@ -6311,3 +6311,30 @@ carries the page's numbering); on phones the home hero puts the pitch and
 "Choose a discipline" before the portrait, and the contact bar shows
 whenever the hero's own CTA is off screen (home has none, so from the
 start). Tests not run, artifact not republished (Igor's instruction).
+
+## Discipline pages: the method as a row of cards (2026-11-23, `feature/method-swipe`)
+
+Igor found the method section the heaviest part of a discipline page (about
+3 screens) and asked for it smaller, sideways and swipeable. The five
+explanations were word for word the same on all three pages; only the
+one-line example under each differed. So each step is now a card: its name,
+the principle in a sentence (the first sentence of the old explanation;
+load management keeps both halves, interleaving its second sentence, worded
+"decide what applies" since "which one" lost its antecedent), and the
+page's own example. The fold, its JS (`initMechanismFold`) and its CSS are
+gone. The lede's "I combine neuroscience…" paragraph went too: home says it.
+
+- From 1100px the five cards sit side by side; below that the row scrolls
+  sideways with native scroll and scroll-snap, the next card peeking in.
+  Nothing on the transform channel; the reveal is on the whole row, because
+  per-card reveals would never fire for cards clipped off to the side.
+- `initMethodCards()` gives the row `tabindex="0"` only while it actually
+  overflows, so a wide screen has no dead tab stop. The row is labelled by
+  the section label's span (`#method-label`), which already switches
+  language.
+- Section height at 1280x800 went from 3.1 to 2.8 screens and on a phone
+  from 3.1 to 2.25; what is left is mostly the photo pair at the end
+  (729px on desktop), which Igor has not decided on yet.
+
+Tests: the accordion layout test is replaced by two card-row tests; not run
+(Igor's instruction), artifact not republished.
