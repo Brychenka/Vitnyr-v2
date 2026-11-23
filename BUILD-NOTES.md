@@ -6338,3 +6338,15 @@ gone. The lede's "I combine neuroscience…" paragraph went too: home says it.
 
 Tests: the accordion layout test is replaced by two card-row tests; not run
 (Igor's instruction), artifact not republished.
+
+## Discipline pages: the method's intro text removed (2026-11-24, `feature/method-lede-out`)
+
+Igor: keep the "Deliberate practice…" headline and the chain, drop the text
+under it, to make the pages shorter. The method now runs label, headline,
+chain, the five cards, the photos. Gone with it (his call, both languages):
+the "Exposure / More games / Mileage doesn't build skill" loop paragraph and
+each page's closing line (English "Every course is built around your
+goals…", chess "In a session we go through two or three of your recent
+games…", climbing's overtraining/tendon line). The 5,000+ pattern bank still
+shows in the chess hero's credentials. No CSS or JS change. Tests not run,
+artifact not republished.
