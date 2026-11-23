@@ -3,7 +3,7 @@ beside what exists, never replacing it. Each works in both languages and
 both widths, uses only the two inks (amber = the mistake, green = the natural
 form), and with JavaScript off is simply hidden.
 
-F1: English, "Test your ear".
+F1: English, "Test yourself".
 F2 (chess, "Is your rating actually stuck?") was removed on 2026-11-23.
 """
 
@@ -47,7 +47,7 @@ def test_ear_test_toggles_checks_and_scores(open_site):
     assert page.locator(".ear__item .ear__s del, .ear__item .ear__s ins").count() == 0
 
     picks.nth(3).click()                      # a natural sentence: right to pick
-    picks.nth(0).click()                      # "I am agree": wrong to pick
+    picks.nth(0).click()                      # "where is the station": wrong to pick
     picks.nth(0).click()                      # ...changed my mind
     picks.nth(4).click()                      # "explain me this": wrong to pick
     assert picks.nth(3).get_attribute("aria-pressed") == "true"

@@ -1412,7 +1412,7 @@
     tick();
   }
 
-  /* ---------- "Test your ear" (English page) ----------
+  /* ---------- "Test yourself" (English page) ----------
      The reader toggles the sentences that sound right, then checks. Each row
      shows its verdict and, for the wrong ones, the natural form; the score and
      the habits behind the misses read out in a polite live region, and "Send
@@ -1439,8 +1439,8 @@
         natural: 'missed: this one is natural',
         habits: function (l) { return 'What tripped you: ' + l + '.'; },
         strict: 'No wrong sentence got past you; you were stricter than English is.',
-        clean: 'A clean ear. Saying it under pressure is the next skill, and that’s where a lesson starts.',
-        msg: function (n, t) { return 'Hi! I took the ear test on your site: ' + n + '/' + t + '. I’d like a free trial English lesson.'; }
+        clean: 'All correct. Saying it under pressure is the next skill, and that’s where a lesson starts.',
+        msg: function (n, t) { return 'Hi! I took the test on your site: ' + n + '/' + t + '. I’d like a free trial English lesson.'; }
       },
       ru: {
         score: function (n, t) { return 'Вы верно оценили ' + n + ' из ' + t + '.'; },
@@ -1448,8 +1448,8 @@
         natural: 'мимо: так говорят',
         habits: function (l) { return 'Где вы споткнулись: ' + l + '.'; },
         strict: 'Ни одна ошибка не прошла мимо; вы оказались строже самого английского.',
-        clean: 'Чистый слух. Следующий навык — сказать так же под давлением, с этого и начинается занятие.',
-        msg: function (n, t) { return 'Здравствуйте! Мой результат в тесте на слух на вашем сайте: ' + n + '/' + t + '. Хочу записаться на бесплатное пробное занятие по английскому.'; }
+        clean: 'Всё верно. Следующий навык — сказать так же под давлением, с этого и начинается занятие.',
+        msg: function (n, t) { return 'Здравствуйте! Мой результат в тесте на вашем сайте: ' + n + '/' + t + '. Хочу записаться на бесплатное пробное занятие по английскому.'; }
       }
     };
     function lang() { return document.documentElement.getAttribute('data-lang') === 'ru' ? 'ru' : 'en'; }
