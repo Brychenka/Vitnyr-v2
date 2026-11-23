@@ -6350,3 +6350,21 @@ goals…", chess "In a session we go through two or three of your recent
 games…", climbing's overtraining/tendon line). The 5,000+ pattern bank still
 shows in the chess hero's credentials. No CSS or JS change. Tests not run,
 artifact not republished.
+
+## Who section tidied; the English quiz loses "ear" and its two note sentences (2026-11-24, `feature/who-tidy`)
+
+- "Which of these is you?" on all three pages: the line under the headline
+  is plain weight (it was the site's only bold grey body text), and every
+  row's hairline now runs the section's full width like the top rule. The
+  resting vertical bar at each row's left is gone; it shows, green, only on
+  the picked row (`left: calc(var(--gut) - 14px)`).
+- The English quiz: label "Test yourself" / "Проверьте себя", button
+  "Check my answers", result and Telegram text without "ear". "I am agree"
+  and "I feel myself good today" repeated the page's specimens and Igor's
+  notes, so they became "Can you tell me where is the station?" (question
+  word order inside a statement) and "I'll call you when I will arrive."
+  (future after "when"). Both are my picks of common Russian-speaker
+  errors; Igor to confirm he hears them. Class names (`.ear*`) unchanged.
+
+Tests: wording in test_signature comments updated; not run (Igor's
+instruction). Artifact not republished.

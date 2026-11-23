@@ -112,7 +112,7 @@ Shared files, each with one job, plus one HTML file per page:
   and a magnetic pull on non-text controls only (`.tool, .view__back,
   .origin__mark, .tools__hint`), never on text links. Plus the routed
   collage view and its lightbox, the specimen reveal and permalinks, the
-  method cards' keyboard reach, "Test your ear" (English), the who-rows' Telegram
+  method cards' keyboard reach, "Test yourself" (English), the who-rows' Telegram
   prefills and the phone contact bar.
 - **`style.css`**: one `:root` token block (colours, fonts, easing,
   spacing) feeding every rule; no other file defines a colour or a

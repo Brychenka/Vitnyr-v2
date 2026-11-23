@@ -330,13 +330,13 @@
   </div>
 </section>
 
-<!-- "Test your ear". Unnumbered, and outside #specimen (whose prose carries no
+<!-- "Test yourself". Unnumbered, and outside #specimen (whose prose carries no
      digit), because it shows a score. The reader taps the sentences that
      sound right, then checks; each then shows the specimens' own device. The
      score goes into a prefilled Telegram message and nowhere else; nothing is
      stored. JS only (initEarTest): hidden without JS. -->
 <section class="sec sec--ear" id="ear" aria-labelledby="ear-title">
-  <p class="label reveal"><span data-en="Test your ear" data-ru="Проверьте слух">Test your ear</span></p>
+  <p class="label reveal"><span data-en="Test yourself" data-ru="Проверьте себя">Test yourself</span></p>
   <div class="sec__head">
     <h2 class="reveal" id="ear-title"><span data-l="en">Which of these would a native speaker say?</span><span data-l="ru">Какие из этих фраз сказал бы носитель?</span></h2>
     <div class="sec__lede">
@@ -346,15 +346,15 @@
   </div>
   <div class="ear reveal">
     <ol class="ear__list">
-      <li class="ear__item" data-right="false" data-habit-en="an adjective where English has a verb" data-habit-ru="прилагательное там, где в английском глагол">
-        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I <span class="ear__cut">am</span> agree with you.</span></button>
+      <li class="ear__item" data-right="false" data-habit-en="question word order inside a statement" data-habit-ru="порядок слов вопроса внутри утверждения">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">Can you tell me where <span class="ear__cut">is the station</span>?</span></button>
         <span class="ear__verdict" hidden></span>
-        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>I <ins class="mark--target">agree</ins> with you.</p>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>Can you tell me where <ins class="mark--target">the station is</ins>?</p>
       </li>
-      <li class="ear__item" data-right="false" data-habit-en="a reflexive carried across from Russian" data-habit-ru="возвратность, перенесённая из русского">
-        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I feel <span class="ear__cut">myself</span> good today.</span></button>
+      <li class="ear__item" data-right="false" data-habit-en="the future tense Russian uses after “when”" data-habit-ru="будущее время, которое русский ставит после «когда»">
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I’ll call you when I <span class="ear__cut">will arrive</span>.</span></button>
         <span class="ear__verdict" hidden></span>
-        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>I <ins class="mark--target">feel good</ins> today.</p>
+        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>I’ll call you when I <ins class="mark--target">arrive</ins>.</p>
       </li>
       <li class="ear__item" data-right="false" data-habit-en="the tense Russian uses for “since”" data-habit-ru="время, которое русский ставит с «с тех пор»">
         <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s">I <span class="ear__cut">live</span> in Yerevan since 2022.</span></button>
@@ -386,13 +386,13 @@
       </li>
     </ol>
     <div class="ear__actions">
-      <button type="button" class="ear__check page-cta" data-magnetic><span data-en="Check my ear" data-ru="Проверить">Check my ear</span></button>
+      <button type="button" class="ear__check page-cta" data-magnetic><span data-en="Check my answers" data-ru="Проверить">Check my answers</span></button>
       <button type="button" class="ear__again tool" hidden data-magnetic><span data-en="Try again" data-ru="Ещё раз">Try again</span></button>
     </div>
     <div class="ear__result" hidden>
       <p class="ear__score" aria-live="polite"></p>
       <p class="ear__habit"></p>
-      <a class="lede__link ear__send" href="https://t.me/yngvil?text=Hi%21%20I%20took%20the%20ear%20test%20on%20your%20site.%20I%27d%20like%20a%20free%20trial%20English%20lesson." target="_blank" rel="noopener" data-magnetic><span data-en="Send me your score" data-ru="Отправить мне результат">Send me your score</span></a>
+      <a class="lede__link ear__send" href="https://t.me/yngvil?text=Hi%21%20I%20took%20the%20test%20on%20your%20site.%20I%27d%20like%20a%20free%20trial%20English%20lesson." target="_blank" rel="noopener" data-magnetic><span data-en="Send me your score" data-ru="Отправить мне результат">Send me your score</span></a>
     </div>
   </div>
 </section>
@@ -813,6 +813,6 @@
 <script src="/assets/vendor/gsap-3.12.5.min.js"></script>
 <script src="/assets/vendor/CustomEase-3.12.5.min.js"></script>
 <script src="/assets/vendor/lenis-1.1.14.min.js"></script>
-<script src="/main.js?v=20261123d"></script>
+<script src="/main.js?v=20261124a"></script>
 </body>
 </html>
