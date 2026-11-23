@@ -1022,6 +1022,12 @@
           window.removeEventListener('load', reassert);
           settle();
         });
+        // The fragment focus can also land after that settle (a race seen in
+        // tests): whenever the view itself takes focus in the first seconds,
+        // hand it straight back to the heading.
+        var onViewFocus = function (e) { if (e.target === view) settle(); };
+        view.addEventListener('focus', onViewFocus);
+        setTimeout(function () { view.removeEventListener('focus', onViewFocus); }, 3000);
       }
     }
 

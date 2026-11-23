@@ -244,16 +244,17 @@ def test_hero_portrait_sits_beside_the_title_not_under_it(open_site, width):
     assert f["width"] / f["height"] == pytest.approx(0.8, abs=0.01)
 
 
-def test_hero_portrait_is_on_the_first_phone_screen(open_site):
+def test_hero_portrait_follows_the_pitch_on_a_phone(open_site):
+    """dce5005 (2026-11-23): on a phone the first screen is the title, the
+    pitch and "Choose a discipline"; the portrait comes after them (it used
+    to sit between the title and the pitch, and had to fit the first screen)."""
     page, _ = open_site(viewport=NARROW)
     page.wait_for_timeout(1500)
     f = page.locator(".hero__portrait").bounding_box()
     t = page.locator(".hero__title").bounding_box()
+    s = page.locator(".hero--home .stand:visible").bounding_box()
     assert f["y"] > t["y"] + t["height"], "on a phone the title comes first"
-    # The face is the upper half of the 4:5 frame (head and shoulders); the
-    # frame's bottom edge may fall just past a short phone's fold (5px at
-    # 375x780), the face itself must not.
-    assert f["y"] + f["height"] * 0.6 <= NARROW["height"], "the face should be on the first screen"
+    assert f["y"] >= s["y"] + s["height"], "the pitch comes before the portrait"
 
 
 def test_home_contact_no_longer_repeats_the_portrait(open_site):
@@ -448,18 +449,16 @@ def _before_style(page, locator):
     )
 
 
-def test_who_rows_show_a_quiet_resting_mark_that_brightens_when_picked(open_site):
+def test_who_rows_show_a_mark_only_when_picked(open_site):
+    """2026-11-24 (Igor, "one edge"): the resting hairline at each row's left
+    was a third edge beside the full-width rules; it is gone, and the ink
+    rule shows only on the picked row."""
     page, _ = open_site(path="english/")
     row = page.locator(".rows > li").first
-    rest = _before_style(page, row)
-    assert rest["opacity"] == "1"
-
+    assert _before_style(page, row)["opacity"] == "0"
     row.locator(".row__pick").click()
-    page.wait_for_timeout(700)   # the background-color transition is --t (.6s)
-    picked = _before_style(page, row)
-    assert picked["opacity"] == "1"
-    # Same device, brighter ink — not a repaint to the exact same color.
-    assert picked["background"] != rest["background"]
+    page.wait_for_timeout(700)   # the opacity transition is --t (.6s)
+    assert _before_style(page, row)["opacity"] == "1"
 
 
 def test_who_rows_resting_mark_is_absent_without_js(open_site):
@@ -472,14 +471,16 @@ def test_who_rows_resting_mark_is_absent_without_js(open_site):
     assert _before_style(page, row)["opacity"] == "0"
 
 
-def test_who_section_has_no_lede_under_its_heading(open_site):
-    """Reversal recorded, not a regression: J2 added a line under the §04 heading
-    explaining that rows are clickable; 63792e0 removed it on purpose
-    (Igor, 2026-09-23: "do not restore the line"). Guards it staying gone."""
+def test_who_section_lede_says_who_it_is_for_in_plain_weight(open_site):
+    """Reversal recorded: the J2 "rows are clickable" line stays gone (Igor,
+    2026-09-23), but aecf188 (2026-11-23) put a different line under the
+    heading: who the page is for, moved from "How sessions run". Since
+    2026-11-24 it is plain weight, not bold."""
     for path in ("english/", "chess/", "climbing/"):
         for lang in ("en", "ru"):
             page, _ = open_site(lang=lang, path=path)
-            assert page.locator("#who .sec__lede").count() == 0, (path, lang)
+            assert page.locator("#who .sec__lede p:visible").count() == 1, (path, lang)
+            assert page.locator("#who .sec__lede strong").count() == 0, (path, lang)
 
 
 
