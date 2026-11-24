@@ -2424,20 +2424,6 @@ html.js .collage .reveal.is-in .collage__slot {
   border-left: 2px solid var(--page-ink, var(--ink-specimen));
 }
 
-/* "What happens next" in every contact section: three plain facts about
-   how this works. */
-.steps {
-  display: grid; list-style: none; padding: 0;
-  margin: clamp(36px, 5vw, 64px) 0 0;
-  border-top: 1px solid var(--rule);
-}
-.steps li { display: grid; gap: 4px; padding: 16px 0 18px; border-bottom: 1px solid var(--rule); }
-.steps__k { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
-.steps__v { font-family: var(--serif); font-weight: 500; font-size: clamp(19px, 1.7vw, 24px); color: var(--fg); }
-@media (min-width: 700px) {
-  .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 56px); }
-}
-
 .page-photos { display: grid; gap: 32px clamp(16px, 3vw, 40px); margin-top: clamp(48px, 7vw, 96px); }
 .page-photos .collage__fig { margin: 0; }
 /* the pair splits the full content width */

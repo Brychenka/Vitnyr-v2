@@ -212,18 +212,19 @@ def test_footer_clock_stands_on_the_colophon_rule(open_site, path, viewport):
 
 
 # --- SITE-PLAN E1 (2026-11-20): every contact section says what happens after
-# the message — three plain steps, no prices, in both languages. ---
+# the message (message, a free 30-minute trial, then a plan), no prices, in
+# both languages. Since 2026-11-24 it is said once, in the contact text; the
+# separate three-step strip repeated it and was cut. ---
 
 @pytest.mark.parametrize("path", ["index.html"] + [f"{s}/" for s in PAGES])
 def test_contact_says_what_happens_next(open_site, path):
-    for lang, first, last in (("en", "You message me", "plan"), ("ru", "Вы пишете мне", "план")):
+    for lang, trial, plan in (("en", "30-minute trial", "agree on a plan"),
+                              ("ru", "30 минут", "составляем план")):
         page, _ = open_site(path=path, lang=lang)
-        items = page.locator("#contact .steps li")
-        assert items.count() == 3
-        texts = [items.nth(i).inner_text() for i in range(3)]
-        assert first in texts[0] and "30" in texts[1] and last in texts[2]
-        assert not re.search(r"[$€₽֏]|AMD|USD|руб|драм", " ".join(texts), re.I), "no prices"
-        assert page.locator("#steps-title").text_content().strip()
+        text = page.locator("#contact").inner_text()
+        assert trial in text and plan in text, (path, lang)
+        assert page.locator("#contact .steps").count() == 0
+        assert not re.search(r"[$€₽֏]|AMD|USD|руб|драм", text, re.I), "no prices"
 
 
 # --- SITE-PLAN G3/G4 (2026-11-20): GSAP, Lenis and the fonts are served from
