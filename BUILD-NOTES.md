@@ -6384,3 +6384,15 @@ First full run since d8e73f7: 451 passed, 7 failed. Fixed:
   re-asserted the heading (1 in 5 widths on f02d78c, 3 in 5 on main). The
   view now hands its own focus back to the heading for its first 3 s.
 Then 458 passed.
+
+## Contact: the "What happens next" strip cut (2026-11-24, `feature/contact-steps-out`)
+
+Igor: the First / Then / After strip under every contact section was
+redundant. It said a third time what the lede and the contact text already
+said (message me, free 30-minute trial, nothing owed). Cut it on all four
+pages, along with its `.steps` CSS. The one step it alone carried, "a plan",
+now sits in the contact text right after the trial sentence ("If it fits, we
+agree on a plan." / «Если подходит — составляем план.»), so the CLAUDE.md
+rule that every contact section says what happens next still holds, in one
+place. `test_contact_says_what_happens_next` now reads the contact text
+instead of the strip. Notes regenerated; `style.css` key 20261124b.
