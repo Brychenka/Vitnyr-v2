@@ -160,8 +160,8 @@ def build_index(notes):
          og_image="og-notes", og_alt="Notes from the lessons. Igor Shatsev, English coach in Yerevan.",
          og_type="website", jsonld=jsonld,
          body=body,
-         contact_lede_en="Tell me where your English breaks now: at work, on calls, in conversation. [[The 30-minute trial lesson is free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
-         contact_lede_ru="Напишите, где ваш английский ломается сейчас: на работе, на созвонах, в разговоре. [[Пробное занятие — 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
+         contact_lede_en="Tell me where your English lets you down: at work, on calls, in conversation. [[The 30-minute trial lesson is free, with no strings attached]]. If we’re a good fit, we agree on a plan, online or in Yerevan.",
+         contact_lede_ru="Напишите, где английский вас подводит: на работе, на созвонах, в разговоре. [[Пробное занятие — 30 минут, бесплатно, без обязательств]]. Если подойдём друг другу, составим план, онлайн или в Ереване.",
          tg_en=INDEX_TG_EN, tg_ru=INDEX_TG_RU)
 
 

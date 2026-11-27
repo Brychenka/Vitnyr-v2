@@ -6817,3 +6817,27 @@ merged in `reference/notes-copy-review.md`. Igor approved sections A-D.
 - **Then, Igor's call:** the weigh headline "Doing it? Drop the t." became
   "Weighing it? Lose the t." (RU «Взвешиваете? / Уберите t.»), and its two
   share cards were re-exported.
+
+## Shared copy fixes (2026-11-28, `feature/shared-copy-fixes`)
+
+Section E of `reference/notes-copy-review.md`, on all four main pages, the
+notes (contact ledes, byline, index) and the share cards:
+
+- RU footer «реабилитация связок и нервов» → «сухожилий и нервов» (tendon
+  is сухожилие; связка is a ligament).
+- "available 24/7" / «на связи круглосуточно» → "write any time" / «пишите
+  в любое время».
+- «100+ учеников один на один» → «на индивидуальных занятиях» (English
+  page facts, note byline, share card, home intro); the Russian cards for
+  the English page and every note re-exported.
+- "Tell me where your English breaks now" / «где ваш английский ломается»
+  → "lets you down" / «где английский вас подводит» (English page, notes
+  index); home: "which skills you struggle with and where they let you down".
+- Every contact: "you owe me nothing after it" → "no strings attached",
+  «ни к чему не обязывает» → «без обязательств», "If it fits" → "If we're
+  a good fit", «Если подходит — составляем план» → «Если подойдём друг
+  другу, составим план».
+
+Checked: all four pages and three note pages, both themes, languages and
+widths, no overflow, no console errors; `test_seams.py` passes. No CSS or
+JS change, so no cache keys moved.
