@@ -130,8 +130,8 @@ def build_index(notes):
   </h1>
   <div class="hero__foot page-hero__foot">
     <div class="page-hero__text">
-      <p class="stand reveal" data-l="en">The mistakes I hear from Russian-speaking professionals, taken apart one at a time: what goes wrong, why Russian pulls it there, and how it should sound.{origin_en}</p>
-      <p class="stand reveal" data-l="ru">Ошибки, которые я слышу у русскоязычных специалистов, разобранные по одной: что ломается, почему туда тянет русский и как должно звучать.{origin_ru}</p>
+      <p class="stand reveal" data-l="en">The mistakes I hear from Russian-speaking professionals, taken apart one at a time: what goes wrong, why, and what to say instead.{origin_en}</p>
+      <p class="stand reveal" data-l="ru">Ошибки, которые я слышу у русскоязычных специалистов. Каждая разобрана отдельно: в чём ошибка, откуда берётся и как правильно.{origin_ru}</p>
     </div>
   </div>
 </section>

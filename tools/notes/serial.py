@@ -59,7 +59,7 @@ FIGURE = ladder([
     ("Я люблю смотреть <em>хлопья</em>.", "ru", "they hear", "носитель слышит"),
     (f"I love watching TV {I('shows')}.", "en", "say", "скажите"),
 ], "Fig. 1. {{serial}} and {{cereal}} sound the same, and {{cereal}} is breakfast.",
-   "Фиг. 1. {{serial}} и {{cereal}} звучат одинаково, а {{cereal}} — это хлопья.", "fig-serial")
+   "Рис. 1. {{serial}} и {{cereal}} звучат одинаково, а {{cereal}} — это хлопья.", "fig-serial")
 
 MSG_EN = "Hi! I took the test in your note about “serial”: {n}/{t}. I’d like a free trial English lesson."
 MSG_RU = "Здравствуйте! Мой результат в тесте из заметки про «serial»: {n}/{t}. Хочу записаться на бесплатное пробное занятие по английскому."
@@ -74,12 +74,17 @@ def body(note):
                  "Шесть фраз с «сериал», «серия» и «серийный» и как сказать по-английски",
                  [("In Russian", "По-русски"), ("In English", "По-английски")],
                  [[ru, ("register__w", en)] for ru, en in PHRASES], cls=" register--pairs"),
+        # DRAFT for Igor (NQ14): British English keeps serial for a story in parts.
+        '  <p class="note-cite reveal"><span data-l="en">serial does exist, for a story told in parts (a BBC serial, '
+        'the podcast Serial), but for Netflix shows people say series or show.</span><span data-l="ru">serial в '
+        'английском есть: так называют историю с продолжением (a BBC serial, подкаст Serial). Но про сериалы на '
+        'Netflix говорят series или show.</span></p>',
     ]))
     why = section("why", "\n".join([
         # DRAFT for Igor: the post gives the facts; the wording is the note's.
         head2("One sound, two spellings.", "Один звук, два слова.",
-              "{{serial}} and {{cereal}} are said the same way, so a native speaker hears the word they use every morning: [[breakfast]]. {{series}} sounds different, and it is the whole show: one {{series}}, two {{series}}. One part of it is an {{episode}}.",
-              "{{serial}} и {{cereal}} произносятся одинаково, и носитель слышит слово, которое говорит каждое утро: [[хлопья]]. {{series}} звучит иначе и значит весь сериал: one {{series}}, two {{series}}. Одна серия — {{episode}}."),
+              "{{serial}} and {{cereal}} are said the same way, so a native speaker hears what they pour every morning: [[cereal]]. {{series}} sounds different, and it is the whole show: one {{series}}, two {{series}}. One part of it is an {{episode}}.",
+              "{{serial}} и {{cereal}} произносятся одинаково, и носитель слышит то, что ест на завтрак: [[хлопья]]. {{series}} звучит иначе и значит весь сериал: one {{series}}, two {{series}}. Одна серия — {{episode}}."),
         pull([
             ("серийный", "serial", ipa("/ˈsɪəriəl/")),
             ("хлопья", "cereal", ipa("/ˈsɪəriəl/")),
@@ -88,7 +93,7 @@ def body(note):
     ]))
     test = section("practice", "\n".join([
         head2("Which would a native speaker say?", "Какие фразы сказал бы носитель?",
-              "Tap every sentence that sounds right to you, then check. [[Some are fine, most are not]].",
+              "Pick every sentence that sounds right to you, then check. [[Some are fine, most are not]].",
               "Отметьте все фразы, которые звучат правильно, и проверьте. [[Какие-то в порядке, большинство — нет]]."),
         "  <!-- DRAFT for Igor (SITE-PLAN.md NQ14): the sentences around the post's own phrases. -->",
         ear_test(TEST, MSG_EN, MSG_RU, tg(note["tg_en"])),
@@ -119,13 +124,13 @@ NOTE = dict(
     title="“I love watching serials”? Serial vs series — Igor Shatsev",
     title_ru_head="Сериал по-английски: serial или series? — Igor Shatsev",
     desc_en="Russian speakers say “I love watching serials”, and a native speaker hears cereals. Сериал is a TV series or a TV show, серия is an episode, and it’s one series, two series. With a quick test.",
-    desc_ru="«I love watching serials» — носитель услышит «хлопья». Как сказать «сериал» и «серия» по-английски: series, show, episode, season, и почему two series без -s. Короткий тест.",
+    desc_ru="«I love watching serials» — носитель услышит «хлопья». Как сказать «сериал» и «серия» по-английски: series, show, episode, season, и почему two series, а не two serieses. Короткий тест.",
     og_title="Series, not cereal: сериал in English — Igor Shatsev",
     og_desc="serial sounds like cereal. Сериал is a TV series or a TV show, серия is an episode. Six phrases and a test.",
     og_alt="Series, not cereal. A note by Igor Shatsev on the word serial.",
     ld_headline="Series, not cereal: сериал is not serial",
-    contact_lede_en="Mix-ups like serial and series are hard to hear in your own English and easy to hear from outside. The trial lesson is a good place to find yours. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
-    contact_lede_ru="Путаницу вроде serial и series трудно услышать у себя и легко — со стороны. На пробном занятии найдём ваши. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
+    contact_lede_en="Mix-ups like this are hard to notice in your own English and easy to hear from outside. In the trial lesson we’ll find yours. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Такую путаницу трудно заметить у себя и легко услышать со стороны. На пробном занятии найдём вашу. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “serial”. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про «serial». Хочу записаться на бесплатное занятие по английскому.",
     body=body,

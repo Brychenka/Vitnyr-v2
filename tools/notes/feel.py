@@ -37,8 +37,8 @@ FIGURE = ladder([
     ("Я чувствую себя хорошо.", "ru", "Russian · with себя", "по-русски · с «себя»"),
     (f"I feel {D('myself')} good.", "en", "the habit", "привычка"),
     (f"I {I('feel')} good.", "en", "English · feel is enough", "по-английски · хватает feel"),
-], "Fig. 1. {{feel}} already carries the feeling. Nothing to add.",
-   "Фиг. 1. {{feel}} уже несёт ощущение. Добавлять нечего.", "fig-feel")
+], "Fig. 1. {{feel}} works on its own. Nothing to add.",
+   "Рис. 1. Хватает одного {{feel}}. Добавлять нечего.", "fig-feel")
 
 
 def body(note):
@@ -47,9 +47,13 @@ def body(note):
               "Wherever Russian says {{чувствую себя}}, [[English just says {{feel}}]].",
               "Там, где по-русски {{чувствую себя}}, [[по-английски просто {{feel}}]]."),
         spec_pair(f"I feel {D('myself')} good today.", f"I {I('feel')} good today."),
-        register("Six phrases with an extra myself, and what English says", "Шесть фраз с лишним myself и как по-английски",
-                 [("What comes out", "Как звучит"), ("What English says", "Как по-английски")],
+        register("Six phrases with an extra myself, and what English says", "Шесть фраз с лишним myself и как правильно",
+                 [("What comes out", "Привычка"), ("What English says", "Правильно")],
                  [[w, ("register__w", r)] for w, r in PHRASES], cls=" register--pairs"),
+        # DRAFT for Igor (copy review 2026-11-28): where feel myself is right.
+        '  <p class="note-cite reveal"><span data-l="en">feel myself does exist, just not before an adjective: I’m not feeling myself today '
+        'means I’m not my usual self.</span><span data-l="ru">feel myself всё же бывает, но не перед прилагательным: '
+        'I’m not feeling myself today — «я сегодня сам не свой».</span></p>',
     ]))
     why = section("why", "\n".join([
         head2("English keeps -\u2060self for actions.", "В английском -\u2060self — для действий.",
@@ -80,8 +84,8 @@ NOTE = dict(
     card_en="Nothing <em>to add.</em>", card_ru="Добавлять <em>нечего.</em>",
     card_spec='I feel <span class="x">myself</span> good<span class="to">→</span>I <span class="ok">feel</span> good',
     h1_en=["Nothing", "to add."], h1_ru=["Добавлять", "нечего."],
-    stand_en="“I feel myself good” is one of the three mistakes I hear most often. Russian says it with a reflexive word, {{чувствую себя}}, so the instinct is to bolt the same thing onto the English, [[onto a verb that was never missing it]]. In English, {{feel}} already carries the feeling.",
-    stand_ru="«I feel myself good» — одна из трёх ошибок, которые я слышу чаще всего. По-русски — {{чувствую себя}}, с возвратным словом, и рефлекс — приставить то же самое и в английском, [[к глаголу, которому это не нужно]]. В английском {{feel}} уже несёт ощущение сам.",
+    stand_en="“I feel myself good” is one of the mistakes I hear most. Russian needs {{себя}} here, {{чувствую себя}}, so the instinct is to add {{myself}} in English too. [[But {{feel}} works on its own.]]",
+    stand_ru="«I feel myself good» — одна из самых частых ошибок, которые я слышу. По-русски мы говорим {{чувствую себя}}, и рука сама тянется добавить {{myself}}. [[Но английскому {{feel}} это не нужно.]]",
     figure=FIGURE,
     comment="/notes/feel/: the English page's second specimen as a note.",
     title="“I feel myself good”? Just “I feel good” — Igor Shatsev",
@@ -89,11 +93,11 @@ NOTE = dict(
     desc_en="Why Russian speakers say “I feel myself good” (чувствую себя), six phrases where the extra myself creeps in, and when English does use -self.",
     desc_ru="Почему русскоязычные говорят «I feel myself good» (чувствую себя), шесть фраз, где появляется лишнее myself, и когда -self в английском всё-таки нужен.",
     og_title="Nothing to add: “I feel myself good” — Igor Shatsev",
-    og_desc="feel already carries the feeling. Six phrases, and when -self does belong.",
+    og_desc="feel works on its own. Six phrases, and when -self does belong.",
     og_alt="Nothing to add. A note by Igor Shatsev on “I feel myself good”.",
     ld_headline="Nothing to add: why Russian speakers say “I feel myself good”",
-    contact_lede_en="Not sure which habits slip into your English? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
-    contact_lede_ru="Не уверены, какие привычки пролезают в ваш английский? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
+    contact_lede_en="Habits like this one sit so deep you stop hearing them. In the trial lesson they’re quick to find. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Такие привычки сидят так глубоко, что их перестаёшь слышать. На пробном занятии их легко найти. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “I feel myself”. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про «I feel myself». Хочу записаться на бесплатное занятие по английскому.",
     body=body,
