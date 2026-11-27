@@ -27,23 +27,28 @@ PRACTICE = [
 ]
 
 FIGURE = f"""    <figure class="note-fig tiles reveal" aria-labelledby="fig-au">
-      <div class="tiles__row" aria-hidden="true">{tile('L', 1)}{tile('A', 1, ' tile--specimen')}{tile('U', 1, ' tile--specimen')}{tile('N', 1)}{tile('C', 3)}{tile('H', 4)}</div>
-      <div class="tiles__row" aria-hidden="true">{tile('L', 1)}{tile('ɔː', None, ' tile--target tile--merged', ' ipa')}{tile('N', 1)}{tile('C', 3)}{tile('H', 4)}</div>
+      <div class="tiles__row" aria-hidden="true">{tile('L')}{tile('A', ' tile--specimen')}{tile('U', ' tile--specimen')}{tile('N')}{tile('C')}{tile('H')}</div>
+      <div class="tiles__row" aria-hidden="true">{tile('L')}{tile('ɔː', ' tile--target tile--merged', ' ipa')}{tile('N')}{tile('C')}{tile('H')}</div>
       <figcaption id="fig-au"><span data-l="en">{w("launch")}: the {w("a")} and the {w("u")} are one sound, {ipa("/ɔː/")}.</span><span data-l="ru">{w("launch")}: {w("a")} и {w("u")} — это один звук, {ipa("/ɔː/")}.</span></figcaption>
     </figure>"""
 
 IPA_OO = ipa("/ɔː/")
-LAUNCH_IPA = ipa('/l<ins class="mark--target">ɔː</ins>ntʃ/')
+# The hero's tiles already teach launch, so the pair in section 01 takes the
+# post's other headline mistake, automate (2026-11-27).
+AUTOMATE_IPA = ipa('/ˈ<ins class="mark--target">ɔː</ins>təmeɪt/')
 AS ='<span class="note-spec__as" data-en="sounds like" data-ru="звучит как">sounds like</span>'
 
 
 def body(note):
-    words = section("words", "01", "Six words, one sound", "Шесть слов, один звук", "\n".join([
+    words = section("words", "\n".join([
+        # DRAFT for Igor (2026-11-27): names the line instead of repeating
+        # the standfirst's "not а plus у". The /ɔː/ hint (NQ11) goes here
+        # once Igor picks its anchor.
         head2("Six words. One sound in every one.", "Шесть слов. В каждом один звук.",
-              f"Wherever the line is, {{{{au}}}} is a single long {IPA_OO}. Not {{{{а}}}} plus {{{{у}}}}, not {{{{а}}}} plus {{{{в}}}}.",
-              f"Там, где черта, {{{{au}}}} — это один долгий звук {IPA_OO}. Не {{{{а}}}} плюс {{{{у}}}} и не {{{{а}}}} плюс {{{{в}}}}."),
-        spec_pair(f'launch {AS} л<del class="mark--specimen">ау</del>нч',
-                  f'launch {AS} {LAUNCH_IPA}'),
+              f"The underlined {{{{au}}}} in each word is one long sound, {IPA_OO}.",
+              f"Подчёркнутое {{{{au}}}} в каждом слове — это один долгий звук {IPA_OO}."),
+        spec_pair(f'automate {AS} <del class="mark--specimen">ав</del>томейт',
+                  f'automate {AS} {AUTOMATE_IPA}'),
         register("Six words with au, and how each one sounds", "Шесть слов с au и как каждое звучит",
                  [("Word", "Слово"), ("Sound", "Звучание")],
                  [[hit(word, "au"), ("register__ipa", ipa(tr.format(OO)))] for word, tr in WORDS]),
@@ -52,16 +57,18 @@ def body(note):
         f'Either way it is one vowel, never two.</span><span data-l="ru">Это британское {IPA_OO}; многие американцы '
         f'говорят {ipa("/ɑː/")}. В любом случае это один гласный, а не два.</span></p>',
     ]))
-    why = section("why", "02", "Why it happens", "Почему так", "\n".join([
+    why = section("why", "\n".join([
         head2("The cause is in Russian.", "Причина кроется в родном языке.",
               "{{автор}}, {{август}}, {{аура}}, {{аудио}} and plenty more: a whole pool of Russian words that look like English ones, and they [[pull in the familiar Russian sound]].",
               "{{автор}}, {{август}}, {{аура}}, {{аудио}} и много других — это пул слов, которые схожи с английскими и которые [[притягивают привычное русское звучание]]."),
         pull([(hit(ru, trap), en, ipa(tr.format(OO))) for ru, trap, en, tr in LOOKALIKES]),
     ]))
-    say = section("practice", "03", "Say it out loud", "Скажите вслух", "\n".join([
+    say = section("practice", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
-              "One sound wherever the line is. No {{а}}, no {{у}}, no {{в}}.",
-              "Там, где черта, — один звук. Без {{а}}, без {{у}}, без {{в}}."),
+              # DRAFT for Igor (2026-11-27): what to listen for, instead of
+              # repeating section 01.
+              f"Underlined: one long {IPA_OO}. If you hear a {{{{в}}}} or a second vowel, say the line again, slower.",
+              f"Подчёркнуто — один долгий {IPA_OO}. Если слышите {{{{в}}}} или второй гласный, повторите строку медленнее."),
         practice(PRACTICE, "DRAFT for Igor (SITE-PLAN.md NQ3): these six sentences are not from the LinkedIn post."),
     ]))
     return "\n\n".join([words, why, say])
@@ -84,8 +91,11 @@ NOTE = dict(
     h1_en=["Two letters,", "one sound."], h1_ru=["Две буквы —", "один звук."],
     # "Almost all my students" replaces "95% of my IT clients" (NQ2, Igor
     # 2026-11-27: soften it, and not IT-first).
-    stand_en=f"Almost all my students mispronounce {{{{au}}}}: {{{{automate}}}}, {{{{auction}}}}, {{{{cause}}}}, {{{{launch}}}}, {{{{fault}}}}, {{{{authenticate}}}}. They come out as {{{{автомейт}}}}, {{{{аутомейт}}}}, {{{{лаунч}}}}, {{{{аусентикейт}}}}. To make them sound right, drop the {{{{а}}}}, the {{{{у}}}} and the {{{{в}}}}: [[you need one sound only, {IPA_OO}]].",
-    stand_ru=f"Почти все мои ученики ошибаются в произношении сочетания {{{{au}}}}: {{{{automate}}}}, {{{{auction}}}}, {{{{cause}}}}, {{{{launch}}}}, {{{{fault}}}}, {{{{authenticate}}}}. Произносят эти слова как {{{{автомейт}}}}, {{{{аутомейт}}}}, {{{{лаунч}}}}, {{{{аусентикейт}}}}. Чтобы звучало красиво, надо убрать {{{{а}}}}, {{{{у}}}} и {{{{в}}}}: [[нужен только один звук, {IPA_OO}]].",
+    # DRAFT for Igor (2026-11-27): the post's opening without its two lists
+    # (the six words are the table in section 01). The instruction, drop the
+    # а, у and в, stays: it is the post's point.
+    stand_en=f"Almost all my students mispronounce {{{{au}}}}: {{{{launch}}}} comes out as {{{{лаунч}}}}, {{{{automate}}}} as {{{{автомейт}}}} or {{{{аутомейт}}}}. To make them sound right, drop the {{{{а}}}}, the {{{{у}}}} and the {{{{в}}}}: [[you need one sound only, {IPA_OO}]].",
+    stand_ru=f"Почти все мои ученики ошибаются в произношении сочетания {{{{au}}}}: {{{{launch}}}} у них звучит как {{{{лаунч}}}}, {{{{automate}}}} — как {{{{автомейт}}}} или {{{{аутомейт}}}}. Чтобы звучало красиво, надо убрать {{{{а}}}}, {{{{у}}}} и {{{{в}}}}: [[нужен только один звук, {IPA_OO}]].",
     figure=FIGURE,
     comment="/notes/au/: Igor's LinkedIn post about the au sound, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="How to pronounce au: automate, launch, cause — Igor Shatsev",
@@ -96,8 +106,8 @@ NOTE = dict(
     og_desc="automate, auction, cause, launch, fault, authenticate: six words, one sound, /ɔː/.",
     og_alt="Two letters, one sound. A note by Igor Shatsev on the au sound.",
     ld_headline="Two letters, one sound: how to pronounce au",
-    contact_lede_en="Not sure how you say these six? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
-    contact_lede_ru="Не уверены, как вы произносите эти шесть слов? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
+    contact_lede_en="Not sure how you say these six? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Не уверены, как вы произносите эти шесть слов? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about the au sound. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про звук au. Хочу записаться на бесплатное занятие по английскому.",
     body=body,

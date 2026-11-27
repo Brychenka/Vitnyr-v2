@@ -6514,3 +6514,105 @@ Tests: +13 in `test_notes.py`:
 471 passed. `style.css` key 20261127a on all four pages. Notes regenerated.
 The artifact (four pages) is unchanged until merge: only the cache key and
 the mono stand-in reach those pages.
+
+## Inside a note (2026-11-27, `feature/notes-inside`)
+
+A design review of the note pages found that the ending outweighed the
+lesson (an 82px ask under a 77px title, and about 40% of the page), the au
+opening gave the whole note away, labels repeated their headings, and on a
+phone the figure started under the message bar. Built from a reviewed plan.
+
+**The ending** (`note_contact()` in `tools/notes/lib.py`, `.sec--contact-note`):
+- Built from the English page's contact section, then cut down:
+  - **unnumbered**, because it is not chapter 04 of the note;
+  - **no empty-chair engraving**;
+  - the CTA at the **section-heading size** (46px at 1280);
+  - a **smaller portrait**, still in colour; under 900px it sits beside the
+    CTA, using `display: contents` on `.contact__text`;
+  - the three channels as **one row from 1100px**. Narrower, they stack:
+    at 800px "LinkedIn /in/vitnyrcoach" broke inside a third.
+- Each cut goes through `must_sub()`, so the build **stops** if the English
+  page loses what it cuts. Before, it would have quietly shipped the full
+  section. Tested.
+- At 1280 the ending went from 1452px to 672px. A note went from about 7
+  screens to about 6. The footer is unchanged.
+- **Every ending now names the plan:** "If it fits, we agree on a plan,
+  online or in Yerevan." The notes' own ledes stopped at the trial, against
+  the rule that every contact section says what happens next.
+- **The index's "I also write about English on LinkedIn" line is gone.** The
+  channels row right under it says the same.
+
+**The hero:**
+- DOM order is now standfirst → figure → `.note-meta` (by-line, source), so
+  on a phone the figure starts on the first screen: 522–606px against the
+  bar at 756.
+- From 900px a grid with areas `"text fig" "meta fig"`, aligned to the top.
+  The bottom alignment left a hole under "Please isn't enough."
+- The by-line stays whole. It was decision K4 from the notes review, so it
+  was not split, only moved below the figure.
+
+**Inside the sections:**
+- **Labels** come from `PARTS` and are the same on every note: The fix /
+  Why it happens / Practice (Как правильно / Почему так / Практика). The
+  heading under each carries the claim, as on the main pages, so "SAY IT
+  OUT LOUD" no longer sits over "Say it out loud.".
+- **`.ipa` is `white-space: nowrap`**, so /ɔː/ no longer breaks into "/" and
+  "ɔː/". The au table's gutters narrow under 400px so it still fits 320px.
+- **The au table's sound column is in the text ink**, not `--fg2`. The
+  green ɔː had read as the same grey in both themes.
+- **"Why it happens":** a dotted leader runs from the Russian word to the
+  arrow at its column's edge, so the arrow points at the English word.
+  Before, it pointed into empty space after a short Russian word. The plan
+  also proposed shrinking the Russian words; that was dropped, because
+  that section is about the Russian word.
+- **The au tiles lose their Scrabble scores.** They teach nothing about the
+  sound, and the merged tile had none.
+
+**au, drafts for Igor (NQ12):**
+- The opening drops the post's two word lists (the six words are the table
+  in section 01). It keeps "drop the а, the у and the в", which is the
+  post's point, so the monospace count goes from 19 words to 10.
+- The ✗/✓ pair uses *automate*, because the tiles already teach *launch*.
+- Section 01's line names the underline. The NQ11 hint goes there once
+  Igor picks its anchor.
+- The practice line says what to listen for instead of repeating section 01.
+
+**Load (median of 3; throttled to 4× CPU, 1.6 Mbps, 150ms; against `main` on :8011):**
+- **The new phone order made "Could you" jump.** On a phone its figure now
+  sits on the first screen, where it shifted 0.05 while loading:
+  - Georgia runs about 6% narrower than Lora;
+  - so "Send me the report today, please." held one line before the swap and
+    two after.
+- **Tried and left out:**
+  - Preloading Lora on the notes: no jumps at all, but every note's first
+    text came 0.25s later.
+  - Preloading Cyrillic Lora only: no help, because the line that rewraps is
+    English.
+- **Kept:** a stand-in face for the "Could you" figure only, `'Lora Ladder
+  Fallback'` (Georgia scaled to 106.5%). Not on `--serif`: the display type
+  elsewhere is a site-wide question (G5).
+- **After the stand-in:** "Could you" 0.002 on a phone (`main` 0.002) and
+  0.009 on desktop (`main` 0.016); in Russian 0.005 and 0.006 (`main` 0.005
+  and 0.031). The other notes are unchanged, and first text is within
+  ±0.02s of `main`.
+
+Tests: +39 in `test_notes.py`, covering:
+- the short ending, its numbering and size, on every notes page;
+- the plan sentence (EN/RU);
+- LinkedIn once on the index;
+- the phone order, with the figure on the first screen (EN/RU);
+- the text level with the figure on desktop;
+- labels never repeating their headings;
+- no broken transcriptions at 320 and 375 (EN/RU, plus no sideways scroll);
+- the table's green against the column's ink (both themes);
+- no tile scores;
+- the generator stopping when the English contact changes shape.
+
+The line-break test was checked to fail with `nowrap` removed.
+
+**Check:** 9 pages × 2 themes × 2 languages × 2 widths × 2 motion settings,
+144 combinations: no console errors, no overflow, no stuck reveals.
+
+`style.css` key is 20261127b on all four pages, and the notes are
+regenerated. The four main pages look the same; only the cache key and CSS
+the notes use reach them, so no artifact republish is needed.
