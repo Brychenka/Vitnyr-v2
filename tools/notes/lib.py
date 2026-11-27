@@ -238,7 +238,7 @@ def byline():
         <span class="sep" aria-hidden="true">·</span>
         <span data-en="10 years" data-ru="10 лет">10 years</span>
         <span class="sep" aria-hidden="true">·</span>
-        <span data-en="100+ one-on-one clients" data-ru="100+ учеников один на один">100+ one-on-one clients</span>
+        <span data-en="100+ one-on-one clients" data-ru="100+ учеников на индивидуальных занятиях">100+ one-on-one clients</span>
       </p>"""
 
 
