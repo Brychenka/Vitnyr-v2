@@ -6713,13 +6713,14 @@ component.
 - **h1** "Series, / not cereal." / «Сериалы, / а не хлопья.»; the
   standfirst ends on the answer (сериал → TV series / TV show, серия →
   episode).
-- **01 The fix:** a 7-row cheat sheet (сериал, серия, сезон, два сериала,
+- **01 The fix:** a cheat sheet (7 rows, then 6) (сериал, серия, сезон, два сериала,
   серийный). **02 Why:** the sound: серийный → serial and хлопья → cereal
   share /ˈsɪəriəl/, сериал → series is /ˈsɪəriːz/; one series, two series.
   **03 Practice:** the ear test (`ear_test()`), eight sentences, three
   natural. None uses series for a season, which British English does, so
   every wrong line is wrong in both Englishes.
-- **Cold review, same day:** the standfirst retold the joke the figure
+- **Second, full cold review (Igor asked for it):** "the mistake I hear most" was a claim Igor never made (his post: «часто слышу»), now "I often hear"; the "they hear" row is the slide's own Russian line, «Я люблю смотреть хлопья», so the joke lands without the caption; the standfirst tells the joke in one line and ends on the answer, so it stands alone in a search snippet; the two серийный rows are one (6 rows).
+- **First cold review, same day:** the standfirst retold the joke the figure
   tells (cut to one line); the figure's Russian "you mean" row added
   nothing (cut, 3 rows); table row 1 repeated the figure's fix (now "my
   favourite show"); "why" repeated two table rows (now the shared
