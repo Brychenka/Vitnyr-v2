@@ -141,6 +141,14 @@ def test_note_shows_the_mistake_and_the_fix(open_site, slug):
     hides the wrong line on /english/) must leave both lines showing."""
     page, _ = open_site(path=f"notes/{slug}/")
     page.wait_for_timeout(300)
+    if page.locator(".note-spec").count() == 0:
+        # A note may leave out the pair when its table's first row says the
+        # same (actual, 2026-11-28); its figure then carries both inks.
+        fig = page.locator(".note-fig")
+        assert fig.locator("del.mark--specimen").count() >= 1
+        assert fig.locator("ins.mark--target").count() >= 1
+        assert fig.is_visible()
+        return
     for cls in ("wrong", "right"):
         line = page.locator(f".note-spec .line-spec.{cls}")
         assert line.count() == 1 and line.is_visible(), cls
