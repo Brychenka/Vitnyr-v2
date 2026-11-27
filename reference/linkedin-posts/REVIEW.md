@@ -62,3 +62,33 @@ oddity (one series, two series). The slide is the joke as a picture.
   them.
 - **Drafts** for Igor (NQ14): the English translation, the сезон row, the
   why lede, the test sentences not taken from the post.
+
+## Third note: key + abbreviations as one, "API key", decided before building (2026-11-28)
+
+Two posts, one phrase. «Апи кей» carries both mistakes in two words: the
+abbreviation read as a word (апи, сео; the abbreviations post, 25 Nov) and
+key said as the name of the letter K (the key post, 30 Oct). For IT people,
+who are a large share of Igor's readers, it is a phrase said daily.
+
+- **Kind: Pronunciation.** Practice is "Say it out loud", as on the other
+  pronunciation notes (au, stress); the test is for vocabulary.
+- **Hook: the slide's A·P·I as tiles** (the au note's figure, no new
+  component). Row one, written: A, P, I, and key as one wide tile. Row two,
+  said: эй, пи, ай, ки, in target ink. The picture is the rule: three
+  letters, one word. Caption: say эй-пи-ай ки, not ~~апи кей~~.
+- **Headline:** "Three letters / and a key." / «Три буквы / и один ключ.»
+- **Standfirst:** the posts' observation, then the answer: API is spelled
+  out, эй-пи-ай; key is ки.
+- **01 The fix:** the posts' eight words in one table, written / say /
+  transcription: CEO, API, MR, PR, key, hotkey, keyboard, keynote. A
+  footnote (DRAFT) keeps the rule honest: a few short ones are read as
+  words (RAM, PIN), so "2-3 letters: spell it" is a rule of thumb.
+- **02 Why:** the posts give the effect (апи, сео; кей = the letter K);
+  the note adds the cause (DRAFT): Russian speakers name Latin letters the
+  school way, а, бэ, цэ, и, ка, so the English names are new: A is эй,
+  E is и, I is ай, R is ар, and кей is K. Pull rows: the school name →
+  the letter → its English name.
+- **03 Practice:** six sentences from a working day (DRAFT), the
+  abbreviations and key words in bold; stress falls on the last letter.
+- **Drafts** for Igor (NQ15): the translation, the footnote, the why, the
+  sentences.
