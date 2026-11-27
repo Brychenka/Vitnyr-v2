@@ -6814,3 +6814,6 @@ merged in `reference/notes-copy-review.md`. Igor approved sections A-D.
   which change all four main pages. NQ17.
 - **Checked by eye** (no tests, Igor's call): all eight notes and the index
   in both themes, languages and widths, no overflow, no console errors.
+- **Then, Igor's call:** the weigh headline "Doing it? Drop the t." became
+  "Weighing it? Lose the t." (RU «Взвешиваете? / Уберите t.»), and its two
+  share cards were re-exported.
