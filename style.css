@@ -1974,8 +1974,15 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   .sec--contact-note .contact__portrait { grid-column: 2; grid-row: 1 / span 2; margin: .3em 0 0; width: auto; }
   .sec--contact-note .contact__draft, .sec--contact-note .sec__lede { grid-column: 1 / -1; }
 }
+/* >=900px the photo's height runs from the CTA's capitals to the lede's
+   last line, the same rule as the four pages: 173px wide at 1000, 198 at
+   1280, stopping at 204 so a wide screen doesn't blow it up. It stays on
+   the right edge, in line with the channels row's end. The Russian CTA
+   runs a line longer, so its photo is wider by the same rule: 205px at
+   1000, 238 at 1280, stopping at 244. */
 @media (min-width: 900px) {
-  .sec--contact-note .contact__head { grid-template-columns: minmax(0, 1fr) clamp(140px, 13vw, 176px); }
+  .sec--contact-note .contact__head { grid-template-columns: minmax(0, 1fr) clamp(160px, calc(84px + 8.9vw), 204px); }
+  html[data-lang="ru"] .sec--contact-note .contact__head { grid-template-columns: minmax(0, 1fr) clamp(170px, calc(87px + 11.8vw), 244px); }
   /* .177em of the CTA's own size drops the photo to its capitals' ink top */
   .sec--contact-note .contact__portrait { margin-top: calc(clamp(27px, 3.6vw, 48px) * .177); width: auto; }
 }
