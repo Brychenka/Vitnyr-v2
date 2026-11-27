@@ -26,3 +26,39 @@ Igor, as NQ3 did).
 - LinkedIn IDs carry the post time, so exact dates are known:
   redact 2026-10-07, actual 2026-10-08, weigh 2026-10-22, install 2026-10-29,
   key 2026-10-30, serials 2026-11-23, dev/deaf 2026-11-24, abbreviations 2026-11-25.
+
+## Second note: serials / cereals, decided before building (2026-11-28)
+
+What the post has: the joke (a native hears *cereals*, хлопья), three
+Russian words and their English ones (сериал → TV series / TV show, серия →
+episode, серийный → serial: serial killer, serial number), and one grammar
+oddity (one series, two series). The slide is the joke as a picture.
+
+- **Hook: the joke, in the hero, as type.** The figure is the ladder the
+  grammar notes use (no new component): what you mean (Russian), what you
+  say (*serials*, specimen ink), what they hear (*cereals*), what to say
+  (*TV shows*, target ink). The caption carries the sound: serial and
+  cereal are one sound, /ˈsɪəriəl/. The carousel image itself stays off the
+  site (NOTES-PLAN §3: no carousel images).
+- **Headline:** "Series, / not cereal." / «Сериалы, / а не хлопья.» It
+  echoes actual's "Real, / not current." and keeps the sound pun
+  (series / cereal).
+- **Standfirst:** the post's opening, then the answer a searcher came for:
+  "сериал is a TV series or a TV show; серия is an episode."
+- **01 The fix: three Russian words, three English ones.** A cheat-sheet
+  table: сериал, серия, сезон (DRAFT: not in the post, but the next word
+  people need), серийный. The lede: "Only серийный is serial."
+- **02 Why it happens:** what the hero doesn't say. Why a native hears
+  breakfast (one sound, two spellings), and why серия isn't series
+  (Russian серия is one part, English series is the whole run), with the
+  post's own oddity as pull rows: один сериал → one series, два сериала →
+  two series, одна серия → one episode.
+- **03 Practice: the same test as actual** ("Which would a native speaker
+  say?"), eight sentences, five wrong, three right; a miss names the
+  Russian phrase behind it; the score goes to Telegram with the note's
+  name.
+- **Search:** «сериал по-английски», «серия по-английски», «series
+  множественное число», "serial or series". Title and description carry
+  them.
+- **Drafts** for Igor (NQ14): the English translation, the сезон row, the
+  why lede, the test sentences not taken from the post.
