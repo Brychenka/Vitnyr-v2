@@ -54,13 +54,13 @@ def body(note):
                  [[hit(word, "au"), ("register__ipa", ipa(tr.format(OO)))] for word, tr in WORDS]),
         # the accent footnote. DRAFT for Igor (not in the post).
         f'  <p class="note-cite reveal"><span data-l="en">That is British {IPA_OO}; many Americans say {ipa("/ɑː/")}. '
-        f'Either way it is one vowel, never two.</span><span data-l="ru">Это британское {IPA_OO}; многие американцы '
-        f'говорят {ipa("/ɑː/")}. В любом случае это один гласный, а не два.</span></p>',
+        f'Either way it’s a single vowel. And not every au follows the rule: because, laugh and aunt don’t.</span><span data-l="ru">Это британское {IPA_OO}; многие американцы '
+        f'говорят {ipa("/ɑː/")}. В любом случае это один гласный. И не каждое au подчиняется правилу: because, laugh и aunt — исключения.</span></p>',
     ]))
     why = section("why", "\n".join([
         head2("The cause is in Russian.", "Причина кроется в родном языке.",
-              "{{автор}}, {{август}}, {{аура}}, {{аудио}} and plenty more: a whole pool of Russian words that look like English ones, and they [[pull in the familiar Russian sound]].",
-              "{{автор}}, {{август}}, {{аура}}, {{аудио}} и много других — это пул слов, которые схожи с английскими и которые [[притягивают привычное русское звучание]]."),
+              "{{автор}}, {{август}}, {{аура}}, {{аудио}}: Russian is full of look-alikes, and [[each one pulls in its Russian sound]].",
+              "{{автор}}, {{август}}, {{аура}}, {{аудио}}: в русском полно слов, похожих на английские, и [[они тянут за собой привычное русское звучание]]."),
         pull([(hit(ru, trap), en, ipa(tr.format(OO))) for ru, trap, en, tr in LOOKALIKES]),
     ]))
     say = section("practice", "\n".join([
@@ -94,20 +94,20 @@ NOTE = dict(
     # Approved by Igor 2026-11-27 (NQ12): the post's opening without its two lists
     # (the six words are the table in section 01). The instruction, drop the
     # а, у and в, stays: it is the post's point.
-    stand_en=f"Almost all my students mispronounce {{{{au}}}}: {{{{launch}}}} comes out as {{{{лаунч}}}}, {{{{automate}}}} as {{{{автомейт}}}} or {{{{аутомейт}}}}. To make them sound right, drop the {{{{а}}}}, the {{{{у}}}} and the {{{{в}}}}: [[you need one sound only, {IPA_OO}]].",
+    stand_en=f"Almost all my students mispronounce {{{{au}}}}: {{{{launch}}}} comes out as {{{{лаунч}}}}, {{{{automate}}}} as {{{{автомейт}}}} or {{{{аутомейт}}}}. To make them sound right, drop the {{{{а}}}}, the {{{{у}}}} and the {{{{в}}}}: [[you need just one sound, {IPA_OO}]].",
     stand_ru=f"Почти все мои ученики ошибаются в произношении сочетания {{{{au}}}}: {{{{launch}}}} у них звучит как {{{{лаунч}}}}, {{{{automate}}}} — как {{{{автомейт}}}} или {{{{аутомейт}}}}. Чтобы звучало красиво, надо убрать {{{{а}}}}, {{{{у}}}} и {{{{в}}}}: [[нужен только один звук, {IPA_OO}]].",
     figure=FIGURE,
     comment="/notes/au/: Igor's LinkedIn post about the au sound, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="How to pronounce au: automate, launch, cause — Igor Shatsev",
     title_ru_head="Как произносить au: automate, launch, cause — Igor Shatsev",
-    desc_en="Russian speakers say launch as “лаунч” and automate as “автомейт”. Six words, one sound: /ɔː/. Why Russian pulls the wrong sound in, and how it should sound.",
+    desc_en="Russian speakers say launch as “лаунч” and automate as “автомейт”. Six words, one sound: /ɔː/. Why Russian look-alikes get in the way, and how to say them.",
     desc_ru="«Лаунч», «автомейт», «аусентикейт»: почему русскоязычные так произносят au и как правильно. Шесть слов, один звук /ɔː/.",
     og_title="Two letters, one sound: how to say au — Igor Shatsev",
     og_desc="automate, auction, cause, launch, fault, authenticate: six words, one sound, /ɔː/.",
     og_alt="Two letters, one sound. A note by Igor Shatsev on the au sound.",
     ld_headline="Two letters, one sound: how to pronounce au",
-    contact_lede_en="Not sure how you say these six? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
-    contact_lede_ru="Не уверены, как вы произносите эти шесть слов? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
+    contact_lede_en="Say these six words to me in the trial lesson, and within a minute you’ll know whether your au is right. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Скажите мне эти шесть слов на пробном занятии — через минуту будет ясно, правильно ли звучит ваше au. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about the au sound. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про звук au. Хочу записаться на бесплатное занятие по английскому.",
     body=body,

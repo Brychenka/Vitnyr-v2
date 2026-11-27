@@ -6785,3 +6785,35 @@ change.
   375 and 1280, no overflow, no console errors, figure top 494px (EN) /
   522px (RU) on a phone; the test driven in EN and RU (7/8, «я весил»,
   the Telegram message names the note).
+
+## Notes copy pass (2026-11-28, `feature/notes-copy-pass`)
+
+Two independent reviews of all eight notes in English and Russian (an
+outside bilingual editor, and the humanizer checklist plus a Russian one),
+merged in `reference/notes-copy-review.md`. Igor approved sections A-D.
+
+- **A, must:** «Фиг. 1» → «Рис. 1» in every figure; the API key note's
+  Russian h1 «Три буквы» (read as «послать на три буквы») → «Эй-пи-ай, / а
+  не апи.»; the stress note's «тебя» → «вас» and its «когнитивное трение»
+  line; serial's «путаницу… ваши»; feel's word-for-word Russian («несёт
+  ощущение»); could-you's row 6, which turned urgent into no-rush; two
+  calques («правило, а не закон», «вы email кому-то»).
+- **B, facts:** footnotes for serial in British English, feel myself
+  (fine before a participle or in "not feeling myself"), weight as a verb,
+  au exceptions (because, laugh, aunt); «не могли бы вы» re-paired with
+  "could you possibly", "would you mind" given its own row; conSOLE (a
+  different word) swapped for REcord/reCORD, closing Q7; "every day in
+  maths" → "in school maths".
+- **C:** about twenty stiff or translated lines rewritten.
+- **D:** eight new contact openers instead of five "Not sure…? … a good
+  place to find out"; "X, not Y" kept only in headlines; "Russian pulls"
+  and "one of the three mistakes I hear most often" de-duplicated; "Tap" →
+  "Pick" (it's a desktop page too).
+- **Left for Igor:** "Doing it? Drop the t." (his slide line; the editor
+  flags a second reading) and the shared footer/byline lines (section E),
+  which change all four main pages. NQ17.
+- **Checked by eye** (no tests, Igor's call): all eight notes and the index
+  in both themes, languages and widths, no overflow, no console errors.
+- **Then, Igor's call:** the weigh headline "Doing it? Drop the t." became
+  "Weighing it? Lose the t." (RU «Взвешиваете? / Уберите t.»), and its two
+  share cards were re-exported.

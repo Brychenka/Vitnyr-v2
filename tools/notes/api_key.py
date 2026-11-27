@@ -56,28 +56,28 @@ PRACTICE = [
 FIGURE = f"""    <figure class="note-fig tiles reveal" aria-labelledby="fig-api-key">
       <div class="tiles__row" aria-hidden="true">{tile('A')}{tile('P')}{tile('I')}{tile('key', ' tile--merged')}</div>
       <div class="tiles__row" aria-hidden="true">{tile('эй', ' tile--target')}{tile('пи', ' tile--target')}{tile('ай', ' tile--target')}{tile('ки', ' tile--target tile--merged')}</div>
-      <figcaption id="fig-api-key"><span data-l="en">{strong("Fig. 1. Three letters, spelled; one word, said whole.")} Say {I("эй-пи-ай ки")}, not {D("апи кей")}.</span><span data-l="ru">{strong("Фиг. 1. Три буквы — по буквам, одно слово — целиком.")} Говорите {I("эй-пи-ай ки")}, а не {D("апи кей")}.</span></figcaption>
+      <figcaption id="fig-api-key"><span data-l="en">{strong("Fig. 1. Spell the three letters; say key as one word.")} Say {I("эй-пи-ай ки")}, not {D("апи кей")}.</span><span data-l="ru">{strong("Рис. 1. Три буквы — по буквам, одно слово — целиком.")} Говорите {I("эй-пи-ай ки")}, а не {D("апи кей")}.</span></figcaption>
     </figure>"""
 
 
 def body(note):
     words = section("words", "\n".join([
         head2("Spell the letters. Say the word.", "Буквы — по буквам. Слово — целиком.",
-              "A short abbreviation is read letter by letter, with the English names of the letters. {{key}} is a word, and it sounds like {{ки}}. [[Not апи, not сео, not кей.]]",
-              "Короткую аббревиатуру читают по буквам, английскими названиями букв. {{key}} — это слово, и звучит оно как {{ки}}. [[Не апи, не сео и не кей.]]"),
+              "A short abbreviation is read letter by letter, with the English names of the letters. [[{{key}} is a word, and it sounds like {{ки}}.]]",
+              "Короткую аббревиатуру читают по буквам, английскими названиями букв. [[{{key}} — это слово, и звучит оно как {{ки}}.]]"),
         register("Eight words from work, and how each one sounds", "Восемь рабочих слов и как каждое звучит",
                  [("Written", "Пишется"), ("Say", "Звучит")],
                  [[word, ("register__w", say)] for word, say, tr in WORDS], cls=" register--pairs"),
         # DRAFT for Igor: the posts' rule is "2-3 letters: spell it"; this keeps it honest.
-        '  <p class="note-cite reveal"><span data-l="en">A rule of thumb, not a law: a few short ones are read as words, '
-        'like RAM and PIN. If you’re not sure, spell it.</span><span data-l="ru">Это правило, а не закон: некоторые '
+        '  <p class="note-cite reveal"><span data-l="en">The rule isn’t strict: a few short ones are read as words, '
+        'like RAM and PIN. If you’re not sure, spell it.</span><span data-l="ru">Правило не железное: некоторые '
         'короткие аббревиатуры читают словом, например RAM и PIN. Не уверены — читайте по буквам.</span></p>',
     ]))
     why = section("why", "\n".join([
         # DRAFT for Igor: the cause; the posts give the effect.
         head2("The letters from maths class.", "Буквы с уроков математики.",
-              "Russian speakers use Latin letters every day in maths and physics, named the Latin way: {{а}} plus {{бэ}}. Those names come back in English, so {{API}} turns into {{а-пэ-и}}, or into one word, {{апи}}. {{key}} goes wrong another way: it is read like {{hey}}. But {{кей}} [[is the English name of the letter K]], so that is what a native speaker hears.",
-              "Латинские буквы мы каждый день видим на математике и физике, и называем их по-латински: {{а}} плюс {{бэ}}. Эти названия переходят в английский, и {{API}} превращается в {{а-пэ-и}} или в одно слово, {{апи}}. С {{key}} другая история: его читают как {{hey}}. Но {{кей}} — [[это английское название буквы K]], и носитель слышит именно её."),
+              "Russian speakers learn Latin letters in school maths and physics, with Latin names: {{а}} plus {{бэ}}. Those names come back in English, so {{API}} turns into {{а-пэ-и}}, or into one word, {{апи}}. {{key}} goes wrong another way: it is read like {{hey}}. But {{кей}} [[is the English name of the letter K]], so that is what a native speaker hears.",
+              "Латинские буквы мы знаем со школы, по математике и физике, и называем на латинский манер: {{а}} плюс {{бэ}}. Эти названия переходят в английский, и {{API}} превращается в {{а-пэ-и}} или в одно слово, {{апи}}. С {{key}} другая история: его читают как {{hey}}. Но {{кей}} — [[это английское название буквы K]], и носитель слышит именно её."),
         pull([(ru, en, f"{ipa(tr)} {say}") for ru, en, tr, say in LETTERS]),
     ]))
     say = section("practice", "\n".join([
@@ -100,12 +100,12 @@ NOTE = dict(
     from_linkedin=True,
     kind_en="Pronunciation", kind_ru="Произношение",
     count_en="API key · 8 words", count_ru="API key · 8 слов",
-    title_en="Three letters and a key.", title_ru="Три буквы и один ключ.",
-    short_en="Three letters and a key", short_ru="Три буквы и один ключ",
+    title_en="Three letters and a key.", title_ru="Эй-пи-ай, а не апи.",
+    short_en="Three letters and a key", short_ru="Эй-пи-ай, а не апи",
     ledger_spec=f'{D("апи кей")} <span class="ledger__to" aria-hidden="true">→</span> {I("эй-пи-ай ки")}',
-    card_en="Three letters <em>and a key.</em>", card_ru="Три буквы <em>и один ключ.</em>",
+    card_en="Three letters <em>and a key.</em>", card_ru="Эй-пи-ай, <em>а не апи.</em>",
     card_spec='<span class="x">апи кей</span><span class="to">→</span><span class="ok">эй-пи-ай ки</span>',
-    h1_en=["Three letters", "and a key."], h1_ru=["Три буквы", "и один ключ."],
+    h1_en=["Three letters", "and a key."], h1_ru=["Эй-пи-ай,", "а не апи."],
     # The posts' observations, cleaned, then the answer. The English is a DRAFT.
     stand_en="Many programmers say “апи кей”: two words, two mistakes. The abbreviation is read as a word, and key as [кей], which a native speaker hears as the letter K. [[API is spelled out, эй-пи-ай, and key is ки.]]",
     stand_ru="Многие программисты по привычке говорят «апи кей»: два слова — две ошибки. Аббревиатуру читают как слово, а key — как [кей], и носитель слышит букву K. [[API читается по буквам, эй-пи-ай, а key — ки.]]",
@@ -119,8 +119,8 @@ NOTE = dict(
     og_desc="API is spelled out, эй-пи-ай; key is ки, not кей. Eight words from work and how they sound.",
     og_alt="Three letters and a key. A note by Igor Shatsev on saying API key.",
     ld_headline="Three letters and a key: how to say API key",
-    contact_lede_en="If you work in IT, you say these words on calls all the time. The trial lesson is a good place to check how yours sound. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
-    contact_lede_ru="Если вы работаете в IT, вы постоянно говорите эти слова на созвонах. На пробном занятии легко проверить, как они звучат у вас. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
+    contact_lede_en="If you work in IT, you say these words on calls every week. Say a few of them to me in the trial lesson, and you’ll know how they sound. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Если вы в IT, эти слова звучат у вас на созвонах каждую неделю. Скажите мне несколько на пробном занятии — и узнаете, как они звучат. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “API key”. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про «API key». Хочу записаться на бесплатное занятие по английскому.",
     body=body,

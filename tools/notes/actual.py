@@ -64,7 +64,7 @@ FIGURE = f"""    <figure class="note-fig entry reveal" aria-labelledby="fig-actu
         <div class="ladder__row"><span class="ladder__s" lang="ru">настоящий, фактический</span>{role("means", "значит")}</div>
         <div class="ladder__row"><span class="ladder__s" lang="en">{I("current")}, {I("relevant")}</span>{role("say instead", "говорите так")}</div>
       </div>
-      <figcaption id="fig-actual"><span data-l="en">{strong("Fig. 1. {{actual}} is about what is real. For what matters now, English has other words.")}</span><span data-l="ru">{strong("Фиг. 1. {{actual}} — про то, что есть на самом деле. Для того, что важно сейчас, в английском другие слова.")}</span></figcaption>
+      <figcaption id="fig-actual"><span data-l="en">{strong("Fig. 1. {{actual}} is about what is real. For what matters now, English has other words.")}</span><span data-l="ru">{strong("Рис. 1. {{actual}} — про то, что есть на самом деле. Для того, что важно сейчас, в английском другие слова.")}</span></figcaption>
     </figure>"""
 
 MSG_EN = "Hi! I took the test in your note about “actual”: {n}/{t}. I’d like a free trial English lesson."
@@ -75,7 +75,7 @@ def body(note):
     words = section("words", "\n".join([
         head2("Eight phrases. Not one actual.", "Восемь фраз. Ни одного actual.",
               "Wherever Russian says {{актуальный}}, English names what you mean: [[relevant, current, up to date, still on]].",
-              "Там, где по-русски {{актуальный}}, английский называет то, что вы имеете в виду: [[relevant, current, up to date, still on]]."),
+              "Там, где по-русски {{актуальный}}, по-английски говорят точнее: [[relevant, current, up to date, still on]]."),
         register("Eight phrases with актуальный, and what English says", "Восемь фраз с «актуальный» и как сказать по-английски",
                  [("In Russian", "По-русски"), ("In English", "По-английски")],
                  [[ru, ("register__w", en)] for ru, en in PHRASES], cls=" register--pairs"),
@@ -83,8 +83,8 @@ def body(note):
     why = section("why", "\n".join([
         # DRAFT for Igor: the post says what actual means; the why (актуальный,
         # German and French) and the actually row were written for the note.
-        head2("Same root, different job.", "Корень общий, работа разная.",
-              "{{актуальный}} is about now. {{actual}} is about fact: [[what really is, or really happened]]. German {{aktuell}} and French {{actuel}} mean “current” too; English went its own way. In Russian, {{actual}} is one of these:",
+        head2("Same root, different job.", "Корень общий, смысл разный.",
+              "{{актуальный}} is about now. {{actual}} is about fact: [[what really is, or really happened]]. German {{aktuell}} and French {{actuel}} mean “current” too; English went its own way. Translated into Russian, {{actual}} is one of these:",
               "{{актуальный}} — про «сейчас». {{actual}} — про факт: [[то, что есть или было на самом деле]]. Немецкое {{aktuell}} и французское {{actuel}} тоже значат «текущий», а английский пошёл своим путём. По-русски {{actual}} — это вот что:"),
         pull([
             ("настоящий, фактический", "actual", "the actual deadline"),
@@ -93,7 +93,7 @@ def body(note):
     ]))
     test = section("practice", "\n".join([
         head2("Which would a native speaker say?", "Какие фразы сказал бы носитель?",
-              "Tap every sentence that sounds right to you, then check. [[Some are fine, most are not]].",
+              "Pick every sentence that sounds right to you, then check. [[Some are fine, most are not]].",
               "Отметьте все фразы, которые звучат правильно, и проверьте. [[Какие-то в порядке, большинство — нет]]."),
         "  <!-- DRAFT for Igor (SITE-PLAN.md NQ13): the offer line and the actually line are not from the post. -->",
         ear_test(TEST, MSG_EN, MSG_RU, tg(note["tg_en"])),
@@ -118,7 +118,7 @@ NOTE = dict(
     h1_en=["Real,", "not current."], h1_ru=["Настоящий,", "а не актуальный."],
     # The post's opening, cleaned, then the answer (the post leaves it to the
     # slides). The English is a DRAFT translation.
-    stand_en="If you write “Is this task still actual?” in the work chat, I have bad news for you. {{actual}} sounds like {{актуальный}}, but it means real, existing in fact. [[For актуальный, English says relevant, current or up to date.]]",
+    stand_en="If you write “Is this task still actual?” in a work chat, I have bad news for you. {{actual}} sounds like {{актуальный}}, but it means real, existing in fact. [[For актуальный, English says relevant, current or up to date.]]",
     stand_ru="Если вы пишете в рабочий чат «Is this task still actual?», у меня для вас плохие новости. {{actual}} звучит как {{актуальный}}, но значит «настоящий, действительный, реальный». [[Вместо «актуальный» по-английски говорят relevant, current или up to date.]]",
     figure=FIGURE,
     comment="/notes/actual/: Igor's LinkedIn post and carousel on actual, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
@@ -130,8 +130,8 @@ NOTE = dict(
     og_desc="actual means real. For актуальный, English says relevant, current or up to date. Eight phrases and a test.",
     og_alt="Real, not current. A note by Igor Shatsev on the word actual.",
     ld_headline="Real, not current: actual is not актуальный",
-    contact_lede_en="Not sure which Russian words slip into your English? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
-    contact_lede_ru="Не уверены, какие русские слова пролезают в ваш английский? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
+    contact_lede_en="Words like actual slip into English unnoticed. In the trial lesson we’ll find the ones that slip into yours. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Слова вроде actual пролезают в английский незаметно. На пробном занятии найдём те, что пролезают в ваш. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “actual”. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про «actual». Хочу записаться на бесплатное занятие по английскому.",
     body=body,

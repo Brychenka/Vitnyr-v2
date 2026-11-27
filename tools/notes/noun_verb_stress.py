@@ -8,9 +8,9 @@ from lib import head2, practice_pair, register, section, spec_pair
 
 PAIRS = [("CON", "flict", "con", "FLICT"), ("OB", "ject", "ob", "JECT"), ("PRO", "ject", "pro", "JECT"),
          ("PRO", "gress", "pro", "GRESS"), ("CON", "tract", "con", "TRACT"), ("CON", "trast", "con", "TRAST"),
-         ("EX", "port", "ex", "PORT"), ("IM", "port", "im", "PORT"), ("CON", "sole", "con", "SOLE")]  # conSOLE: Q7
+         ("EX", "port", "ex", "PORT"), ("IM", "port", "im", "PORT"), ("RE", "cord", "re", "CORD")]  # was CONsole/conSOLE, two different words (Q7, copy review 2026-11-28)
 THINGS = ["create an <b>OB</b>ject", "my current <b>PRO</b>ject", "any <b>PRO</b>gress on the ticket?",
-          "I signed the <b>CON</b>tract", "the data <b>EX</b>port failed", "check the <b>CON</b>sole"]
+          "I signed the <b>CON</b>tract", "the data <b>EX</b>port failed", "keep a <b>RE</b>cord of it"]
 ACTIONS = ["I ob<b>JECT</b> to this approach", "we pro<b>JECT</b> a two-week delay",
            "the migration is pro<b>GRESS</b>ing", "con<b>TRAST</b> the two options",
            "ex<b>PORT</b> it to CSV", "im<b>PORT</b> the module"]
@@ -24,7 +24,7 @@ FIGURE = """    <figure class="note-fig weights reveal" aria-labelledby="fig-str
         <span class="weights__word"><span class="weights__light">pro</span><span class="weights__heavy">JECT</span></span>
         <span class="weights__role" data-en="verb · an action" data-ru="глагол · действие">verb · an action</span>
       </div>
-      <figcaption id="fig-stress"><span data-l="en">Fig. 1. <span class="w">PROject</span> is a thing. The weight is on the first syllable.</span><span data-l="ru">Фиг. 1. <span class="w">PROject</span> — вещь. Вес на первом слоге.</span></figcaption>
+      <figcaption id="fig-stress"><span data-l="en">Fig. 1. <span class="w">PROject</span> is a thing. The weight is on the first syllable.</span><span data-l="ru">Рис. 1. <span class="w">PROject</span> — вещь. Вес на первом слоге.</span></figcaption>
     </figure>"""
 
 
@@ -40,9 +40,9 @@ def body(note):
                  cls=" register--pairs"),
     ]))
     why = section("why", "\n".join([
-        head2("Russian “проЕкт” puts the weight in the wrong pan.", "Русское «проЕкт» кладёт гирю не на ту чашу.",
-              "The pattern runs all through English. Russian has plenty of look-alikes, {{объект}}, {{проект}}, {{контракт}}, and they make it easy to slip. You’ll probably still be understood, but [[it adds friction and extra work for the listener]], and that can cost you the first impression.",
-              "Этот паттерн часто проскакивает в английском языке. В русском много похожих слов, и из-за них легко ошибиться: {{объект}}, {{проект}}, {{контракт}} и т. д. Тебя, скорее всего, всё равно поймут, но [[это создаёт лишнее когнитивное трение и лишнюю работу для слушателя]], которая может ухудшить первое впечатление."),
+        head2("Russian “проЕкт” puts the stress on the wrong syllable.", "Русское «проЕкт» кладёт гирю не на ту чашу.",
+              "The pattern runs all through English. Russian has plenty of look-alikes, {{объект}}, {{проект}}, {{контракт}}, and they make it easy to slip. You’ll probably still be understood, but [[the listener has to work harder]], and that can hurt a first impression.",
+              "Эта закономерность в английском встречается постоянно. В русском много похожих слов, и из-за них легко ошибиться: {{объект}}, {{проект}}, {{контракт}} и т. д. Вас, скорее всего, поймут, но [[слушателю придётся напрягаться]], а это может подпортить первое впечатление."),
         """  <dl class="note-stats">
     <div class="reveal"><dt>94%</dt><dd><span data-l="en">of two-syllable nouns are stressed on the first syllable</span><span data-l="ru">двусложных существительных — с ударением на первом слоге</span></dd></div>
     <div class="reveal"><dt>69%</dt><dd><span data-l="en">of two-syllable verbs are stressed on the second</span><span data-l="ru">двусложных глаголов — с ударением на втором</span></dd></div>
@@ -76,20 +76,20 @@ NOTE = dict(
     card_spec='my current pro<span class="x">JECT</span><span class="to">→</span><span class="ok">PRO</span>ject',
     h1_en=["The weight", "of stress."], h1_ru=["О весе", "ударения."],
     # "my students" replaces "my IT clients" (Igor, 2026-11-27: not IT-first).
-    stand_en="Another set of words my students trip over, the same way they do with {{CONflict}} and {{conFLICT}}. [[As a noun, the weight sits on the first syllable. As a verb, it moves to the second.]]",
-    stand_ru="Собрал ещё ряд слов, на ударении в которых спотыкаются мои ученики, как с {{CONflict}} и {{conFLICT}}. [[У существительного вес на первом слоге, у глагола — на втором.]]",
+    stand_en="My students trip over these words, just as they do over {{CONflict}} and {{conFLICT}}. [[As a noun, the weight sits on the first syllable. As a verb, it moves to the second.]]",
+    stand_ru="На этих словах мои ученики спотыкаются так же, как на {{CONflict}} и {{conFLICT}}. [[У существительного вес на первом слоге, у глагола — на втором.]]",
     figure=FIGURE,
     comment="/notes/noun-verb-stress/: Igor's LinkedIn post on noun/verb stress, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="PROject or proJECT? Noun and verb stress in English — Igor Shatsev",
     title_ru_head="PROject или proJECT? Ударение в существительных и глаголах — Igor Shatsev",
-    desc_en="OBject or obJECT, PROject or proJECT: nine words that move their stress when the noun becomes a verb, and why Russian pulls it to the wrong syllable.",
+    desc_en="OBject or obJECT, PROject or proJECT: nine words that move their stress when the noun becomes a verb, and why Russian speakers stress the wrong one.",
     desc_ru="OBject или obJECT, PROject или proJECT: девять слов, у которых ударение кочует между существительным и глаголом, и почему русский тянет его не туда.",
     og_title="The weight of stress: PROject or proJECT? — Igor Shatsev",
     og_desc="Nine words whose stress moves when the noun becomes a verb.",
     og_alt="The weight of stress. A note by Igor Shatsev on noun and verb stress.",
     ld_headline="The weight of stress: PROject or proJECT?",
-    contact_lede_en="Not sure where your stress falls? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
-    contact_lede_ru="Не уверены, куда падает ваше ударение? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
+    contact_lede_en="Stress is the hardest thing to hear in your own speech. In the trial lesson I’ll tell you where yours falls. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Ударение в своей речи услышать труднее всего. На пробном занятии скажу, куда падает ваше. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about word stress. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про ударение. Хочу записаться на бесплатное занятие по английскому.",
     body=body,
