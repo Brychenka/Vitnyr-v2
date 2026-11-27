@@ -2650,6 +2650,24 @@ html.js .collage .reveal.is-in .collage__slot {
 }
 .ladder__s[lang="ru"] { color: var(--fg2); }
 
+/* The vocabulary notes' figure: a dictionary entry (2026-11-28, "actual").
+   The headword and its transcription, then the ladder's rows: what the word
+   looks like (the false friend, struck in specimen ink), what it means, and
+   what to say instead. Here the Russian rows are the subject, not a gloss,
+   so they keep the body ink. The headword takes the ladder's stand-in for
+   Lora, so its swap doesn't shift the rows under it. */
+.entry__head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px;
+  margin: 0 0 clamp(16px, 2.2vw, 26px);
+}
+.entry__w {
+  font-family: Lora, 'Lora Ladder Fallback', Georgia, "Times New Roman", serif;
+  font-weight: 500; font-size: clamp(56px, 6.8vw, 96px); line-height: 1; letter-spacing: -.015em;
+  color: var(--fg);
+}
+.entry__head .ipa { font-size: clamp(15px, 1.5vw, 19px); color: var(--fg2); }
+.entry .ladder__s[lang="ru"] { color: var(--fg); }
+
 /* A specimen on /english/ points to its note. */
 .spec__more { margin-top: 18px; }
 
@@ -2712,8 +2730,12 @@ html.js .collage .reveal.is-in .collage__slot {
 /* Why: the Russian look-alikes, each beside the English word it drags:
    Russian under the heading's column, English under the lede's. */
 .pull { border-top: 1px solid var(--rule); }
+/* min-content: a long Russian word (чувствую себя, актуальный) plus the
+   arrow's 26px outgrew a .9fr column on a phone, and the arrow ran into the
+   English word (2026-11-28, up to 55px at 320). The Russian column now grows
+   to fit, and the English side wraps instead. */
 .pull__row {
-  display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  display: grid; grid-template-columns: minmax(min-content, .9fr) minmax(0, 1.1fr);
   align-items: baseline; gap: 4px 16px;
   padding: 16px 0; border-bottom: 1px solid var(--rule);
 }
@@ -2735,6 +2757,13 @@ html.js .collage .reveal.is-in .collage__slot {
 .pull__arrow svg { display: block; flex: none; width: 26px; height: 8px; overflow: visible; }
 .pull__en { font-family: var(--mono); font-size: clamp(16px, 1.6vw, 19px); }
 .pull__ipa { font-family: var(--mono); font-size: clamp(15px, 1.5vw, 17px); color: var(--fg2); }
+/* At 320 "представиться" and "introduce" still overran the gutter by 12px
+   (2026-11-28); after the base rules so it wins. */
+@media (max-width: 359px) {
+  .pull__row { column-gap: 10px; }
+  .pull__from { gap: 8px; }
+  .pull__ru { font-size: 19px; }
+}
 
 /* Two figures from the stress post, set as display numerals. */
 .note-stats {

@@ -8,3 +8,7 @@ tests/test-results/
 __pycache__/
 *.pyc
 dist/
+
+# A press photo from one of the LinkedIn posts, not Igor's own: kept
+# locally for reference, never published (the repo is public).
+reference/linkedin-posts/redact.jpg

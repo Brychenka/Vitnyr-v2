@@ -6632,3 +6632,40 @@ Igor renamed his Telegram account. `t.me/vitnyr` opens his profile, and
 - **Rebuilt:** the notes. 510 passed.
 - **Not changed:** the older entries in this log, which still say @yngvil
   because that was the handle at the time.
+
+## Note: actual (2026-11-28, `feature/note-actual`)
+
+The fifth note, from Igor's LinkedIn post and four-slide carousel "Actual?"
+(8 October 2026). The eight posts were read from LinkedIn through Chrome
+first (`reference/linkedin-posts/`: text with "… more" expanded, the post's
+own link, every image at the size LinkedIn serves it) and reviewed as notes
+(`REVIEW.md`). actual went first because it is the one post whose every
+phrase and fix is Igor's own (the carousel), it has the clearest search
+demand («актуальный по-английски»), and it needs the least invented copy.
+
+- **A new kind, Vocabulary, and a new figure, `.entry`:** a dictionary
+  entry. The headword in Lora with its IPA, then the ladder's own rows:
+  what it looks like (актуальный, struck in specimen ink), what it means
+  (настоящий, фактический), what to say instead (current, relevant, in
+  target ink). The Russian rows keep body ink here, because they are the
+  subject. The headword uses the ladder's Lora stand-in, so the swap
+  doesn't shift the rows. Reusable for the other false friends
+  (serial, redact).
+- **Copy:** h1 "Real, / not current." / «Настоящий, / а не актуальный.»
+  The standfirst is the post's opening (ты → вы, as on the rest of the
+  site). The register is the carousel's four slides; the note under it is
+  slide 2's "Или the latest version". Practice is a pair: the four fixes as
+  sentences, and the post's two examples of actual plus two DRAFT lines.
+  The "why" and the *актуально → actually* row were written for the note
+  (NQ13). Dated 8 October 2026 from the post ID (LinkedIn IDs carry the
+  time: `id >> 22` is milliseconds since 1970), linked to the post itself.
+- **A bug the new note exposed, fixed for every note:** on a phone the
+  `.pull` arrow ran into the English word whenever the Russian word was
+  long (feel's «чувствую себя» by 30px at 375 and 55px at 320, could-you's
+  first row, actual's). The Russian column is now `minmax(min-content,
+  .9fr)`, and under 360px the gaps and the Russian size step down. Every
+  arrow keeps 10-16px to its word at 320-414, and no English word overruns
+  the gutter.
+- **Measured** (4× CPU, 1.6 Mbps, 150 ms, median of 3): CLS 0.007 phone,
+  0.009 desktop (Russian 0.010 / 0.006), LCP 2.7 / 2.5s, the same as feel.
+- **Version key:** `style.css` 20261127c → 20261128a on the four pages.

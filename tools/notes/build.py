@@ -21,7 +21,7 @@ import sys
 from lib import (ARROW, PERSON, RIGHT_VH, ROOT, SITE, WRONG_VH, article_ld, breadcrumb, hero, label,
                  page, pager)
 
-ORDER = ["feel", "could_you", "au", "noun_verb_stress"]  # newest first
+ORDER = ["actual", "feel", "could_you", "au", "noun_verb_stress"]  # newest first
 # agree.py ("I am agree") is parked on feature/notes-agree until Igor decides (2026-11-20).
 
 
