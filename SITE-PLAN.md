@@ -245,7 +245,7 @@ until you do.
 | NQ7 | `conSOLE` as a verb means "to comfort". Keep it, or swap in a pair IT people use (`REcord / reCORD`, `UPdate / upDATE`)? | H4 |
 | NQ8 | Recordings of the words and sentences (what to record: `tools/notes/RECORDINGS.md`). | H4 |
 | NQ9 | The "I am agree" note is parked on `feature/notes-agree`: publish it, or leave it? | H4 |
-| NQ13 | The actual note (`tools/notes/actual.py`): approve the English translation of the post, the "why" lede (актуальный is about now; German *aktuell*, French *actuel*), the *актуально → actually* row, and practice lines iii–iv on the right (all marked DRAFT). | H4 |
+| NQ13 | The actual note (`tools/notes/actual.py`): approve the English translation of the post, the four table rows after the carousel's four (meeting still on, offer still valid, a hot topic, the current exchange rate), the "why" lede (German *aktuell*, French *actuel*), and two test sentences (the offer, *Actually, I meant Tuesday*). All marked DRAFT. | H4 |
 | NQ10 | The English page calls the Russian in "I feel myself" a "reflexive ending built into the verb", but чувствую себя uses a separate word (себя). Change it to "reflexive word", as the note says? | H4 |
 
 ---

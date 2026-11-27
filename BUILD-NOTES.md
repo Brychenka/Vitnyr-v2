@@ -6669,3 +6669,31 @@ demand («актуальный по-английски»), and it needs the leas
 - **Measured** (4× CPU, 1.6 Mbps, 150 ms, median of 3): CLS 0.007 phone,
   0.009 desktop (Russian 0.010 / 0.006), LCP 2.7 / 2.5s, the same as feel.
 - **Version key:** `style.css` 20261127c → 20261128a on the four pages.
+
+**Rebuilt the same day after a cold review** (Igor: will each part be read,
+and does it bring people to the site?). The first build said "Is this task
+still relevant?" four times (figure, the wrong/right pair, table row 1,
+practice line i), its practice repeated the table, and its standfirst said
+what actual means but not what to say instead.
+
+- **Standfirst** ends on the answer: "For актуальный, English says
+  relevant, current or up to date." Search snippets and skimmers stop there.
+- **Cut:** the wrong/right pair (table row 1 said the same) and the
+  floating "the latest version" note (now in row 2).
+- **Table: 4 rows → 8**, "Eight phrases. Not one actual.": the carousel's
+  four, then four that people search for (still on, still valid, a hot
+  topic, the current exchange rate; DRAFT, NQ13).
+- **Why:** shorter, and its rows now say what the figure doesn't: where
+  actual does belong (настоящий, фактический → actual) and the next trap
+  (на самом деле → actually, not актуально).
+- **Practice is a test**, the English page's own widget (`ear_test()` in
+  `lib.py`, `initEarTest` in `main.js`): eight sentences, three natural,
+  tap the ones that sound right, check. A miss names the Russian phrase
+  behind it, and "Send me your score" opens Telegram with the score and
+  the note's name (`data-msg-en/-ru` on `.ear`, new; the English page keeps
+  its own message). A vocabulary note is practised by judging sentences;
+  "Say it out loud" stays for the pronunciation notes. The section carries
+  `.sec--ear`, so it is hidden without JS, as on /english/.
+- **Length:** about the same as before (desktop 4715px, phone 5459px), but
+  every part now carries something the others don't.
+- **Version key:** `main.js` 20261127c → 20261128a on the four pages.
