@@ -211,3 +211,86 @@ def test_the_notes_are_up_to_date_with_their_generator(tmp_path):
     for rel in built + [Path("sitemap.xml"), Path("assets/share/share-card.html")]:
         assert (tmp_path / rel).read_text() == (REPO_ROOT / rel).read_text(), \
             f"{rel} is stale: run python3 tools/notes/build.py"
+
+
+# ---------------------------------------------------------------------------
+# The notes redesign (2026-11-27, feature/notes-redesign): the library is the
+# page, the reader's own mistake leads each row, IPA is set in one face, the
+# Russian title keeps its weight and a note doesn't jump while it loads.
+
+@pytest.mark.parametrize("lang", ["en", "ru"])
+@pytest.mark.parametrize("phone", [False, True])
+def test_the_first_note_is_on_the_first_screen(open_site, lang, phone):
+    """No booking ask or second heading above the list: the first row's
+    mistake line is fully visible without scrolling, above the phone's
+    fixed message bar."""
+    kw = dict(viewport=NARROW, has_touch=True) if phone else dict(viewport={"width": 1280, "height": 800})
+    page, _ = open_site(path="notes/", lang=lang, reduced_motion=True, **kw)
+    page.wait_for_timeout(300)
+    bottom = page.evaluate("document.querySelector('.ledger__spec').getBoundingClientRect().bottom")
+    limit = page.evaluate("""(() => { const d = document.querySelector('.dock');
+        return d && getComputedStyle(d).display !== 'none' ? d.getBoundingClientRect().top : innerHeight })()""")
+    assert bottom <= limit, (bottom, limit)
+
+
+def test_the_index_asks_for_nothing_above_the_notes(open_site):
+    page, _ = open_site(path="notes/")
+    assert page.locator('#hero a[href*="t.me"], #hero .page-cta, #hero .scrollcue').count() == 0
+    assert page.locator("#notes .sec__head").count() == 0
+
+
+def test_ledger_rows_lead_with_the_mistake_and_say_which_line_is_which(open_site):
+    page, _ = open_site(path="notes/")
+    for row in page.locator(".ledger__link").all():
+        order = row.evaluate("e => [...e.querySelector('.ledger__main').children].map(c => c.className)")
+        assert order == ["ledger__spec", "ledger__title"], order
+        text = row.locator(".ledger__spec").inner_text()
+        assert "Incorrect:" in row.locator(".ledger__spec").text_content() and \
+               "Correct:" in row.locator(".ledger__spec").text_content(), text
+        assert row.locator("time, .ledger__date").count() == 0
+
+
+@pytest.mark.parametrize("path", ["notes/", "notes/au/"])
+def test_every_transcription_renders_in_one_face(open_site, path):
+    """None of the site's font files carry IPA, so a transcription left to
+    per-glyph fallback mixed faces inside one word (and set the au tile's ɔː
+    in Times). Each .ipa must render in a single face."""
+    page, ctx = open_site(path=path)
+    cdp = ctx.new_cdp_session(page)
+    cdp.send("DOM.enable")
+    cdp.send("CSS.enable")
+    root = cdp.send("DOM.getDocument", {"depth": -1})["root"]["nodeId"]
+    ids = cdp.send("DOM.querySelectorAll", {"nodeId": root, "selector": ".ipa"})["nodeIds"]
+    assert ids, "no .ipa on " + path
+    rendered = 0
+    for node in ids:
+        fonts = {f["familyName"] for f in cdp.send("CSS.getPlatformFontsForNode", {"nodeId": node})["fonts"]}
+        assert len(fonts) <= 1, fonts     # none: the hidden language's twin
+        rendered += len(fonts)
+    assert rendered, "no transcription rendered on " + path
+
+
+@pytest.mark.parametrize("slug", NOTES)
+def test_the_russian_title_keeps_its_second_line_at_full_size(open_site, slug):
+    """html[lang=ru] .hero__title em is .5em for the home page's long line;
+    the notes' endings are a word or two and must match the English size."""
+    sizes = {}
+    for lang in ("en", "ru"):
+        page, _ = open_site(path=f"notes/{slug}/", lang=lang, viewport=NARROW, has_touch=True)
+        sizes[lang] = page.evaluate(
+            f"parseFloat(getComputedStyle(document.querySelector('.hero__title [data-l=\"{lang}\"] em')).fontSize)")
+    assert sizes["ru"] == sizes["en"], sizes
+
+
+def test_note_pages_preload_inter_and_the_index_does_not():
+    """A note's standfirst quotes words in mono; a late Inter swap rewrapped
+    it and moved everything below (CLS up to 0.14). The index never jumped
+    and its hero waits for every font, so a preload there only slowed it."""
+    rx = r'<link rel="preload" href="/assets/fonts/(inter-[a-z]+-v\d+)\.woff2" as="font" type="font/woff2" crossorigin>'
+    assert not re.findall(rx, (REPO_ROOT / "notes" / "index.html").read_text())
+    css = (REPO_ROOT / "style.css").read_text()
+    for slug in NOTES:
+        found = re.findall(rx, (REPO_ROOT / "notes" / slug / "index.html").read_text())
+        assert sorted(found) == ["inter-cyrillic-v20", "inter-latin-v20"], (slug, found)
+        for name in found:   # the preload must be the very file the CSS asks for
+            assert f"url(assets/fonts/{name}.woff2)" in css, name

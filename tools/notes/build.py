@@ -18,8 +18,8 @@ import importlib
 import re
 import sys
 
-from lib import (ARROW, LINKEDIN, PERSON, ROOT, SITE, article_ld, breadcrumb, head2, hero, label, page,
-                 pager, tg)
+from lib import (ARROW, LINKEDIN, PERSON, RIGHT_VH, ROOT, SITE, WRONG_VH, article_ld, breadcrumb, hero, label,
+                 page, pager)
 
 ORDER = ["feel", "could_you", "au", "noun_verb_stress"]  # newest first
 # agree.py ("I am agree") is parked on feature/notes-agree until Igor decides (2026-11-20).
@@ -45,22 +45,34 @@ def build_note(note, nxt, wrapped):
          jsonld=article_ld(path, note["ld_headline"], note["og_desc"], note["short_en"], note["iso"], card),
          body=body,
          contact_lede_en=note["contact_lede_en"], contact_lede_ru=note["contact_lede_ru"],
-         tg_en=note["tg_en"], tg_ru=note["tg_ru"])
+         tg_en=note["tg_en"], tg_ru=note["tg_ru"], preload=True)
 
 
 INDEX_TG_EN = "Hi! I came from your notes. I'd like to book a free trial English lesson."
 INDEX_TG_RU = "Здравствуйте! Я с ваших заметок. Хочу записаться на бесплатное занятие по английскому."
 
 
+LEDGER_TO = '<span class="ledger__to" aria-hidden="true">→</span>'
+
+
+def ledger_spec(n):
+    """The row's lead: the reader's own mistake, then the fix, labelled for
+    screen readers the way the specimens are (the arrow is hidden)."""
+    wrong, right = n["ledger_spec"].split(LEDGER_TO)
+    return (f'{WRONG_VH}<span lang="en">{wrong.strip()}</span> {LEDGER_TO} '
+            f'{RIGHT_VH}<span lang="en">{right.strip()}</span>')
+
+
 def build_index(notes):
+    # Mistake first, the note's title under it as the punchline. No date:
+    # every note shows its own, and the JSON-LD carries datePublished.
     ledger = "\n".join(f"""    <li class="ledger__item reveal">
       <a class="ledger__link" href="/notes/{n['slug']}/">
         <span class="ledger__meta"><span class="ledger__kind" data-en="{n['kind_en']}" data-ru="{n['kind_ru']}">{n['kind_en']}</span><span class="ledger__count" data-en="{n['count_en']}" data-ru="{n['count_ru']}">{n['count_en']}</span></span>
         <span class="ledger__main">
+          <span class="ledger__spec">{ledger_spec(n)}</span>
           <span class="ledger__title" data-en="{n['title_en']}" data-ru="{n['title_ru']}">{n['title_en']}</span>
-          <span class="ledger__spec" lang="en">{n['ledger_spec']}</span>
         </span>
-        <time class="ledger__date" datetime="{n['iso']}" data-en="{n['date_short_en']}" data-ru="{n['date_short_ru']}">{n['date_short_en']}</time>
         <span class="ledger__arrow" aria-hidden="true">{ARROW}</span>
       </a>
     </li>""" for n in notes)
@@ -120,30 +132,23 @@ def build_index(notes):
     <div class="page-hero__text">
       <p class="stand reveal" data-l="en">The mistakes I hear from Russian-speaking professionals, taken apart one at a time: what goes wrong, why Russian pulls it there, and how it should sound.{origin_en}</p>
       <p class="stand reveal" data-l="ru">Ошибки, которые я слышу у русскоязычных специалистов, разобранные по одной: что ломается, почему туда тянет русский и как должно звучать.{origin_ru}</p>
-      <div class="page-hero__actions reveal">
-        <a class="page-cta" data-magnetic target="_blank" rel="noopener" href="{tg(INDEX_TG_EN)}" data-href-en="{tg(INDEX_TG_EN)}" data-href-ru="{tg(INDEX_TG_RU)}">
-          <span data-en="Book a free trial lesson" data-ru="Записаться на бесплатное занятие">Book a free trial lesson</span>
-          {ARROW}
-        </a>
-        <a class="scrollcue" href="#notes" data-magnetic>
-          <span data-en="Read the notes" data-ru="Читать заметки">Read the notes</span>
-          <svg viewBox="0 0 12 24" aria-hidden="true"><path d="M6 0 V22 M1 17 L6 22 L11 17" fill="none" stroke="currentColor" stroke-width="1.25"/></svg>
-        </a>
-      </div>
     </div>
   </div>
 </section>
 
-<section class="sec" id="notes">
+<!-- The library is the page: no booking ask above it (the masthead, the
+     phone bar and the contact section below carry that) and no second
+     heading restating the hero. -->
+<section class="sec sec--ledger" id="notes" aria-labelledby="notes-title">
 {label("01", "Notes", "Заметки")}
-{head2("One mistake at a time.", "По одной ошибке.",
-       "Each note: the mistake, the Russian habit behind it, the words it hides in, and sentences to say out loud.",
-       "В каждой заметке: ошибка, русская привычка за ней, слова, в которых она прячется, и фразы, чтобы проговорить вслух.")}
+  <h2 class="vh" id="notes-title" data-en="All notes" data-ru="Все заметки">All notes</h2>
   <ol class="ledger" reversed>
 {ledger}
   </ol>
+  <!-- Only some notes started as LinkedIn posts, so this says what is true
+       of all of them: Igor writes about English there. -->
   <p class="ledger__more reveal">
-    <span data-l="en">New notes go up on LinkedIn first.</span><span data-l="ru">Новые заметки сначала выходят в LinkedIn.</span>
+    <span data-l="en">I also write about English on LinkedIn.</span><span data-l="ru">Об английском я пишу и в LinkedIn.</span>
     <a class="ledger__follow" href="{LINKEDIN}" target="_blank" rel="noopener" data-magnetic><span data-en="Follow me there" data-ru="Подписаться">Follow me there</span>{ARROW}</a>
   </p>
 </section>"""

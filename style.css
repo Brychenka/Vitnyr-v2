@@ -135,6 +135,20 @@
   src: url(assets/fonts/marck-script-latin-v22.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+/* Stand-in for JetBrains Mono while it loads: Courier New has its exact
+   advance (.6 em) in Latin and Cyrillic, so a line holding mono words (the
+   notes quote words in mono inside prose) wraps the same before and after
+   the swap. Never seen once JetBrains Mono has loaded. An Inter stand-in
+   was tried and left out: Arial scaled to Inter's body width runs ~5% wide
+   in the uppercase labels, so the phone breadcrumb wrapped while loading
+   (2026-11-27, BUILD-NOTES.md). */
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New'), local('CourierNewPSMT');
+  ascent-override: 102%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
 
 :root {
   /* Cream pair, also the no-JS default. The charcoal values live in
@@ -169,7 +183,12 @@
 
   --serif: Lora, Georgia, "Times New Roman", serif;
   --sans:  Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --mono:  "JetBrains Mono", "JetBrains Mono Fallback", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* IPA (/lɔːntʃ/): none of the site's font files carry these glyphs, and
+     Google's JetBrains Mono and Lora don't have them either, so a whole
+     transcription is set in a system mono that does (.ipa) rather than
+     letting the browser swap faces glyph by glyph inside one word. */
+  --ipa:   Menlo, Consolas, "DejaVu Sans Mono", "Noto Sans Mono", "Droid Sans Mono", monospace;
   /* Marck Script, for hand-written margin notes only. It has real Cyrillic. */
   --hand:  "Marck Script", cursive;
 
@@ -741,6 +760,10 @@ html[data-lang="ru"] .hero__title    { letter-spacing: -.018em; }
 /* The Russian trifecta line is wider, so it is set smaller to stay on one
    line inside .line's single-line mask. */
 html[data-lang="ru"] .hero__title em { font-size: .5em; letter-spacing: -.010em; }
+/* The notes' Russian endings are one or two short words (мало., нечего.,
+   с занятий.), so they keep the English size instead of shrinking to half. */
+html[data-lang="ru"] .hero--note .hero__title em,
+html[data-lang="ru"] .hero--notes .hero__title em { font-size: .78em; }
 html[data-lang="ru"] .sec__head h2   { letter-spacing: -.010em; }
 html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 
@@ -1043,10 +1066,20 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 .spec__why { font-size: 15px; color: var(--fg2); max-width: var(--measure); }
 /* No Inter italic is loaded. These words are English quoted inside prose,
    which is what the mono means here. */
-.spec__why em {
-  font-family: var(--mono); font-style: normal; font-size: .92em;
-  color: var(--fg);
-}
+.spec__why em, .w { font-family: var(--mono); font-style: normal; font-size: .92em; }
+.spec__why em { color: var(--fg); }
+/* On a note a paragraph can quote a dozen words (the au standfirst names
+   ten); in full ink they turned it into a checkerboard, so there the face
+   alone marks them and they keep the paragraph's own ink. */
+.w { color: inherit; }
+/* A mono or IPA word inside a line of prose must not set the line's
+   height: their fonts' ascent and descent differ from Inter's, so when
+   JetBrains Mono swapped in, every line holding one grew and the page
+   below jumped (CLS 0.14 on /notes/au/ at phone width). */
+.w, p .ipa, figcaption .ipa { line-height: 1; }
+/* A transcription: one face for the whole of it (--ipa). In prose it keeps
+   .w's size; in a table or a tile it takes the cell's. */
+.ipa { font-family: var(--ipa); font-style: normal; }
 /* <del>/<ins> carry the diff semantically; the ink stays the only sighted
    signal, so the browser's strike and underline are off. */
 .line-spec del, .line-spec ins { text-decoration: none; }
@@ -2508,6 +2541,10 @@ html.js .collage .reveal.is-in .collage__slot {
 /* ɔ is a lowercase letter: at the caps' size it sits at x-height and reads
    small beside them. Sized up until its bowl matches the caps' height. */
 .tile--merged .tile__ch { font-size: clamp(34px, 4.2vw, 56px); }
+/* The IPA face is monospaced, so ː sits in a full-width cell; pulled in
+   until the length mark sits against the ɔ the way it does in print (the
+   padding gives back the trailing negative spacing, so it stays centred). */
+.tile__ch.ipa { font-family: var(--ipa); font-weight: 400; letter-spacing: -.16em; padding-right: .16em; }
 
 /* The stress figure: the weight of the type is the stress. */
 .weights { display: grid; gap: clamp(16px, 2vw, 24px); }
@@ -2640,7 +2677,9 @@ html.js .collage .reveal.is-in .collage__slot {
   padding: 14px 0; border-bottom: 1px solid var(--rule);
 }
 .practice__n { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 15px; color: var(--fg2); }
-.practice__s { font-family: var(--mono); font-size: clamp(16px, 1.7vw, 20px); line-height: 1.5; color: var(--fg); }
+/* Lines to say out loud, in the serif the Fig. 1 sentences use: mono is
+   for the word under examination, and a whole sentence in it reads as code. */
+.practice__s { font-family: var(--serif); font-size: clamp(19px, 1.9vw, 23px); line-height: 1.45; color: var(--fg); }
 .practice__s b {
   font-weight: 400;
   text-decoration: underline; text-decoration-color: var(--ink-target);
@@ -2672,19 +2711,26 @@ html.js .collage .reveal.is-in .collage__slot {
 .note-pager__next:hover .note-pager__t svg, .note-pager__next:focus-visible .note-pager__t svg { transform: translateX(6px); }
 
 /* The index: a ledger of corrected proofs. One hairline row per note, the
-   whole row one link; the rules bleed to the section edge like .specs. */
+   whole row one link; the rules bleed to the section edge like .specs.
+   The reader's own mistake leads (mono, as every specimen on the site),
+   the title follows as its punchline. No date: each note shows its own. */
+/* The list follows the hero closely: only the label and one hairline
+   between them, so the first rows are on the first screen. */
+.hero.hero--notes { padding-bottom: clamp(28px, 4vh, 48px); }
+.sec--ledger { padding-top: clamp(28px, 4.5vh, 56px); }
+.sec--ledger > .label { margin-bottom: clamp(18px, 2.4vw, 30px); }
 .ledger { border-top: 1px solid var(--rule); margin-inline: calc(var(--gut) * -1); padding-inline: var(--gut); }
 .ledger__item { border-bottom: 1px solid var(--rule); }
 .ledger__link {
-  display: grid; gap: 14px 24px;
+  display: grid; gap: 14px 24px; align-items: baseline;
   grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas: "meta meta" "main main" "date arrow";
-  padding: clamp(26px, 3.6vw, 44px) 0; color: var(--fg);
+  grid-template-areas: "meta arrow" "main main";
+  padding: clamp(24px, 3.2vw, 40px) 0; color: var(--fg);
 }
 @media (min-width: 900px) {
   .ledger__link {
-    grid-template-columns: minmax(0, .75fr) minmax(0, 2.25fr) auto auto;
-    grid-template-areas: "meta main date arrow";
+    grid-template-columns: minmax(0, .75fr) minmax(0, 2.25fr) auto;
+    grid-template-areas: "meta main arrow";
     align-items: baseline; column-gap: clamp(24px, 4vw, 56px);
   }
 }
@@ -2692,21 +2738,23 @@ html.js .collage .reveal.is-in .collage__slot {
 @media (min-width: 900px) { .ledger__meta { display: grid; } }
 .ledger__kind { font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--fg2); }
 .ledger__count { font-family: var(--mono); font-size: 13px; color: var(--fg2); }
-.ledger__main { grid-area: main; display: grid; gap: 12px; min-width: 0; }
-.ledger__title {
-  font-family: var(--serif); font-weight: 500; font-size: clamp(28px, 3.4vw, 46px);
-  line-height: 1.1; letter-spacing: -.02em; text-wrap: balance;
-  text-decoration: underline; text-decoration-color: transparent;
-  text-decoration-thickness: 1px; text-underline-offset: .14em;
-  transition: text-decoration-color var(--t) var(--e);
-}
-.ledger__spec { font-family: var(--mono); font-size: clamp(15px, 1.5vw, 18px); line-height: 1.5; color: var(--fg2); }
+.ledger__main { grid-area: main; display: grid; gap: 10px; min-width: 0; }
+.ledger__spec { font-family: var(--mono); font-size: clamp(18px, 2vw, 25px); line-height: 1.4; color: var(--fg); }
 .ledger__spec del, .ledger__spec ins { text-decoration: none; }
-.ledger__to { margin-inline: .25em; }
-.ledger__date { grid-area: date; font-size: 13px; color: var(--fg2); white-space: nowrap; }
+/* Each side stays whole, so a narrow screen breaks the line at the arrow
+   ("I feel myself good →" / "I feel good"), never inside a side. */
+.ledger__spec > [lang] { white-space: nowrap; }
+.ledger__to { margin-inline: .25em; color: var(--fg2); }
+.ledger__title {
+  font-family: var(--serif); font-style: italic; font-weight: 500;
+  font-size: clamp(17px, 1.6vw, 20px); line-height: 1.3; color: var(--fg2);
+  text-decoration: underline; text-decoration-color: transparent;
+  text-decoration-thickness: 1px; text-underline-offset: .18em;
+  transition: text-decoration-color var(--t) var(--e), color var(--t) var(--e);
+}
 .ledger__arrow { grid-area: arrow; justify-self: end; color: var(--fg2); }
 .ledger__arrow svg { display: block; width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e), color var(--t) var(--e); }
-.ledger__link:hover .ledger__title, .ledger__link:focus-visible .ledger__title { text-decoration-color: currentColor; }
+.ledger__link:hover .ledger__title, .ledger__link:focus-visible .ledger__title { color: var(--fg); text-decoration-color: currentColor; }
 .ledger__link:hover .ledger__arrow, .ledger__link:focus-visible .ledger__arrow { color: var(--fg); }
 .ledger__link:hover .ledger__arrow svg, .ledger__link:focus-visible .ledger__arrow svg { transform: translateX(6px); }
 .ledger__more {

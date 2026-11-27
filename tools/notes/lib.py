@@ -43,6 +43,16 @@ MAST = MAST.replace(' aria-current="page"', "")
 assert 'class="tool tools__notes" href="/notes/"' in MAST, "masthead has no Notes link"
 MAST = MAST.replace('class="tool tools__notes" href="/notes/"', 'class="tool tools__notes" href="/notes/" aria-current="page"')
 
+# Inter, fetched with the HTML instead of after the CSS, on the note pages
+# only: a late swap rewrapped the standfirst (now holding mono words) and
+# moved everything under it, CLS up to 0.14 on a slow phone. JetBrains
+# Mono needs no preload (its Courier New stand-in has the same advance).
+# Not on the index: it never jumped, and the hero waits for every font
+# (main.js, up to 1.5s), so a preload there only delayed its first text.
+PRELOAD = "\n".join(
+    f'<link rel="preload" href="/assets/fonts/{f}.woff2" as="font" type="font/woff2" crossorigin>'
+    for f in ("inter-latin-v20", "inter-cyrillic-v20"))
+
 ARROW = '<svg aria-hidden="true" viewBox="0 0 26 8"><path d="M0 4h23M19 1l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1"/></svg>'
 WRONG_SIG = '<span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M7.6 2.6 C7.6 1.4 5.9 1 4.7 1.9 C3.2 3 3.2 5.6 4.7 6.7 C5.7 7.4 7 7.2 7.7 6.3 M2.2 8.4 L8.6 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
 RIGHT_SIG = '<span class="sig" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.7 7.9 L5 3.5 L8.3 7.9 M5 3.7 L5 6.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
@@ -55,14 +65,32 @@ def tg(text):
     return "https://t.me/yngvil?text=" + quote(text, safe="")
 
 
+def w(s):
+    """A word, letter or sound under examination inside prose, in the
+    specimens' mono and without quotation marks (the same convention as
+    .spec__why em on /english/). Whole quoted sentences keep their quotes."""
+    return f'<span class="w">{s}</span>'
+
+
+def ipa(s):
+    """A transcription such as /lɔːntʃ/, set whole in one face that has
+    every IPA glyph (--ipa): none of the site's own font files carry them,
+    so letting the browser fall back glyph by glyph mixed two faces inside
+    one word (and put the au tile's ɔː in Times)."""
+    return f'<span class="ipa">{s}</span>'
+
+
 def strong(t):
     """[[...]] marks the one sentence a lede stresses (.mark, as on the
-    other pages)."""
-    return t.replace("[[", '<strong class="mark">').replace("]]", "</strong>") if t else t
+    other pages); {{...}} marks a word under examination (w())."""
+    if not t:
+        return t
+    t = re.sub(r"\{\{(.+?)\}\}", lambda m: w(m.group(1)), t)
+    return t.replace("[[", '<strong class="mark">').replace("]]", "</strong>")
 
 
 def page(*, path, comment, title_en, title_ru, desc_en, desc_ru, og_title, og_desc, og_image, og_alt,
-         og_type, jsonld, body, contact_lede_en, contact_lede_ru, tg_en, tg_ru):
+         og_type, jsonld, body, contact_lede_en, contact_lede_ru, tg_en, tg_ru, preload=False):
     """Write <path>/index.html: the note's own head and body inside the
     English page's frame. Returns the HTML."""
     url = SITE + path
@@ -117,7 +145,7 @@ def page(*, path, comment, title_en, title_ru, desc_en, desc_ru, og_title, og_de
 {jsonld.strip()}
 </script>
 
-{HEAD_SHARED}{THEME_TAG}
+{PRELOAD + chr(10) if preload else ""}{HEAD_SHARED}{THEME_TAG}
 </head>
 <body>
 
@@ -345,8 +373,8 @@ def hit(word, letters):
     return f'{word[:i]}<span class="hit">{letters}</span>{word[i + len(letters):]}'
 
 
-def tile(ch, v=None, mod=""):
-    return (f'<span class="tile{mod}"><span class="tile__ch">{ch}</span>'
+def tile(ch, v=None, mod="", ch_cls=""):
+    return (f'<span class="tile{mod}"><span class="tile__ch{ch_cls}">{ch}</span>'
             + (f'<span class="tile__v">{v}</span>' if v else "") + "</span>")
 
 
@@ -360,7 +388,7 @@ def ladder(rows, caption_en, caption_ru, fig_id):
         for html, lang, ren, rru in rows)
     return f"""    <figure class="note-fig ladder reveal" aria-labelledby="{fig_id}">
 {out}
-      <figcaption id="{fig_id}"><span data-l="en">{caption_en}</span><span data-l="ru">{caption_ru}</span></figcaption>
+      <figcaption id="{fig_id}"><span data-l="en">{strong(caption_en)}</span><span data-l="ru">{strong(caption_ru)}</span></figcaption>
     </figure>"""
 
 

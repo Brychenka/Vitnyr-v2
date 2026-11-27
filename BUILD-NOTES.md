@@ -6396,3 +6396,121 @@ agree on a plan." / «Если подходит — составляем пла�
 rule that every contact section says what happens next still holds, in one
 place. `test_contact_says_what_happens_next` now reads the contact text
 instead of the strip. Notes regenerated; `style.css` key 20261124b.
+
+## Notes redesign (2026-11-27, `feature/notes-redesign`)
+
+From a design review of `/notes/` that Igor approved, minus the recordings
+(NQ8, still waiting on him), and a second pass that corrected the plan
+before anything was built.
+
+**Index.**
+- The library is the page. Out: "Book a free trial lesson", "Read the notes ↓",
+  and the "One mistake at a time." heading and its paragraph, which said the
+  hero's paragraph again. The "01 Notes" label stays, so the contact section
+  is still "02" like on every other page. The note pages never had a booking
+  ask at the top, and on phones the fixed message bar is always there anyway.
+- Hero padding-bottom and the list's top padding were tightened
+  (`.hero--notes`, `.sec--ledger`).
+- First row on the first screen: at 1280×800 it starts at 562px (was 980),
+  and the second row's mistake shows too. On a phone the first row's mistake
+  sits fully above the message bar in both languages (was 1076px in Russian).
+- Rows lead with the reader's own mistake: `ledger__spec`, mono as every
+  specimen on the site, at 18–25px in full ink. The note's title follows
+  under it in Lora italic as the punchline. Screen readers hear
+  "Incorrect: … Correct: …" (the specimens' `.vh` labels), and the arrow
+  stays hidden.
+- On a narrow screen the line breaks at the arrow, never inside a side
+  (`.ledger__spec > [lang]` nowrap).
+- The date column is gone: every row said "Nov 2026". Each note shows its
+  own date, and the JSON-LD still carries `datePublished`.
+- The arrow stays, because a list on a phone needs the cue. It sits on the
+  category line on phones.
+- The LinkedIn line was false: "New notes go up on LinkedIn first", but
+  feel and could-you were written for the site. It now says "I also write
+  about English on LinkedIn." / «Об английском я пишу и в LinkedIn.»
+
+**IPA.**
+- None of the font files carry the IPA glyphs. Google Fonts' JetBrains Mono
+  and Lora don't either: subsets fetched with `text=` held only ə and θ, so
+  they were not added.
+- Before: the browser swapped faces glyph by glyph inside one word (Menlo
+  for 5 of `/lɔːntʃ/`'s glyphs), and the au tile's ɔː came out in Times with
+  a stray length mark.
+- Now every transcription is one `.ipa` span set in `--ipa`, a system mono
+  stack that has the glyphs (Menlo, Consolas, DejaVu/Noto Sans Mono). The
+  tile's ɔː is tightened with letter-spacing (the padding gives it back, so
+  it stays centred).
+- The share card got the same rule; `og-note-au(-ru).png` re-exported.
+
+**Note pages.**
+- Practice sentences are in Lora at 19–23px, like the Fig. 1 ladders.
+  Sentences to say aloud read as code in mono. Mono stays for words under
+  examination, the IPA, the word tables and the specimens.
+- Quoted words: every word, letter or sound under examination in prose is
+  `{{…}}` → `<span class="w">`, mono and without quotation marks. That covers
+  standfirsts, section ledes and figure captions, in both languages.
+  Guillemets came off those words in the Russian. Whole quoted sentences
+  keep their quotes, and headings are left alone.
+- `.w` shares `.spec__why em`'s face but keeps the paragraph's ink: the au
+  standfirst quotes 15 words, and in full ink it read as a checkerboard.
+- The Russian title's second line: `html[data-lang=ru] .hero__title em` is
+  .5em for the home page's long line, so the notes' «мало.», «нечего.» and
+  «с занятий.» came out half the size of the English. The notes now use
+  .78em.
+
+**Copy** (Igor, 2026-11-27: soften NQ2, not IT-first).
+- "95% of my IT clients" → "Almost all my students" / «Почти все мои
+  ученики».
+- "my IT clients" → "my students" / «мои ученики».
+- "six/nine IT words" → "six/nine words" in the descriptions and og text.
+- My draft sentences no longer lean on IT. au: the reports, the delay, not
+  your fault, the app asks you to authenticate, the house went to auction.
+  could-you: my draft, the folder, the plan. feel: the new job.
+- Igor's carousel lines in the stress note are untouched.
+
+**Load jumps (CLS).** Measured on a slow phone (4× CPU, 1.6 Mbps, median
+of 3, local server). Before:
+
+| Page | CLS |
+|---|---|
+| au | 0.074 |
+| au, Russian | 0.109 |
+| feel | 0.044 |
+| stress | 0.044 |
+| home | 0.142 (left for G5) |
+
+- With the quoted words, the au standfirst got worse: 0.14.
+- The cause, found by blocking the web fonts (CLS 0 with them blocked): the
+  Inter swap rewraps the standfirst and moves everything below it.
+- Fix:
+  - a `JetBrains Mono Fallback` face (Courier New, the same .6em advance in
+    Latin and Cyrillic) in `--mono`;
+  - `<link rel=preload>` of Inter latin and cyrillic on the four note pages
+    (generator `preload=True`).
+- After: CLS 0.002–0.003 on every note page.
+- First text (LCP) on the note pages moved by −0.1s to +0.3s.
+- Tried and left out:
+  - An Inter stand-in (Arial with size-adjust 107%). It matched body text
+    within 1% but ran ~5% wide in the uppercase labels, so the phone
+    breadcrumb wrapped while loading. That jump was 0.26 on Russian au.
+  - Preloading on the index. It never jumped, and main.js holds the hero
+    for `document.fonts.ready` (up to 1.5s), so a preload there pushed its
+    first text from 2.3s to 3.4s.
+
+**Not done:**
+- The sound hint for /ɔː/ waits on Igor's pick of an anchor (a Russian
+  sound fits this audience better than English words).
+- Lining up section-intro baselines, and the home page's 0.142 load jump,
+  are site-wide: G5.
+
+Tests: +13 in `test_notes.py`:
+- the first row on the first screen (EN/RU, phone/desktop);
+- no ask above the list;
+- row order and labels;
+- one face per transcription;
+- the RU title size;
+- preloads on the notes but not the index.
+
+471 passed. `style.css` key 20261127a on all four pages. Notes regenerated.
+The artifact (four pages) is unchanged until merge: only the cache key and
+the mono stand-in reach those pages.

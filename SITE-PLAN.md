@@ -234,8 +234,8 @@ until you do.
 | Q8 | Two or three chess positions (PGN or Lichess link). | F3 |
 | Q9 | Real chess and climbing reviews, whenever they come. | H2 |
 | NQ1 | The original carousel files (PDF or PNG), including the two slides hidden behind "+2"? Until then the "по-русски" column is left out. | H4 |
-| NQ2 | Keep "95% of my IT clients" as you wrote it, or soften to "almost all"? (Kept as written.) | H4 |
-| NQ3 | Approve or replace the six `au` practice sentences (written for the note, marked draft in `tools/notes/au.py`). | H4 |
+| NQ3 | Approve or replace the practice sentences written for the notes (au i–vi, feel ii–vi, could-you ii–vi; rewritten 2026-11-27 to lean less on IT, marked draft in `tools/notes/*.py`). | H4 |
+| NQ11 | A plain hint for /ɔː/ on the au note, for readers who can't read IPA: anchor it to a Russian sound (a long, rounded «о») or to English words (*law*, *saw*)? Your call as the teacher. | H4 |
 | NQ4 | Approve the English translations of the two posts (marked draft in the source). | H4 |
 | NQ5 | Links to the posts themselves? Until then "First on LinkedIn" links to your activity page (`tools/notes/lib.py`). | H4 |
 | NQ6 | The exact date of the stress post (LinkedIn said "2w" on 2026-11-20)? Shown as "November 2026". | H4 |

@@ -10,8 +10,8 @@ P = '<span class="hit">please</span>'
 
 REQUESTS = [
     (f"Send me the report, {P}.", f"{I('Could you')} send me the report?"),
-    (f"Check this PR, {P}.", f"{I('Could you')} take a look at this PR?"),
-    (f"Give me access, {P}.", f"{I('Could I')} get access to the repo?"),
+    (f"Check my draft, {P}.", f"{I('Could you')} take a look at my draft?"),
+    (f"Give me access, {P}.", f"{I('Could I')} get access to the folder?"),
     (f"Explain this, {P}.", f"{I('Would you mind')} explaining this?"),
     (f"Call me tomorrow, {P}.", f"{I('Can we')} talk tomorrow?"),
     (f"Answer quickly, {P}.", f"{I('When you get a chance')}, could you reply?"),
@@ -24,9 +24,9 @@ SOFTENERS = [
 ]
 PRACTICE = [
     "<b>Could you</b> send me the report today?",
-    "<b>Could you</b> take a look at this PR?",
+    "<b>Could you</b> take a look at my draft?",
     "<b>Would you mind</b> moving the call to four?",
-    "<b>Can we</b> go over the estimate tomorrow?",
+    "<b>Can we</b> go over the plan tomorrow?",
     "<b>When you get a chance</b>, could you review my comments?",
     "<b>I was wondering if</b> you could share the slides.",
 ]
@@ -35,15 +35,15 @@ FIGURE = ladder([
     ("Пришлите мне отчёт сегодня, пожалуйста.", "ru", "Russian · polite", "по-русски · вежливо"),
     (f"Send me the report today, <span class=\"mark--specimen\">please</span>.", "en", "English · still a command", "по-английски · всё ещё команда"),
     (f"{I('Could you')} send me the report today?", "en", "English · a request", "по-английски · просьба"),
-], "Fig. 1. In English the softening lives in the question, not in please.",
-   "Фиг. 1. В английском вежливость — в вопросе, а не в please.", "fig-please")
+], "Fig. 1. In English the softening lives in the question, not in {{please}}.",
+   "Фиг. 1. В английском вежливость — в вопросе, а не в {{please}}.", "fig-please")
 
 
 def body(note):
     words = section("words", "01", "Six requests", "Шесть просьб", "\n".join([
         head2("Six requests, from order to ask.", "Шесть просьб: от приказа к вопросу.",
-              "Each line: the order with please, and [[what a colleague would actually say]].",
-              "В каждой строке: приказ с please и [[как на самом деле сказал бы коллега]]."),
+              "Each line: the order with {{please}}, and [[what a colleague would actually say]].",
+              "В каждой строке: приказ с {{please}} и [[как на самом деле сказал бы коллега]]."),
         spec_pair(f"Send me the report today{D(', please')}.", f"{I('Could you')} send me the report today?"),
         register("Six requests: an order with please, and what English says", "Шесть просьб: приказ с please и как по-английски",
                  [("With please", "С please"), ("What English says", "Как по-английски")],
@@ -51,14 +51,14 @@ def body(note):
     ]))
     why = section("why", "02", "Why it happens", "Почему так", "\n".join([
         head2("In English, the softening is in the question.", "В английском вежливость — в вопросе.",
-              "Russian is polite with пожалуйста and with вы. English does it with grammar: a question, a modal verb (could, would, can) [[and a little distance]].",
-              "В русском вежливость — это «пожалуйста» и «вы». В английском — грамматика: вопрос, модальный глагол (could, would, can) [[и немного дистанции]]."),
+              "Russian is polite with {{пожалуйста}} and with {{вы}}. English does it with grammar: a question, a modal verb ({{could}}, {{would}}, {{can}}) [[and a little distance]].",
+              "В русском вежливость — это {{пожалуйста}} и {{вы}}. В английском — грамматика: вопрос, модальный глагол ({{could}}, {{would}}, {{can}}) [[и немного дистанции]]."),
         pull(SOFTENERS),
     ]))
     say = section("practice", "03", "Say it out loud", "Скажите вслух", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
-              "Questions, not orders. please is optional now.",
-              "Вопросы, а не приказы. please теперь — по желанию."),
+              "Questions, not orders. {{please}} is optional now.",
+              "Вопросы, а не приказы. {{please}} теперь — по желанию."),
         practice(PRACTICE, "i. is the specimen's own line; ii.–vi. were written for the note."),
     ]))
     return "\n\n".join([words, why, say])
@@ -78,8 +78,8 @@ NOTE = dict(
     card_en="Please <em>isn’t enough.</em>", card_ru="Одного please <em>мало.</em>",
     card_spec='Send it<span class="x">, please</span><span class="to">→</span><span class="ok">Could you</span> send it?',
     h1_en=["Please", "isn’t enough."], h1_ru=["Одного please", "мало."],
-    stand_en="“Send me the report today, please” is one of the three mistakes I hear most often, and it isn’t grammar. The sentence is grammatically fine and still lands closer to a command. Russian softens a direct command with a single added word, пожалуйста; [[in English, please isn’t enough]].",
-    stand_ru="«Send me the report today, please» — одна из трёх ошибок, которые я слышу чаще всего, и это не грамматика. Фраза грамматически в порядке и всё равно звучит ближе к команде. В русском команду смягчает одно добавленное слово, «пожалуйста»; [[в английском please недостаточно]].",
+    stand_en="“Send me the report today, please” is one of the three mistakes I hear most often, and it isn’t grammar. The sentence is grammatically fine and still lands closer to a command. Russian softens a direct command with a single added word, {{пожалуйста}}; [[in English, {{please}} isn’t enough]].",
+    stand_ru="«Send me the report today, please» — одна из трёх ошибок, которые я слышу чаще всего, и это не грамматика. Фраза грамматически в порядке и всё равно звучит ближе к команде. В русском команду смягчает одно добавленное слово, {{пожалуйста}}; [[в английском {{please}} недостаточно]].",
     figure=FIGURE,
     comment="/notes/could-you/: the English page's third specimen as a note.",
     title="Why “please” isn’t enough in English requests — Igor Shatsev",

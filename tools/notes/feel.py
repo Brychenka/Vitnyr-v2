@@ -27,7 +27,7 @@ LOOKALIKES = [
 PRACTICE = [
     "I <b>feel</b> good today.",
     "I <b>feel</b> much better after the call.",
-    "How do you <b>feel</b> about the release?",
+    "How do you <b>feel</b> about the new job?",
     "I <b>felt</b> nervous before the interview.",
     "Let me <b>introduce myself</b>.",
     "<b>Make yourself</b> at home.",
@@ -37,15 +37,15 @@ FIGURE = ladder([
     ("Я чувствую себя хорошо.", "ru", "Russian · with себя", "по-русски · с «себя»"),
     (f"I feel {D('myself')} good.", "en", "the habit", "привычка"),
     (f"I {I('feel')} good.", "en", "English · feel is enough", "по-английски · хватает feel"),
-], "Fig. 1. feel already carries the feeling. Nothing to add.",
-   "Фиг. 1. feel уже несёт ощущение. Добавлять нечего.", "fig-feel")
+], "Fig. 1. {{feel}} already carries the feeling. Nothing to add.",
+   "Фиг. 1. {{feel}} уже несёт ощущение. Добавлять нечего.", "fig-feel")
 
 
 def body(note):
     words = section("words", "01", "Six phrases", "Шесть фраз", "\n".join([
         head2("One habit, six phrases.", "Одна привычка, шесть фраз.",
-              "Wherever Russian says чувствую себя, [[English just says feel]].",
-              "Там, где по-русски «чувствую себя», [[по-английски просто feel]]."),
+              "Wherever Russian says {{чувствую себя}}, [[English just says {{feel}}]].",
+              "Там, где по-русски {{чувствую себя}}, [[по-английски просто {{feel}}]]."),
         spec_pair(f"I feel {D('myself')} good today.", f"I {I('feel')} good today."),
         register("Six phrases with an extra myself, and what English says", "Шесть фраз с лишним myself и как по-английски",
                  [("What comes out", "Как звучит"), ("What English says", "Как по-английски")],
@@ -53,14 +53,14 @@ def body(note):
     ]))
     why = section("why", "02", "Why it happens", "Почему так", "\n".join([
         head2("English keeps -\u2060self for actions.", "В английском -\u2060self — для действий.",
-              "English does have myself, but for something you do to yourself, not for how you feel: [[introduce myself, hurt myself]]. A feeling goes straight after feel.",
-              "В английском myself есть, но для того, что вы делаете с собой, а не для того, как себя чувствуете: [[introduce myself, hurt myself]]. Ощущение идёт сразу после feel."),
+              "English does have {{myself}}, but for something you do to yourself, not for how you feel: [[{{introduce myself}}, {{hurt myself}}]]. A feeling goes straight after {{feel}}.",
+              "В английском {{myself}} есть, но для того, что вы делаете с собой, а не для того, как себя чувствуете: [[{{introduce myself}}, {{hurt myself}}]]. Ощущение идёт сразу после {{feel}}."),
         pull(LOOKALIKES),
     ]))
     say = section("practice", "03", "Say it out loud", "Скажите вслух", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
-              "feel, then the feeling. The last two are actions, so they keep -\u2060self.",
-              "feel — и сразу ощущение. Последние две — действия, поэтому -\u2060self остаётся."),
+              "{{feel}}, then the feeling. The last two are actions, so they keep {{-\u2060self}}.",
+              "{{feel}} — и сразу ощущение. Последние две — действия, поэтому {{-\u2060self}} остаётся."),
         practice(PRACTICE, "i. is the specimen's own line; ii.–vi. were written for the note."),
     ]))
     return "\n\n".join([words, why, say])
@@ -80,8 +80,8 @@ NOTE = dict(
     card_en="Nothing <em>to add.</em>", card_ru="Добавлять <em>нечего.</em>",
     card_spec='I feel <span class="x">myself</span> good<span class="to">→</span>I <span class="ok">feel</span> good',
     h1_en=["Nothing", "to add."], h1_ru=["Добавлять", "нечего."],
-    stand_en="“I feel myself good” is one of the three mistakes I hear most often. Russian says it with a reflexive word, чувствую себя, so the instinct is to bolt the same thing onto the English, [[onto a verb that was never missing it]]. In English, feel already carries the feeling.",
-    stand_ru="«I feel myself good» — одна из трёх ошибок, которые я слышу чаще всего. По-русски — «чувствую себя», с возвратным словом, и рефлекс — приставить то же самое и в английском, [[к глаголу, которому это не нужно]]. В английском feel уже несёт ощущение сам.",
+    stand_en="“I feel myself good” is one of the three mistakes I hear most often. Russian says it with a reflexive word, {{чувствую себя}}, so the instinct is to bolt the same thing onto the English, [[onto a verb that was never missing it]]. In English, {{feel}} already carries the feeling.",
+    stand_ru="«I feel myself good» — одна из трёх ошибок, которые я слышу чаще всего. По-русски — {{чувствую себя}}, с возвратным словом, и рефлекс — приставить то же самое и в английском, [[к глаголу, которому это не нужно]]. В английском {{feel}} уже несёт ощущение сам.",
     figure=FIGURE,
     comment="/notes/feel/: the English page's second specimen as a note.",
     title="“I feel myself good”? Just “I feel good” — Igor Shatsev",
