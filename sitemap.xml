@@ -55,17 +55,31 @@
   </url>
   <url>
     <loc>https://vitnyrcoach.com/notes/</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/?lang=ru"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/"/>
   </url>
   <url>
     <loc>https://vitnyrcoach.com/notes/?lang=ru</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-25</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/?lang=ru"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/api-key/</loc>
+    <lastmod>2026-11-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/api-key/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/api-key/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/api-key/"/>
+  </url>
+  <url>
+    <loc>https://vitnyrcoach.com/notes/api-key/?lang=ru</loc>
+    <lastmod>2026-11-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://vitnyrcoach.com/notes/api-key/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://vitnyrcoach.com/notes/api-key/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vitnyrcoach.com/notes/api-key/"/>
   </url>
   <url>
     <loc>https://vitnyrcoach.com/notes/serial/</loc>

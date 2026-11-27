@@ -6729,3 +6729,30 @@ component.
   console errors; figure top 522px (EN) / 578px (RU) on a phone; the test
   driven in EN and RU (7/8, «смотреть сериалы», the Telegram message names
   the note). Drafts: NQ14.
+
+## Note: API key (2026-11-28, `feature/note-api-key`)
+
+The seventh note joins two of Igor's posts, key (30 October) and
+abbreviations (25 November), because «апи кей» carries both mistakes in two
+words. Planned in `reference/linkedin-posts/REVIEW.md`, built, reviewed cold,
+rebuilt. No CSS or JS change.
+
+- **Pronunciation**, so practice is "Say it out loud", as on au and stress.
+- **Hero: the au note's tiles.** Written A, P, I and one wide "key" over
+  said эй, пи, ай, ки in target ink: three letters spelled, one word said
+  whole. The caption carries the pair (~~апи кей~~ → эй-пи-ай ки).
+- **01:** the posts' eight words (CEO, API, MR, PR, key, hotkey, keyboard,
+  keynote) as written / said, in Igor's own Russian spellings of the
+  sounds. A transcription column made the table 16px wider than a phone,
+  so it went. A footnote (DRAFT) keeps "2-3 letters: spell it" honest:
+  RAM and PIN are read as words.
+- **02 Why (DRAFT):** the maths-class names of Latin letters (а плюс бэ)
+  come back in English; key is read like hey, and кей is the name of K.
+- **Cold review fixes:** "you learned the letters in school" was wrong
+  (English class teaches эй, би, си; the habit is maths), and a pull row
+  blamed кей on the letter's name instead of the spelling; the practice
+  lede's "letter by letter" didn't fit hotkey, keyboard, keynote; the
+  contact lede's "every stand-up and every call" overclaimed.
+- **Checked by eye only** (Igor: no tests): both themes and languages at
+  375 and 1280, no overflow, no console errors, figure top 522px (EN) /
+  550px (RU) on a phone. Drafts: NQ15.
