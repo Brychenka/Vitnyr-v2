@@ -92,3 +92,36 @@ who are a large share of Igor's readers, it is a phrase said daily.
   abbreviations and key words in bold; stress falls on the last letter.
 - **Drafts** for Igor (NQ15): the translation, the footnote, the why, the
   sentences.
+
+## Fourth note: weigh / weight, decided before building (2026-11-28)
+
+The post is in English (the only one of the eight), so this time the
+Russian is the translation, a DRAFT. Its content: weight is a noun people
+know, nouns often work as verbs in English, so people say "I weighted
+80 kg", "It weights 2 pounds"; drop the t, weigh /weɪ/, the same sound as
+way. The slide: VERB, NOT NOUN; WEIGH with the T falling off; "Doing it?
+Drop the t."
+
+- **Kind: Grammar** (noun vs verb), practised with the test: judging
+  sentences is what the mistake needs.
+- **Headline: the slide's own line.** "Doing it? / Drop the t." /
+  «Это действие? / Уберите t.»
+- **Hero: the au tiles again, the slide's picture as type.** W E I G H T
+  with the T in specimen ink, over W E I G H in target ink, its sixth cell
+  empty: the t is gone. Caption: I ~~weight~~ 80 kg → I weigh 80 kg.
+- **Standfirst:** the post's opening ("I've seen this mistake a thousand
+  times"), ending on the answer: weight is the thing, weigh the action,
+  said like way.
+- **01 The fix:** a table of what Russian says and what English says
+  (вешу, весил, весит, сколько весите, взвесить, мой вес), and one honest
+  row (DRAFT): a weighted average, where weighted is a real word with
+  another meaning. That is the likely reason it sounds right to people at
+  work.
+- **02 Why:** the post's reason, nouns working as verbs (you email
+  someone, you text them), as pull rows ending on the exception: весить →
+  to weigh, not to weight.
+- **03 Practice:** the ear test, eight sentences, five wrong; one right
+  one is "We used a weighted average", so the test teaches the twist.
+- **Drafts** for Igor (NQ16): the Russian translation, the table rows not
+  in the post, the weighted-average row, the why's pull rows, the test
+  sentences.

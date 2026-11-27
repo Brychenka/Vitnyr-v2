@@ -6756,3 +6756,32 @@ rebuilt. No CSS or JS change.
 - **Checked by eye only** (Igor: no tests): both themes and languages at
   375 and 1280, no overflow, no console errors, figure top 522px (EN) /
   550px (RU) on a phone. Drafts: NQ15.
+
+## Note: weigh (2026-11-28, `feature/note-weigh`)
+
+The eighth note, from Igor's post on weight and weigh (22 October), his one
+post in English, so the Russian is the translation this time (DRAFT,
+NQ16). Planned in `REVIEW.md`, built, reviewed cold, rebuilt. No CSS or JS
+change.
+
+- **Grammar**, practised with the ear test. The headline is the slide's
+  line: "Doing it? / Drop the t."
+- **Hero: the au tiles.** W E I G H T with the T in specimen ink, over
+  W E I G H in target ink, the sixth cell left empty.
+- **01:** seven Russian phrases and the English (вешу, весил, весит,
+  сколько весите, взвесить, мой вес), and an honest last row, a weighted
+  average, with a footnote: weighted is a real word for "given extra
+  weight", never "measured". The test includes it as a right sentence.
+- **02 Why:** the post's reason (nouns work as verbs: email, text), with
+  the turn that weight comes from weigh.
+- **Cold review fixes:** the why heading said this noun doesn't work as a
+  verb, but to weight is a verb (the footnote said so); "the verb is
+  older" became "weight comes from weigh"; the rule (thing / action / drop
+  the t) was said three times, so the caption shows the post's own pair and
+  the table lede gives the verb's forms and sound; the two pull asides were
+  identical (now = an email, = a text, ≠ a weight); the bold answers began
+  with a lowercase word.
+- **Checked by eye only** (Igor: no tests): both themes and languages at
+  375 and 1280, no overflow, no console errors, figure top 494px (EN) /
+  522px (RU) on a phone; the test driven in EN and RU (7/8, «я весил»,
+  the Telegram message names the note).
