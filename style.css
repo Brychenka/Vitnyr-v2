@@ -1889,7 +1889,7 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   letter-spacing: .01em;
   padding-block: 6px clamp(20px, 2.6vw, 32px);
 }
-/* "Opens Telegram · @yngvil", tucked under the CTA: the negative margin
+/* "Opens Telegram · @vitnyr", tucked under the CTA: the negative margin
    cancels .contact__big's own and hands the same gap on to the lede, so the
    section's spacing is unchanged. */
 .contact__via {

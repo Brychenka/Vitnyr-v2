@@ -327,7 +327,7 @@ def test_channels_top_rule_is_heavier_than_its_own_row_dividers(open_site):
 def test_contact_heading_is_a_real_telegram_link(open_site):
     page, _ = open_site(viewport=WIDE)
     cta = page.locator(".contact__big .contact__cta")
-    assert cta.get_attribute("href").startswith("https://t.me/yngvil?text=")
+    assert cta.get_attribute("href").startswith("https://t.me/vitnyr?text=")
     assert cta.get_attribute("target") == "_blank"
     assert cta.get_attribute("rel") == "noopener"
 
@@ -343,7 +343,7 @@ def test_contact_cta_prefill_text_is_localized(open_site):
     page.locator(".masthead .langswitch").click()
     ru_href = cta.get_attribute("href")
     assert ru_href != en_href
-    assert ru_href.startswith("https://t.me/yngvil?text=")
+    assert ru_href.startswith("https://t.me/vitnyr?text=")
     # decodes to Cyrillic, not a re-encoded copy of the English string
     decoded = page.evaluate("href => decodeURIComponent(href.split('?text=')[1])", ru_href)
     assert "бесплатное занятие" in decoded  # Igor's final RU wording (5f2cbaf)

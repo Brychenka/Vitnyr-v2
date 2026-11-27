@@ -1487,7 +1487,7 @@
       });
       scoreEl.textContent = t.score(hits, items.length);
       habitEl.textContent = habits.length ? t.habits(habits.join(', ')) : (strict ? t.strict : t.clean);
-      send.setAttribute('href', 'https://t.me/yngvil?text=' + encodeURIComponent(t.msg(hits, items.length)));
+      send.setAttribute('href', 'https://t.me/vitnyr?text=' + encodeURIComponent(t.msg(hits, items.length)));
     }
 
     check.addEventListener('click', function () {

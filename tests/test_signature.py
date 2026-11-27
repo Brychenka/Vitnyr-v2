@@ -65,7 +65,7 @@ def test_ear_test_toggles_checks_and_scores(open_site):
     assert picks.nth(1).is_disabled()
     # the score travels in a prefilled Telegram message, naming the discipline
     href = unquote(page.locator(".ear__send").get_attribute("href"))
-    assert href.startswith("https://t.me/yngvil?text=")
+    assert href.startswith("https://t.me/vitnyr?text=")
     assert "6/8" in href and "English" in href
 
 

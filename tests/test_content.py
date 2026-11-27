@@ -117,7 +117,7 @@ def test_contact_handles_are_real(open_site):
         "els => els.map(a => a.getAttribute('href'))"
     )
     assert hrefs == [
-        "https://t.me/yngvil",
+        "https://t.me/vitnyr",
         "https://www.linkedin.com/in/vitnyrcoach/",
         "https://www.instagram.com/brychenka/",
     ]
@@ -199,7 +199,7 @@ def test_person_json_ld_carries_only_confirmed_facts(open_site):
     data = graph[1]
     assert data["name"] == "Igor Shatsev"
     assert data["sameAs"] == [
-        "https://t.me/yngvil",
+        "https://t.me/vitnyr",
         "https://www.linkedin.com/in/vitnyrcoach/",
         "https://www.instagram.com/brychenka/",
     ]

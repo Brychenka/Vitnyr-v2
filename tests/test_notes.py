@@ -123,7 +123,7 @@ def test_every_section_link_has_a_target(open_site, path):
 @pytest.mark.parametrize("path", PATHS)
 def test_every_telegram_link_names_english(open_site, path):
     page, _ = open_site(path=path.lstrip("/"))
-    links = page.locator('a[href^="https://t.me/yngvil?text="]').all()
+    links = page.locator('a[href^="https://t.me/vitnyr?text="]').all()
     assert links
     for a in links:
         for attr in ("href", "data-href-en"):
@@ -317,7 +317,7 @@ def test_a_notes_page_ends_on_a_short_contact(open_site, path):
     assert c.locator(".contact__portrait img").count() == 2          # one per language, as on the four pages
     names = [n.strip() for n in c.locator(".channels .ch__k").all_inner_texts()]
     assert names == ["Telegram", "LinkedIn", "Instagram"], names
-    assert "t.me/yngvil" in c.locator(".contact__cta").get_attribute("href")
+    assert "t.me/vitnyr" in c.locator(".contact__cta").get_attribute("href")
 
 
 @pytest.mark.parametrize("lang", ["en", "ru"])
