@@ -89,14 +89,35 @@ def strong(t):
     return t.replace("[[", '<strong class="mark">').replace("]]", "</strong>")
 
 
+def must_sub(pattern, repl, text, flags=0):
+    """re.sub that fails the build when the English page no longer has what
+    it cuts, instead of quietly shipping the full section."""
+    out, n = re.subn(pattern, repl, text, count=1, flags=flags)
+    if n != 1:
+        raise SystemExit(f"notes build: english/index.html has no {pattern!r}; update note_contact()")
+    return out
+
+
+def note_contact(html):
+    """The English page's contact section, cut down to a reading page's
+    ending (2026-11-27): unnumbered (it is not a chapter of the note), no
+    empty-chair engraving, and .sec--contact-note, which sets the CTA at the
+    section-heading size and the channels as one row. The CTA, its Telegram
+    prefill, the portrait and the channels stay the English page's own, so
+    a handle changed there changes here."""
+    html = must_sub(r'<section class="sec sec--contact" id="contact">',
+                    '<section class="sec sec--contact sec--contact-note" id="contact">', html)
+    html = must_sub(r'<span class="num">\d+</span>', "", html)
+    html = must_sub(r'\s*<figure class="vig vig--empty-chair.*?</figure>', "", html, re.S)
+    return html
+
+
 def page(*, path, comment, title_en, title_ru, desc_en, desc_ru, og_title, og_desc, og_image, og_alt,
          og_type, jsonld, body, contact_lede_en, contact_lede_ru, tg_en, tg_ru, preload=False):
     """Write <path>/index.html: the note's own head and body inside the
     English page's frame. Returns the HTML."""
     url = SITE + path
-    # the contact section numbers on from the body's own section labels
-    contact_num = "%02d" % (body.count('<span class="num">') + 1)
-    contact = re.sub(r'<span class="num">\d+</span>', f'<span class="num">{contact_num}</span>', CONTACT, count=1)
+    contact = note_contact(CONTACT)
     # the note's own lede replaces the English one; no smaller first step on
     # a note (Igor, 2026-11-20: no voice-message step on the notes)
     lede_old = between(contact, '<div class="sec__lede">', "</div>")
@@ -277,10 +298,12 @@ def hero(note):
     <div class="page-hero__text">
       <p class="stand reveal" data-l="en">{strong(note['stand_en'])}</p>
       <p class="stand reveal" data-l="ru">{strong(note['stand_ru'])}</p>
+    </div>
+{note['figure']}
+    <div class="note-meta">
 {byline()}
 {source_line(note)}
     </div>
-{note['figure']}
   </div>
 </section>"""
 
@@ -303,9 +326,21 @@ def head2(en, ru, lede_en=None, lede_ru=None):
   </div>"""
 
 
-def section(sec_id, num, label_en, label_ru, inner):
+# Every note has the same three parts, so the labels are wayfinding, the same
+# on every note, and the heading under each carries the note's own claim
+# (the main pages do the same: "Mistakes I fix" over "Your mistakes have
+# deep roots."). A label never repeats its heading.
+PARTS = {
+    "words": ("01", "The fix", "Как правильно"),
+    "why": ("02", "Why it happens", "Почему так"),
+    "practice": ("03", "Practice", "Практика"),
+}
+
+
+def section(sec_id, inner):
+    num, en, ru = PARTS[sec_id]
     return f"""<section class="sec" id="{sec_id}">
-{label(num, label_en, label_ru)}
+{label(num, en, ru)}
 {inner}
 </section>"""
 
@@ -373,9 +408,8 @@ def hit(word, letters):
     return f'{word[:i]}<span class="hit">{letters}</span>{word[i + len(letters):]}'
 
 
-def tile(ch, v=None, mod="", ch_cls=""):
-    return (f'<span class="tile{mod}"><span class="tile__ch{ch_cls}">{ch}</span>'
-            + (f'<span class="tile__v">{v}</span>' if v else "") + "</span>")
+def tile(ch, mod="", ch_cls=""):
+    return f'<span class="tile{mod}"><span class="tile__ch{ch_cls}">{ch}</span></span>'
 
 
 def ladder(rows, caption_en, caption_ru, fig_id):

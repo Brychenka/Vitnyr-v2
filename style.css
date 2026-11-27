@@ -149,6 +149,20 @@
   descent-override: 30%;
   line-gap-override: 0%;
 }
+/* Stand-in for Lora in the "Could you" figure only (.ladder__s), the one
+   figure a phone now shows on its first screen: Georgia runs ~6% narrower
+   than Lora, so "Send me the report today, please." held one line before
+   the swap and two after, and moved the rows under it (CLS 0.05 on a
+   phone). Scaled to Lora's width it wraps the same. Not on --serif: the
+   display type elsewhere is a separate, site-wide question (G5). */
+@font-face {
+  font-family: 'Lora Ladder Fallback';
+  src: local('Georgia');
+  size-adjust: 106.5%;
+  ascent-override: 94.5%;
+  descent-override: 25.7%;
+  line-gap-override: 0%;
+}
 
 :root {
   /* Cream pair, also the no-JS default. The charcoal values live in
@@ -1079,7 +1093,7 @@ html[data-lang="ru"] .contact__big   { letter-spacing: -.015em; }
 .w, p .ipa, figcaption .ipa { line-height: 1; }
 /* A transcription: one face for the whole of it (--ipa). In prose it keeps
    .w's size; in a table or a tile it takes the cell's. */
-.ipa { font-family: var(--ipa); font-style: normal; }
+.ipa { font-family: var(--ipa); font-style: normal; white-space: nowrap; }   /* never "/" on one line and "ɔː/" on the next */
 /* <del>/<ins> carry the diff semantically; the ink stays the only sighted
    signal, so the browser's strike and underline are off. */
 .line-spec del, .line-spec ins { text-decoration: none; }
@@ -1935,6 +1949,50 @@ html[data-lang="ru"] .view__group > h2 { letter-spacing: -.008em; }
   .contact__head--chair .vig--empty-chair .vig__svg { width: 100%; height: auto; }
 }
 
+/* The notes' ending (tools/notes/lib.py note_contact): a reading page's
+   close, not a landing page's. The CTA at the section-heading size, so it
+   is no longer the largest type on a note (it was 82px under a 77px title);
+   a smaller portrait, still in colour, because a stranger from search
+   should see who wrote the note; the three channels as one quiet row.
+   Same markup, same order, same Telegram prefill as the four pages. */
+.sec--contact-note .contact__big {
+  font-size: clamp(27px, 3.6vw, 48px); line-height: 1.12; letter-spacing: -.02em;
+  max-width: 22ch;
+}
+/* Under 900px the portrait sits beside the CTA, not alone under the lede
+   with a blank column beside it: .contact__text steps aside (display:
+   contents) so the CTA and "Opens Telegram" share a row with the photo and
+   the lede runs the full width under them. */
+@media (max-width: 899.98px) {
+  .sec--contact-note .contact__head {
+    display: grid; grid-template-columns: minmax(0, 1fr) clamp(76px, 22vw, 104px);
+    column-gap: 20px; align-items: start;
+  }
+  .sec--contact-note .contact__text { display: contents; }
+  .sec--contact-note .contact__big { grid-column: 1; grid-row: 1; }
+  .sec--contact-note .contact__via { grid-column: 1; grid-row: 2; }
+  .sec--contact-note .contact__portrait { grid-column: 2; grid-row: 1 / span 2; margin: .3em 0 0; width: auto; }
+  .sec--contact-note .contact__draft, .sec--contact-note .sec__lede { grid-column: 1 / -1; }
+}
+@media (min-width: 900px) {
+  .sec--contact-note .contact__head { grid-template-columns: minmax(0, 1fr) clamp(140px, 13vw, 176px); }
+  /* .177em of the CTA's own size drops the photo to its capitals' ink top */
+  .sec--contact-note .contact__portrait { margin-top: calc(clamp(27px, 3.6vw, 48px) * .177); width: auto; }
+}
+.sec--contact-note .channels {
+  display: grid; column-gap: clamp(24px, 4vw, 56px);
+  margin-top: clamp(40px, 5vw, 64px); border-top-width: 1px;
+}
+/* One row only where each third holds "LinkedIn /in/vitnyrcoach" on one
+   line; narrower, the three stack as on the four pages. */
+@media (min-width: 1100px) {
+  .sec--contact-note .channels { grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--rule); }
+  .sec--contact-note .channels li { border-bottom: 0; }
+}
+.sec--contact-note .channels a { padding-block: clamp(16px, 1.8vw, 22px) 0; }
+.sec--contact-note .channels .ch__k { font-size: clamp(20px, 1.9vw, 26px); }
+.sec--contact-note .ch__hint { padding-block: 4px clamp(16px, 1.8vw, 22px); }
+
 /* Pick feedback, built by initWhoRows() (no-JS never sees it): silent until
    a row is picked, then it confirms the pick and points at contact.
    min-height reserves its box so a pick never shifts the page. */
@@ -2497,6 +2555,24 @@ html.js .collage .reveal.is-in .collage__slot {
 @media (min-width: 900px) {
   .hero--note .hero__foot.page-hero__foot { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
 }
+/* A note's hero reads top down (2026-11-27). On a phone: the standfirst,
+   then the figure, then who wrote it and where, so the figure is on the
+   first screen. From 900px the text and the by-line stack in the left
+   column, from the top, level with the figure; the discipline pages'
+   bottom alignment (.page-hero__foot) left a hole under a short note's
+   title when its figure is the taller side. */
+.hero--note .hero__foot.page-hero__foot { align-items: start; }
+.note-meta { display: grid; gap: 12px; }
+@media (min-width: 900px) {
+  .hero--note .hero__foot.page-hero__foot {
+    grid-template-areas: "text fig" "meta fig";
+    grid-template-rows: auto 1fr;
+    row-gap: clamp(24px, 3vw, 36px);
+  }
+  .hero--note .page-hero__text { grid-area: text; }
+  .hero--note .note-fig { grid-area: fig; }
+  .note-meta { grid-area: meta; align-self: start; }
+}
 .note-source {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: .3em .6em;
   font-size: 13px; color: var(--fg2); letter-spacing: .01em;
@@ -2520,7 +2596,8 @@ html.js .collage .reveal.is-in .collage__slot {
 .note-fig figcaption { margin-top: 14px; font-size: 13px; color: var(--fg2); letter-spacing: .01em; }
 
 /* The au figure: Igor's Scrabble slide in the site's own terms. Hairline
-   tiles, square, no shadow. The two amber tiles are the letters that make
+   tiles, square, no shadow, and no letter scores (2026-11-27: they teach
+   nothing about the sound, and the merged tile had none). The two amber tiles are the letters that make
    the mistake; the one green tile spans both their columns, because two
    letters are one sound. Letters >= 24px at every width, so the accent
    ink is allowed as text here, and they still take the text-safe shades. */
@@ -2531,10 +2608,6 @@ html.js .collage .reveal.is-in .collage__slot {
   aspect-ratio: 1; border: 1px solid var(--fg2); color: var(--fg);
 }
 .tile__ch { font-family: var(--serif); font-weight: 500; font-size: clamp(24px, 3vw, 40px); line-height: 1; }
-.tile__v {
-  position: absolute; right: 9%; bottom: 7%;
-  font-family: var(--mono); font-size: 10px; line-height: 1; color: var(--fg2);
-}
 .tile--specimen { border-color: var(--ink-specimen); color: var(--amber-text); }
 .tile--target { border: 2px solid var(--ink-target); color: var(--green-text); }
 .tile--merged { grid-column: span 2; aspect-ratio: auto; }
@@ -2572,7 +2645,7 @@ html.js .collage .reveal.is-in .collage__slot {
   gap: 6px 16px; padding-bottom: 12px; border-bottom: 1px solid var(--rule);
 }
 .ladder__s {
-  font-family: var(--serif); font-weight: 500; line-height: 1.2; letter-spacing: -.005em;
+  font-family: Lora, 'Lora Ladder Fallback', Georgia, "Times New Roman", serif; font-weight: 500; line-height: 1.2; letter-spacing: -.005em;
   font-size: clamp(22px, 2.3vw, 32px); color: var(--fg);
 }
 .ladder__s[lang="ru"] { color: var(--fg2); }
@@ -2613,13 +2686,22 @@ html.js .collage .reveal.is-in .collage__slot {
 }
 .register > caption.vh { white-space: normal; }   /* .vh's nowrap would lay the clipped text out as one line past the viewport */
 .register__n { width: 3em; font-size: 13px; color: var(--fg2); }
+/* Narrow phones: a transcription doesn't break (.ipa is nowrap), so the
+   au table's longest row, authenticate /ɔːˈθentɪkeɪt/, needs the gutters
+   back to fit 320px. */
+@media (max-width: 400px) {
+  .register th, .register td { padding-right: 10px; }
+  .register__n { width: 2.2em; }
+}
 /* The last column starts where .sec__head's lede column does: its share of
    the row, (W - gap) / 2.05, holds at ~45.5% from 900px to --maxw. */
 @media (min-width: 900px) {
   .register th:last-child, .register td:last-child { width: 45.5%; }
 }
 .register__w { color: var(--fg); }
-.register__ipa { color: var(--fg2); }
+/* The text ink, not --fg2: the green ɔː is the point of the column, and
+   green-text beside --fg2 grey read as one colour in both themes. */
+.register__ipa { color: var(--fg); }
 .register--pairs .register__w { color: var(--fg2); }
 .register b { font-weight: 400; color: var(--fg); }
 .register--pairs b {
@@ -2638,11 +2720,19 @@ html.js .collage .reveal.is-in .collage__slot {
 @media (min-width: 900px) {
   .pull__row { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); }
 }
+/* A dotted leader runs from the Russian word to the arrow at the column's
+   edge, so the arrow points at the English word it drags instead of into
+   the gap after a short Russian one (a table of contents' device: the eye
+   follows the dots across). */
 .pull__from { display: flex; align-items: center; gap: clamp(12px, 2vw, 24px); }
 .pull__to { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 18px; }
 .pull__ru { font-family: var(--serif); font-weight: 500; font-size: clamp(21px, 2.2vw, 28px); line-height: 1.2; }
-.pull__arrow { color: var(--fg2); }
-.pull__arrow svg { display: block; width: 26px; height: 8px; overflow: visible; }
+.pull__arrow { flex: 1; display: flex; align-items: center; min-width: 26px; color: var(--fg2); }
+.pull__arrow::before {
+  content: ""; flex: 1; height: 1px; margin-right: -1px;
+  background: linear-gradient(to right, currentColor 1px, transparent 1px) 0 0 / 5px 1px repeat-x;
+}
+.pull__arrow svg { display: block; flex: none; width: 26px; height: 8px; overflow: visible; }
 .pull__en { font-family: var(--mono); font-size: clamp(16px, 1.6vw, 19px); }
 .pull__ipa { font-family: var(--mono); font-size: clamp(15px, 1.5vw, 17px); color: var(--fg2); }
 
@@ -2757,25 +2847,8 @@ html.js .collage .reveal.is-in .collage__slot {
 .ledger__link:hover .ledger__title, .ledger__link:focus-visible .ledger__title { color: var(--fg); text-decoration-color: currentColor; }
 .ledger__link:hover .ledger__arrow, .ledger__link:focus-visible .ledger__arrow { color: var(--fg); }
 .ledger__link:hover .ledger__arrow svg, .ledger__link:focus-visible .ledger__arrow svg { transform: translateX(6px); }
-.ledger__more {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 24px;
-  margin-top: clamp(28px, 4vw, 44px); color: var(--fg2);
-}
-.ledger__follow {
-  position: relative; display: inline-flex; align-items: center; gap: 12px;
-  font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--fg); padding-bottom: 6px;
-}
-.ledger__follow::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
-  background: var(--ink-target); transform: scaleX(.3); transform-origin: left;
-  transition: transform var(--t) var(--e);
-}
-.ledger__follow svg { width: 26px; height: 8px; overflow: visible; transition: transform var(--t) var(--e); }
-.ledger__follow:hover::after, .ledger__follow:focus-visible::after { transform: scaleX(1); }
-.ledger__follow:hover svg, .ledger__follow:focus-visible svg { transform: translateX(6px); }
 
 @media (prefers-reduced-motion: reduce) {
   .note-pager__all svg, .note-pager__t svg, .ledger__arrow svg, .ledger__title,
-  .ledger__follow svg, .ledger__follow::after, .note-source__link { transition: none; }
+  .note-source__link { transition: none; }
 }

@@ -294,3 +294,135 @@ def test_note_pages_preload_inter_and_the_index_does_not():
         assert sorted(found) == ["inter-cyrillic-v20", "inter-latin-v20"], (slug, found)
         for name in found:   # the preload must be the very file the CSS asks for
             assert f"url(assets/fonts/{name}.woff2)" in css, name
+
+
+# ---------------------------------------------------------------------------
+# Inside a note (2026-11-27, feature/notes-inside): the ending is a reading
+# page's close, not a landing page's; the hero reads top down; labels are
+# wayfinding; transcriptions hold together.
+
+@pytest.mark.parametrize("path", PATHS)
+def test_a_notes_page_ends_on_a_short_contact(open_site, path):
+    """The English page's contact, cut down: unnumbered (it is not chapter
+    04 of the note), no engraving, the CTA smaller than the page's title,
+    the three channels kept in their order."""
+    page, _ = open_site(path=path.strip("/") + "/", viewport={"width": 1280, "height": 800}, reduced_motion=True)
+    c = page.locator("#contact")
+    assert "sec--contact-note" in c.get_attribute("class")
+    assert c.locator(".vig, .label .num").count() == 0
+    big, title = page.evaluate("""[parseFloat(getComputedStyle(document.querySelector('.contact__big')).fontSize),
+                                   parseFloat(getComputedStyle(document.querySelector('.hero__title')).fontSize)]""")
+    assert big < title, (big, title)
+    assert c.evaluate("e => e.offsetHeight") < 800
+    assert c.locator(".contact__portrait img").count() == 2          # one per language, as on the four pages
+    names = [n.strip() for n in c.locator(".channels .ch__k").all_inner_texts()]
+    assert names == ["Telegram", "LinkedIn", "Instagram"], names
+    assert "t.me/yngvil" in c.locator(".contact__cta").get_attribute("href")
+
+
+@pytest.mark.parametrize("lang", ["en", "ru"])
+@pytest.mark.parametrize("path", PATHS)
+def test_every_notes_ending_says_what_happens_next(open_site, path, lang):
+    """CLAUDE.md: every contact section says what happens next (message,
+    30-minute trial, a plan). The notes' own ledes stopped at the trial."""
+    page, _ = open_site(path=path.strip("/") + "/", lang=lang)
+    text = page.locator("#contact .sec__lede").inner_text()
+    assert "30" in text and ("plan" in text if lang == "en" else "план" in text), text
+
+
+def test_the_index_says_linkedin_once():
+    """The "I also write about English on LinkedIn" line sat right above the
+    channels row, which says the same ("I write about English here")."""
+    html = (REPO_ROOT / "notes" / "index.html").read_text()
+    main = html[html.index("<main"):html.index("</main>")]
+    assert "ledger__more" not in main
+    assert main.count('href="https://www.linkedin.com/in/vitnyrcoach/"') == 1
+
+
+@pytest.mark.parametrize("lang", ["en", "ru"])
+@pytest.mark.parametrize("slug", NOTES)
+def test_a_notes_figure_starts_on_the_first_phone_screen(open_site, slug, lang):
+    """Phone order: standfirst, figure, then who wrote it. The figure used
+    to start under the message bar, after two lines of by-line."""
+    page, _ = open_site(path=f"notes/{slug}/", lang=lang, viewport=NARROW, has_touch=True, reduced_motion=True)
+    page.wait_for_timeout(300)
+    order = page.evaluate("[...document.querySelector('#hero .hero__foot').children].map(e => e.className.split(' ')[0])")
+    assert order == ["page-hero__text", "note-fig", "note-meta"], order
+    top = page.evaluate("document.querySelector('#hero .note-fig').getBoundingClientRect().top")
+    limit = page.evaluate("""(() => { const d = document.querySelector('.dock');
+        return d && getComputedStyle(d).display !== 'none' ? d.getBoundingClientRect().top : innerHeight })()""")
+    assert top + 40 <= limit, (top, limit)
+
+
+@pytest.mark.parametrize("slug", NOTES)
+def test_a_notes_text_starts_level_with_its_figure(open_site, slug):
+    """From 900px the standfirst sits at the top of its column, level with
+    the figure; bottom alignment left a hole under the title whenever the
+    figure was the taller side ("Could you")."""
+    page, _ = open_site(path=f"notes/{slug}/", viewport={"width": 1280, "height": 800}, reduced_motion=True)
+    page.wait_for_timeout(300)
+    stand, fig = page.evaluate("""[document.querySelector('#hero .stand[data-l=en]').getBoundingClientRect().top,
+                                   document.querySelector('#hero .note-fig').getBoundingClientRect().top]""")
+    assert abs(stand - fig) <= 12, (stand, fig)
+
+
+@pytest.mark.parametrize("slug", NOTES)
+def test_section_labels_are_wayfinding_and_never_repeat_their_heading(open_site, slug):
+    page, _ = open_site(path=f"notes/{slug}/")
+    labels, heads = [], []
+    for sid in ("words", "why", "practice"):
+        sec = page.locator(f"#{sid}")
+        labels.append(sec.locator(".label").inner_text().split("\n")[-1].strip().lower())
+        heads.append(sec.locator('.sec__head h2[data-l="en"]').inner_text().strip().lower().rstrip("."))
+    assert labels == ["the fix", "why it happens", "practice"], labels
+    assert all(l != h for l, h in zip(labels, heads)), list(zip(labels, heads))
+
+
+@pytest.mark.parametrize("width", [320, 375])
+@pytest.mark.parametrize("lang", ["en", "ru"])
+def test_a_transcription_never_breaks_across_lines(open_site, width, lang):
+    """On a phone /ɔː/ broke into "/" at a line end and "ɔː/" on the next.
+    Each visible .ipa is one line box, and the au table still fits 320px."""
+    page, _ = open_site(path="notes/au/", lang=lang, viewport={"width": width, "height": 700},
+                        has_touch=True, reduced_motion=True)
+    # one rect per inline fragment (the green ɔː is its own span), so the
+    # test is that every fragment sits on the same line
+    broken = page.evaluate("""[...document.querySelectorAll('.ipa')].filter(e => e.offsetParent)
+        .filter(e => { const t = [...e.getClientRects()].map(r => Math.round(r.top));
+                       return Math.max(...t) - Math.min(...t) > 2; }).map(e => e.textContent)""")
+    assert not broken, broken
+    assert not horizontal_overflow(page)
+
+
+def test_the_fix_in_the_au_table_is_not_the_columns_grey(open_site):
+    """The green ɔː in the sound column sat on --fg2 grey and read as one
+    colour in both themes; the column is set in the text ink."""
+    for scheme in ("light", "dark"):
+        page, _ = open_site(path="notes/au/", color_scheme=scheme)
+        cell, mark = page.evaluate("""[getComputedStyle(document.querySelector('.register__ipa')).color,
+            getComputedStyle(document.querySelector('.register__ipa .mark--target')).color]""")
+        assert cell == page.evaluate("getComputedStyle(document.body).color"), (scheme, cell)
+        assert mark != cell, scheme
+
+
+def test_the_au_tiles_carry_no_scrabble_scores():
+    html = (REPO_ROOT / "notes" / "au" / "index.html").read_text()
+    assert "tile__v" not in html and "tile__v" not in (REPO_ROOT / "style.css").read_text()
+
+
+def test_the_generator_fails_loudly_when_the_contact_changes_shape(tmp_path):
+    """note_contact() cuts pieces out of the English page's contact. If one
+    is gone (here: the engraving), the build must stop, not quietly ship
+    the full section on every note."""
+    import shutil
+    import subprocess
+    import sys
+    for rel in ("english/index.html", "sitemap.xml", "assets/share/share-card.html"):
+        (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(REPO_ROOT / rel, tmp_path / rel)
+    shutil.copytree(REPO_ROOT / "tools" / "notes", tmp_path / "tools" / "notes",
+                    ignore=shutil.ignore_patterns("__pycache__"))
+    en = tmp_path / "english" / "index.html"
+    en.write_text(en.read_text().replace("vig--empty-chair", "vig--elsewhere"))
+    run = subprocess.run([sys.executable, "build.py"], cwd=tmp_path / "tools" / "notes", capture_output=True, text=True)
+    assert run.returncode != 0 and "note_contact" in (run.stdout + run.stderr), run

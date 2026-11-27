@@ -18,7 +18,7 @@ import importlib
 import re
 import sys
 
-from lib import (ARROW, LINKEDIN, PERSON, RIGHT_VH, ROOT, SITE, WRONG_VH, article_ld, breadcrumb, hero, label,
+from lib import (ARROW, PERSON, RIGHT_VH, ROOT, SITE, WRONG_VH, article_ld, breadcrumb, hero, label,
                  page, pager)
 
 ORDER = ["feel", "could_you", "au", "noun_verb_stress"]  # newest first
@@ -145,12 +145,9 @@ def build_index(notes):
   <ol class="ledger" reversed>
 {ledger}
   </ol>
-  <!-- Only some notes started as LinkedIn posts, so this says what is true
-       of all of them: Igor writes about English there. -->
-  <p class="ledger__more reveal">
-    <span data-l="en">I also write about English on LinkedIn.</span><span data-l="ru">Об английском я пишу и в LinkedIn.</span>
-    <a class="ledger__follow" href="{LINKEDIN}" target="_blank" rel="noopener" data-magnetic><span data-en="Follow me there" data-ru="Подписаться">Follow me there</span>{ARROW}</a>
-  </p>
+  <!-- No "follow me on LinkedIn" line here (removed 2026-11-27): the
+       contact section's channels row, right below, says it ("I write about
+       English here"). -->
 </section>"""
     page(path="/notes/",
          comment="/notes/: the library of mistakes, one real mistake per note. Not a blog.",
@@ -163,8 +160,8 @@ def build_index(notes):
          og_image="og-notes", og_alt="Notes from the lessons. Igor Shatsev, English coach in Yerevan.",
          og_type="website", jsonld=jsonld,
          body=body,
-         contact_lede_en="Tell me where your English breaks now: at work, on calls, in conversation. [[The 30-minute trial lesson is free, and you owe me nothing after it]]. Online or in Yerevan.",
-         contact_lede_ru="Напишите, где ваш английский ломается сейчас: на работе, на созвонах, в разговоре. [[Пробное занятие — 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
+         contact_lede_en="Tell me where your English breaks now: at work, on calls, in conversation. [[The 30-minute trial lesson is free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+         contact_lede_ru="Напишите, где ваш английский ломается сейчас: на работе, на созвонах, в разговоре. [[Пробное занятие — 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
          tg_en=INDEX_TG_EN, tg_ru=INDEX_TG_RU)
 
 

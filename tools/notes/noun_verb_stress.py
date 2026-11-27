@@ -29,7 +29,7 @@ FIGURE = """    <figure class="note-fig weights reveal" aria-labelledby="fig-str
 
 
 def body(note):
-    words = section("words", "01", "Nine words", "Девять слов", "\n".join([
+    words = section("words", "\n".join([
         head2("Nine words whose stress moves.", "Девять слов, у которых ударение кочует.",
               "Capitals mark the stressed syllable. One spelling, two words: [[the thing and the action]].",
               "Заглавными — ударный слог. Пишется одинаково, а слова два: [[вещь и действие]]."),
@@ -39,7 +39,7 @@ def body(note):
                  [[f"<b>{a}</b>{b}", ("register__w", f"{c}<b>{d}</b>")] for a, b, c, d in PAIRS],
                  cls=" register--pairs"),
     ]))
-    why = section("why", "02", "Why it happens", "Почему так", "\n".join([
+    why = section("why", "\n".join([
         head2("Russian “проЕкт” puts the weight in the wrong pan.", "Русское «проЕкт» кладёт гирю не на ту чашу.",
               "The pattern runs all through English. Russian has plenty of look-alikes, {{объект}}, {{проект}}, {{контракт}}, and they make it easy to slip. You’ll probably still be understood, but [[it adds friction and extra work for the listener]], and that can cost you the first impression.",
               "Этот паттерн часто проскакивает в английском языке. В русском много похожих слов, и из-за них легко ошибиться: {{объект}}, {{проект}}, {{контракт}} и т. д. Тебя, скорее всего, всё равно поймут, но [[это создаёт лишнее когнитивное трение и лишнюю работу для слушателя]], которая может ухудшить первое впечатление."),
@@ -49,7 +49,7 @@ def body(note):
   </dl>
   <p class="note-cite reveal">Kelly &amp; Bock (1988). Stress in time. <i>Journal of Experimental Psychology: Human Perception and Performance</i>, 14(3), 389–403.</p>""",
     ]))
-    say = section("practice", "03", "Say it out loud", "Скажите вслух", "\n".join([
+    say = section("practice", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
               "The capitals carry the weight. Read the things, then the actions.",
               "Вес — на заглавных. Сначала вещи, потом действия."),
@@ -88,8 +88,8 @@ NOTE = dict(
     og_desc="Nine words whose stress moves when the noun becomes a verb.",
     og_alt="The weight of stress. A note by Igor Shatsev on noun and verb stress.",
     ld_headline="The weight of stress: PROject or proJECT?",
-    contact_lede_en="Not sure where your stress falls? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
-    contact_lede_ru="Не уверены, куда падает ваше ударение? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
+    contact_lede_en="Not sure where your stress falls? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Не уверены, куда падает ваше ударение? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about word stress. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про ударение. Хочу записаться на бесплатное занятие по английскому.",
     body=body,

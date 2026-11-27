@@ -40,7 +40,7 @@ FIGURE = ladder([
 
 
 def body(note):
-    words = section("words", "01", "Six requests", "Шесть просьб", "\n".join([
+    words = section("words", "\n".join([
         head2("Six requests, from order to ask.", "Шесть просьб: от приказа к вопросу.",
               "Each line: the order with {{please}}, and [[what a colleague would actually say]].",
               "В каждой строке: приказ с {{please}} и [[как на самом деле сказал бы коллега]]."),
@@ -49,13 +49,13 @@ def body(note):
                  [("With please", "С please"), ("What English says", "Как по-английски")],
                  [[w, ("register__w", r)] for w, r in REQUESTS], cls=" register--pairs"),
     ]))
-    why = section("why", "02", "Why it happens", "Почему так", "\n".join([
+    why = section("why", "\n".join([
         head2("In English, the softening is in the question.", "В английском вежливость — в вопросе.",
               "Russian is polite with {{пожалуйста}} and with {{вы}}. English does it with grammar: a question, a modal verb ({{could}}, {{would}}, {{can}}) [[and a little distance]].",
               "В русском вежливость — это {{пожалуйста}} и {{вы}}. В английском — грамматика: вопрос, модальный глагол ({{could}}, {{would}}, {{can}}) [[и немного дистанции]]."),
         pull(SOFTENERS),
     ]))
-    say = section("practice", "03", "Say it out loud", "Скажите вслух", "\n".join([
+    say = section("practice", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
               "Questions, not orders. {{please}} is optional now.",
               "Вопросы, а не приказы. {{please}} теперь — по желанию."),
@@ -90,8 +90,8 @@ NOTE = dict(
     og_desc="An order with please is still an order. Six requests, and how English softens them.",
     og_alt="Please isn’t enough. A note by Igor Shatsev on polite requests.",
     ld_headline="Please isn’t enough: how to make a request in English",
-    contact_lede_en="Not sure how your requests land? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
-    contact_lede_ru="Не уверены, как звучат ваши просьбы? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
+    contact_lede_en="Not sure how your requests land? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Не уверены, как звучат ваши просьбы? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “please”. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про «please». Хочу записаться на бесплатное занятие по английскому.",
     body=body,

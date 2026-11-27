@@ -42,7 +42,7 @@ FIGURE = ladder([
 
 
 def body(note):
-    words = section("words", "01", "Six phrases", "Шесть фраз", "\n".join([
+    words = section("words", "\n".join([
         head2("One habit, six phrases.", "Одна привычка, шесть фраз.",
               "Wherever Russian says {{чувствую себя}}, [[English just says {{feel}}]].",
               "Там, где по-русски {{чувствую себя}}, [[по-английски просто {{feel}}]]."),
@@ -51,13 +51,13 @@ def body(note):
                  [("What comes out", "Как звучит"), ("What English says", "Как по-английски")],
                  [[w, ("register__w", r)] for w, r in PHRASES], cls=" register--pairs"),
     ]))
-    why = section("why", "02", "Why it happens", "Почему так", "\n".join([
+    why = section("why", "\n".join([
         head2("English keeps -\u2060self for actions.", "В английском -\u2060self — для действий.",
               "English does have {{myself}}, but for something you do to yourself, not for how you feel: [[{{introduce myself}}, {{hurt myself}}]]. A feeling goes straight after {{feel}}.",
               "В английском {{myself}} есть, но для того, что вы делаете с собой, а не для того, как себя чувствуете: [[{{introduce myself}}, {{hurt myself}}]]. Ощущение идёт сразу после {{feel}}."),
         pull(LOOKALIKES),
     ]))
-    say = section("practice", "03", "Say it out loud", "Скажите вслух", "\n".join([
+    say = section("practice", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
               "{{feel}}, then the feeling. The last two are actions, so they keep {{-\u2060self}}.",
               "{{feel}} — и сразу ощущение. Последние две — действия, поэтому {{-\u2060self}} остаётся."),
@@ -92,8 +92,8 @@ NOTE = dict(
     og_desc="feel already carries the feeling. Six phrases, and when -self does belong.",
     og_alt="Nothing to add. A note by Igor Shatsev on “I feel myself good”.",
     ld_headline="Nothing to add: why Russian speakers say “I feel myself good”",
-    contact_lede_en="Not sure which habits slip into your English? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. Online or in Yerevan.",
-    contact_lede_ru="Не уверены, какие привычки пролезают в ваш английский? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Онлайн или в Ереване.",
+    contact_lede_en="Not sure which habits slip into your English? The trial lesson is a good place to find out. [[It’s 30 minutes, free, and you owe me nothing after it]]. If it fits, we agree on a plan, online or in Yerevan.",
+    contact_lede_ru="Не уверены, какие привычки пролезают в ваш английский? На пробном занятии это легко проверить. [[Это 30 минут, бесплатно и ни к чему не обязывает]]. Если подходит — составляем план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “I feel myself”. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про «I feel myself». Хочу записаться на бесплатное занятие по английскому.",
     body=body,
