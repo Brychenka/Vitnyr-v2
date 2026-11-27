@@ -6697,3 +6697,34 @@ what actual means but not what to say instead.
 - **Length:** about the same as before (desktop 4715px, phone 5459px), but
   every part now carries something the others don't.
 - **Version key:** `main.js` 20261127c → 20261128a on the four pages.
+
+## Note: serial (2026-11-28, `feature/note-serial`)
+
+The sixth note, from Igor's LinkedIn post and slide "I love watching
+serials" (23 November 2026). Planned before building, in
+`reference/linkedin-posts/REVIEW.md`, then built, then rebuilt after a cold
+review, as with actual. No CSS or JS change: every part is an existing
+component.
+
+- **Hero figure: the joke as type**, the grammar notes' `ladder()`: you say
+  "I love watching *serials*" (specimen ink), they hear "I love watching
+  *cereals*", say "I love watching TV *shows*" (target ink). Caption:
+  serial and cereal sound the same; a native speaker hears breakfast.
+- **h1** "Series, / not cereal." / «Сериалы, / а не хлопья.»; the
+  standfirst ends on the answer (сериал → TV series / TV show, серия →
+  episode).
+- **01 The fix:** a 7-row cheat sheet (сериал, серия, сезон, два сериала,
+  серийный). **02 Why:** the sound: серийный → serial and хлопья → cereal
+  share /ˈsɪəriəl/, сериал → series is /ˈsɪəriːz/; one series, two series.
+  **03 Practice:** the ear test (`ear_test()`), eight sentences, three
+  natural. None uses series for a season, which British English does, so
+  every wrong line is wrong in both Englishes.
+- **Cold review, same day:** the standfirst retold the joke the figure
+  tells (cut to one line); the figure's Russian "you mean" row added
+  nothing (cut, 3 rows); table row 1 repeated the figure's fix (now "my
+  favourite show"); "why" repeated two table rows (now the shared
+  transcription, which nothing else on the page shows).
+- **Checked:** both themes and languages at 375 and 1280, no overflow, no
+  console errors; figure top 522px (EN) / 578px (RU) on a phone; the test
+  driven in EN and RU (7/8, «смотреть сериалы», the Telegram message names
+  the note). Drafts: NQ14.
