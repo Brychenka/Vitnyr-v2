@@ -236,7 +236,6 @@ until you do.
 | NQ1 | The original carousel files (PDF or PNG), including the two slides hidden behind "+2"? Until then the "по-русски" column is left out. | H4 |
 | NQ3 | Approve or replace the practice sentences written for the notes (au i–vi, feel ii–vi, could-you ii–vi; rewritten 2026-11-27 to lean less on IT, marked draft in `tools/notes/*.py`). | H4 |
 | NQ11 | A plain hint for /ɔː/ on the au note, for readers who can't read IPA: anchor it to a Russian sound (a long, rounded «о») or to English words (*law*, *saw*)? Your call as the teacher. Its place is ready: the line under "Six words. One sound in every one." (`tools/notes/au.py`). | H4 |
-| NQ12 | Approve three au drafts (2026-11-27, marked in `tools/notes/au.py`): the shorter opening (your post without its two word lists; "drop the а, the у and the в" kept), section 01's line "The underlined au in each word is one long sound, /ɔː/", and the practice line "If you hear a в or a second vowel, say the line again, slower." | H4 |
 | NQ4 | Approve the English translations of the two posts (marked draft in the source). | H4 |
 | NQ5 | Links to the posts themselves? Until then "First on LinkedIn" links to your activity page (`tools/notes/lib.py`). | H4 |
 | NQ6 | The exact date of the stress post (LinkedIn said "2w" on 2026-11-20)? Shown as "November 2026". | H4 |

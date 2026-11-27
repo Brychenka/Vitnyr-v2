@@ -41,7 +41,7 @@ AS ='<span class="note-spec__as" data-en="sounds like" data-ru="звучит к�
 
 def body(note):
     words = section("words", "\n".join([
-        # DRAFT for Igor (2026-11-27): names the line instead of repeating
+        # Approved by Igor 2026-11-27 (NQ12): names the line instead of repeating
         # the standfirst's "not а plus у". The /ɔː/ hint (NQ11) goes here
         # once Igor picks its anchor.
         head2("Six words. One sound in every one.", "Шесть слов. В каждом один звук.",
@@ -65,7 +65,7 @@ def body(note):
     ]))
     say = section("practice", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
-              # DRAFT for Igor (2026-11-27): what to listen for, instead of
+              # Approved by Igor 2026-11-27 (NQ12): what to listen for, instead of
               # repeating section 01.
               f"Underlined: one long {IPA_OO}. If you hear a {{{{в}}}} or a second vowel, say the line again, slower.",
               f"Подчёркнуто — один долгий {IPA_OO}. Если слышите {{{{в}}}} или второй гласный, повторите строку медленнее."),
@@ -91,7 +91,7 @@ NOTE = dict(
     h1_en=["Two letters,", "one sound."], h1_ru=["Две буквы —", "один звук."],
     # "Almost all my students" replaces "95% of my IT clients" (NQ2, Igor
     # 2026-11-27: soften it, and not IT-first).
-    # DRAFT for Igor (2026-11-27): the post's opening without its two lists
+    # Approved by Igor 2026-11-27 (NQ12): the post's opening without its two lists
     # (the six words are the table in section 01). The instruction, drop the
     # а, у and в, stays: it is the post's point.
     stand_en=f"Almost all my students mispronounce {{{{au}}}}: {{{{launch}}}} comes out as {{{{лаунч}}}}, {{{{automate}}}} as {{{{автомейт}}}} or {{{{аутомейт}}}}. To make them sound right, drop the {{{{а}}}}, the {{{{у}}}} and the {{{{в}}}}: [[you need one sound only, {IPA_OO}]].",

@@ -6568,7 +6568,7 @@ phone the figure started under the message bar. Built from a reviewed plan.
 - **The au tiles lose their Scrabble scores.** They teach nothing about the
   sound, and the merged tile had none.
 
-**au, drafts for Igor (NQ12):**
+**au, approved by Igor on 2026-11-27 (NQ12, closed):**
 - The opening drops the post's two word lists (the six words are the table
   in section 01). It keeps "drop the а, the у and the в", which is the
   post's point, so the monospace count goes from 19 words to 10.
