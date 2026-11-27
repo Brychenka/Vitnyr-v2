@@ -337,12 +337,45 @@ PARTS = {
 }
 
 
-def section(sec_id, inner):
+def section(sec_id, inner, cls=""):
     num, en, ru = PARTS[sec_id]
-    return f"""<section class="sec" id="{sec_id}">
+    return f"""<section class="sec{cls}" id="{sec_id}">
 {label(num, en, ru)}
 {inner}
 </section>"""
+
+
+def ear_test(items, msg_en, msg_ru, href):
+    """The English page's "Test yourself" (initEarTest in main.js), as a
+    note's practice: the reader taps the sentences that sound right, then
+    checks. items: (html, right, habit_en, habit_ru, fix_html); a wrong
+    sentence marks its culprit with .ear__cut and has a fix. The section
+    carries .sec--ear, which hides it without JS. msg_*: the Telegram
+    message after the check, {n} and {t} the score; href: before it."""
+    rows = []
+    for html, right, h_en, h_ru, fix in items:
+        habit = "" if right else f' data-habit-en="{h_en}" data-habit-ru="{h_ru}"'
+        fix_p = ("" if right else
+                 f'\n        <p class="ear__fix" hidden><span class="vh" data-en="Natural: " data-ru="Естественно: ">Natural: </span>{fix}</p>')
+        rows.append(f"""      <li class="ear__item" data-right="{'true' if right else 'false'}"{habit}>
+        <button type="button" class="ear__pick" aria-pressed="false"><span class="ear__box" aria-hidden="true"></span><span class="ear__s" lang="en">{html}</span></button>
+        <span class="ear__verdict" hidden></span>{fix_p}
+      </li>""")
+    rows = "\n".join(rows)
+    return f"""  <div class="ear reveal" data-msg-en="{msg_en}" data-msg-ru="{msg_ru}">
+    <ol class="ear__list">
+{rows}
+    </ol>
+    <div class="ear__actions">
+      <button type="button" class="ear__check page-cta" data-magnetic><span data-en="Check my answers" data-ru="Проверить">Check my answers</span></button>
+      <button type="button" class="ear__again tool" hidden data-magnetic><span data-en="Try again" data-ru="Ещё раз">Try again</span></button>
+    </div>
+    <div class="ear__result" hidden>
+      <p class="ear__score" aria-live="polite"></p>
+      <p class="ear__habit"></p>
+      <a class="lede__link ear__send" href="{href}" target="_blank" rel="noopener" data-magnetic><span data-en="Send me your score" data-ru="Отправить мне результат">Send me your score</span></a>
+    </div>
+  </div>"""
 
 
 def spec_pair(wrong, right):

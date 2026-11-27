@@ -1487,7 +1487,11 @@
       });
       scoreEl.textContent = t.score(hits, items.length);
       habitEl.textContent = habits.length ? t.habits(habits.join(', ')) : (strict ? t.strict : t.clean);
-      send.setAttribute('href', 'https://t.me/vitnyr?text=' + encodeURIComponent(t.msg(hits, items.length)));
+      // A note's test names itself in the message (data-msg-en/-ru, {n}/{t}),
+      // so Igor can tell which note a message came from.
+      var own = root.getAttribute('data-msg-' + l);
+      var msg = own ? own.replace('{n}', hits).replace('{t}', items.length) : t.msg(hits, items.length);
+      send.setAttribute('href', 'https://t.me/vitnyr?text=' + encodeURIComponent(msg));
     }
 
     check.addEventListener('click', function () {

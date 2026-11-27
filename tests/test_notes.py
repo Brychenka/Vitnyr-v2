@@ -141,6 +141,14 @@ def test_note_shows_the_mistake_and_the_fix(open_site, slug):
     hides the wrong line on /english/) must leave both lines showing."""
     page, _ = open_site(path=f"notes/{slug}/")
     page.wait_for_timeout(300)
+    if page.locator(".note-spec").count() == 0:
+        # A note may leave out the pair when its table's first row says the
+        # same (actual, 2026-11-28); its figure then carries both inks.
+        fig = page.locator(".note-fig")
+        assert fig.locator("del.mark--specimen").count() >= 1
+        assert fig.locator("ins.mark--target").count() >= 1
+        assert fig.is_visible()
+        return
     for cls in ("wrong", "right"):
         line = page.locator(f".note-spec .line-spec.{cls}")
         assert line.count() == 1 and line.is_visible(), cls
@@ -426,3 +434,20 @@ def test_the_generator_fails_loudly_when_the_contact_changes_shape(tmp_path):
     en.write_text(en.read_text().replace("vig--empty-chair", "vig--elsewhere"))
     run = subprocess.run([sys.executable, "build.py"], cwd=tmp_path / "tools" / "notes", capture_output=True, text=True)
     assert run.returncode != 0 and "note_contact" in (run.stdout + run.stderr), run
+
+
+def test_a_notes_test_scores_and_names_its_note_in_the_message(open_site):
+    """The actual note's practice is the English page's test (initEarTest).
+    After the check, the Telegram message carries the score and the note's
+    name, so Igor can tell which note a message came from."""
+    page, _ = open_site(path="notes/actual/")
+    picks = page.locator("#practice .ear__pick")
+    assert picks.count() == 8
+    assert page.locator("#practice.sec--ear").count() == 1   # hidden without JS
+    right = page.locator('#practice .ear__item[data-right="true"] .ear__pick')
+    for i in range(right.count()):
+        right.nth(i).click()
+    page.locator("#practice .ear__check").click()
+    assert page.locator("#practice .ear__score").inner_text().startswith("You judged 8 of 8")
+    msg = unquote(page.locator("#practice .ear__send").get_attribute("href"))
+    assert "“actual”" in msg and "8/8" in msg

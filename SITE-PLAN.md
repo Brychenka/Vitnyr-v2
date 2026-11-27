@@ -186,8 +186,11 @@ linked from its specimen. Igor's LinkedIn posts about English are the raw
 material; nothing is published without his approval. Start with the three
 specimens on the English page.
 
-**Status (2026-11-21):** live at `/notes/` with four notes (au,
-noun/verb stress, feel, could-you). The open questions are NQ1-NQ9 below.
+**Status (2026-11-28):** five notes. The newest, actual (`feature/note-actual`),
+is the first vocabulary note and brings a dictionary-entry figure. The eight
+LinkedIn posts read on 2026-11-28 (text, links, images) are in
+`reference/linkedin-posts/`, with a review of each as a future note
+(`REVIEW.md`: serials/cereals is next). The open questions are NQ below.
 
 ### I1. Accessibility and Safari [FT5.2] · M
 
@@ -242,6 +245,7 @@ until you do.
 | NQ7 | `conSOLE` as a verb means "to comfort". Keep it, or swap in a pair IT people use (`REcord / reCORD`, `UPdate / upDATE`)? | H4 |
 | NQ8 | Recordings of the words and sentences (what to record: `tools/notes/RECORDINGS.md`). | H4 |
 | NQ9 | The "I am agree" note is parked on `feature/notes-agree`: publish it, or leave it? | H4 |
+| NQ13 | The actual note (`tools/notes/actual.py`): approve the English translation of the post, the four table rows after the carousel's four (meeting still on, offer still valid, a hot topic, the current exchange rate), the "why" lede (German *aktuell*, French *actuel*), and two test sentences (the offer, *Actually, I meant Tuesday*). All marked DRAFT. | H4 |
 | NQ10 | The English page calls the Russian in "I feel myself" a "reflexive ending built into the verb", but чувствую себя uses a separate word (себя). Change it to "reflexive word", as the note says? | H4 |
 
 ---
