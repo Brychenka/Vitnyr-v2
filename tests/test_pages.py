@@ -156,7 +156,7 @@ def test_page_ends_on_contact_with_no_detour(open_site, slug):
 @pytest.mark.parametrize("slug,word", [("english", "English"), ("chess", "chess"), ("climbing", "climbing")])
 def test_every_telegram_link_names_the_discipline(open_site, slug, word):
     page, _ = open_site(path=f"{slug}/")
-    hrefs = {a.get_attribute("href") for a in page.locator('a[href^="https://t.me/yngvil?text="]').all()}
+    hrefs = {a.get_attribute("href") for a in page.locator('a[href^="https://t.me/vitnyr?text="]').all()}
     assert hrefs, "no Telegram links"
     for h in hrefs:
         assert word in unquote(h), h

@@ -6616,3 +6616,19 @@ The line-break test was checked to fail with `nowrap` removed.
 `style.css` key is 20261127b on all four pages, and the notes are
 regenerated. The four main pages look the same; only the cache key and CSS
 the notes use reach them, so no artifact republish is needed.
+
+## Hotfix: Telegram handle @yngvil → @vitnyr (2026-11-27, `hotfix/telegram-vitnyr`)
+
+Igor renamed his Telegram account. `t.me/vitnyr` opens his profile, and
+`t.me/yngvil` now opens Telegram's empty "Contact @yngvil" page.
+
+- **Where it changed:** every link and visible handle on the four pages, the
+  notes generator (`tg()` in `tools/notes/lib.py`), the quiz's send link in
+  `main.js`, a CSS comment and the tests.
+- **Pre-written messages:** the Telegram prefills keep their text; only the
+  handle in the link changed.
+- **Version keys:** `main.js` 20261124b → 20261127c and `style.css` →
+  20261127c, so cached copies don't keep the old link.
+- **Rebuilt:** the notes. 510 passed.
+- **Not changed:** the older entries in this log, which still say @yngvil
+  because that was the handle at the time.

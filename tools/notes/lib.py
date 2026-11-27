@@ -62,7 +62,7 @@ ROMAN = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]
 
 
 def tg(text):
-    return "https://t.me/yngvil?text=" + quote(text, safe="")
+    return "https://t.me/vitnyr?text=" + quote(text, safe="")
 
 
 def w(s):
