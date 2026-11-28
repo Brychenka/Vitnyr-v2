@@ -6886,3 +6886,37 @@ Igor: the text-matched photo still read as smallish. Rendered at 1.3x and
   46px CTA it outweighed the lesson.
 - Checked: both themes, both languages, 375 to 1600, no overflow, no
   console errors. Phones unchanged. `style.css?v=20261128c`.
+
+## Note: manage (2026-11-28, `feature/note-manage`)
+
+The ninth note, from Igor's post of 1 October on manage to, with its two
+slides (the post is in `reference/linkedin-posts/BACKLOG.md`). The Russian
+is his post, lightly cleaned; the English is a translation (DRAFT, NQ18).
+Planned in `REVIEW.md`, built, reviewed cold, rebuilt. No CSS or JS change.
+
+- **Vocabulary**, practised with the test. Headline: "Not just / for
+  managers." The post names a gap (manage known only as управлять); the
+  note names what fills it, could for one success, as the specimen.
+- **Hero: actual's dictionary entry.** manage /ˈmænɪdʒ/: управлять (you
+  know), справиться, суметь (it also means), I ~~could~~ managed to fix it.
+- **01:** six phrases, the post's two first. **02:** мог is could, смог is
+  managed to (or was able to); couldn't is fine for a failure.
+  **03:** eight sentences, slide 2's three among them; "We couldn't agree
+  on a price" is right on purpose.
+- **Cold review fixes:** "I could deploy it by Friday" is a fine offer out
+  of context, so every wrong could is anchored in the past, the ledger row
+  too (I could fix it yesterday); the practice lede said "could on purpose"
+  when the one on purpose is couldn't; the standfirst claimed "used far more
+  often" (not in the post) and dropped "when I ask my students"; four of
+  five wrong sentences were could, so one now drops the to (managed solve);
+  "agree with the client" became "reach an agreement"; the 01 lede repeated
+  table row 1 and now gives the plain-verb rule; the 02 lede's last line
+  repeated the pull rows; "was able to" is named as equally right.
+- **Then the copy pass** the other notes got (humanizer checklist for
+  English, the Russian checklist), recorded in `reference/notes-copy-review.md`:
+  a plain 01 heading, a new caption (the old one repeated the standfirst),
+  the Russian why without its three dashes, row 06's «до неё».
+- **Checked:** both themes and languages at 375 and 1280, no overflow, no
+  console errors; the test driven in EN and RU (7/8, «мне удалось», the
+  Telegram message names the note); `tests/test_notes.py` 178 passed. The
+  full suite was not run.

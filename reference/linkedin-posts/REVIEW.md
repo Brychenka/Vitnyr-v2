@@ -125,3 +125,43 @@ Drop the t."
 - **Drafts** for Igor (NQ16): the Russian translation, the table rows not
   in the post, the weighted-average row, the why's pull rows, the test
   sentences.
+
+## Fifth note: manage to, decided before building (2026-11-28)
+
+The post (1 October; text and slides in `BACKLOG.md`): most B1 learners
+know manage only as управлять; its more useful meaning is manage to,
+справиться, получилось, "when it wasn't easy but you did it": I'll manage,
+I managed to fix the bug. Slide 2 is Igor's own exercise, three sentences
+to put through manage to (задеплоить до пятницы, я справлюсь, не
+получилось договориться с клиентом); its answers were never posted.
+
+- **Kind: Vocabulary**, practised with the test, like actual and serial.
+- **The specimen (DRAFT).** The post names the gap, not the wrong form.
+  What fills the gap is *could*: «смог» becomes "I could fix it", which in
+  English means "I was able to, in general", not "I did it, once". So the
+  ledger row is I ~~could~~ deploy by Friday → I managed to deploy by
+  Friday, slide 2's first sentence.
+- **Headline:** "Not just / for managers." / «Не только / для менеджеров.»
+  The post's own turn: the word people know is the manager's word.
+- **Hero: actual's dictionary entry**, no new component. manage
+  /ˈmænɪdʒ/; you know: управлять; it also means: справиться, получилось;
+  say: I managed to. Caption: the post's definition, it wasn't easy, but
+  you did it.
+- **Standfirst:** the post's opening, ending on the answer: manage to is
+  справиться, получилось.
+- **01 The fix:** Russian → English, the post's two (я справлюсь, у меня
+  получилось пофиксить баг), then rows people need (DRAFT): еле успел,
+  как вы справляетесь, сможете в пятницу?
+- **02 Why (DRAFT):** school teaches could as мочь, so смог becomes could too; but could is мог.
+  Could is ability in general (в пять лет я мог читать), managed to is one
+  success that took effort (я смог починить). Not managing is easy: both
+  couldn't and didn't manage to are right. Pull rows, one per job.
+- **03 Practice:** the ear test. Slide 2's three sentences go in as
+  English, one wrong (could) and two right, plus four more (DRAFT). One
+  right sentence is "We couldn't agree on a price", so the test teaches
+  the twist, as weighted average did on weigh.
+- **Search:** «удалось по-английски», «справиться по-английски», «manage
+  to перевод», "could or managed to". Title and description carry them.
+- **Drafts** for Igor (NQ18): the English translation, the could
+  specimen, the table rows not in the post, the why, the test sentences
+  beyond slide 2.
