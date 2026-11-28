@@ -57,7 +57,9 @@ really makes. Posts 1-6 fit that. Posts 1-3 were already judged in
 `REVIEW.md`: dev/deaf needs Igor's word list, install is thin and fits a
 stress note, and redact has no usable picture. Café and manage are new
 candidates. Each has Igor's own slides and a clear fix, but is short like
-install. Fernweh is a German word, not a mistake. Posts 8-19 are about how
+install. **Built since:** manage (`/notes/manage/`), dev / deaf
+(`/notes/dev-deaf/`, from the word list Igor made for it) and café
+(`/notes/cafe/`). Fernweh is a German word, not a mistake. Posts 8-19 are about how
 people learn: habits, attention and motivation, citing studies. They don't
 fit the note format; they would need a different kind of page (method or
 research), which is Igor's call. Posts 7 and 20 are not lessons.
