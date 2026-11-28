@@ -6912,6 +6912,10 @@ Planned in `REVIEW.md`, built, reviewed cold, rebuilt. No CSS or JS change.
   "agree with the client" became "reach an agreement"; the 01 lede repeated
   table row 1 and now gives the plain-verb rule; the 02 lede's last line
   repeated the pull rows; "was able to" is named as equally right.
+- **Then the copy pass** the other notes got (humanizer checklist for
+  English, the Russian checklist), recorded in `reference/notes-copy-review.md`:
+  a plain 01 heading, a new caption (the old one repeated the standfirst),
+  the Russian why without its three dashes, row 06's «до неё».
 - **Checked:** both themes and languages at 375 and 1280, no overflow, no
   console errors; the test driven in EN and RU (7/8, «мне удалось», the
   Telegram message names the note); `tests/test_notes.py` 178 passed. The

@@ -84,3 +84,23 @@ and the artifact, so they're a separate decision:
 - **"Doing it? Drop the t."**: the editor calls it a MUST (in casual English "doing it" means sex). It's Igor's own slide line, not a draft. The second reading is real, and on a share card it may get a smirk, which can also mean clicks. **Igor's call.** If he wants it safe: "Weighing it? Lose the t."
 - **«коуч» → «преподаватель»**: a brand decision already made ("English coach"); not proposed.
 - **Dropping "Fig. 1" numbering altogether**: optional; «Рис.» alone fixes the Russian.
+
+## The manage note (2026-11-28, `feature/note-manage`)
+
+The same two passes as above, for the ninth note: a cold review by an
+outside bilingual editor (applied in the rebuild, `BUILD-NOTES.md`), then
+the humanizer checklist for English and the Russian checklist. Applied:
+
+| Where | Lang | Was | Problem | Now |
+|---|---|---|---|---|
+| 01 heading | EN+RU | "Six phrases. Not one manager." | Clipped two-beat heading; the joke repeats the h1 and contrasts nothing in the table | "One verb for справиться and получилось." / «Один глагол на «справиться» и «получилось».» |
+| Standfirst | EN+RU | "…more useful: manage to means справиться, получилось: it wasn't easy…" | Two colons in a row | A full stop before the stressed sentence |
+| Caption | EN+RU | "manage to: it wasn't easy, but you did it." | Repeats the standfirst's last line (Igor's own words, which stay there) | "The meaning you know, and the one you need." / «Значение, которое вы знаете, и то, которое вам нужно.» |
+| 02 lede | RU | «В школе could учат как мочь… что вы умели вообще… А «смог» — разовый успех, который дался с трудом, — это managed to» | «учат как» reads "teach the way мочь does"; «то, что» missing; three dashes in one sentence | «переводят как «мочь», поэтому и «смог» превращается в could… то, что вы умели вообще. Если «смог» значит разовый успех, который дался с трудом, нужен managed to» (EN to match: "When смог means…, use managed to") |
+| Row 06 | RU | «Не удалось дозвониться.» | The English row says "get through to her" | «Мне не удалось до неё дозвониться.» |
+| Description | RU | «…шесть фраз с manage, почему «I could fix it» звучит не так и короткий тест» | A "why" clause in a list of nouns | «…объяснение, почему «I could fix it» звучит не так, и короткий тест» |
+
+Checked and kept: "Мог is could. Смог isn't." (a headline, where "X, not Y"
+stays), the pull rows' asides, the practice lede, the contact lede (no
+stock opener), the curly quotes (house style), the Russian dashes (Russian
+typography).

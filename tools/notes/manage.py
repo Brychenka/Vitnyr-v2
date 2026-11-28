@@ -25,7 +25,7 @@ PHRASES = [
     (RU(f"Еле {hit('успел', 'успел')} на рейс."), f"I only just {I('managed to')} catch my flight."),
     (RU(f"Как вы {hit('справляетесь', 'справляетесь')}?"), f"How are you {I('managing')}?"),
     (RU(f"{hit('Сможете', 'Сможете')} в пятницу?"), f"Can you {I('manage')} Friday?"),
-    (RU(f"Не {hit('удалось', 'удалось')} дозвониться."), f"I didn’t {I('manage to')} get through to her."),
+    (RU(f"Мне не {hit('удалось', 'удалось')} до неё дозвониться."), f"I didn’t {I('manage to')} get through to her."),
 ]
 
 # Which would a native speaker say? Five wrong, three right. Slide 2's
@@ -63,7 +63,7 @@ FIGURE = f"""    <figure class="note-fig entry reveal" aria-labelledby="fig-mana
         <div class="ladder__row"><span class="ladder__s" lang="ru">справиться, суметь</span>{role("it also means", "а ещё значит")}</div>
         <div class="ladder__row"><span class="ladder__s" lang="en">I {D("could")} {I("managed to")} fix it</span>{role("say", "говорите так")}</div>
       </div>
-      <figcaption id="fig-manage"><span data-l="en">{strong("Fig. 1. {{manage to}}: it wasn’t easy, but you did it.")}</span><span data-l="ru">{strong("Рис. 1. {{manage to}} — было непросто, но вы смогли.")}</span></figcaption>
+      <figcaption id="fig-manage"><span data-l="en">{strong("Fig. 1. The meaning you know, and the one you need.")}</span><span data-l="ru">{strong("Рис. 1. Значение, которое вы знаете, и то, которое вам нужно.")}</span></figcaption>
     </figure>"""
 
 MSG_EN = "Hi! I took the test in your note about “manage”: {n}/{t}. I’d like a free trial English lesson."
@@ -72,7 +72,7 @@ MSG_RU = "Здравствуйте! Мой результат в тесте из
 
 def body(note):
     words = section("words", "\n".join([
-        head2("Six phrases. Not one manager.", "Шесть фраз. Ни одного менеджера.",
+        head2("One verb for справиться and получилось.", "Один глагол на «справиться» и «получилось».",
               "{{managed to}} takes a plain verb: managed to fix, managed to catch. [[Without a verb, manage alone means справиться: I’ll manage.]]",
               "После {{managed to}} — глагол без изменений: managed to fix, managed to catch. [[Без глагола manage — это «справиться»: I’ll manage.]]"),
         register("Six phrases with справиться and получилось, and what English says",
@@ -83,8 +83,8 @@ def body(note):
     why = section("why", "\n".join([
         # DRAFT for Igor: the why is the note's; the post gives the meaning.
         head2("Мог is could. Смог isn’t.", "Мог — это could. Смог — нет.",
-              "School teaches {{could}} as {{мочь}}, so {{смог}} turns into could too. But could is {{мог}}: what you were able to do in general. [[Смог, a one-off success that took effort, is managed to]] (or was able to).",
-              "В школе {{could}} учат как {{мочь}}, и {{смог}} тоже становится could. Но could — это {{мог}}: что вы умели вообще. [[А «смог» — разовый успех, который дался с трудом, — это managed to]] (или was able to)."),
+              "School teaches {{could}} as {{мочь}}, so {{смог}} turns into could too. But could is {{мог}}: what you were able to do in general. [[When смог means a one-off success that took effort, use managed to]] (or was able to).",
+              "В школе {{could}} переводят как {{мочь}}, поэтому и {{смог}} превращается в could. Но could — это {{мог}}: то, что вы умели вообще. [[Если «смог» значит разовый успех, который дался с трудом, нужен managed to]] (или was able to)."),
         pull([
             ("в пять лет я мог читать", "could", both("in general", "умел вообще")),
             ("я смог починить", "managed to", both("once, with effort", "один раз, с трудом")),
@@ -117,14 +117,14 @@ NOTE = dict(
     card_spec='I <span class="x">could</span><span class="to">→</span>I <span class="ok">managed to</span>',
     h1_en=["Not just", "for managers."], h1_ru=["Не только", "для менеджеров."],
     # The post's opening, cleaned, then its answer. The English is a DRAFT.
-    stand_en="Most B1 learners don’t know the most useful meaning of {{manage}}. When I ask my students, the first word they think of is управлять. It has another meaning, more versatile and more useful: [[manage to means справиться, получилось: it wasn’t easy, but you did it.]]",
-    stand_ru="Большинство учеников уровня B1 не знакомы с самым полезным значением слова {{manage}}. Когда я их спрашиваю, первая ассоциация — «управлять». У него есть ещё одно значение, более универсальное и полезное: [[manage to — справиться, получилось: было непросто, но вы смогли.]]",
+    stand_en="Most B1 learners don’t know the most useful meaning of {{manage}}. When I ask my students, the first word they think of is управлять. It has another meaning, more versatile and more useful. [[manage to is справиться, получилось: it wasn’t easy, but you did it.]]",
+    stand_ru="Большинство учеников уровня B1 не знакомы с самым полезным значением слова {{manage}}. Когда я их спрашиваю, первая ассоциация — «управлять». У него есть ещё одно значение, более универсальное и полезное. [[manage to — это справиться, получилось: было непросто, но вы смогли.]]",
     figure=FIGURE,
     comment="/notes/manage/: Igor's LinkedIn post and slides on manage to, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="“I could fix it”? Manage to vs could — Igor Shatsev",
     title_ru_head="«Удалось» и «справился» по-английски: manage to — Igor Shatsev",
     desc_en="manage isn’t only управлять: manage to means справиться, получилось. Why “I could fix it” is wrong for one success, six phrases with manage, and a quick test.",
-    desc_ru="Как сказать «удалось», «получилось», «справлюсь» по-английски: manage to, а не could. Шесть фраз с manage, почему «I could fix it» звучит не так и короткий тест.",
+    desc_ru="Как сказать «удалось», «получилось», «справлюсь» по-английски: manage to, а не could. Шесть фраз с manage, объяснение, почему «I could fix it» звучит не так, и короткий тест.",
     og_title="Not just for managers: manage to vs could — Igor Shatsev",
     og_desc="manage to means справиться, получилось: it wasn’t easy, but you did it. Six phrases and a test.",
     og_alt="Not just for managers. A note by Igor Shatsev on manage to.",
