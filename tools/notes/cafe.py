@@ -68,8 +68,8 @@ def body(note):
     why = section("why", "\n".join([
         # The post: the mark shows French origin. The mechanism is DRAFT.
         head2("The mark over the e says French.", "Значок над e — след французского.",
-              "Russian took {{кафе}} from French and ends it on э. But French é is a closed [e], nearer to English " + EI_IPA + " than to э, and [[no English word ends in a short э]]. So English says é as " + EI_IPA + ". The same goes for other French words both languages share:",
-              "Русский язык заимствовал {{кафе}} из французского и произносит конец как «э». Но французское é — закрытое [e], оно ближе к английскому " + EI_IPA + ", чем к «э», а [[на короткое «э» английские слова не заканчиваются]]. Поэтому в английском é звучит как " + EI_IPA + ". То же — в других французских словах, которые есть в обоих языках:"),
+              "Russian took {{кафе}} from French and ends it on э. But French é is a closed [e], nearer to English " + EI_IPA + " than to э, and [[no English word ends in a short э]]. So English says é as " + EI_IPA + ". The same goes for these French words both languages share:",
+              "Русский язык заимствовал {{кафе}} из французского и произносит конец как «э». Но французское é — закрытое [e], оно ближе к английскому " + EI_IPA + ", чем к «э», а [[на короткое «э» английские слова не заканчиваются]]. Поэтому в английском é звучит как " + EI_IPA + ". То же — во французских словах, которые есть в обоих языках:"),
         "  <!-- DRAFT for Igor (SITE-PLAN.md NQ20): the six words are not from the post. -->",
         register("Six French words in Russian and in English", "Шесть французских слов по-русски и по-английски",
                  [("In Russian", "По-русски"), ("In English", "По-английски"), ("Sound (British)", "Звучание (брит.)")],
@@ -81,8 +81,8 @@ def body(note):
     ]))
     say = section("practice", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
-              "In café and canapé, open the mouth wide for the {{a}}. Finish every word on " + EI_IPA + ", as in day.",
-              "В café и canapé на {{a}} открывайте рот широко. Каждое слово заканчивайте на " + EI_IPA + ", как в day."),
+              "In café and canapé, open the mouth wide for the first {{a}}. Finish every word on " + EI_IPA + ", as in day.",
+              "В café и canapé на первое {{a}} открывайте рот широко. Каждое слово заканчивайте на " + EI_IPA + ", как в day."),
         practice(PRACTICE, "DRAFT for Igor (SITE-PLAN.md NQ20): these six sentences are not from the post."),
     ]))
     return "\n\n".join([words, why, say])
@@ -104,14 +104,14 @@ NOTE = dict(
     card_spec='<span class="x">кафэ</span><span class="to">→</span><span class="ok">кæфэй</span>',
     h1_en=["What’s wrong", "with your café?"], h1_ru=["Что не так", "с «кафэ»?"],
     # The post, lightly cleaned. The English is a DRAFT.
-    stand_en="One of the words my students get wrong most often is café. Few people notice the mark over the e: it shows the word came from French. I don’t know much French myself, but enough to be careful about pronunciation. Everyone I’ve worked with says it the Russian way, кафэ. [[Two sounds need changing: the first vowel and the ending.]]",
-    stand_ru="Café — одно из слов, которые ученики чаще всего произносят неправильно. Мало кто замечает значок над буквой e: он указывает на французское происхождение. Французский я знаю не очень, но достаточно, чтобы следить за произношением. Те, с кем я работал, поголовно говорят на русский манер: «кафэ». [[Менять нужно два звука: первый гласный и конец.]]",
+    stand_en="One of the words my students get wrong most often is café. Few people notice the mark over the e: it shows the word came from French. I don’t know much French myself, but enough to watch how I pronounce it. Everyone I’ve worked with says it the Russian way, кафэ. [[The first vowel and the ending both change.]]",
+    stand_ru="Café — одно из слов, которые ученики чаще всего произносят неправильно. Мало кто замечает значок над буквой e: он указывает на французское происхождение. Французский я знаю не очень, но достаточно, чтобы следить за произношением. Те, с кем я работал, поголовно говорят на русский манер: «кафэ». [[Меняются первый гласный и конец.]]",
     figure=FIGURE,
     comment="/notes/cafe/: Igor's LinkedIn post on café, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="How to pronounce café in English — Igor Shatsev",
     title_ru_head="Как произносить café по-английски — Igor Shatsev",
     desc_en="Russian speakers say café as кафэ. Two sounds change: the a is /æ/ and the é is /eɪ/, as in day. Why it happens, five more French words that end the same way, and sentences to say out loud.",
-    desc_ru="Как правильно произносить café по-английски: не «кафэ», а [кæфэй]. Два звука, которые нужно поменять, почему так, ещё пять французских слов с тем же концом и фразы для тренировки вслух.",
+    desc_ru="Как правильно произносить café по-английски: не «кафэ», а «кæфэй». Два звука, которые нужно поменять, почему так, ещё пять французских слов с тем же концом и фразы для тренировки вслух.",
     og_title="What’s wrong with your café? How to say it in English — Igor Shatsev",
     og_desc="Café isn’t кафэ: the a is /æ/ and the é is /eɪ/, as in day. Six French words and how they sound.",
     og_alt="What’s wrong with your café? A note by Igor Shatsev on saying café.",

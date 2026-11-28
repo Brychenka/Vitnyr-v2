@@ -136,3 +136,14 @@ standfirst's bold line echoed the 01 heading «Поменяйте два зву�
 «Менять нужно два звука»); "the end" → "the ending" in the English.
 Kept: the post's «поголовно», curly quotes, the X-isn't-Y meta
 description (meta, not body).
+
+Then a final read of the finished page by a fresh bilingual editor
+(2026-11-28). It confirmed the six British transcriptions. Applied: canapé
+has two a's, so the practice lede says "the first a"; "other French words"
+before a table that starts with café → "these French words"; the RU
+description's [кæфэй] in brackets → «кæфэй», as on the page; "careful about
+pronunciation" → "watch how I pronounce it"; the standfirst's bold line
+said "two sounds" right before the 01 heading did (now "The first vowel and
+the ending both change." / «Меняются первый гласный и конец.»). Kept: the
+post's present tense («поголовно говорят»), and кæфэй without a stress mark
+(Igor's own transcription; the 01 footnote gives the stress).
