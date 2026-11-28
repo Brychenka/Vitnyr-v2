@@ -12,3 +12,9 @@ dist/
 # A press photo from one of the LinkedIn posts, not Igor's own: kept
 # locally for reference, never published (the repo is public).
 reference/linkedin-posts/redact.jpg
+# Images from Igor's other LinkedIn posts that are not his (a stock photo,
+# a film still, a captioned picture, a paper's figure): local reference only.
+reference/linkedin-posts/frog.jpg
+reference/linkedin-posts/genes.jpg
+reference/linkedin-posts/school-unpaid.jpg
+reference/linkedin-posts/school-900-hours.jpg
