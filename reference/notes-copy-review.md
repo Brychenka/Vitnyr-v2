@@ -114,3 +114,13 @@ The second pass found little left: "and nobody notices" overclaimed (now
 последнего звука зависит слово» was stiff (now «может зависеть смысл»).
 Kept: "The secret isn't the last letter" (Igor's slide 03, not a
 "deeper truth" opener), the long X / Y 02 heading (headline), curly quotes.
+
+Then a final read of the finished page by a fresh bilingual editor
+(2026-11-28). Applied: «мягко закрывайте слово» (to a Russian ear «мягкий»
+means palatalised, [дэвь]) → «спокойно, не обрывая»; the 01 lede "the
+last letter … the v" → "the last sound … the consonant" (in leave, prize
+and code the last letter is a silent e; Igor's slide 03 wording, flagged
+to him); the descriptions said "why" twice; the RU 02 heading lacked a
+noun and echoed its lede (now «Русский оглушает конец слова. Английский —
+нет.»); the RU contact lede said the same thing twice; the EN caption now
+keeps the slide's "call". Meta, og, JSON-LD and the card matched the page.
