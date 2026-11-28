@@ -6864,3 +6864,9 @@ accident rather than small on purpose.
   every lede; this fits the common case.
 - Phones are unchanged (the photo beside the CTA). `style.css?v=20261128b`
   on all four pages and the notes.
+- `test_contact_says_what_happens_next` still looked for «составляем
+  план», which the shared copy fixes changed to «составим план» (that
+  merge was checked by eye and `test_seams.py` only); the test now matches.
+  Full suite: 298 + 243 passed; `test_progress_rule_switches_ink_at_origin`
+  failed once mid-crossfade (the machine ran the suite in 35 minutes, not
+  6) and passed on its own.
