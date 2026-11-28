@@ -59,9 +59,9 @@ def body(note):
             (f"каф{D('э')}", hit("café", "é"), ipa("/eɪ/")),
         ]),
         # DRAFT for Igor: not in the post.
-        '  <p class="note-cite reveal"><span data-l="en">Russian stresses the end, кафе́; British English stresses the first syllable. '
+        '  <p class="note-cite reveal"><span data-l="en">Russian stresses the end, кафЕ; British English stresses the first syllable. '
         'Americans usually stress the end and keep the same ' + EI_IPA + '. The word is often written cafe, '
-        'without the mark, and sounds no different.</span><span data-l="ru">По-русски ударение на конце, кафе́; в британском английском — на первом слоге. '
+        'without the mark, and sounds no different.</span><span data-l="ru">По-русски ударение на конце, кафЕ; в британском английском — на первом слоге. '
         'Американцы обычно ставят ударение на последний слог, а ' + EI_IPA + ' остаётся тем же. По-английски слово часто пишут cafe, без значка; '
         'звучит оно так же.</span></p>',
     ]))
