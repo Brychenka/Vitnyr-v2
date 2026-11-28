@@ -6920,3 +6920,33 @@ Planned in `REVIEW.md`, built, reviewed cold, rebuilt. No CSS or JS change.
   console errors; the test driven in EN and RU (7/8, «мне удалось», the
   Telegram message names the note); `tests/test_notes.py` 178 passed. The
   full suite was not run.
+
+## Note: dev / deaf (2026-11-28, `feature/note-dev-deaf`)
+
+The tenth note, from Igor's post of 24 November. The post is short; the
+rest comes from ten slides he made for it and didn't post
+(`~/Downloads/dev-deaf-10-images/`): the pairs list, the vowel-length rule
+and Russian devoicing (дуб [дуп]). Their use is NQ19. Planned in
+`REVIEW.md`, built, cold-reviewed, rebuilt, then the humanizer and Russian
+checklist pass. No CSS or JS change.
+
+- **Pronunciation.** Headline "I'm a dev, / not deaf." / «Dev, / а не
+  deaf.» Hero: serial's ladder (you say I'm a de~~f~~, they hear «Я
+  глухой», say I'm a dev); caption from slide 08 («Один звук — и совсем
+  другой созвон»).
+- **01:** "The vowel gives it away", the slide's six pairs plus code /
+  coat, with Russian meanings as on the slide; neither word of a pair takes
+  the mistake's ink, since both are real words. **02:** Russian devoicing,
+  then loans from English that carry it in: баг / bug ≠ buck, лог / log ≠
+  lock, блог / blog ≠ block. **03:** two columns to say out loud
+  (`practice_pair`).
+- **Cold review fixes:** "mutes the last sound" was wrong (Russian
+  devoices a final voiced consonant) and said five times; «глушит конец»
+  invited a smirk; the RU h1 «Разработчик, а не глухой» lost the pun and
+  read as a remark on deafness; "let the last sound buzz" invites a schwa
+  ("bag-uh"); код and приз came from French, so the pull rows are now
+  English loans; the standfirst kept the post's «на встрече» and
+  «дружелюбные ребята»; "He's deaf" became "She's deaf in one ear"; the
+  RU contact lede was ungrammatical; the vowel rule was said five times.
+- **Checked:** both themes and languages at 375 and 1280, no overflow, no
+  console errors; `tests/test_notes.py` 194 passed. Full suite not run.

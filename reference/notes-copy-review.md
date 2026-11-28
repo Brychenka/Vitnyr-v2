@@ -104,3 +104,13 @@ Checked and kept: "Мог is could. Смог isn't." (a headline, where "X, not 
 stays), the pull rows' asides, the practice lede, the contact lede (no
 stock opener), the curly quotes (house style), the Russian dashes (Russian
 typography).
+
+## The dev / deaf note (2026-11-28, `feature/note-dev-deaf`)
+
+Cold review by an outside bilingual editor first (all ten points applied;
+`BUILD-NOTES.md`), then the humanizer checklist and the Russian checklist.
+The second pass found little left: "and nobody notices" overclaimed (now
+"you never hear yourself do it" / «и мы этого не замечаем»), and «от
+последнего звука зависит слово» was stiff (now «может зависеть смысл»).
+Kept: "The secret isn't the last letter" (Igor's slide 03, not a
+"deeper truth" opener), the long X / Y 02 heading (headline), curly quotes.

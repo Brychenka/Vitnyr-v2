@@ -11,7 +11,7 @@ written for the note is marked DRAFT below.
 
 Planned before building (reference/linkedin-posts/REVIEW.md): serial's
 ladder as the hero; the pairs as the table; the why is devoicing, with
-Russian cognates that carry it into English; practice is two columns to
+Russian loans from English (баг, лог, блог) that carry it straight in; practice is two columns to
 say out loud, as on the stress note.
 """
 from lib import head2, ladder, practice_pair, pull, register, section
@@ -40,8 +40,8 @@ VOICED = [
     "I read your <b>blog</b>.",
 ]
 VOICELESS = [
-    "He’s <b>deaf</b>.",
-    "My <b>back</b> hurts.",
+    "She’s <b>deaf</b> in one ear.",
+    "I hurt my <b>back</b>.",
     "A yellow <b>leaf</b>.",
     "What’s the <b>price</b>?",
     "Take your <b>coat</b>.",
@@ -53,8 +53,9 @@ FIGURE = ladder([
     # Slide 08-reply: what the other side of the call hears.
     ("Я <em>глухой</em>.", "ru", "they hear", "носитель слышит"),
     (f"I’m a de{I('v')}.", "en", "say", "скажите"),
-], "Fig. 1. Russian mutes the last sound of a word. English keeps it, and stretches the vowel before it.",
-   "Рис. 1. Русский оглушает последний звук слова. Английский — нет, и гласная перед ним тянется.", "fig-dev-deaf")
+], "Fig. 1. One sound, and it’s a different conversation.",
+   # Slide 08-reply's line: «Один звук. Совсем другой созвон.»
+   "Рис. 1. Один звук — и совсем другой созвон.", "fig-dev-deaf")
 
 
 def cell(word, ru):
@@ -66,29 +67,29 @@ def cell(word, ru):
 def body(note):
     words = section("words", "\n".join([
         # From slide 03-length.
-        head2("A voiced ending changes the word.", "Звонкий конец меняет слово.",
+        head2("The vowel gives it away.", "Выдаёт гласная.",
               "The secret isn’t the last letter. [[Before a voiced consonant the vowel stretches]], and the listener hears it before the {{v}} itself.",
               "Секрет не в последней букве. [[Перед звонким согласным гласная тянется]], и это слышно раньше, чем сам {{v}}."),
         register("Seven pairs: a voiced ending and a voiceless one", "Семь пар: звонкий конец и глухой",
-                 [("Voiced: a longer vowel", "Звонкий: гласная длиннее"), ("Voiceless: a shorter vowel", "Глухой: гласная короче")],
+                 [("Voiced (v d g z)", "Звонкий (v d g z)"), ("Voiceless (f t k s)", "Глухой (f t k s)")],
                  [[cell(f"<b>{a}</b>", b), ("register__w", cell(f"<b>{c}</b>", d))]
                   for a, b, c, d in PAIRS], cls=" register--pairs"),
     ]))
     why = section("why", "\n".join([
-        # From slide 06-dub; the cognate rows are DRAFT.
-        head2("Russian mutes the end. English doesn’t.", "Русский глушит конец. Английский — нет.",
-              "In Russian {{дуб}} is said [дуп], {{код}} [кот], {{глаз}} [глас]: a voiced consonant at the end of a word goes voiceless, and nobody notices. [[The habit comes with you into English]], where the last sound can change the word. Words Russian shares with English carry it straight in:",
-              "По-русски {{дуб}} звучит как [дуп], {{код}} — [кот], {{глаз}} — [глас]: звонкий на конце слова оглушается, и никто этого не замечает. [[Привычка переезжает с вами в английский]], а там от последнего звука зависит слово. Особенно легко она переходит в слова, общие для двух языков:"),
+        # From slide 06-dub; the loanword rows are DRAFT (cold review: код and приз came from French).
+        head2("Russian devoices the end of a word. English doesn’t.", "В русском звонкий на конце оглушается. В английском — нет.",
+              "In Russian {{дуб}} is said [дуп], {{код}} [кот], {{глаз}} [глас]: a voiced consonant at the end of a word goes voiceless, and you never hear yourself do it. [[The habit comes with you into English]], where the last sound can change the word. Words Russian borrowed from English bring it straight in:",
+              "По-русски {{дуб}} звучит как [дуп], {{код}} — [кот], {{глаз}} — [глас]: звонкий на конце слова оглушается, и мы этого не замечаем. [[Эта привычка переходит и в английский]], а там от последнего звука может зависеть смысл. Легче всего она проскальзывает в словах, пришедших из английского:"),
         pull([
-            ("код [кот]", "code", "≠ coat"),
-            ("приз [прис]", "prize", "≠ price"),
+            ("баг [бак]", "bug", "≠ buck"),
+            ("лог [лок]", "log", "≠ lock"),
             ("блог [блок]", "blog", "≠ block"),
         ]),
     ]))
     say = section("practice", "\n".join([
         head2("Say it out loud.", "Скажите вслух.",
-              "Left column: hold the vowel and let the last sound buzz. Right column: keep the vowel short and the end crisp.",
-              "Левая колонка: тяните гласную, последний звук — со звоном. Правая: гласная короче, конец чёткий."),
+              "Left column: hold the vowel, then close the word softly, with no “uh” after it. Right column: keep the vowel short and the last sound crisp.",
+              "Левая колонка: тяните гласную и мягко закрывайте слово, без «э» на конце. Правая: гласная короче, последний звук глухой и чёткий."),
         "  <!-- DRAFT for Igor (SITE-PLAN.md NQ19): these twelve sentences are not from the post. -->",
         practice_pair(("Voiced ending", "Звонкий конец", "a longer vowel", "гласная длиннее", VOICED),
                       ("Voiceless ending", "Глухой конец", "a shorter vowel", "гласная короче", VOICELESS)),
@@ -105,27 +106,27 @@ NOTE = dict(
     from_linkedin=True,
     kind_en="Pronunciation", kind_ru="Произношение",
     count_en="dev · 7 pairs", count_ru="dev · 7 пар",
-    title_en="I’m a dev, not deaf.", title_ru="Разработчик, а не глухой.",
-    short_en="I’m a dev, not deaf", short_ru="Разработчик, а не глухой",
+    title_en="I’m a dev, not deaf.", title_ru="Dev, а не deaf.",
+    short_en="I’m a dev, not deaf", short_ru="Dev, а не deaf",
     ledger_spec=f'I’m a de{D("f")} <span class="ledger__to" aria-hidden="true">→</span> I’m a de{I("v")}',
-    card_en="I’m a dev, <em>not deaf.</em>", card_ru="Разработчик, <em>а не глухой.</em>",
+    card_en="I’m a dev, <em>not deaf.</em>", card_ru="Dev, <em>а не deaf.</em>",
     card_spec='I’m a de<span class="x">f</span><span class="to">→</span>I’m a de<span class="ok">v</span>',
-    h1_en=["I’m a dev,", "not deaf."], h1_ru=["Разработчик,", "а не глухой."],
+    h1_en=["I’m a dev,", "not deaf."], h1_ru=["Dev,", "а не deaf."],
     # The post, lightly cleaned. The English is a DRAFT.
-    stand_en="A client of mine is a developer. When he says “I’m a dev”, it comes out as “I’m deaf”. If native speakers smile on a call, it isn’t always because they’re friendly: maybe you just made them laugh. [[Watch the voiced and voiceless sounds at the ends of words.]]",
-    stand_ru="Мой клиент — разработчик. Когда он говорит «I’m a dev», слышится «I’m deaf». Если носители улыбаются на созвоне, это не всегда потому, что они очень дружелюбные: может, вы их просто рассмешили. [[Аккуратнее со звонкими и глухими звуками на конце слов.]]",
+    stand_en="A client of mine is a developer. When he says “I’m a dev”, it comes out as “I’m deaf”. If native speakers smile in a meeting, it isn’t always because they’re such friendly people: maybe you just made them laugh. [[Watch the voiced and voiceless sounds at the ends of words.]]",
+    stand_ru="Мой клиент — разработчик. Когда он говорит «I’m a dev», слышится «I’m deaf». Если носители улыбаются на встрече, это не всегда потому, что они очень дружелюбные ребята: может, вы их просто рассмешили. [[Аккуратнее со звонкими и глухими звуками на конце слов.]]",
     figure=FIGURE,
     comment="/notes/dev-deaf/: Igor's LinkedIn post on dev and deaf, with the slides he made for it, set as a note. The Russian is his post, lightly cleaned; the English is a translation, a draft for Igor to confirm.",
     title="“I’m a dev” or “I’m deaf”? Voiced endings in English — Igor Shatsev",
     title_ru_head="Звонкие согласные на конце слова в английском: dev или deaf — Igor Shatsev",
-    desc_en="Russian speakers mute the last sound of a word, so “I’m a dev” comes out as “I’m deaf”. Seven pairs (bag and back, prize and price), why it happens, and sentences to say out loud.",
-    desc_ru="Почему «I’m a dev» звучит как «I’m deaf»: русское оглушение согласных на конце слова. Семь пар (bag и back, prize и price), откуда привычка и фразы, чтобы потренироваться вслух.",
+    desc_en="Russian speakers devoice the last consonant of a word, so “I’m a dev” comes out as “I’m deaf”. Seven pairs (bag and back, prize and price), why it happens, and sentences to say out loud.",
+    desc_ru="Почему «I’m a dev» звучит как «I’m deaf»: русское оглушение согласных на конце слова. Семь пар (bag и back, prize и price), откуда берётся привычка, и фразы для тренировки вслух.",
     og_title="I’m a dev, not deaf: voiced endings in English — Igor Shatsev",
-    og_desc="Russian mutes the last sound of a word; English keeps it. Seven pairs and sentences to say out loud.",
+    og_desc="Russian devoices the last consonant of a word; English doesn’t. Seven pairs and sentences to say out loud.",
     og_alt="I’m a dev, not deaf. A note by Igor Shatsev on voiced endings.",
     ld_headline="I’m a dev, not deaf: voiced endings in English",
     contact_lede_en="You can’t hear your own final consonants, because to you they sound right. I can. In the trial lesson we’ll find the endings that go voiceless. [[It’s 30 minutes, free, no strings attached]]. If we’re a good fit, we agree on a plan, online or in Yerevan.",
-    contact_lede_ru="Свои последние звуки не слышно: вам они кажутся правильными. Мне слышно. На пробном занятии найдём окончания, которые у вас оглушаются. [[Это 30 минут, бесплатно, без обязательств]]. Если подойдём друг другу, составим план, онлайн или в Ереване.",
+    contact_lede_ru="Свои конечные согласные вы не слышите: вам кажется, что всё правильно. А мне слышно. На пробном занятии найдём, где вы оглушаете согласные на конце слова. [[Это 30 минут, бесплатно, без обязательств]]. Если подойдём друг другу, составим план, онлайн или в Ереване.",
     tg_en="Hi! I came from your note about “dev” and “deaf”. I'd like to book a free trial English lesson.",
     tg_ru="Здравствуйте! Я с вашей заметки про «dev» и «deaf». Хочу записаться на бесплатное занятие по английскому.",
     body=body,
