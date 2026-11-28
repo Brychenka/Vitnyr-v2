@@ -196,3 +196,35 @@ Unposted, so they are confirmed with Igor (NQ19).
   согласных английский», "dev or deaf".
 - **Drafts** for Igor (NQ19): the translation, the use of his unposted
   slides, code / coat, the cognate rows, the practice sentences.
+
+## Seventh note: café, decided before building (2026-11-28)
+
+The post (5 October; `BACKLOG.md` #4) names the mistake and the fix
+itself: everyone says café the Russian way, «кафэ»; change two sounds, the
+first vowel to /æ/ ("between а and э, open the mouth wide") and the end to
+/eɪ/ ("as in day or okay"); in all, [кæфэй]. Igor's only slide for it is
+the cover (`~/Downloads/cafe-slide.png`, «Что не так с «кафэ»
+по-английски?»), so everything past the post is the note's and is DRAFT.
+
+- **Kind: Pronunciation.** Practice is "Say it out loud", one list, as on
+  au and api-key.
+- **Hero: the au tiles.** C A F É over C æ F eɪ, the two changed letters in
+  the mistake's ink above, their sounds in the target's below. Caption:
+  кафэ becomes кæфэй (Igor's own transcription).
+- **Headline:** the slide's question. «Что не так / с «кафэ»?»; English
+  "What’s wrong / with your café?" (DRAFT).
+- **Standfirst:** the post, lightly cleaned (its English words
+  "mispronounced" and "origin" put into Russian).
+- **01 The fix:** the post's two changes as `.pull` rows, then a footnote
+  (DRAFT): the IPA is British; Americans often stress the end; English often
+  writes it cafe, with the same sound.
+- **02 Why:** the post says the mark shows the French origin. The note adds
+  the mechanism (DRAFT): Russian took the word from French with its э;
+  English words don't end on a short э, so é is /eɪ/. Then a table of six
+  French words Russian and English share, all ending in /eɪ/ in English:
+  café, résumé, cliché, purée, soufflé, canapé (DRAFT).
+- **03 Practice:** six sentences (DRAFT).
+- **Search:** «как произносить café», «кафе по-английски произношение»,
+  "how to pronounce café".
+- **Drafts** for Igor (NQ20): the translation and headline, the footnote,
+  the why, the six-word table, the practice sentences.

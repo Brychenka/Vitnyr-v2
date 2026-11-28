@@ -124,3 +124,15 @@ to him); the descriptions said "why" twice; the RU 02 heading lacked a
 noun and echoed its lede (now «Русский оглушает конец слова. Английский —
 нет.»); the RU contact lede said the same thing twice; the EN caption now
 keeps the slide's "call". Meta, og, JSON-LD and the card matched the page.
+
+## The café note (2026-11-28, `feature/note-cafe`)
+
+Cold review by an outside bilingual editor first (applied, apart from the
+English headline, which goes to Igor as NQ20; `BUILD-NOTES.md`), then the
+humanizer checklist and the Russian checklist. That pass found: "the same"
+twice in one footnote ("the /eɪ/ is the same … it sounds the same"); IPA
+typed as plain text in the footnotes (now the `.ipa` face); the RU
+standfirst's bold line echoed the 01 heading «Поменяйте два звука» (now
+«Менять нужно два звука»); "the end" → "the ending" in the English.
+Kept: the post's «поголовно», curly quotes, the X-isn't-Y meta
+description (meta, not body).

@@ -6950,3 +6950,36 @@ checklist pass. No CSS or JS change.
   RU contact lede was ungrammatical; the vowel rule was said five times.
 - **Checked:** both themes and languages at 375 and 1280, no overflow, no
   console errors; `tests/test_notes.py` 194 passed. Full suite not run.
+
+## Note: café (2026-11-28, `feature/note-cafe`)
+
+The eleventh note, from Igor's post of 5 October. The post gives the
+mistake (everyone says кафэ) and both fixes (/æ/, "between а and э"; the
+end /eɪ/, "as in day or okay"; in all, [кæфэй]). His only slide is the
+cover, «Что не так с «кафэ» по-английски?», now the Russian headline.
+Everything past the post is NQ20. Planned in `REVIEW.md`, built,
+cold-reviewed, rebuilt, then the humanizer and Russian checklist pass and a
+final read. No CSS or JS change.
+
+- **Pronunciation.** Headline "What’s wrong / with your café?" / «Что не
+  так / с «кафэ»?». Hero: the au tiles, C A F É over C æ F eɪ; caption
+  кафэ → кæфэй (Igor's transcription), which is also the ledger and card.
+- **01:** the post's two sounds as `.pull` rows, then a footnote on stress
+  and the cafe spelling. **02:** the mark says French; French é is a
+  closed [e] and no English word ends in a short э, so é is /eɪ/; a
+  three-column `register` of six French words both languages share,
+  British IPA with the /eɪ/ in the target ink; a footnote on résumé's short
+  first é. **03:** six sentences to say out loud (`practice`).
+- **Phone hero test:** the first Russian standfirst pushed the figure 30px
+  under the message bar (`test_a_notes_figure_starts_on_the_first_phone_screen`);
+  the standfirst was tightened rather than the layout changed.
+- **Cold review fixes:** "six more French words" in the descriptions (café
+  is one of the six); the practice lede told every word to open the mouth
+  for an a that only café and canapé have; the why gave only the English
+  gap, not French é's closed [e]; Americans "usually", not "often", stress
+  the end, and Russian's own end stress is now named; résumé's first é is
+  short; "the mark over the é" was redundant; the English standfirst began
+  lowercase; the soufflé-with-coffee sentence was odd and purée had no
+  practice line; the table now says its IPA is British.
+- **Checked:** both themes and languages at 375 and 1280, no overflow, no
+  console errors; `tests/test_notes.py` 210 passed. Full suite not run.

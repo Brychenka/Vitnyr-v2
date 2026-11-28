@@ -186,10 +186,10 @@ linked from its specimen. Igor's LinkedIn posts about English are the raw
 material; nothing is published without his approval. Start with the three
 specimens on the English page.
 
-**Status (2026-11-28):** ten notes. The newest, dev / deaf
-(`feature/note-dev-deaf`, waiting for Igor's review), is a pronunciation
-note from his post of 24 November and the slides he made for it. Before
-it, manage (vocabulary: manage to, not could). The posts not yet built
+**Status (2026-11-28):** eleven notes. The newest, café
+(`feature/note-cafe`, waiting for Igor's review), is a pronunciation note
+from his post of 5 October. Before it, dev / deaf (pronunciation, from his
+post of 24 November and the slides he made for it), and before that, manage (vocabulary: manage to, not could). The posts not yet built
 are in `reference/linkedin-posts/BACKLOG.md`. Before it: API key (pronunciation), serial
 and actual (vocabulary). The eight LinkedIn posts read on 2026-11-28 are in
 `reference/linkedin-posts/` with `REVIEW.md`; of those left, install is
@@ -256,6 +256,7 @@ until you do.
 | NQ17 | The notes copy pass (2026-11-28, `reference/notes-copy-review.md`): approve the rewritten Russian lines (feel, could-you, api-key, weigh, stress), the new footnotes (serial in British English, feel myself, weight as a verb, au exceptions), conSOLE swapped for REcord/reCORD (closes Q7), and the eight new contact openers. The five shared footer/byline lines (section E) were fixed on `feature/shared-copy-fixes`. | H4 |
 | NQ18 | The manage note (`tools/notes/manage.py`, `feature/note-manage`): approve the English translation of the post; the specimen (the post names the gap, the note names *could* as what fills it); the four table rows not in the post (еле успел, как вы справляетесь, сможете в пятницу, не удалось дозвониться); the why (мог is could, смог is managed to); and the five test sentences beyond your slide 2. Slide 2 promised answers in the first comment that were never posted; the test now carries them. All marked DRAFT. | H4 |
 | NQ19 | The dev / deaf note (`tools/notes/dev_deaf.py`, `feature/note-dev-deaf`): it uses three of the ten slides you made for the post and didn't publish (`~/Downloads/dev-deaf-10-images/`: the pairs, the vowel-length rule, дуб [дуп]); is that fine? Also approve the English translation, "I'm a dev" with the article, the code / coat pair, the баг / лог / блог rows, the Russian h1 «Dev, а не deaf.», the twelve practice sentences, and the 01 lede, which rewords your slide 03 («Секрет не в последней букве» → «Дело не только в последнем звуке», because in leave, prize and code the last letter is a silent e). All marked DRAFT. | H4 |
+| NQ20 | The café note (`tools/notes/cafe.py`, `feature/note-cafe`): approve the English translation and headline ("What’s wrong / with your café?", which a native may first read as a remark on someone's coffee shop; keep it or use "What’s wrong / with how you say café?"); the Russian standfirst, trimmed to fit a phone screen («ученики чаще всего произносят неправильно», «Французский я знаю не очень, но достаточно, чтобы следить за произношением», and your English words "mispronounced" and "origin" put into Russian); the stress footnote (Russian кафе́, British first syllable, American usually the end) and the cafe spelling; the 02 "why" (French é is a closed [e], and no English word ends in a short э, so é is /eɪ/); the table of six French words (café, résumé, cliché, purée, soufflé, canapé, British IPA) with the résumé footnote; the six practice sentences. All marked DRAFT. | H4 |
 | NQ10 | The English page calls the Russian in "I feel myself" a "reflexive ending built into the verb", but чувствую себя uses a separate word (себя). Change it to "reflexive word", as the note says? | H4 |
 
 ---
