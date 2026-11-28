@@ -104,3 +104,23 @@ Checked and kept: "Мог is could. Смог isn't." (a headline, where "X, not 
 stays), the pull rows' asides, the practice lede, the contact lede (no
 stock opener), the curly quotes (house style), the Russian dashes (Russian
 typography).
+
+## The dev / deaf note (2026-11-28, `feature/note-dev-deaf`)
+
+Cold review by an outside bilingual editor first (all ten points applied;
+`BUILD-NOTES.md`), then the humanizer checklist and the Russian checklist.
+The second pass found little left: "and nobody notices" overclaimed (now
+"you never hear yourself do it" / «и мы этого не замечаем»), and «от
+последнего звука зависит слово» was stiff (now «может зависеть смысл»).
+Kept: "The secret isn't the last letter" (Igor's slide 03, not a
+"deeper truth" opener), the long X / Y 02 heading (headline), curly quotes.
+
+Then a final read of the finished page by a fresh bilingual editor
+(2026-11-28). Applied: «мягко закрывайте слово» (to a Russian ear «мягкий»
+means palatalised, [дэвь]) → «спокойно, не обрывая»; the 01 lede "the
+last letter … the v" → "the last sound … the consonant" (in leave, prize
+and code the last letter is a silent e; Igor's slide 03 wording, flagged
+to him); the descriptions said "why" twice; the RU 02 heading lacked a
+noun and echoed its lede (now «Русский оглушает конец слова. Английский —
+нет.»); the RU contact lede said the same thing twice; the EN caption now
+keeps the slide's "call". Meta, og, JSON-LD and the card matched the page.

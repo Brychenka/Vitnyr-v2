@@ -165,3 +165,34 @@ to put through manage to (задеплоить до пятницы, я спра�
 - **Drafts** for Igor (NQ18): the English translation, the could
   specimen, the table rows not in the post, the why, the test sentences
   beyond slide 2.
+
+## Sixth note: dev / deaf, decided before building (2026-11-28)
+
+The post (24 November; `BACKLOG.md` #1) is short: a developer says "I'm
+dev" and it sounds like "I'm deaf"; natives may be smiling because you made
+them laugh; watch voiced and voiceless sounds at the ends of words. It was
+judged thin until Igor's word list came in. It has: `~/Downloads/dev-deaf-10-images/`
+holds ten slides Igor made for the post (21 Nov), of which he posted one
+(the F/V keys). Three carry what the note needs: `09-pairs` (dev/deaf,
+bad/bat, bag/back, leave/leaf, eyes/ice, prize/price), `03-length` (the
+vowel before a voiced consonant is longer; you hear it before the v) and
+`06-dub` (Russian devoices the end: дуб [дуп], код [кот], глаз [глас]).
+Unposted, so they are confirmed with Igor (NQ19).
+
+- **Kind: Pronunciation.** Practice is "Say it out loud", in two columns
+  (voiced / voiceless) with `practice_pair()`, as on the stress note.
+- **Hero: serial's ladder.** You say: I'm a de~~f~~. They hear: «Я
+  глухой.» Say: I'm a dev. Caption: Russian mutes the last sound, English
+  keeps it and stretches the vowel before it.
+- **Headline:** "I'm a dev, / not deaf." / «Разработчик, / а не глухой.»
+- **Standfirst:** the post, lightly cleaned (I'm a dev, with the article).
+- **01 The fix:** the slide's six pairs plus code / coat (DRAFT), the
+  lede from `03-length`: the secret isn't the last letter, it's the vowel.
+- **02 Why:** `06-dub`'s devoicing, then pull rows with Russian
+  cognates that carry the habit straight in (DRAFT): код → code ≠ coat,
+  приз → prize ≠ price, блог → blog ≠ block.
+- **03 Practice:** six short sentences per column (DRAFT).
+- **Search:** «звонкие и глухие согласные в английском», «оглушение
+  согласных английский», "dev or deaf".
+- **Drafts** for Igor (NQ19): the translation, the use of his unposted
+  slides, code / coat, the cognate rows, the practice sentences.
