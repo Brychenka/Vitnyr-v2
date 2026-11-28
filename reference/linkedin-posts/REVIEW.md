@@ -152,7 +152,7 @@ to put through manage to (задеплоить до пятницы, я спра�
 - **01 The fix:** Russian → English, the post's two (я справлюсь, у меня
   получилось пофиксить баг), then rows people need (DRAFT): еле успел,
   как вы справляетесь, сможете в пятницу?
-- **02 Why (DRAFT):** Russian «смог» does two jobs; English splits them.
+- **02 Why (DRAFT):** school teaches could as мочь, so смог becomes could too; but could is мог.
   Could is ability in general (в пять лет я мог читать), managed to is one
   success that took effort (я смог починить). Not managing is easy: both
   couldn't and didn't manage to are right. Pull rows, one per job.
