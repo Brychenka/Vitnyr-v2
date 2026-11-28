@@ -219,7 +219,7 @@ def test_footer_clock_stands_on_the_colophon_rule(open_site, path, viewport):
 @pytest.mark.parametrize("path", ["index.html"] + [f"{s}/" for s in PAGES])
 def test_contact_says_what_happens_next(open_site, path):
     for lang, trial, plan in (("en", "30-minute trial", "agree on a plan"),
-                              ("ru", "30 минут", "составляем план")):
+                              ("ru", "30 минут", "составим план")):
         page, _ = open_site(path=path, lang=lang)
         text = page.locator("#contact").inner_text()
         assert trial in text and plan in text, (path, lang)

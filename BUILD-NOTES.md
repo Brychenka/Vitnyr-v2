@@ -6841,3 +6841,32 @@ notes (contact ledes, byline, index) and the share cards:
 Checked: all four pages and three note pages, both themes, languages and
 widths, no overflow, no console errors; `test_seams.py` passes. No CSS or
 JS change, so no cache keys moved.
+
+## The notes' portrait, sized to its text (2026-11-28, `feature/note-portrait-size`)
+
+Igor: the photo at the end of a note looked small, with plenty of empty
+space beside it. The 27 Nov pass had set its column to 140–176px, so the
+photo stopped about 40px short of the text beside it and read as small by
+accident rather than small on purpose.
+
+- **One rule, the four pages' rule:** from 900px the photo's top sits on
+  the CTA's capitals and its bottom on the lede's last line. EN column
+  `clamp(160px, calc(84px + 8.9vw), 204px)`: 173px at 1000, 198 at 1280,
+  204 from about 1350. It still stays on the right edge; the empty space
+  is the text's reading measure (665px), not the photo's.
+- **Russian has its own width,** because its CTA runs three lines, not
+  two: `html[data-lang="ru"]`, `clamp(170px, calc(87px + 11.8vw), 244px)`,
+  205px at 1000, 238 at 1280.
+- **Measured on all eight notes**, 900 to 1600, EN and RU: the bottom edge
+  lands within 3px of the lede's last line, except where a note's lede
+  wraps one line longer (api-key and could-you in RU, some at 900 and
+  1000), where it is one line (about 28px) short. One rule can't fit
+  every lede; this fits the common case.
+- Phones are unchanged (the photo beside the CTA). `style.css?v=20261128b`
+  on all four pages and the notes.
+- `test_contact_says_what_happens_next` still looked for «составляем
+  план», which the shared copy fixes changed to «составим план» (that
+  merge was checked by eye and `test_seams.py` only); the test now matches.
+  Full suite: 298 + 243 passed; `test_progress_rule_switches_ink_at_origin`
+  failed once mid-crossfade (the machine ran the suite in 35 minutes, not
+  6) and passed on its own.
