@@ -6870,3 +6870,19 @@ accident rather than small on purpose.
   Full suite: 298 + 243 passed; `test_progress_rule_switches_ink_at_origin`
   failed once mid-crossfade (the machine ran the suite in 35 minutes, not
   6) and passed on its own.
+
+## The notes' portrait at 1.3x (2026-11-28, `feature/note-portrait-1-3x`)
+
+Igor: the text-matched photo still read as smallish. Rendered at 1.3x and
+1.5x side by side; he picked 1.3x, one size in both languages.
+
+- `clamp(208px, calc(109px + 11.6vw), 265px)`: 213px at 900, 225 at 1000,
+  257 at 1280, 265 from about 1350. The Russian-only rule is gone: it
+  existed only to meet the three-line Russian CTA, and the photo no
+  longer ends on the lede's last line.
+- Its top still sits on the CTA's capitals; it now runs past the lede, by
+  about 75px in English at 1280 and about 25px in Russian. It stays on the
+  right edge. 1.5x (297px, the four pages' size) was left out: beside a
+  46px CTA it outweighed the lesson.
+- Checked: both themes, both languages, 375 to 1600, no overflow, no
+  console errors. Phones unchanged. `style.css?v=20261128c`.
